@@ -32,6 +32,7 @@ const Player: FunctionComponent<PlayerProps> = ({
       ) : (
         <video
           loop
+          playsInline
           className={`relative object-fit w-full h-full`}
           ref={streamRef}
           onCanPlayThrough={() => setVideoLoading(false)}

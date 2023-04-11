@@ -38,6 +38,7 @@ const ImageUploads: FunctionComponent<ImageUploadsProps> = ({
                 ) : (
                   <video
                     muted
+                    playsInline
                     autoPlay
                     controls
                     className="rounded-md absolute w-full h-full object-cover"

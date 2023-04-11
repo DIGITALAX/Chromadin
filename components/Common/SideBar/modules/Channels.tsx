@@ -41,6 +41,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
             <div className="relative w-full h-44 lg:h-full">
               <video
                 muted
+                playsInline
                 preload="metadata"
                 className="relative object-cover w-full h-full"
               >

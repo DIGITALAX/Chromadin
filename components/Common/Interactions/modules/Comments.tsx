@@ -148,6 +148,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                                       <video
                                         muted
                                         controls
+                                        playsInline
                                         autoPlay
                                         loop
                                         className="rounded-md absolute w-full h-full object-cover"

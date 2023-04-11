@@ -12,9 +12,10 @@ const Switcher: FunctionComponent = (): JSX.Element => {
         muted
         autoPlay
         loop
+        playsInline
         className="absolute w-full h-full object-cover"
       >
-        <source src={"/videos/glitch.mp4"} type="video/mp4" />
+        <source src={"https://chromadin.xyz/videos/glitch.mp4"} type="video/mp4" />
       </video>
       <div className="relative w-full h-full flex flex-row px-2 gap-4">
         <div className="relative w-full h-full flex flex-col">
