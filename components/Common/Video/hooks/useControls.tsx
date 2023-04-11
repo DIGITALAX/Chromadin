@@ -119,23 +119,8 @@ const useControls = (): UseControlsResults => {
     }${seconds}`;
   };
 
-  const handlePause = () => {
-    if (streamRef.current && !streamRef.current.paused) {
-      streamRef.current.pause();
-      setIsPlaying(false);
-    }
-  };
-
-  const handlePlay = () => {
-    if (streamRef.current) {
-      streamRef.current.play();
-      setIsPlaying(true);
-    }
-  };
-
   const handleVolumeChange = (e: FormEvent) => {
     setVolume(parseFloat((e.target as HTMLFormElement).value));
-    streamRef.current!.volume = parseFloat((e.target as HTMLFormElement).value);
   };
 
   useEffect(() => {
@@ -146,51 +131,6 @@ const useControls = (): UseControlsResults => {
       }
     }
   }, [fullScreen]);
-
-  useEffect(() => {
-    if (!streamRef.current) return;
-
-    const handleLoadedMetadata = () => {
-      if (streamRef.current) {
-        setDuration(Math.floor(streamRef.current.duration));
-      }
-    };
-
-    const handleTimeUpdate = () => {
-      if (streamRef.current) {
-        setCurrentTime(Math.floor(streamRef.current?.currentTime));
-      }
-    };
-
-    const handleDurationChange = () => {
-      setDuration(Math.floor(streamRef!.current!.duration));
-    };
-
-    streamRef.current.addEventListener("loadedmetadata", handleLoadedMetadata);
-    streamRef!.current!.addEventListener("timeupdate", handleTimeUpdate);
-    streamRef!.current!.addEventListener(
-      "canplaythrough",
-      handleDurationChange
-    );
-
-    if (streamRef.current.duration) {
-      setDuration(Math.floor(streamRef.current.duration));
-    }
-
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.removeEventListener(
-          "loadedmetadata",
-          handleLoadedMetadata
-        );
-        streamRef.current.removeEventListener("timeupdate", handleTimeUpdate);
-        streamRef.current.removeEventListener(
-          "durationchange",
-          handleDurationChange
-        );
-      }
-    };
-  }, [streamRef, mainVideo.id]);
 
   useEffect(() => {
     if (streamRef.current) {
@@ -637,9 +577,9 @@ const useControls = (): UseControlsResults => {
     duration,
     currentTime,
     volume,
-    handlePause,
-    handlePlay,
-    handleVolumeChange,
+    // handlePause,
+    // handlePlay,
+    // handleVolumeChange,
     isPlaying,
     volumeOpen,
     setVolumeOpen,
@@ -662,6 +602,10 @@ const useControls = (): UseControlsResults => {
     approvalLoading,
     collectInfoLoading,
     approveCurrency,
+    setIsPlaying,
+    setCurrentTime,
+    setDuration,
+    handleVolumeChange
   };
 };
 

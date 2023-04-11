@@ -12,8 +12,6 @@ export type ControlsProps = {
   volumeOpen: boolean;
   setVolumeOpen: (volumeOpen: boolean) => void;
   handleVolumeChange: (e: FormEvent) => void;
-  handlePlay: () => void;
-  handlePause: () => void;
   isPlaying: boolean;
   handleHeart: () => void;
   collected: boolean;
@@ -31,6 +29,7 @@ export type ControlsProps = {
   likedArray: boolean[];
   mirroredArray: boolean[];
   videos: Publication[];
+  setIsPlaying: (e: boolean) => void;
 };
 
 export type UseControlsResults = {
@@ -44,8 +43,6 @@ export type UseControlsResults = {
   volumeOpen: boolean;
   setVolumeOpen: (volumeOpen: boolean) => void;
   handleVolumeChange: (e: FormEvent) => void;
-  handlePlay: () => void;
-  handlePause: () => void;
   isPlaying: boolean;
   handleHeart: () => void;
   heart: boolean;
@@ -66,6 +63,9 @@ export type UseControlsResults = {
   approvalLoading: boolean;
   collectInfoLoading: boolean;
   approveCurrency: () => Promise<void>;
+  setIsPlaying: (e: boolean) => void;
+  setCurrentTime: (e: number) => void;
+  setDuration: (e: number) => void;
 };
 
 export type VideoProps = {
@@ -79,4 +79,11 @@ export type PlayerProps = {
   mainVideo: MainVideoState;
   videoLoading: boolean;
   setVideoLoading: (e: boolean) => void;
+  isPlaying: boolean;
+  likedArray: boolean[];
+  mirroredArray: boolean[];
+  videos: Publication[];
+  volume: number;
+  setCurrentTime: (e: number) => void;
+  setDuration: (e: number) => void;
 };

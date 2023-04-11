@@ -6,6 +6,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { setMainVideo } from "@/redux/reducers/mainVideoSlice";
 import lodash from "lodash";
+import json from "./../../../../public/videos/local.json";
 
 const Controls: FunctionComponent<ControlsProps> = ({
   fullScreen,
@@ -15,8 +16,6 @@ const Controls: FunctionComponent<ControlsProps> = ({
   currentTime,
   volume,
   handleVolumeChange,
-  handlePlay,
-  handlePause,
   isPlaying,
   volumeOpen,
   setVolumeOpen,
@@ -36,6 +35,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
   mainVideo,
   likedArray,
   mirroredArray,
+  setIsPlaying,
 }): JSX.Element => {
   const dispatch = useDispatch();
   const currentIndex = lodash.findIndex(videos, { id: mainVideo.id });
@@ -186,16 +186,15 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       ? videos.length - 1
                       : currentIndex + 1
                   ].id,
-                actionLocal: `/videos/${videos[
-                  currentIndex === videos.length - 1
-                    ? 0
-                    : currentIndex === 0
-                    ? videos.length - 1
-                    : currentIndex + 1
-                ]?.metadata?.content
-                  ?.split("\n\n")[0]
-                  .replace(/\s/g, "")
-                  .toLowerCase()}.mp4`,
+                actionLocal: `${
+                  json[
+                    currentIndex === videos.length - 1
+                      ? 0
+                      : currentIndex === 0
+                      ? videos.length - 1
+                      : currentIndex + 1
+                  ].link
+                }`,
               })
             )
           }
@@ -210,7 +209,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
         </div>
         <div
           className="relative cursor-pointer"
-          onClick={isPlaying ? () => handlePause() : () => handlePlay()}
+          onClick={() => setIsPlaying(!isPlaying)}
         >
           <Image
             src={`${INFURA_GATEWAY}/ipfs/${
@@ -240,12 +239,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                 actionMirrored:
                   mirroredArray[(currentIndex + 1) % videos.length],
                 actionId: videos[(currentIndex + 1) % videos.length].id,
-                actionLocal: `/videos/${videos[
-                  (currentIndex + 1) % videos.length
-                ]?.metadata?.content
-                  ?.split("\n\n")[0]
-                  .replace(/\s/g, "")
-                  .toLowerCase()}.mp4`,
+                actionLocal: `${json[(currentIndex + 1) % videos.length].link}`,
               })
             )
           }

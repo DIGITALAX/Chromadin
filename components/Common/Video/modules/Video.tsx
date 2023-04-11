@@ -15,8 +15,6 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
     currentTime,
     volume,
     handleVolumeChange,
-    handlePlay,
-    handlePause,
     isPlaying,
     volumeOpen,
     setVolumeOpen,
@@ -32,20 +30,23 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
     authStatus,
     mainVideo,
     videoLoading,
-    setVideoLoading
+    setVideoLoading,
+    setIsPlaying,
+    setCurrentTime,
+    setDuration,
   } = useControls();
   const { videos, mirrored, liked } = useChannels();
   return (
     <div
       className={`relative w-full ${
-        viewer === "collect" ? "h-28 bg-chroma bg-cover" : "h-[15rem] galaxy:h-[20rem] preG:h-[25rem] sm:h-[30rem] mid:h-[35.8rem]"
+        viewer === "collect"
+          ? "h-28 bg-chroma bg-cover"
+          : "h-[15rem] galaxy:h-[20rem] preG:h-[25rem] sm:h-[30rem] mid:h-[35.8rem]"
       } flex gap-2 justify-center items-center`}
     >
       <div
         className={`relative w-full h-full flex gap-2 items-center justify-center ${
-          viewer === "collect"
-            ? "flex-row bg-black/50 p-2"
-            : "flex-col"
+          viewer === "collect" ? "flex-row bg-black/50 p-2" : "flex-col"
         }`}
       >
         <Player
@@ -55,6 +56,13 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           mainVideo={mainVideo}
           videoLoading={videoLoading}
           setVideoLoading={setVideoLoading}
+          isPlaying={isPlaying}
+          setCurrentTime={setCurrentTime}
+          setDuration={setDuration}
+          videos={videos}
+          likedArray={liked}
+          mirroredArray={mirrored}
+          volume={volume}
         />
         <Controls
           fullScreen={fullScreen}
@@ -64,8 +72,6 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           currentTime={currentTime}
           volume={volume}
           handleVolumeChange={handleVolumeChange}
-          handlePlay={handlePlay}
-          handlePause={handlePause}
           isPlaying={isPlaying}
           volumeOpen={volumeOpen}
           setVolumeOpen={setVolumeOpen}
@@ -85,6 +91,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           likedArray={liked}
           mirroredArray={mirrored}
           videos={videos}
+          setIsPlaying={setIsPlaying}
         />
       </div>
     </div>

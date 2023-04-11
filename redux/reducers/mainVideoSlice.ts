@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import json from "./../../public/videos/local.json";
 
 export interface MainVideoState {
   id: string;
@@ -16,7 +17,7 @@ const initialMainVideoState: MainVideoState = {
   collected: false,
   liked: false,
   mirrored: false,
-  local: "/videos/latentwaves.mp4",
+  local: `${json[0].link}`,
 };
 
 export const mainVideoSlice = createSlice({

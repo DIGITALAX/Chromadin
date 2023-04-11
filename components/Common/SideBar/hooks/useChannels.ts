@@ -12,6 +12,7 @@ import checkIfMirrored from "@/lib/helpers/checkIfMirrored";
 import { ApolloQueryResult } from "@apollo/client";
 import { setMainVideo } from "@/redux/reducers/mainVideoSlice";
 import { INFURA_GATEWAY } from "@/lib/constants";
+import json from "./../../../../public/videos/local.json";
 
 const useChannels = (): UseChannelsResults => {
   const authStatus = useSelector(
@@ -62,16 +63,13 @@ const useChannels = (): UseChannelsResults => {
       dispatch(
         setMainVideo({
           actionVideo: `${INFURA_GATEWAY}/ipfs/${
-            sortedArr[1].metadata.media[0].original.url.split("ipfs://")[1]
+            sortedArr[0].metadata.media[0].original.url.split("ipfs://")[1]
           }`,
-          actionCollected: sortedArr[1].hasCollectedByMe,
-          actionLiked: hasReactedArr?.hasReactedArr?.[1],
-          actionMirrored: hasMirroredArr?.[1],
-          actionId: sortedArr[1].id,
-          actionLocal: `/videos/${sortedArr[1]?.metadata?.content
-            ?.split("\n\n")[0]
-            .replace(/\s/g, "")
-            .toLowerCase()}.mp4`,
+          actionCollected: sortedArr[0].hasCollectedByMe,
+          actionLiked: hasReactedArr?.hasReactedArr?.[0],
+          actionMirrored: hasMirroredArr?.[0],
+          actionId: sortedArr[0].id,
+          actionLocal: `${json[0].link}`,
         })
       );
     } catch (err: any) {

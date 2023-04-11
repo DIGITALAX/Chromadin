@@ -4,6 +4,7 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/image";
 import { setMainVideo } from "@/redux/reducers/mainVideoSlice";
 import { Publication } from "@/components/Home/types/lens.types";
+import json from "./../../../../public/videos/local.json";
 
 const Channels: FunctionComponent<ChannelsProps> = ({
   videos,
@@ -30,10 +31,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                   actionLiked: liked[index],
                   actionMirrored: mirrored[index],
                   actionId: content?.id,
-                  actionLocal: `/videos/${content?.metadata?.content
-                    ?.split("\n\n")[0]
-                    .replace(/\s/g, "")
-                    .toLowerCase()}.mp4`,
+                  actionLocal: `${json[index].link}`,
                 })
               )
             }
