@@ -65,7 +65,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
           <div className="relative w-full h-full justify-center items-center flex">
             <FetchMoreLoading size="6" />
           </div>
-        ) : commentors?.length < 1 ? (
+        ) : !commentsLoading && commentors?.length < 1 ? (
           <div className="relative text-white font-arcade w-full h-full justify-center items-start py-3 flex text-center">
             Be the first to comment on this stream :)
           </div>

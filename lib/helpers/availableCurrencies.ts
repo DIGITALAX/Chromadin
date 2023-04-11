@@ -6,13 +6,20 @@ const availableCurrencies = async (
   setEnabledCurrency: (e: string) => void,
   presetCurrency?: string
 ): Promise<void> => {
-  const response = await getEnabledCurrencies();
-  setEnabledCurrencies(response.data.enabledModuleCurrencies);
-  setEnabledCurrency(
-    presetCurrency
-      ? presetCurrency
-      : response.data.enabledModuleCurrencies[0]?.symbol
-  );
+  try {
+    const response = await getEnabledCurrencies();
+    console.log({response})
+    if (response && response.data) {
+      setEnabledCurrencies(response.data.enabledModuleCurrencies);
+      setEnabledCurrency(
+        presetCurrency
+          ? presetCurrency
+          : response.data.enabledModuleCurrencies[0]?.symbol
+      );
+    }
+  } catch (err: any) {
+    console.error(err.message);
+  }
 };
 
 export default availableCurrencies;

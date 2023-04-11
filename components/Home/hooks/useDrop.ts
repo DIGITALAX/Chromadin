@@ -58,7 +58,7 @@ const useDrop = () => {
           return {
             ...collection,
             uri: json,
-            profile: defaultProfile.data.defaultProfile,
+            profile: defaultProfile?.data?.defaultProfile,
             drop: {
               name: dropjson.name,
               image: dropjson.image,

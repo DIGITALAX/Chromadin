@@ -16,7 +16,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
       {videos.map((content: Publication, index: number) => {
         return (
           <div
-            className="relative w-full min-w-full h-fit lg:h-28 flex flex-col galaxy:flex-row hover:opacity-80 cursor-pointer border-b border-white"
+            className="relative w-full min-w-full h-fit lg:h-32 flex flex-col galaxy:flex-row hover:opacity-80 cursor-pointer border-b border-white"
             key={index}
             onClick={() =>
               dispatch(
@@ -78,11 +78,11 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                         : content?.metadata?.content?.split("\n\n")[0]}
                     </div>
                   </div>
-                  <div className="relative w-full h-full flex font-arcade text-xxs preG:text-base lg:text-xxs text-white">
-                    {content?.metadata?.content?.split("\n\n")[1]?.length > 110
+                  <div className="relative w-full h-full flex font-earl text-xs preG:text-base lg:text-xs text-white leading-none">
+                    {content?.metadata?.content?.split("\n\n")[1]?.length > 55
                       ? content?.metadata?.content
                           ?.split("\n\n")[1]
-                          ?.slice(0, 110) + "..."
+                          ?.slice(0, 55) + "..."
                       : content?.metadata?.content?.split("\n\n")[1]}
                   </div>
                 </div>

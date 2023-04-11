@@ -43,14 +43,18 @@ const useInteractions = () => {
           commentsRankingFilter: "RELEVANT",
         });
       } else {
-        comments = await whoCommentedPublicationsAuth({
+        comments = await whoCommentedPublications({
           commentsOf: mainVideo.id,
           limit: 30,
           commentsOfOrdering: "RANKING",
           commentsRankingFilter: "RELEVANT",
         });
       }
-      const arr: any[] = [...comments.data.publications.items];
+      console.log({commentors})
+      if (!comments || !comments.data || !comments.data.publications || comments.data.publications.items.length < 1) {
+        return;
+      }
+      const arr: any[] = [...comments?.data?.publications?.items];
       const sortedArr = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
@@ -60,7 +64,7 @@ const useInteractions = () => {
         setHasMoreComments(true);
       }
       setCommentors(sortedArr);
-      setPaginated(comments.data.publications.pageInfo);
+      setPaginated(comments?.data?.publications?.pageInfo);
       if (profileId) {
         const hasMirroredArr = await checkIfMirrored(sortedArr, profileId);
         setHasMirrored(hasMirroredArr);
@@ -106,6 +110,9 @@ const useInteractions = () => {
           commentsRankingFilter: "RELEVANT",
         });
       }
+      if (!comments || !comments.data || !comments.data.publications || comments.data.publications.items.length < 1) {
+        return;
+      }
       const arr: any[] = [...comments.data.publications.items];
       const sortedArr = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
@@ -114,7 +121,7 @@ const useInteractions = () => {
         setHasMoreComments(false);
       }
       setCommentors([...commentors, ...sortedArr]);
-      setPaginated(comments.data.publications.pageInfo);
+      setPaginated(comments?.data?.publications?.pageInfo);
       if (profileId) {
         const hasMirroredArr = await checkIfMirrored(sortedArr, profileId);
         setHasMirrored([...hasMirrored, ...hasMirroredArr]);

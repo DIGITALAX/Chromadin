@@ -69,7 +69,7 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
                       />
                     </div>
                     <div className="relative w-full h-fit text-ama font-arcade">
-                      {collector.defaultProfile.handle}
+                      {collector?.defaultProfile?.handle}
                     </div>
                   </div>
                 );

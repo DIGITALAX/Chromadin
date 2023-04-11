@@ -53,13 +53,13 @@ const useControls = (): UseControlsResults => {
   const [approvalLoading, setApprovalLoading] = useState<boolean>(false);
   const [collectInfoLoading, setCollectInfoLoading] = useState<boolean>(false);
   const [mirrorCommentLoading, setMirrorCommentLoading] = useState<boolean[]>(
-    Array.from({ length: commentors.length }, () => false)
+    Array.from({ length: commentors?.length }, () => false)
   );
   const [likeCommentLoading, setLikeCommentLoading] = useState<boolean[]>(
-    Array.from({ length: commentors.length }, () => false)
+    Array.from({ length: commentors?.length }, () => false)
   );
   const [collectCommentLoading, setCollectCommentLoading] = useState<boolean[]>(
-    Array.from({ length: commentors.length }, () => false)
+    Array.from({ length: commentors?.length }, () => false)
   );
   const dispatch = useDispatch();
   const { address } = useAccount();
@@ -186,7 +186,7 @@ const useControls = (): UseControlsResults => {
     if (!id) {
       setLikeLoading(true);
     } else {
-      index = commentors.findIndex((commentor) => commentor.id === id);
+      index = commentors?.findIndex((commentor) => commentor.id === id);
       if (index >= 0) {
         setLikeCommentLoading((prev) => {
           const updatedArray = [...prev];
