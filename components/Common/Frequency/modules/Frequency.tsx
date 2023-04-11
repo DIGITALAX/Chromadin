@@ -69,13 +69,15 @@ const Frequency: FunctionComponent = (): JSX.Element => {
       </div>
       <div className="absolute w-80 h-full hidden md:flex bg-offBlack border-l border-white/70 right-0">
         <div className="relative w-full h-full justify-center flex">
-          <Image
-            alt="waves"
-            src={`${INFURA_GATEWAY}/ipfs/QmbuX2tNvUXT8Z6sHqwt6yU4mKyJUzbX4uNuqrm8eWHAYu`}
-            fill={true}
+          <video
+            muted
+            playsInline
+            autoPlay
+            loop
             className="flex w-full h-full p-7"
-            draggable={false}
-          />
+          >
+            <source src={"/videos/mosh.mp4"} type="video/mp4" />
+          </video>
         </div>
       </div>
     </div>
