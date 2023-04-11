@@ -28,14 +28,14 @@ export default function Document() {
         />
         <link
           rel="preload"
-          href="/fonts/ARCADECLASSIC.ttf"
+          href="/fonts/ArcadeClassic.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/DS-DIGI.ttf"
+          href="/fonts/DSDigi.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
@@ -60,7 +60,7 @@ export default function Document() {
               @font-face {
                 font-family: "Arcade Classic";
                 font-weight: 400;
-                src: url("./fonts/ARCADECLASSIC.ttf");
+                src: url("./fonts/ArcadeClassic.ttf");
               }
 
               @font-face {
@@ -72,7 +72,7 @@ export default function Document() {
               @font-face {
                 font-family: "DS Digital";
                 font-weight: 400;
-                src: url("./fonts/DS-DIGI.ttf");
+                src: url("./fonts/DSDigi.ttf");
               }
               
               @font-face {
