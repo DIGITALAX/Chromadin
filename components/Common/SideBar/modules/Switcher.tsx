@@ -13,6 +13,7 @@ const Switcher: FunctionComponent = (): JSX.Element => {
         autoPlay
         loop
         playsInline
+        preload="auto"
         className="absolute w-full h-full object-cover"
       >
         <source src={"/videos/glitch.mp4"} type="video/mp4" />
