@@ -20,7 +20,7 @@ const Vending: FunctionComponent<VendingProps> = ({
     <div className="relative w-full h-[28.6rem] grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4 gap-3 p-4 overflow-y-scroll">
       {error ? (
         <div className="relative w-full h-full flex flex-col items-center justify-center font-earl text-moda text-center">
-          Unfortunately the subgraph isn't responding right now :/, tune in
+          Unfortunately the subgraph isn&apos;t responding right now :/, tune in
           again soon to browse collections
         </div>
       ) : collectionsLoading ? (
