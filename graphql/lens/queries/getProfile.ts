@@ -1,4 +1,4 @@
-import { apolloClient } from "@/lib/lens/client";
+import { authClient } from "@/lib/lens/client";
 import { ApolloQueryResult, gql } from "@apollo/client";
 
 const PROFILE = `
@@ -87,7 +87,7 @@ query Profile($request: SingleProfileQueryRequest!) {
 `;
 
 const getOneProfile = async (request: any): Promise<ApolloQueryResult<any>> => {
-  return apolloClient.query({
+  return authClient.query({
     query: gql(PROFILE),
     variables: {
       request,

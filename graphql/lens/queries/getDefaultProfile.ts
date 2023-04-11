@@ -1,4 +1,4 @@
-import { apolloClient, authClient } from "@/lib/lens/client";
+import { authClient } from "@/lib/lens/client";
 import { ApolloQueryResult, gql } from "@apollo/client";
 
 const GET_DEFAULT_PROFILES = `
