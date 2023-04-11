@@ -8,7 +8,6 @@ const availableCurrencies = async (
 ): Promise<void> => {
   try {
     const response = await getEnabledCurrencies();
-    console.log({response})
     if (response && response.data) {
       setEnabledCurrencies(response.data.enabledModuleCurrencies);
       setEnabledCurrency(

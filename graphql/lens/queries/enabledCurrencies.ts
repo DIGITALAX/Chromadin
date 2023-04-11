@@ -13,10 +13,15 @@ query EnabledModuleCurrencies {
 `;
 
 const getEnabledCurrencies = () => {
-  return apolloClient.query({
-    query: gql(ENABLED_MODULE_CURRENCIES),
-    fetchPolicy: "no-cache",
-  });
+  try {
+    return apolloClient.query({
+      query: gql(ENABLED_MODULE_CURRENCIES),
+      fetchPolicy: "no-cache",
+    });
+  }catch (err: any) {
+    console.error(err.message)
+  }
+ 
 };
 
 export default getEnabledCurrencies;

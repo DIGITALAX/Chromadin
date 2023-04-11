@@ -31,6 +31,10 @@ const Vending: FunctionComponent<VendingProps> = ({
         (collections?.length > 0 || dispatchCollections?.length > 0) &&
         (collections?.length > 0 ? collections : dispatchCollections)?.map(
           (collection: Collection, index: number) => {
+            const profilePicture = createProfilePicture(
+              collection.profile,
+              false
+            );
             return (
               <div
                 className="relative h-72 w-full flex flex-col p-2 gap-2"
@@ -83,13 +87,15 @@ const Vending: FunctionComponent<VendingProps> = ({
                 </div>
                 <div className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3">
                   <div className="relative w-6 h-6 cursor-pointer border border-ama rounded-full">
-                    <Image
-                      src={`${createProfilePicture(collection.profile, false)}`}
-                      layout="fill"
-                      alt="pfp"
-                      className="rounded-full w-full h-full flex"
-                      draggable={false}
-                    />
+                    {(profilePicture && profilePicture !== "") && (
+                      <Image
+                        src={profilePicture}
+                        layout="fill"
+                        alt="pfp"
+                        className="rounded-full w-full h-full flex"
+                        draggable={false}
+                      />
+                    )}
                   </div>
                   <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
                     @{collection.profile?.handle}

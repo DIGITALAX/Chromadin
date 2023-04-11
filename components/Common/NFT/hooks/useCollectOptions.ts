@@ -36,7 +36,11 @@ const useCollectOptions = () => {
 
   useMemo(() => {
     if (collectOpen) {
-      availableCurrencies(setEnabledCurrencies, setEnabledCurrency);
+      try {
+        availableCurrencies(setEnabledCurrencies, setEnabledCurrency);
+      } catch (err) {
+        console.error(err);
+      }
     }
   }, [collectOpen]);
 

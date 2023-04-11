@@ -20,6 +20,8 @@ export type CommentsProps = {
   dispatch: Dispatch<AnyAction>;
   hasMirrored: boolean[];
   hasReacted: boolean[];
+  authStatus: boolean;
+  lensProfile: Profile | undefined;
 };
 
 export type AccountProps = {

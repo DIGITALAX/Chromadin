@@ -40,6 +40,12 @@ const Interactions: FunctionComponent<InteractionProps> = ({
   const mainVideo = useSelector(
     (state: RootState) => state.app.mainVideoReducer
   );
+  const lensProfile = useSelector(
+    (state: RootState) => state.app.lensProfileReducer.profile?.id
+  );
+  const authStatus = useSelector(
+    (state: RootState) => state.app.authStatusReducer.value
+  );
   const dispatch = useDispatch();
   return (
     <div className="relative w-full lg:w-80 lg:shrink-0 xl:h-full flex-col border border-white h-100 lg:h-128 xl:min-h-[55rem] flex overflow-y-scroll">
@@ -74,6 +80,8 @@ const Interactions: FunctionComponent<InteractionProps> = ({
             dispatch={dispatch}
             hasMirrored={hasMirrored}
             hasReacted={hasReacted}
+            lensProfile={lensProfile}
+            authStatus={authStatus}
           />
         ) : (
           <Options />

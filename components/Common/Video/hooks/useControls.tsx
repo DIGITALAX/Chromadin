@@ -120,13 +120,17 @@ const useControls = (): UseControlsResults => {
   };
 
   const handlePause = () => {
-    streamRef.current!.pause();
-    setIsPlaying(false);
+    if (streamRef.current && !streamRef.current.paused) {
+      streamRef.current.pause();
+      setIsPlaying(false);
+    }
   };
 
   const handlePlay = () => {
-    streamRef.current!.play();
-    setIsPlaying(true);
+    if (streamRef.current && streamRef.current.readyState >= 2) {
+      streamRef.current.play();
+      setIsPlaying(true);
+    }
   };
 
   const handleVolumeChange = (e: FormEvent) => {
@@ -146,14 +150,23 @@ const useControls = (): UseControlsResults => {
   useEffect(() => {
     if (!streamRef.current) return;
 
+    const handleLoadedMetadata = () => {
+      if (streamRef.current) {
+        setDuration(Math.floor(streamRef.current.duration));
+      }
+    };
+
     const handleTimeUpdate = () => {
-      setCurrentTime(Math.floor(streamRef!.current!.currentTime));
+      if (streamRef.current) {
+        setCurrentTime(Math.floor(streamRef.current?.currentTime));
+      }
     };
 
     const handleDurationChange = () => {
       setDuration(Math.floor(streamRef!.current!.duration));
     };
 
+    streamRef.current.addEventListener("loadedmetadata", handleLoadedMetadata);
     streamRef!.current!.addEventListener("timeupdate", handleTimeUpdate);
     streamRef!.current!.addEventListener(
       "canplaythrough",
@@ -165,10 +178,14 @@ const useControls = (): UseControlsResults => {
     }
 
     return () => {
-      if (streamRef?.current) {
-        streamRef!.current!.removeEventListener("timeupdate", handleTimeUpdate);
-        streamRef!.current!.removeEventListener(
-          "canplaythrough",
+      if (streamRef.current) {
+        streamRef.current.removeEventListener(
+          "loadedmetadata",
+          handleLoadedMetadata
+        );
+        streamRef.current.removeEventListener("timeupdate", handleTimeUpdate);
+        streamRef.current.removeEventListener(
+          "durationchange",
           handleDurationChange
         );
       }

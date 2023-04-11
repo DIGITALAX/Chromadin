@@ -50,7 +50,6 @@ const useInteractions = () => {
           commentsRankingFilter: "RELEVANT",
         });
       }
-      console.log({commentors})
       if (!comments || !comments.data || !comments.data.publications || comments.data.publications.items.length < 1) {
         return;
       }

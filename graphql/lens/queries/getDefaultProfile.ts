@@ -1,4 +1,4 @@
-import { apolloClient } from "@/lib/lens/client";
+import { apolloClient, authClient } from "@/lib/lens/client";
 import { ApolloQueryResult, gql } from "@apollo/client";
 
 const GET_DEFAULT_PROFILES = `
@@ -89,7 +89,7 @@ const GET_DEFAULT_PROFILES = `
 const getDefaultProfile = async (
   address?: string
 ): Promise<ApolloQueryResult<any>> => {
-  return apolloClient.query({
+  return authClient.query({
     query: gql(GET_DEFAULT_PROFILES),
     variables: {
       request: {

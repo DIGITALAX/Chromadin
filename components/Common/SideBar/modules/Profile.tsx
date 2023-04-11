@@ -21,7 +21,15 @@ const Profile: FunctionComponent<ProfileProps> = ({ profile }): JSX.Element => {
       }}
     >
       <div className="relative w-6 h-6 rounded-full">
-        <Image src={picture} fill alt="pfp" className="rounded-full flex"  draggable={false} />
+        {picture !== "" && (
+          <Image
+            src={picture}
+            fill
+            alt="pfp"
+            className="rounded-full flex"
+            draggable={false}
+          />
+        )}
       </div>
       <div className="relative w-fit h-fit text-sm font-geom text-pesa">
         @{profile?.handle || ""}

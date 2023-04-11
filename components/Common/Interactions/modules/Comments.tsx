@@ -27,6 +27,8 @@ const Comments: FunctionComponent<CommentsProps> = ({
   dispatch,
   hasMirrored,
   hasReacted,
+  lensProfile,
+  authStatus,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col bg-verde">
@@ -168,7 +170,9 @@ const Comments: FunctionComponent<CommentsProps> = ({
                       </div>
                       <div className="relative flex flex-col w-full h-full gap-2 items-end justify-center">
                         <div
-                          className="relative w-fit h-fit cursor-pointer grid grid-flow-col auto-cols-auto items-center justify-center flex-row gap-2"
+                          className={`relative w-fit h-fit  grid grid-flow-col auto-cols-auto items-center justify-center flex-row gap-2 ${
+                            lensProfile && authStatus && "cursor-pointer"
+                          }`}
                           onClick={() => likeComment(comment?.id)}
                         >
                           {likeCommentLoading[index] ? (
@@ -204,7 +208,10 @@ const Comments: FunctionComponent<CommentsProps> = ({
                         <div
                           className={`relative w-fit h-fit grid grid-flow-col auto-cols-auto items-center justify-center flex-row gap-2 ${
                             comment?.collectModule?.type !==
-                              "RevertCollectModule" && "cursor-pointer"
+                              "RevertCollectModule" &&
+                            authStatus &&
+                            lensProfile &&
+                            "cursor-pointer"
                           }`}
                           onClick={
                             comment?.collectModule?.type ===
@@ -265,7 +272,9 @@ const Comments: FunctionComponent<CommentsProps> = ({
                           </div>
                         </div>
                         <div
-                          className={`relative w-fit h-fit cursor-pointer grid grid-flow-col auto-cols-auto items-center justify-center flex-row gap-2`}
+                          className={`relative w-fit h-fit grid grid-flow-col auto-cols-auto items-center justify-center flex-row gap-2 ${
+                            lensProfile && authStatus && "cursor-pointer"
+                          }`}
                           onClick={() => mirrorComment(comment?.id)}
                         >
                           {mirrorCommentLoading[index] ? (
