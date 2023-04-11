@@ -127,7 +127,7 @@ const useControls = (): UseControlsResults => {
   };
 
   const handlePlay = () => {
-    if (streamRef.current && streamRef.current.readyState >= 2) {
+    if (streamRef.current) {
       streamRef.current.play();
       setIsPlaying(true);
     }
