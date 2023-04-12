@@ -23,7 +23,7 @@ const IRLOptions: FunctionComponent<IRLOptionsProps> = ({
       return (
         <div className="relative w-full h-full flex flex-col font-earl gap-3">
           <div className="relative w-full h-full flex flex-row items-center justify-center gap-1">
-            {Array.from(["10", "50", "100", "500"]).map(
+            {Array.from(["1", "10", "25"]).map(
               (item: any, index: number) => {
                 return (
                   <div

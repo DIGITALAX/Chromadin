@@ -29,31 +29,33 @@ export type AccountProps = {
 };
 
 export type IRLOptionsProps = {
-  baseColor: number | undefined;
-  selectSize: number | undefined;
-  setBaseColor: (e: number | undefined) => void;
-  setSelectSize: (e: number | undefined) => void;
-  posterSize: number | undefined;
-  stickerPack: number | undefined;
-  setPosterSize: (e: number | undefined) => void;
-  setStickerPack: (e: number | undefined) => void;
-  posterAmount: number | undefined;
-  setPosterAmount: (e: number | undefined) => void;
+  baseColor: number;
+  selectSize: number;
+  setBaseColor: (e: number) => void;
+  setSelectSize: (e: number) => void;
+  posterSize: number;
+  stickerPack: number;
+  setPosterSize: (e: number) => void;
+  setStickerPack: (e: number) => void;
+  posterAmount: number;
+  setPosterAmount: (e: number) => void;
 };
 
 export type FulfillmentProps = {
-  baseColor: number | undefined;
-  selectSize: number | undefined;
-  setBaseColor: (e: number | undefined) => void;
-  setSelectSize: (e: number | undefined) => void;
-  posterSize: number | undefined;
-  stickerPack: number | undefined;
-  setPosterSize: (e: number | undefined) => void;
-  setStickerPack: (e: number | undefined) => void;
-  currency: number | undefined;
-  setCurrency: (e: number | undefined) => void;
-  posterAmount: number | undefined;
-  setPosterAmount: (e: number | undefined) => void;
+  baseColor: number;
+  selectSize: number;
+  setBaseColor: (e: number) => void;
+  setSelectSize: (e: number) => void;
+  posterSize: number;
+  stickerPack: number;
+  setPosterSize: (e: number) => void;
+  setStickerPack: (e: number) => void;
+  currency: string;
+  setCurrency: (e: string) => void;
+  posterAmount: number;
+  setPosterAmount: (e: number) => void;
+  totalAmount: number;
+  acceptedtokens: string[]
 };
 
 export type CollectorsProps = {

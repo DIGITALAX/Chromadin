@@ -61,6 +61,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                           name: collection.profile?.handle,
                         },
                         price: collection.prices,
+                        acceptedTokens: collection.acceptedTokens,
                       })
                     )
                   }

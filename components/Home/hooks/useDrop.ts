@@ -92,9 +92,10 @@ const useDrop = () => {
             name: collections[0].profile?.handle,
           },
           price: collections[0].prices,
+          acceptedTokens: collections[0].acceptedTokens,
         })
       );
-      dispatch(setCollectionsRedux(collections))
+      dispatch(setCollectionsRedux(collections));
       setCollections(collections);
     } catch (err: any) {
       setError(true);

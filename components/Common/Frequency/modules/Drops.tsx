@@ -33,6 +33,7 @@ const Drops: FunctionComponent<DropsProps> = ({
                       name: collection.profile?.handle,
                     },
                     price: collection.prices,
+                    acceptedTokens: collection.acceptedTokens,
                   })
                 )
               }

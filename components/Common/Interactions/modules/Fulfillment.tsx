@@ -19,6 +19,8 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
   setStickerPack,
   posterAmount,
   setPosterAmount,
+  totalAmount,
+  acceptedtokens
 }): JSX.Element => {
   const dispatch = useDispatch();
   return (
@@ -107,35 +109,53 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
           />
         </div>
       </div>
-      <div className="relative w-full h-fit flex flex-row items-center gap-3 pt-4">
-        <div className="relative w-full h-fit flex flex-row items-center justify-center gap-2">
+      <div className="relative w-full h-fit flex flex-row items-center gap-3 pt-4 justify-center px-3">
+        <div className="relative w-fit h-fit flex flex-row items-center justify-center gap-2">
           {Array.from([
-            "QmYYUQ8nGDnyuk8jQSung1WmTksvLEQBXjnCctdRrKtsNk",
-            "QmZRhUgjK6bJM8fC7uV145yf66q2e7vGeT7CLosw1SdMdN",
-            "QmSbpsDRwxSCPBWPkwWvcb49jViSxzmNHjYy3AcGF3qM2x",
-            "QmS6f8vrNZok9j4pJttUuWpNrjsf4vP9RD5mRL36z6UdaL",
-          ]).map((item: string, index: number) => {
-            return (
-              <div
-                className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
-                  currency === index ? "opacity-50" : "opacity-100"
-                }`}
-                key={index}
-                onClick={() => setCurrency(index)}
-              >
-                <Image
-                  src={`${INFURA_GATEWAY}/ipfs/${item}`}
-                  className="flex"
-                  draggable={false}
-                  width={30}
-                  height={35}
-                />
-              </div>
-            );
-          })}
+            [
+              "QmYYUQ8nGDnyuk8jQSung1WmTksvLEQBXjnCctdRrKtsNk",
+              "MATIC",
+              "0x0000000000000000000000000000000000001010",
+            ],
+            [
+              "QmZRhUgjK6bJM8fC7uV145yf66q2e7vGeT7CLosw1SdMdN",
+              "WETH",
+              "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+            ],
+            [
+              "QmSbpsDRwxSCPBWPkwWvcb49jViSxzmNHjYy3AcGF3qM2x",
+              "USDT",
+              "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+            ],
+            [
+              "QmS6f8vrNZok9j4pJttUuWpNrjsf4vP9RD5mRL36z6UdaL",
+              "MONA",
+              "0x6968105460f67c3bf751be7c15f92f5286fd0ce5",
+            ],
+          ])
+            .filter((item) => acceptedtokens.includes(item[2]))
+            .map((item: string[], index: number) => {
+              return (
+                <div
+                  className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
+                    currency === item[1] ? "opacity-50" : "opacity-100"
+                  }`}
+                  key={index}
+                  onClick={() => setCurrency(item[1])}
+                >
+                  <Image
+                    src={`${INFURA_GATEWAY}/ipfs/${item[0]}`}
+                    className="flex"
+                    draggable={false}
+                    width={30}
+                    height={35}
+                  />
+                </div>
+              );
+            })}
         </div>
-        <div className="relative w-1/2 h-fit font-digi text-white text-xs items-center justify-center flex">
-          Total: $
+        <div className="relative w-1/2 h-fit font-digi text-white text-xs items-center justify-center flex whitespace-nowrap">
+          Total: {totalAmount} {currency}
         </div>
       </div>
       <div className="relative w-full h-fit font-earl items-center justify-center flex text-sm xl:pb-0 pb-8 pt-4">

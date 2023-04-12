@@ -94,6 +94,7 @@ export interface MainNFT {
     name: string;
   };
   price: string[];
+  acceptedTokens: string[];
 }
 
 export type DescriptionProps = {

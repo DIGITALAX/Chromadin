@@ -13,6 +13,9 @@ const Switch: FunctionComponent = (): JSX.Element => {
   const profile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
+  const acceptedtokens = useSelector(
+    (state: RootState) => state.app.mainNFTReducer.value?.acceptedTokens
+  );
   const {
     currency,
     setCurrency,
@@ -25,7 +28,8 @@ const Switch: FunctionComponent = (): JSX.Element => {
     setPosterSize,
     setStickerPack,
     setPosterAmount,
-    posterAmount
+    posterAmount,
+    totalAmount,
   } = useFulfillment();
   switch (action) {
     case "account":
@@ -46,6 +50,8 @@ const Switch: FunctionComponent = (): JSX.Element => {
           setStickerPack={setStickerPack}
           posterAmount={posterAmount}
           setPosterAmount={setPosterAmount}
+          totalAmount={totalAmount}
+          acceptedtokens={acceptedtokens!}
         />
       );
 

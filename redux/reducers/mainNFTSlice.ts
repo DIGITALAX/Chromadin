@@ -28,7 +28,8 @@ export const mainNFTSlice = createSlice({
           media: string;
           name: string;
         };
-        price: string[]
+        price: string[];
+        acceptedTokens: string[];
       }>
     ) => {
       state.value = action.payload;
