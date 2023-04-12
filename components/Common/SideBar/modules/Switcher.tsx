@@ -56,7 +56,7 @@ const Switcher: FunctionComponent = (): JSX.Element => {
                   }
                 >
                   <div
-                    className={`relative w-8 lg:w-12 h-8 lg:h-12 grid grid-flow-col auto-cols-auto row-start-1 justify-self-center items-center flex ${
+                    className={`relative w-8 lg:w-12 h-8 lg:h-12 grid grid-flow-col auto-cols-auto justify-self-center items-center  ${
                       values[1] !== "sample" &&
                       values[1] !== "wavs" &&
                       "cursor-pointer active:scale-95"

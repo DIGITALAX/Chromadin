@@ -301,7 +301,7 @@ const useComment = () => {
       })
     );
 
-    (resultElement as any).innerHTML = newHTMLPost;
+    if (newHTMLPost) (resultElement as any).innerHTML = newHTMLPost;
     setCommentHTML(newHTMLPost);
   };
 

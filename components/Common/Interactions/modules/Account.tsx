@@ -8,6 +8,13 @@ const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
   const formattedURL = createProfilePicture(profile);
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center bg-black border-t border-white">
+      <div className="absolute w-full h-full">
+        <Image
+          src={`${INFURA_GATEWAY}/ipfs/QmUFwK9nUrUnAoVm3fhbw2XqtUAdzz2js8ju7LjdGXVQe5`}
+          layout="fill"
+          objectFit="cover"
+        />
+      </div>
       {profile ? (
         <div className="relative w-full h-full flex flex-col p-2 gap-2">
           <div className="relative w-full h-fit items-center justify-center py-3 flex">
@@ -29,23 +36,23 @@ const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
           <div className="relative w-full h-fit flex flex-row gap-2">
             <input
               disabled
-              className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-lg border border-white px-2 text-sm"
+              className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-br-lg rounded-tl-lg border border-white/30 px-2 text-sm"
               value={`@${profile.handle}`}
             />
             <input
               disabled
-              className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-lg border border-white px-2 text-sm"
+              className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-br-lg rounded-tl-lg border border-white/30 px-2 text-sm"
               value={`${profile.id}`}
             />
           </div>
           <input
             disabled
-            className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-lg border border-white px-2 text-sm"
+            className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-br-lg rounded-tl-lg border border-white/30 px-2 text-sm"
             value={`${profile.name}`}
           />
           <textarea
             disabled
-            className="relative bg-offBlack font-arcade text-white/50 w-full h-14 rounded-lg border border-white px-2 py-1 text-sm"
+            className="relative bg-offBlack font-arcade text-white/50 w-full h-14 rounded-br-lg rounded-tl-lg border border-white/30 px-2 py-1 text-sm"
             style={{
               resize: "none",
             }}
