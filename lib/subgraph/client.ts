@@ -6,7 +6,7 @@ import {
 } from "@apollo/client";
 
 const httpLink = new HttpLink({
-  uri: "https://api.studio.thegraph.com/query/37770/chromadin/v0.2",
+  uri: "https://api.thegraph.com/subgraphs/name/digitalax/chromadin",
 });
 
 const authLink = new ApolloLink((operation, forward) => {
