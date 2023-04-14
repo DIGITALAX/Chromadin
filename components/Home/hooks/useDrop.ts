@@ -34,9 +34,16 @@ const useDrop = () => {
         setCollectionsLoading(false);
         return;
       }
+      if (
+        data?.data?.collectionMinteds?.length < 1 ||
+        !data?.data?.collectionMinteds
+      ) {
+        setCollectionsLoading(false);
+        return;
+      }
       const drops = await handleAllDrops();
       const collections = await Promise.all(
-        data.data.collectionMinteds.map(async (collection: Collection) => {
+        data?.data?.collectionMinteds.map(async (collection: Collection) => {
           const json = await fetchIPFSJSON(
             (collection.uri as any)
               ?.split("ipfs://")[1]
@@ -60,8 +67,8 @@ const useDrop = () => {
             uri: json,
             profile: defaultProfile?.data?.defaultProfile,
             drop: {
-              name: dropjson.name,
-              image: dropjson.image,
+              name: dropjson?.name,
+              image: dropjson?.image,
             },
           };
         })
