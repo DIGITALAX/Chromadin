@@ -29,7 +29,7 @@ const Vending: FunctionComponent<VendingProps> = ({
           Unfortunately the subgraph isn&apos;t responding right now :/, tune in
           again soon to browse collections
         </div>
-      ) : !collectionsLoading ? (
+      ) : collectionsLoading ? (
         <div className="relative w-full h-full flex flex-col items-center justify-center">
           <FetchMoreLoading size="6" />
         </div>
