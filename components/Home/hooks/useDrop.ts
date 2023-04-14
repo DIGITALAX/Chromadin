@@ -34,6 +34,7 @@ const useDrop = () => {
         setCollectionsLoading(false);
         return;
       }
+      
       if (
         data?.data?.collectionMinteds?.length < 1 ||
         !data?.data?.collectionMinteds
@@ -42,6 +43,7 @@ const useDrop = () => {
         return;
       }
       const drops = await handleAllDrops();
+      console.log({drops})
       const collections = await Promise.all(
         data?.data?.collectionMinteds.map(async (collection: Collection) => {
           const json = await fetchIPFSJSON(

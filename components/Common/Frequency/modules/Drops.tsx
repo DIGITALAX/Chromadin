@@ -45,6 +45,7 @@ const Drops: FunctionComponent<DropsProps> = ({
                   }`}
                   layout="fill"
                   objectFit="cover"
+                  objectPosition="top"
                   className="w-full h-full"
                   draggable={false}
                 />
@@ -52,7 +53,9 @@ const Drops: FunctionComponent<DropsProps> = ({
               <div className="relative w-full h-fit flex flex-row items-center gap-2">
                 <div className="rounded-full bg-verde h-2 w-2"></div>
                 <div className="relative w-fit h-fit font-geom text-xs text-verde whitespace-nowrap">
-                  {collection?.drop?.name}
+                  {collection?.drop?.name?.length > 20
+                    ? collection?.drop?.name.slice(0, 20) + "..."
+                    : collection?.drop?.name}
                 </div>
                 <div className="relative w-fit h-fit font-geom text-xs text-white whitespace-nowrap">
                   {" "}

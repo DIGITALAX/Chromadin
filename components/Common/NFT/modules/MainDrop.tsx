@@ -16,6 +16,7 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
             objectFit="cover"
             layout="fill"
             draggable={false}
+            objectPosition="top"
           />
         )}
       </div>
