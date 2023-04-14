@@ -5,8 +5,6 @@ import { useDispatch } from "react-redux";
 
 const Claim: FunctionComponent = (): JSX.Element => {
   const dispatch = useDispatch();
-
-  ("worn clean to the canvas, unsensorable ink makes a statement. Sometimes, the most powerful statements are made without saying a word. ");
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
       <div className="relative w-full md:w-[40vw] h-fit col-start-1 place-self-center bg-offBlack rounded-lg">
