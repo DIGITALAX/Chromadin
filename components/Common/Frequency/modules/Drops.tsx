@@ -53,15 +53,15 @@ const Drops: FunctionComponent<DropsProps> = ({
               <div className="relative w-full h-fit flex flex-row items-center gap-2">
                 <div className="rounded-full bg-verde h-2 w-2"></div>
                 <div className="relative w-fit h-fit font-geom text-xs text-verde whitespace-nowrap">
-                  {collection?.drop?.name?.length > 20
-                    ? collection?.drop?.name.slice(0, 20) + "..."
+                  {collection?.drop?.name?.length > 15
+                    ? collection?.drop?.name.slice(0, 15) + "..."
                     : collection?.drop?.name}
                 </div>
                 <div className="relative w-fit h-fit font-geom text-xs text-white whitespace-nowrap">
                   {" "}
                   —{" "}
-                  {collection?.name?.length > 20
-                    ? collection?.name.slice(0, 20) + "..."
+                  {collection?.name?.length > 7
+                    ? collection?.name.slice(0, 7) + "..."
                     : collection?.name}
                 </div>
               </div>
