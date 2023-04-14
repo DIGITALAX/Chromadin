@@ -4,6 +4,7 @@ import {
   HttpLink,
   ApolloLink,
 } from "@apollo/client";
+import createProxyMiddleware from "http-proxy-middleware";
 
 const httpLink = new HttpLink({
   uri: "https://api.thegraph.com/subgraphs/name/digitalax/chromadin",
@@ -15,6 +16,10 @@ const authLink = new ApolloLink((operation, forward) => {
   operation.setContext({
     headers: {
       authorization: `Bearer ${apiKey}`,
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers":
+        "X-Requested-With, content-type, Authorization",
     },
   });
 

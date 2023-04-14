@@ -6,6 +6,7 @@ const allowedOrigins = [
   "https://chromadin.infura-ipfs.io",
   "https://tenor.googleapis.com",
   "https://api.studio.thegraph.com",
+  "https://api.thegraph.com",
   "https://youtube.com",
 ];
 
