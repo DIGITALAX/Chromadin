@@ -8,6 +8,7 @@ import { useAccount } from "wagmi";
 import useConnect from "../../SideBar/hooks/useConnect";
 import FollowerOnly from "./FollowerOnly";
 import useFollowers from "../../Interactions/hooks/useFollowers";
+import Claim from "./Claim";
 
 const Modals = () => {
   const indexingModal = useSelector(
@@ -27,6 +28,9 @@ const Modals = () => {
   );
   const followersModal = useSelector(
     (state: RootState) => state.app.followerOnlyReducer
+  );
+  const claimModal = useSelector(
+    (state: RootState) => state.app.noHandleReducer
   );
   const {
     profile,
@@ -70,6 +74,9 @@ const Modals = () => {
         />
       )}
       {collectModal?.open && <Collect message={collectModal?.message} />}
+      {
+        claimModal?.value && <Claim />
+      }
       {indexingModal?.value && (
         <IndexingModal message={indexingModal?.message} />
       )}

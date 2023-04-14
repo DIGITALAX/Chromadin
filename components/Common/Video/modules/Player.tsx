@@ -70,7 +70,7 @@ const Player: FunctionComponent<PlayerProps> = ({
                       : currentIndex === 0
                       ? videos.length - 1
                       : currentIndex + 1
-                  ].metadata.media[0].original.url.split("ipfs://")[1]
+                  ]?.metadata?.media[0].original.url.split("ipfs://")[1]
                 }`,
                 actionCollected:
                   videos[
@@ -79,7 +79,7 @@ const Player: FunctionComponent<PlayerProps> = ({
                       : currentIndex === 0
                       ? videos.length - 1
                       : currentIndex + 1
-                  ].hasCollectedByMe,
+                  ]?.hasCollectedByMe,
                 actionLiked:
                   likedArray[
                     currentIndex === videos.length - 1

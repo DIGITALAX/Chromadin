@@ -50,7 +50,13 @@ const useInteractions = () => {
           commentsRankingFilter: "RELEVANT",
         });
       }
-      if (!comments || !comments.data || !comments.data.publications || comments.data.publications.items.length < 1) {
+      if (
+        !comments ||
+        !comments.data ||
+        !comments.data.publications ||
+        comments.data.publications.items.length < 1
+      ) {
+        setCommentsLoading(false);
         return;
       }
       const arr: any[] = [...comments?.data?.publications?.items];
@@ -109,7 +115,13 @@ const useInteractions = () => {
           commentsRankingFilter: "RELEVANT",
         });
       }
-      if (!comments || !comments.data || !comments.data.publications || comments.data.publications.items.length < 1) {
+      if (
+        !comments ||
+        !comments.data ||
+        !comments.data.publications ||
+        comments.data.publications.items.length < 1
+      ) {
+        setCommentsLoading(false);
         return;
       }
       const arr: any[] = [...comments.data.publications.items];

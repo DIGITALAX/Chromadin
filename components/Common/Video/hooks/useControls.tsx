@@ -12,7 +12,7 @@ import {
   useSendTransaction,
   useSignTypedData,
 } from "wagmi";
-import { LENS_HUB_PROXY_ADDRESS_MUMBAI } from "@/lib/constants";
+import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
 import LensHubProxy from "../../../../abis/LensHubProxy.json";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 import { splitSignature } from "ethers/lib/utils.js";
@@ -85,7 +85,7 @@ const useControls = (): UseControlsResults => {
   const purchase = useSelector((state: RootState) => state.app.purchaseReducer);
 
   const { config, isSuccess } = usePrepareContractWrite({
-    address: LENS_HUB_PROXY_ADDRESS_MUMBAI,
+    address: LENS_HUB_PROXY_ADDRESS_MATIC,
     abi: LensHubProxy,
     functionName: "mirrorWithSig",
     enabled: Boolean(mirrorArgs),
@@ -96,7 +96,7 @@ const useControls = (): UseControlsResults => {
 
   const { config: collectConfig, isSuccess: isSuccessCollect } =
     usePrepareContractWrite({
-      address: LENS_HUB_PROXY_ADDRESS_MUMBAI,
+      address: LENS_HUB_PROXY_ADDRESS_MATIC,
       abi: LensHubProxy,
       functionName: "collectWithSig",
       enabled: Boolean(collectArgs),

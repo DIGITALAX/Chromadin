@@ -18,6 +18,7 @@ import purchaseReducer from "./reducers/purchaseSlice";
 import approvalArgsReducer from "./reducers/approvalArgsSlice";
 import postCollectReducer from "./reducers/postCollectSlice";
 import followerOnlyReducer from "./reducers/followerOnlySlice";
+import noHandleReducer from "./reducers/noHandleSlice";
 
 const reducer = combineReducers({
   authStatusReducer,
@@ -38,6 +39,7 @@ const reducer = combineReducers({
   approvalArgsReducer,
   postCollectReducer,
   followerOnlyReducer,
+  noHandleReducer,
 });
 
 export const store = configureStore({

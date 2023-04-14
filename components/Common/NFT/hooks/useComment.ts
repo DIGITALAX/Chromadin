@@ -1,4 +1,4 @@
-import { LENS_HUB_PROXY_ADDRESS_MUMBAI } from "@/lib/constants";
+import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -69,7 +69,7 @@ const useComment = () => {
 
   const { config: commentConfig, isSuccess: commentSuccess } =
     usePrepareContractWrite({
-      address: LENS_HUB_PROXY_ADDRESS_MUMBAI,
+      address: LENS_HUB_PROXY_ADDRESS_MATIC,
       abi: LensHubProxy,
       functionName: "commentWithSig",
       enabled: Boolean(commentArgs),

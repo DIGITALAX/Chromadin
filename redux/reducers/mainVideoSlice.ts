@@ -11,9 +11,9 @@ export interface MainVideoState {
 }
 
 const initialMainVideoState: MainVideoState = {
-  id: "0x6346-0x01",
+  id: "0x01c6a9-0x01",
   video:
-    "https://chromadin.infura-ipfs.io/ipfs/bafybeibkmaos345vy3vj2hrb2rq3qb34g6ciczvw3rb73uhy5nfluswnja",
+    "https://chromadin.infura-ipfs.io/ipfs/bafybeibausatpbuybjz6jzjdv4cm2ih336cwcy4tbhg4tvzynj3qq5bjnu",
   collected: false,
   liked: false,
   mirrored: false,

@@ -26,18 +26,19 @@ const useChannels = (): UseChannelsResults => {
   const [liked, setLiked] = useState<boolean[]>([]);
   const [mirrored, setMirrored] = useState<boolean[]>([]);
   const [tab, setTab] = useState<number>(0);
+
   const getVideos = async (): Promise<void> => {
     try {
       let data: ApolloQueryResult<any>, hasReactedArr, hasMirroredArr;
       if (authStatus && lensProfile) {
         data = await profilePublicationsAuth({
-          profileId: "0x6346",
+          profileId: "0x01c6a9",
           publicationTypes: ["POST"],
           limit: 30,
         });
       } else {
         data = await profilePublications({
-          profileId: "0x6346",
+          profileId: "0x01c6a9",
           publicationTypes: ["POST"],
           limit: 30,
         });
@@ -46,11 +47,11 @@ const useChannels = (): UseChannelsResults => {
       const sortedArr: any[] = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
-      setVideos(sortedArr);
+      setVideos(sortedArr.reverse());
       if (authStatus && lensProfile) {
         hasReactedArr = await checkPostReactions(
           {
-            profileId: "0x6346",
+            profileId: "0x01c6a9",
             publicationTypes: ["POST"],
             limit: 30,
           },
@@ -63,13 +64,15 @@ const useChannels = (): UseChannelsResults => {
       dispatch(
         setMainVideo({
           actionVideo: `${INFURA_GATEWAY}/ipfs/${
-            sortedArr[0].metadata.media[0].original.url.split("ipfs://")[1]
+            sortedArr[
+              sortedArr.length - 1
+            ]?.metadata?.media[0]?.original?.url?.split("ipfs://")[1]
           }`,
-          actionCollected: sortedArr[0].hasCollectedByMe,
-          actionLiked: hasReactedArr?.hasReactedArr?.[0],
-          actionMirrored: hasMirroredArr?.[0],
-          actionId: sortedArr[0].id,
-          actionLocal: `${json[0].link}`,
+          actionCollected: sortedArr[-1]?.hasCollectedByMe,
+          actionLiked: hasReactedArr?.hasReactedArr?.[sortedArr.length - 1],
+          actionMirrored: hasMirroredArr?.[sortedArr.length - 1],
+          actionId: sortedArr[sortedArr.length - 1].id,
+          actionLocal: `${json[sortedArr.length - 1].link}`,
         })
       );
     } catch (err: any) {

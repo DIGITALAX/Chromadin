@@ -15,6 +15,7 @@ import authenticate from "@/graphql/lens/mutations/authenticate";
 import { useEffect, useState } from "react";
 import generateChallenge from "@/graphql/lens/queries/generateChallenge";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
+import { setNoHandle } from "@/redux/reducers/noHandleSlice";
 
 const useConnect = (): UseConnectResults => {
   const { openConnectModal } = useConnectModal();
@@ -45,9 +46,11 @@ const useConnect = (): UseConnectResults => {
       if (accessTokens) {
         setAuthenticationToken({ token: accessTokens.data.authenticate });
         const profile = await getDefaultProfile(address);
-        if (profile?.data) {
+        if (profile?.data?.defaultProfile) {
           dispatch(setLensProfile(profile?.data?.defaultProfile));
           dispatch(setAuthStatus(true));
+        } else {
+          dispatch(setNoHandle(true));
         }
       }
     } catch (err: any) {

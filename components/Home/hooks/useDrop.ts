@@ -114,11 +114,11 @@ const useDrop = () => {
     }
   };
 
-  useEffect(() => {
-    if (!collectionsDispatched || collectionsDispatched.length < 1) {
-      handleAllCollections();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!collectionsDispatched || collectionsDispatched.length < 1) {
+  //     handleAllCollections();
+  //   }
+  // }, []);
 
   return { collections, collectionsLoading, error };
 };

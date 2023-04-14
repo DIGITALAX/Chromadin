@@ -22,7 +22,7 @@ import {
   useSignTypedData,
 } from "wagmi";
 import { FollowArgs } from "../types/interactions.types";
-import { LENS_HUB_PROXY_ADDRESS_MUMBAI } from "@/lib/constants";
+import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
 import LensHubProxy from "./../../../../abis/LensHubProxy.json";
 import createFollowModule from "@/lib/helpers/createFollowModule";
 import { setLensProfile } from "@/redux/reducers/lensProfileSlice";
@@ -50,7 +50,7 @@ const useFollowers = () => {
   const { signTypedDataAsync } = useSignTypedData();
 
   const { config, isSuccess } = usePrepareContractWrite({
-    address: LENS_HUB_PROXY_ADDRESS_MUMBAI,
+    address: LENS_HUB_PROXY_ADDRESS_MATIC,
     abi: LensHubProxy,
     functionName: "followWithSig",
     enabled: Boolean(followArgs),

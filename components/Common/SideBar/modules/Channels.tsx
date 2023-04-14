@@ -14,7 +14,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 lg:h-128 flex flex-col overflow-y-scroll border border-white/80">
-      {videos.map((content: Publication, index: number) => {
+      {videos?.map((content: Publication, index: number) => {
         return (
           <div
             className="relative w-full min-w-full h-fit lg:h-32 flex flex-col galaxy:flex-row hover:opacity-80 cursor-pointer border-b border-white"
@@ -70,10 +70,10 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                       className="relative w-full h-fit text-lg lg:text-sm font-arcade flex justify-start lg:justify-center"
                       id={`record${(index % 3) + 1}`}
                     >
-                      {content?.metadata?.content?.split("\n\n")[0]?.length > 20
+                      {content?.metadata?.content?.split("\n\n")[0]?.length > 13
                         ? content?.metadata?.content
                             ?.split("\n\n")[0]
-                            ?.slice(0, 20) + "..."
+                            ?.slice(0, 13) + "..."
                         : content?.metadata?.content?.split("\n\n")[0]}
                     </div>
                   </div>

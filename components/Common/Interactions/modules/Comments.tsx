@@ -120,7 +120,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                             }}
                           ></div>
                           <div className="relative w-44 h-fit overflow-x-scroll grid grid-flow-col auto-cols-auto gap-3 z-10">
-                            {comment.metadata.media.map(
+                            {comment?.metadata?.media?.map(
                               (media: MediaSet, index: number) => {
                                 let formattedImageURL: string;
                                 if (media?.original?.url?.includes("ipfs://")) {

@@ -62,13 +62,15 @@ const Controls: FunctionComponent<ControlsProps> = ({
       </div>
       <div className="relative w-full flex flex-row gap-3 items-center justify-center preG:justify-end">
         <div
-          className={`${profileId && authStatus && "cursor-pointer"} relative ${
-            likeLoading && "animate-spin"
-          }`}
-          onClick={() => {
-            handleHeart();
-            likeVideo();
-          }}
+          className={`cursor-pointer relative ${likeLoading && "animate-spin"}`}
+          onClick={
+            profileId && authStatus
+              ? () => {
+                  handleHeart();
+                  likeVideo();
+                }
+              : () => handleHeart()
+          }
         >
           {likeLoading ? (
             <AiOutlineLoading size={12} color="white" />
@@ -161,7 +163,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       : currentIndex === 0
                       ? videos.length - 1
                       : currentIndex + 1
-                  ].hasCollectedByMe,
+                  ]?.hasCollectedByMe,
                 actionLiked:
                   likedArray[
                     currentIndex === videos.length - 1

@@ -1,16 +1,16 @@
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
-export const BASE_URL: string = "https://api-mumbai.lens.dev";
+export const BASE_URL: string = "https://api.lens.dev";
 
 export const CHROMADIN_COLLECTION_CONTRACT: `0x${string}` =
-  "0x3028d027654c6d26eb697565a2884c5dce839731";
+  "0x7879BF38C556a48CBe75E69056caF8517Bd6826F";
 export const CHROMADIN_ESCROW_CONTRACT: `0x${string}` =
-  "0x883a24A5315c0E4Ff4451E6E2B760338FDC8faE8";
+  "0xb9025d4b2A9581080205300bBc363480A50cCfd2";
 export const CHROMADIN_NFT_CONTRACT: `0x${string}` =
-  "0xae4aC419e2a88aDed9DE9fe860E4f95BD3A0308E";
+  "0x5b5777c24D8513B8cc3CF5f9471C3A6D5Cb83CAd";
 export const CHROMADIN_MARKETPLACE_CONTRACT: `0x${string}` =
-  "0x44de31e9460bdad59e38f2306c6488469eb9691c";
+  "0x9767b700F2Fb86722F084c3af9A46E919FAdDC4f";
 export const CHROMADIN_DROP_CONTRACT: `0x${string}` =
-  "0xf9d12A756e9C97619099CfaCBa21F0020Caf25Bf";
+  "0x1DDccd7A89c98c963d218269Ea954813dB1c8C35";
 
 export const LENS_HUB_PROXY_ADDRESS_MUMBAI: `0x${string}` =
   "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
