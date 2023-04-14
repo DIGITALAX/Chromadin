@@ -17,13 +17,19 @@ const Vending: FunctionComponent<VendingProps> = ({
     (state: RootState) => state.app.collectionsReducer.value
   );
   return (
-    <div className="relative w-full h-[28.6rem] grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4 gap-3 p-4 overflow-y-scroll">
+    <div
+      className={`relative w-full h-[28.6rem]  gap-3 p-4 overflow-y-scroll ${
+        !collectionsLoading && !error
+          ? "grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4"
+          : "flex flex-col"
+      }`}
+    >
       {error ? (
         <div className="relative w-full h-full flex flex-col items-center justify-center font-earl text-moda text-center">
           Unfortunately the subgraph isn&apos;t responding right now :/, tune in
           again soon to browse collections
         </div>
-      ) : collectionsLoading ? (
+      ) : !collectionsLoading ? (
         <div className="relative w-full h-full flex flex-col items-center justify-center">
           <FetchMoreLoading size="6" />
         </div>
@@ -88,7 +94,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                 </div>
                 <div className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3">
                   <div className="relative w-6 h-6 cursor-pointer border border-ama rounded-full">
-                    {(profilePicture && profilePicture !== "") && (
+                    {profilePicture && profilePicture !== "" && (
                       <Image
                         src={profilePicture}
                         layout="fill"

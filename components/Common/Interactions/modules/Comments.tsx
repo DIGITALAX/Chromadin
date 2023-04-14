@@ -32,8 +32,8 @@ const Comments: FunctionComponent<CommentsProps> = ({
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col bg-verde">
-      <div className="relative w-full h-28 bg-offBlack">
-        <div className="relative p-2 w-full h-full border border-white flex flex-col items-center gap-2">
+      <div className="relative w-full h-28  bg-offBlack">
+        <div className="relative p-2 w-full h-full border border-white flex flex-col items-center gap-2 overflow-y-scroll">
           <div className="relative w-full h-fit flex flex-row items-center justify-start gap-2">
             <div className="relative w-fit h-1/2 flex justify-start">
               <Image
@@ -45,20 +45,14 @@ const Comments: FunctionComponent<CommentsProps> = ({
               />
             </div>
             <div
-              className="relative w-full h-fit text-lg font-arcade flex justify-start"
+              className="relative w-full h-fit text-lg font-arcade flex justify-start break-word"
               id={`record1`}
             >
-              {video?.metadata?.content?.split("\n\n")[0]?.length > 20
-                ? video?.metadata?.content?.split("\n\n")[0]?.slice(0, 20) +
-                  "..."
-                : video?.metadata?.content?.split("\n\n")[0]}
+              {video?.metadata?.content?.split("\n\n")[0]}
             </div>
           </div>
           <div className="relative w-full h-full flex font-arcade text-sm text-white">
-            {video?.metadata?.content?.split("\n\n")[1]?.length > 110
-              ? video?.metadata?.content?.split("\n\n")[1]?.slice(0, 110) +
-                "..."
-              : video?.metadata?.content?.split("\n\n")[1]}
+            {video?.metadata?.content?.split("\n\n")[1]}
           </div>
         </div>
       </div>
