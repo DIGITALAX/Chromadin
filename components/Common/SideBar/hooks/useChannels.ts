@@ -64,15 +64,13 @@ const useChannels = (): UseChannelsResults => {
       dispatch(
         setMainVideo({
           actionVideo: `${INFURA_GATEWAY}/ipfs/${
-            sortedArr[
-              sortedArr.length - 1
-            ]?.metadata?.media[0]?.original?.url?.split("ipfs://")[1]
+            sortedArr[1]?.metadata?.media[0]?.original?.url?.split("ipfs://")[1]
           }`,
           actionCollected: sortedArr[-1]?.hasCollectedByMe,
-          actionLiked: hasReactedArr?.hasReactedArr?.[sortedArr.length - 1],
-          actionMirrored: hasMirroredArr?.[sortedArr.length - 1],
-          actionId: sortedArr[sortedArr.length - 1].id,
-          actionLocal: `${json[sortedArr.length - 1].link}`,
+          actionLiked: hasReactedArr?.hasReactedArr?.[1],
+          actionMirrored: hasMirroredArr?.[1],
+          actionId: sortedArr[1].id,
+          actionLocal: `${json[1].link}`,
         })
       );
     } catch (err: any) {
