@@ -236,6 +236,12 @@ const useControls = (): UseControlsResults => {
             followerOnlyReferenceModule: false,
           },
         });
+        dispatch(
+          setIndexModal({
+            actionValue: true,
+            actionMessage: "Indexing Interaction",
+          })
+        );
         setTimeout(async () => {
           await handleIndexCheck(
             mirrorPost?.data?.createMirrorViaDispatcher?.txHash,
@@ -283,6 +289,12 @@ const useControls = (): UseControlsResults => {
           };
           setMirrorArgs(mirrorArgs);
         } else {
+          dispatch(
+            setIndexModal({
+              actionValue: true,
+              actionMessage: "Indexing Interaction",
+            })
+          );
           setTimeout(async () => {
             await handleIndexCheck(
               broadcastResult?.data?.broadcast?.txHash,
@@ -383,6 +395,12 @@ const useControls = (): UseControlsResults => {
         };
         setCollectArgs(collectArgs);
       } else {
+        dispatch(
+          setIndexModal({
+            actionValue: true,
+            actionMessage: "Indexing Interaction",
+          })
+        );
         setTimeout(async () => {
           await handleIndexCheck(
             broadcastResult?.data?.broadcast?.txHash,
