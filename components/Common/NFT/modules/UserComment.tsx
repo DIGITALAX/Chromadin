@@ -313,7 +313,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                             )}
                           </div>
                           <div className="relative col-start-2 items-center justify-center w-fit h-fit text-xs flex">
-                            @{user?.handle}
+                            @{user?.handle?.split(".lens")[0]}
                           </div>
                         </div>
                       </div>

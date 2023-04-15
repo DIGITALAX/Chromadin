@@ -34,7 +34,7 @@ const useDrop = () => {
         setCollectionsLoading(false);
         return;
       }
-      
+
       if (
         data?.data?.collectionMinteds?.length < 1 ||
         !data?.data?.collectionMinteds
@@ -62,11 +62,24 @@ const useDrop = () => {
               .replace(/"/g, "")
               .trim()
           );
-          const defaultProfile = await getDefaultProfile(collection.owner);
+          let defaultProfile;
+          defaultProfile = await getDefaultProfile(collection.owner);
+          if (!defaultProfile?.data?.defaultProfile) {
+            defaultProfile = {
+              handle: "@syntheticfutures.lens",
+              picture: {
+                original: {
+                  url: "ipfs://Qmd7PdjsVSfVs6j4uFbxZLsHmzkJw2DYQLxbmgX7aDWkb3",
+                },
+              },
+            };
+          } else {
+            defaultProfile = defaultProfile?.data?.defaultProfile;
+          }
           return {
             ...collection,
             uri: json,
-            profile: defaultProfile?.data?.defaultProfile,
+            profile: defaultProfile,
             drop: {
               name: dropjson?.name,
               image: dropjson?.image,
@@ -74,7 +87,6 @@ const useDrop = () => {
           };
         })
       );
-      console.log({collections})
       const collectionDrops = drops
         .filter((drop: any) =>
           drop.collectionIds.includes(collections[0].collectionId)

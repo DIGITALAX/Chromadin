@@ -105,7 +105,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                     )}
                   </div>
                   <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
-                    @{collection.profile?.handle}
+                    @{collection.profile?.handle?.split(".lens")[0]}
                   </div>
                 </div>
               </div>

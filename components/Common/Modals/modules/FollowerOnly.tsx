@@ -66,7 +66,7 @@ const FollowerOnly: FunctionComponent<FollowerOnlyProps> = ({
               )}
             </div>
             <div className="relative w-fit h-full text-white font-arcade flex items-center justify-center">
-              @{profile?.handle}
+              @{profile?.handle?.split(".lens")[0]}
             </div>
           </div>
           {profile?.followModule?.type === "RevertFollowModule" ? (

@@ -8,7 +8,7 @@ const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
   const formattedURL = createProfilePicture(profile);
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center bg-black border-t border-white">
-      <div className="absolute w-full h-full">
+      <div className="absolute w-full h-full xl:h-[60vw] flex grow top-0">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmUFwK9nUrUnAoVm3fhbw2XqtUAdzz2js8ju7LjdGXVQe5`}
           layout="fill"
@@ -60,7 +60,7 @@ const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
           ></textarea>
         </div>
       ) : (
-        <div className="relative w-full h-full flex items-center justify-center font-arcade text-moda text-sm px-3">
+        <div className="relative w-full h-full flex flex-col items-center justify-center font-arcade text-moda text-sm p-3">
           Connect to Lens to View Your Account
         </div>
       )}

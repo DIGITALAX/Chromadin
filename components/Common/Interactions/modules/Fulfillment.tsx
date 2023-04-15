@@ -25,7 +25,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
   const dispatch = useDispatch();
   return (
     <div className="relative w-full h-fit flex flex-col items-start justify-center bg-black border-t border-white gap-3">
-      <div className="absolute w-full h-full">
+      <div className="absolute w-full h-full justify-stretch flex">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmUFwK9nUrUnAoVm3fhbw2XqtUAdzz2js8ju7LjdGXVQe5`}
           layout="fill"
@@ -158,7 +158,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
           Total: {totalAmount} {currency}
         </div>
       </div>
-      <div className="relative w-full h-fit font-earl items-center justify-center flex text-sm xl:pb-0 pb-8 pt-4">
+      <div className="relative w-full h-fit font-earl items-center justify-center flex text-sm xl:pb-32 pb-8 pt-4">
         <div className="relative rounded-lg p-1.5 w-24 text-center h-fit border-white border bg-verde/60 text-white cursor-pointer hover:bg-moda">
           BUY NOW
         </div>

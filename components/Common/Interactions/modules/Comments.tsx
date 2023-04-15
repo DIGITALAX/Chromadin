@@ -102,7 +102,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                       </div>
                       <div className="relative w-full h-full flex flex-col gap-2">
                         <div className="relative w-full h-full text-ama justify-start flex">
-                          @{comment?.profile?.handle}
+                          @{comment?.profile?.handle?.split(".lens")[0]}
                         </div>
                         <div className="relative w-full h-full text-verde flex flex-col">
                           <div
