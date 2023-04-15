@@ -51,7 +51,6 @@ const useControls = (): UseControlsResults => {
   const [mirrorLoading, setMirrorLoading] = useState<boolean>(false);
   const [mirrorArgs, setMirrorArgs] = useState<any>();
   const [collectArgs, setCollectArgs] = useState<any>();
-  const [videoLoading, setVideoLoading] = useState<boolean>(false);
   const [approvalLoading, setApprovalLoading] = useState<boolean>(false);
   const [collectInfoLoading, setCollectInfoLoading] = useState<boolean>(false);
   const [mirrorCommentLoading, setMirrorCommentLoading] = useState<boolean[]>(
@@ -589,6 +588,7 @@ const useControls = (): UseControlsResults => {
     }
   }, [purchase.open]);
 
+
   return {
     streamRef,
     setFullScreen,
@@ -611,8 +611,6 @@ const useControls = (): UseControlsResults => {
     mainVideo,
     authStatus,
     profileId,
-    videoLoading,
-    setVideoLoading,
     mirrorCommentLoading,
     likeCommentLoading,
     collectCommentLoading,

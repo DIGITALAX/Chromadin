@@ -20,7 +20,7 @@ const Profile: FunctionComponent<ProfileProps> = ({ profile }): JSX.Element => {
         dispatch(setOptions("account"));
       }}
     >
-      <div className="relative w-6 h-6 rounded-full">
+      <div className="relative w-6 h-6 rounded-full" id="crt">
         {picture !== "" && (
           <Image
             src={picture}

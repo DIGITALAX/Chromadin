@@ -26,8 +26,10 @@ const useChannels = (): UseChannelsResults => {
   const [liked, setLiked] = useState<boolean[]>([]);
   const [mirrored, setMirrored] = useState<boolean[]>([]);
   const [tab, setTab] = useState<number>(0);
+  const [videosLoading, setVideosLoading] = useState<boolean>(false);
 
   const getVideos = async (): Promise<void> => {
+    setVideosLoading(true);
     try {
       let data: ApolloQueryResult<any>, hasReactedArr, hasMirroredArr;
       if (authStatus && lensProfile) {
@@ -74,15 +76,17 @@ const useChannels = (): UseChannelsResults => {
         })
       );
     } catch (err: any) {
+      setVideosLoading(false);
       console.error(err.message);
     }
+    setVideosLoading(false);
   };
 
   useEffect(() => {
     getVideos();
   }, [lensProfile]);
 
-  return { videos, liked, mirrored, tab, setTab };
+  return { videos, liked, mirrored, tab, setTab, videosLoading };
 };
 
 export default useChannels;

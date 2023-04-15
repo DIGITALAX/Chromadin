@@ -9,7 +9,7 @@ import { RootState } from "@/redux/store";
 
 const Frequency: FunctionComponent = (): JSX.Element => {
   const { moveBackward, moveForward, currentIndex } = useDrops();
-  const { collections } = useDrop();
+  const { collections, collectionsLoading } = useDrop();
   const dispatch = useDispatch();
   const dispatchCollections = useSelector(
     (state: RootState) => state.app.collectionsReducer.value
@@ -65,6 +65,7 @@ const Frequency: FunctionComponent = (): JSX.Element => {
           }
           dispatch={dispatch}
           dispatchCollections={dispatchCollections}
+          collectionsLoading={collectionsLoading}
         />
       </div>
       <div className="absolute w-80 h-full hidden md:flex bg-offBlack border-l border-white/70 right-0">
@@ -76,7 +77,7 @@ const Frequency: FunctionComponent = (): JSX.Element => {
             loop
             className="flex w-full h-full p-7"
           >
-            <source src={"/videos/mosh.mp4"} type="video/mp4" />
+            <source src={"/videos/mosh.mp4"} type="video/mp4" id="vending" />
           </video>
         </div>
       </div>

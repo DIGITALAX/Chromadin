@@ -5,6 +5,7 @@ export type DropsProps = {
   collections: Collection[];
   dispatch: Dispatch<AnyAction>;
   dispatchCollections: Collection[];
+  collectionsLoading: boolean;
 };
 
 export type DropsResults = {

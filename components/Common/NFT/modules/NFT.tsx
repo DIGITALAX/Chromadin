@@ -9,9 +9,11 @@ import { RootState } from "@/redux/store";
 import useComment from "../hooks/useComment";
 import useImageUpload from "../hooks/useImageUpload";
 import useCollectOptions from "../hooks/useCollectOptions";
+import useDrop from "@/components/Home/hooks/useDrop";
 
 const NFT: FunctionComponent<NFTProps> = ({ mainNFT, viewer }): JSX.Element => {
   const { handleConnect, handleLensSignIn } = useConnect();
+  const { collectionsLoading } = useDrop();
   const {
     commentVideo,
     commentDescription,
@@ -86,7 +88,7 @@ const NFT: FunctionComponent<NFTProps> = ({ mainNFT, viewer }): JSX.Element => {
   const dispatch = useDispatch();
   return (
     <div className="relative w-full h-full sm:h-80 xl:h-72 flex flex-col sm:flex-row">
-      <MainDrop mainNFT={mainNFT} />
+      <MainDrop mainNFT={mainNFT} collectionsLoading={collectionsLoading} />
       {viewer !== "collect" ? (
         <UserComment
           authStatus={authStatus}
@@ -153,7 +155,10 @@ const NFT: FunctionComponent<NFTProps> = ({ mainNFT, viewer }): JSX.Element => {
           dispatch={dispatch}
         />
       ) : (
-        <Description mainNFT={mainNFT} />
+        <Description
+          mainNFT={mainNFT}
+          collectionsLoading={collectionsLoading}
+        />
       )}
     </div>
   );

@@ -3,6 +3,7 @@ import Image from "next/legacy/image";
 import { FunctionComponent, useRef } from "react";
 import { PlayerProps } from "../types/controls.types";
 import dynamic from "next/dynamic";
+import FetchMoreLoading from "../../Loading/FetchMoreLoading";
 
 const Component = dynamic(() => import("./Component"), { ssr: false });
 
@@ -11,8 +12,7 @@ const Player: FunctionComponent<PlayerProps> = ({
   heart,
   streamRef,
   mainVideo,
-  videoLoading,
-  setVideoLoading,
+  videosLoading,
   isPlaying,
   videos,
   likedArray,
@@ -41,8 +41,10 @@ const Player: FunctionComponent<PlayerProps> = ({
           draggable={false}
         />
       )}
-      {videoLoading ? (
-        <div className="relative w-full h-full bg-offBlack"></div>
+      {videosLoading ? (
+        <div className="relative w-full h-full bg-offBlack flex flex-col items-center justify-center">
+          <FetchMoreLoading size="6" />
+        </div>
       ) : (
         <Component
           streamRef={streamRef}

@@ -5,7 +5,6 @@ import { FunctionComponent } from "react";
 import { Collection, VendingProps } from "../types/home.types";
 import useDrop from "../hooks/useDrop";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
-import FetchMoreLoading from "@/components/Common/Loading/FetchMoreLoading";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
@@ -19,7 +18,7 @@ const Vending: FunctionComponent<VendingProps> = ({
   return (
     <div
       className={`relative w-full h-[28.6rem]  gap-3 p-4 overflow-y-scroll ${
-        !collectionsLoading && !error
+        !error
           ? "grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4"
           : "flex flex-col"
       }`}
@@ -30,9 +29,27 @@ const Vending: FunctionComponent<VendingProps> = ({
           again soon to browse collections
         </div>
       ) : collectionsLoading ? (
-        <div className="relative w-full h-full flex flex-col items-center justify-center">
-          <FetchMoreLoading size="6" />
-        </div>
+        <>
+          {Array.from({ length: 8 }).map((_: any, index: number) => {
+            return (
+              <div className="relative w-full h-72 flex flex-col items-center justify-center opacity-30 animate-pulse p-2 gap-2"  key={index}>
+                <div
+                  className="rounded-tr-2xl w-full h-full"
+                  id="vending"
+                ></div>
+                <div className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3">
+                  <div
+                    className="relative w-6 h-6 cursor-pointer border border-ama rounded-full"
+                    id="vending"
+                  ></div>
+                  <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
+                    @!245%rXmes
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </>
       ) : (
         (collections?.length > 0 || dispatchCollections?.length > 0) &&
         (collections?.length > 0 ? collections : dispatchCollections)?.map(
@@ -47,7 +64,8 @@ const Vending: FunctionComponent<VendingProps> = ({
                 key={index}
               >
                 <div
-                  className="relative w-full h-full cursor-pointer"
+                  className="relative w-full h-full cursor-pointer rounded-tr-2xl"
+                  id="vending"
                   onClick={() =>
                     dispatch(
                       setMainNFT({
@@ -93,7 +111,10 @@ const Vending: FunctionComponent<VendingProps> = ({
                   </div>
                 </div>
                 <div className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3">
-                  <div className="relative w-6 h-6 cursor-pointer border border-ama rounded-full">
+                  <div
+                    className="relative w-6 h-6 cursor-pointer border border-ama rounded-full"
+                    id="crt"
+                  >
                     {profilePicture && profilePicture !== "" && (
                       <Image
                         src={profilePicture}

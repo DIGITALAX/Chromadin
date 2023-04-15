@@ -60,8 +60,6 @@ export type UseControlsResults = {
   authStatus: boolean;
   profileId: string;
   mainVideo: MainVideoState;
-  videoLoading: boolean;
-  setVideoLoading: (e: boolean) => void;
   mirrorCommentLoading: boolean[];
   likeCommentLoading: boolean[];
   collectCommentLoading: boolean[];
@@ -87,8 +85,7 @@ export type PlayerProps = {
   heart: boolean;
   streamRef: Ref<ReactPlayer>;
   mainVideo: MainVideoState;
-  videoLoading: boolean;
-  setVideoLoading: (e: boolean) => void;
+  videosLoading: boolean;
   isPlaying: boolean;
   likedArray: boolean[];
   mirroredArray: boolean[];

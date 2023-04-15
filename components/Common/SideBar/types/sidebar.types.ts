@@ -6,6 +6,7 @@ export type ChannelsProps = {
   dispatch: Dispatch<AnyAction>;
   liked: boolean[];
   mirrored: boolean[];
+  videosLoading: boolean;
 };
 
 export type UseChannelsResults = {
@@ -14,6 +15,7 @@ export type UseChannelsResults = {
   mirrored: boolean[];
   tab: number;
   setTab: (e: number) => void;
+  videosLoading: boolean;
 };
 
 export type UseConnectResults = {
@@ -68,4 +70,5 @@ export type SideBarProps = {
   liked: boolean[];
   mirrored: boolean[];
   viewer: string;
+  videosLoading: boolean;
 };

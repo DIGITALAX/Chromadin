@@ -248,3 +248,7 @@ code::-webkit-scrollbar {
 #base3 {
   background-color: #fffff2;
 }
+
+#vending {
+  background: linear-gradient(-45deg, #fbdb86, #cfb0fa, #0d3dff, #fffff2);
+}

@@ -78,6 +78,7 @@ export type UserCommentProps = {
 
 export type MainDropProps = {
   mainNFT: MainNFT | undefined;
+  collectionsLoading: boolean;
 };
 
 export interface MainNFT {
@@ -99,6 +100,7 @@ export interface MainNFT {
 
 export type DescriptionProps = {
   mainNFT: MainNFT | undefined;
+  collectionsLoading: boolean;
 };
 
 export type OptionsProps = {

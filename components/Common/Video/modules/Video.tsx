@@ -29,8 +29,6 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
     profileId,
     authStatus,
     mainVideo,
-    videoLoading,
-    setVideoLoading,
     setIsPlaying,
     setCurrentTime,
     setDuration,
@@ -38,7 +36,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
     progressRef,
     handleSeek,
   } = useControls();
-  const { videos, mirrored, liked } = useChannels();
+  const { videos, mirrored, liked, videosLoading } = useChannels();
   return (
     <div
       className={`relative w-full ${
@@ -57,8 +55,6 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           heart={heart}
           streamRef={streamRef}
           mainVideo={mainVideo}
-          videoLoading={videoLoading}
-          setVideoLoading={setVideoLoading}
           isPlaying={isPlaying}
           setCurrentTime={setCurrentTime}
           setDuration={setDuration}
@@ -67,6 +63,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           mirroredArray={mirrored}
           volume={volume}
           wrapperRef={wrapperRef}
+          videosLoading={videosLoading}
         />
         <Controls
           fullScreen={fullScreen}

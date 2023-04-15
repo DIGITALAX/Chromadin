@@ -5,10 +5,11 @@ import { MainDropProps } from "../types/nft.types";
 
 const MainDrop: FunctionComponent<MainDropProps> = ({
   mainNFT,
+  collectionsLoading,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-96 sm:h-full flex">
-      <div className="relative w-full h-full flex">
+      <div className="relative w-full h-full flex" id="vending">
         {mainNFT?.media && (
           <Image
             src={`${INFURA_GATEWAY}/ipfs/${mainNFT?.media}`}
@@ -21,7 +22,10 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
         )}
       </div>
       <div className="absolute bottom-0 w-full h-fit flex flex-row p-1 gap-2 items-center">
-        <div className="relative w-6 h-6 rounded-full border-white border">
+        <div
+          className="relative w-6 h-6 rounded-full border-white border"
+          id="crt"
+        >
           {mainNFT?.creator?.media && (
             <Image
               src={mainNFT?.creator?.media}
@@ -47,7 +51,7 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
             className="relative text-pesa text-sm font-geom capitalize flex"
             id="glow"
           >
-            {mainNFT?.name}
+            {collectionsLoading ? "7zXj@tE$vU^%" : mainNFT?.name}
           </div>
         </div>
       </div>

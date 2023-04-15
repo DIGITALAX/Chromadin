@@ -35,7 +35,7 @@ const Connect: FunctionComponent<ConnectProps> = ({
         </div>
         <div className="relative justify-end w-full sm:w-40 lg:w-full h-full flex flex-col gap-4 items-center">
           <div className="relative grid grid-flow-col auto-cols-auto w-1/2 self-end">
-            {[...Array(5)].map((_, index) => (
+            {[...Array(5)].map((_: any, index: number) => (
               <Image
                 key={index}
                 src={`${INFURA_GATEWAY}/ipfs/QmfXzGt2RHdEfwgiLiYqEmdsDdSHm1SBdq1Cpys1gHTe5s`}
