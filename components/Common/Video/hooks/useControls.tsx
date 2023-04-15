@@ -579,6 +579,7 @@ const useControls = (): UseControlsResults => {
   ) => {
     const progressRect = e.currentTarget.getBoundingClientRect();
     const seekPosition = (e.clientX - progressRect.left) / progressRect.width;
+    // setCurrentTime(seekPosition * duration);
     streamRef.current?.seekTo(seekPosition, "fraction");
   };
 
