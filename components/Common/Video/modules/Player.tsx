@@ -24,6 +24,7 @@ const Player: FunctionComponent<PlayerProps> = ({
   volume,
   setCurrentTime,
   setDuration,
+  wrapperRef,
 }): JSX.Element => {
   const dispatch = useDispatch();
   const currentIndex = lodash.findIndex(videos, { id: mainVideo.id });
@@ -35,6 +36,7 @@ const Player: FunctionComponent<PlayerProps> = ({
           : "w-full h-[10rem] galaxy:h-[15rem] preG:h-[20rem] sm:h-[26rem] mid:h-[33rem]"
       }`}
       key={mainVideo.local}
+      ref={wrapperRef}
     >
       {heart && (
         <Image
@@ -65,54 +67,16 @@ const Player: FunctionComponent<PlayerProps> = ({
               setMainVideo({
                 actionVideo: `${INFURA_GATEWAY}/ipfs/${
                   videos[
-                    currentIndex === videos.length - 1
-                      ? 0
-                      : currentIndex === 0
-                      ? videos.length - 1
-                      : currentIndex + 1
-                  ]?.metadata?.media[0].original.url.split("ipfs://")[1]
+                    (currentIndex + 1) % videos.length
+                  ].metadata.media[0].original.url.split("ipfs://")[1]
                 }`,
                 actionCollected:
-                  videos[
-                    currentIndex === videos.length - 1
-                      ? 0
-                      : currentIndex === 0
-                      ? videos.length - 1
-                      : currentIndex + 1
-                  ]?.hasCollectedByMe,
-                actionLiked:
-                  likedArray[
-                    currentIndex === videos.length - 1
-                      ? 0
-                      : currentIndex === 0
-                      ? videos.length - 1
-                      : currentIndex + 1
-                  ],
+                  videos[(currentIndex + 1) % videos.length].hasCollectedByMe,
+                actionLiked: likedArray[(currentIndex + 1) % videos.length],
                 actionMirrored:
-                  mirroredArray[
-                    currentIndex === videos.length - 1
-                      ? 0
-                      : currentIndex === 0
-                      ? videos.length - 1
-                      : currentIndex + 1
-                  ],
-                actionId:
-                  videos[
-                    currentIndex === videos.length - 1
-                      ? 0
-                      : currentIndex === 0
-                      ? videos.length - 1
-                      : currentIndex + 1
-                  ].id,
-                actionLocal: `${
-                  json[
-                    currentIndex === videos.length - 1
-                      ? 0
-                      : currentIndex === 0
-                      ? videos.length - 1
-                      : currentIndex + 1
-                  ].link
-                }`,
+                  mirroredArray[(currentIndex + 1) % videos.length],
+                actionId: videos[(currentIndex + 1) % videos.length].id,
+                actionLocal: `${json[(currentIndex + 1) % videos.length].link}`,
               })
             )
           }

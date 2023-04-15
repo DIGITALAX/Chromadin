@@ -37,6 +37,7 @@ import { setModal } from "@/redux/reducers/modalSlice";
 const useControls = (): UseControlsResults => {
   const { commentors } = useInteractions();
   const streamRef = useRef<HTMLVideoElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
@@ -126,7 +127,7 @@ const useControls = (): UseControlsResults => {
   useEffect(() => {
     if (fullScreen) {
       if (!document.fullscreenElement) {
-        streamRef!.current!.requestFullscreen();
+        wrapperRef.current!.requestFullscreen();
         setFullScreen(false);
       }
     }
@@ -623,7 +624,8 @@ const useControls = (): UseControlsResults => {
     setIsPlaying,
     setCurrentTime,
     setDuration,
-    handleVolumeChange
+    handleVolumeChange,
+    wrapperRef,
   };
 };
 

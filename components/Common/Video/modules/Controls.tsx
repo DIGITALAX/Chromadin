@@ -153,7 +153,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       ? 0
                       : currentIndex === 0
                       ? videos.length - 1
-                      : currentIndex + 1
+                      : currentIndex - 1
                   ].metadata.media[0].original.url.split("ipfs://")[1]
                 }`,
                 actionCollected:
@@ -162,7 +162,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       ? 0
                       : currentIndex === 0
                       ? videos.length - 1
-                      : currentIndex + 1
+                      : currentIndex - 1
                   ]?.hasCollectedByMe,
                 actionLiked:
                   likedArray[
@@ -170,7 +170,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       ? 0
                       : currentIndex === 0
                       ? videos.length - 1
-                      : currentIndex + 1
+                      : currentIndex - 1
                   ],
                 actionMirrored:
                   mirroredArray[
@@ -178,7 +178,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       ? 0
                       : currentIndex === 0
                       ? videos.length - 1
-                      : currentIndex + 1
+                      : currentIndex - 1
                   ],
                 actionId:
                   videos[
@@ -186,7 +186,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       ? 0
                       : currentIndex === 0
                       ? videos.length - 1
-                      : currentIndex + 1
+                      : currentIndex - 1
                   ].id,
                 actionLocal: `${
                   json[
@@ -194,7 +194,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       ? 0
                       : currentIndex === 0
                       ? videos.length - 1
-                      : currentIndex + 1
+                      : currentIndex - 1
                   ].link
                 }`,
               })

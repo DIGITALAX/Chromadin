@@ -34,6 +34,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
     setIsPlaying,
     setCurrentTime,
     setDuration,
+    wrapperRef,
   } = useControls();
   const { videos, mirrored, liked } = useChannels();
   return (
@@ -63,6 +64,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           likedArray={liked}
           mirroredArray={mirrored}
           volume={volume}
+          wrapperRef={wrapperRef}
         />
         <Controls
           fullScreen={fullScreen}

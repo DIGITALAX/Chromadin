@@ -66,6 +66,7 @@ export type UseControlsResults = {
   setIsPlaying: (e: boolean) => void;
   setCurrentTime: (e: number) => void;
   setDuration: (e: number) => void;
+  wrapperRef: Ref<HTMLDivElement>
 };
 
 export type VideoProps = {
@@ -86,4 +87,5 @@ export type PlayerProps = {
   volume: number;
   setCurrentTime: (e: number) => void;
   setDuration: (e: number) => void;
+  wrapperRef: Ref<HTMLDivElement>
 };
