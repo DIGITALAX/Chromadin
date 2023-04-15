@@ -77,6 +77,7 @@ const Home: NextPage = (): JSX.Element => {
               dispatch={dispatch}
               liked={liked}
               mirrored={mirrored}
+              videosLoading={videosLoading}
             />
           ) : (
             <Interactions viewer={viewer} />
