@@ -66,7 +66,7 @@ const useDrop = () => {
           defaultProfile = await getDefaultProfile(collection.owner);
           if (!defaultProfile?.data?.defaultProfile) {
             defaultProfile = {
-              handle: "@syntheticfutures.lens",
+              handle: "syntheticfutures.lens",
               picture: {
                 original: {
                   url: "ipfs://Qmd7PdjsVSfVs6j4uFbxZLsHmzkJw2DYQLxbmgX7aDWkb3",

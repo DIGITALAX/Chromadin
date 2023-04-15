@@ -35,6 +35,8 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
     setCurrentTime,
     setDuration,
     wrapperRef,
+    progressRef,
+    handleSeek,
   } = useControls();
   const { videos, mirrored, liked } = useChannels();
   return (
@@ -94,6 +96,8 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           mirroredArray={mirrored}
           videos={videos}
           setIsPlaying={setIsPlaying}
+          progressRef={progressRef}
+          handleSeek={handleSeek}
         />
       </div>
     </div>

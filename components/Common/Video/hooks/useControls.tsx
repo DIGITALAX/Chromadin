@@ -1,7 +1,6 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { UseControlsResults } from "../types/controls.types";
 import { useDispatch, useSelector } from "react-redux";
-import { setVideoTime } from "@/redux/reducers/videoTimeSlice";
 import { RootState } from "@/redux/store";
 import addReaction from "@/graphql/lens/mutations/react";
 import {
@@ -33,11 +32,13 @@ import checkApproved from "@/lib/helpers/checkApproved";
 import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
 import { setPurchase } from "@/redux/reducers/purchaseSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
+import ReactPlayer from "react-player";
 
 const useControls = (): UseControlsResults => {
   const { commentors } = useInteractions();
-  const streamRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<ReactPlayer>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
@@ -65,9 +66,6 @@ const useControls = (): UseControlsResults => {
   const dispatch = useDispatch();
   const { address } = useAccount();
   const { signTypedDataAsync } = useSignTypedData();
-  const videoTime = useSelector(
-    (state: RootState) => state.app.videoTimeReducer.value
-  );
   const dispatcher = useSelector(
     (state: RootState) => state.app.dispatcherReducer.value
   );
@@ -132,12 +130,6 @@ const useControls = (): UseControlsResults => {
       }
     }
   }, [fullScreen]);
-
-  useEffect(() => {
-    if (streamRef.current) {
-      dispatch(setVideoTime(streamRef.current.currentTime));
-    }
-  }, [streamRef, videoTime]);
 
   const likeVideo = async (id?: string): Promise<void> => {
     let index: any, react: any;
@@ -582,6 +574,14 @@ const useControls = (): UseControlsResults => {
     setApprovalLoading(false);
   };
 
+  const handleSeek = (
+    e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
+  ) => {
+    const progressRect = e.currentTarget.getBoundingClientRect();
+    const seekPosition = (e.clientX - progressRect.left) / progressRect.width;
+    streamRef.current?.seekTo(seekPosition, "fraction");
+  };
+
   useEffect(() => {
     if (purchase.open) {
       getCollectInfo();
@@ -596,9 +596,6 @@ const useControls = (): UseControlsResults => {
     duration,
     currentTime,
     volume,
-    // handlePause,
-    // handlePlay,
-    // handleVolumeChange,
     isPlaying,
     volumeOpen,
     setVolumeOpen,
@@ -626,6 +623,8 @@ const useControls = (): UseControlsResults => {
     setDuration,
     handleVolumeChange,
     wrapperRef,
+    progressRef,
+    handleSeek,
   };
 };
 

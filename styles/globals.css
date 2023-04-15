@@ -104,6 +104,8 @@ div::-webkit-scrollbar {
 
 div::-webkit-scrollbar-track:active {
   background-color: #f3f6f7 !important;
+  opacity: 80%;
+  border-radius: 200px;
 }
 
 div::-webkit-scrollbar-thumb:active {
@@ -119,13 +121,17 @@ input[type="range"] {
 
 input[type="range"]::-webkit-slider-runnable-track {
   background: white;
+  opacity: 80%;
   height: 0.3rem;
+  border-radius: 200px;
 }
 
 /******** Firefox ********/
 input[type="range"]::-moz-range-track {
   background: white;
+  opacity: 80%;
   height: 0.3rem;
+  border-radius: 200px;
 }
 
 input[type="range"]::-webkit-slider-thumb {

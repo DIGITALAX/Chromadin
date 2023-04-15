@@ -1,6 +1,7 @@
 import { Publication } from "@/components/Home/types/lens.types";
 import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
-import { FormEvent, Ref } from "react";
+import { FormEvent, MouseEvent, Ref } from "react";
+import ReactPlayer from "react-player";
 
 export type ControlsProps = {
   setFullScreen: (fullScreen: boolean) => void;
@@ -30,10 +31,14 @@ export type ControlsProps = {
   mirroredArray: boolean[];
   videos: Publication[];
   setIsPlaying: (e: boolean) => void;
+  progressRef: Ref<HTMLDivElement>;
+  handleSeek: (
+    e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
+  ) => void;
 };
 
 export type UseControlsResults = {
-  streamRef: Ref<HTMLVideoElement>;
+  streamRef: Ref<ReactPlayer>;
   setFullScreen: (fullScreen: boolean) => void;
   fullScreen: boolean;
   formatTime: (time: number) => string;
@@ -66,7 +71,11 @@ export type UseControlsResults = {
   setIsPlaying: (e: boolean) => void;
   setCurrentTime: (e: number) => void;
   setDuration: (e: number) => void;
-  wrapperRef: Ref<HTMLDivElement>
+  wrapperRef: Ref<HTMLDivElement>;
+  progressRef: Ref<HTMLDivElement>;
+  handleSeek: (
+    e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
+  ) => void;
 };
 
 export type VideoProps = {
@@ -76,7 +85,7 @@ export type VideoProps = {
 export type PlayerProps = {
   viewer: string;
   heart: boolean;
-  streamRef: Ref<HTMLVideoElement>;
+  streamRef: Ref<ReactPlayer>;
   mainVideo: MainVideoState;
   videoLoading: boolean;
   setVideoLoading: (e: boolean) => void;
@@ -87,5 +96,17 @@ export type PlayerProps = {
   volume: number;
   setCurrentTime: (e: number) => void;
   setDuration: (e: number) => void;
-  wrapperRef: Ref<HTMLDivElement>
+  wrapperRef: Ref<HTMLDivElement>;
+};
+
+export type ComponentProps = {
+  streamRef: Ref<ReactPlayer>;
+  mainVideo: MainVideoState;
+  isPlaying: boolean;
+  likedArray: boolean[];
+  mirroredArray: boolean[];
+  videos: Publication[];
+  volume: number;
+  setCurrentTime: (e: number) => void;
+  setDuration: (e: number) => void;
 };

@@ -36,12 +36,14 @@ const Controls: FunctionComponent<ControlsProps> = ({
   likedArray,
   mirroredArray,
   setIsPlaying,
+  progressRef,
+  handleSeek,
 }): JSX.Element => {
   const dispatch = useDispatch();
   const currentIndex = lodash.findIndex(videos, { id: mainVideo.id });
   return (
     <div className="relative h-fit flex flex-col preG:flex-row w-full gap-3 items-center galaxy:px-2 justify-center">
-      <div className="relative w-fit h-full flex justify-center items-center gap-3">
+      <div className="relative w-fit preG:w-56 h-full flex justify-center items-center gap-3">
         <div className="relative flex flex-row w-full h-full items-center">
           <div
             className="relative w-4 h-4 cursor-pointer flex"
@@ -58,6 +60,20 @@ const Controls: FunctionComponent<ControlsProps> = ({
         <div className="relative w-fit h-full flex items-center font-digi text-base text-white">
           <span className="text-rosa">{formatTime(currentTime)}</span>/
           <span className="text-light">{formatTime(duration)}</span>
+        </div>
+      </div>
+      <div className="relative w-full h-full flex flex-col items-center justify-center">
+        <div
+          className="relative w-full h-2 bg-white/40 rounded-sm cursor-pointer"
+          ref={progressRef}
+          onClick={(e: any) => handleSeek(e)}
+        >
+          <div
+            className="absolute h-full bg-white/80 rounded-sm"
+            style={{
+              width: `${(currentTime / duration) * 100}%`,
+            }}
+          />
         </div>
       </div>
       <div className="relative w-full flex flex-row gap-3 items-center justify-center preG:justify-end">

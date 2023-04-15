@@ -4,7 +4,6 @@ import authStatusReducer from "./reducers/authStatusSlice";
 import lensProfileReducer from "./reducers/lensProfileSlice";
 import mainVideoReducer from "./reducers/mainVideoSlice";
 import viewReducer from "./reducers/viewSlice";
-import videoTimeReducer from "./reducers/videoTimeSlice";
 import mainNFTReducer from "./reducers/mainNFTSlice";
 import indexModalReducer from "./reducers/indexModalSlice";
 import dispatcherReducer from "./reducers/dispatcherSlice";
@@ -25,7 +24,6 @@ const reducer = combineReducers({
   lensProfileReducer,
   mainVideoReducer,
   viewReducer,
-  videoTimeReducer,
   mainNFTReducer,
   indexModalReducer,
   dispatcherReducer,

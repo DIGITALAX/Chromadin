@@ -1,14 +1,10 @@
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useRef } from "react";
 import { PlayerProps } from "../types/controls.types";
 import dynamic from "next/dynamic";
-import json from "./../../../../public/videos/local.json";
-import { useDispatch } from "react-redux";
-import { setMainVideo } from "@/redux/reducers/mainVideoSlice";
-import lodash from "lodash";
 
-const ReactPlayer = dynamic(() => import("react-player/lazy"), { ssr: false });
+const Component = dynamic(() => import("./Component"), { ssr: false });
 
 const Player: FunctionComponent<PlayerProps> = ({
   viewer,
@@ -26,8 +22,6 @@ const Player: FunctionComponent<PlayerProps> = ({
   setDuration,
   wrapperRef,
 }): JSX.Element => {
-  const dispatch = useDispatch();
-  const currentIndex = lodash.findIndex(videos, { id: mainVideo.id });
   return (
     <div
       className={`relative justify-center items-center flex ${
@@ -50,39 +44,16 @@ const Player: FunctionComponent<PlayerProps> = ({
       {videoLoading ? (
         <div className="relative w-full h-full bg-offBlack"></div>
       ) : (
-        <ReactPlayer
-          url={mainVideo.local}
-          playing={isPlaying}
-          playsinline
-          light={false}
-          ref={streamRef}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-          width="100%"
-          height="100%"
-          onEnded={() =>
-            dispatch(
-              setMainVideo({
-                actionVideo: `${INFURA_GATEWAY}/ipfs/${
-                  videos[
-                    (currentIndex + 1) % videos.length
-                  ].metadata.media[0].original.url.split("ipfs://")[1]
-                }`,
-                actionCollected:
-                  videos[(currentIndex + 1) % videos.length].hasCollectedByMe,
-                actionLiked: likedArray[(currentIndex + 1) % videos.length],
-                actionMirrored:
-                  mirroredArray[(currentIndex + 1) % videos.length],
-                actionId: videos[(currentIndex + 1) % videos.length].id,
-                actionLocal: `${json[(currentIndex + 1) % videos.length].link}`,
-              })
-            )
-          }
+        <Component
+          streamRef={streamRef}
+          mainVideo={mainVideo}
+          isPlaying={isPlaying}
+          videos={videos}
+          likedArray={likedArray}
+          mirroredArray={mirroredArray}
           volume={volume}
-          onDuration={(duration) => setDuration(duration)}
-          onProgress={(progress) => setCurrentTime(progress.playedSeconds)}
+          setCurrentTime={setCurrentTime}
+          setDuration={setDuration}
         />
       )}
     </div>

@@ -40,7 +40,7 @@ const Switcher: FunctionComponent = (): JSX.Element => {
           </div>
           <div className="relative w-full h-fit flex flex-row gap-1 items-center justify-end lg:flex-nowrap flex-wrap lg:pb-0 pb-2">
             {Array.from([
-              ["QmZxFboSxnP4AL4YgYVrRLri2JrvGTn3fEHjbYB5gVBuTA", "sample"],
+              ["QmZxFboSxnP4AL4YgYVrRLri2JrvGTn3fEHjbYB5gVBuTA", "sampler"],
               ["QmeE6aepU7wpHdjH8L3tpFwtV5jBhoytE3NhHWmi3qGDjo", "stream"],
               ["QmTZ5Rj837exSGmt4FxEcth8uJMZFaYYDv9h6C67xx1yDg", "collect"],
               ["QmNpdJ2nak6TTb452swiUuQWMoFqhm3kqoYxH4er2zh6s4", "wavs"],
@@ -50,14 +50,14 @@ const Switcher: FunctionComponent = (): JSX.Element => {
                   className="relative w-fit justify-center lg:w-full h-full grid grid-flow-row auto-rows-auto flex items-center"
                   key={index}
                   onClick={
-                    values[1] !== "sample" && values[1] !== "wavs"
+                    values[1] !== "sampler" && values[1] !== "wavs"
                       ? () => router.push(`#${values[1]}`)
                       : () => {}
                   }
                 >
                   <div
                     className={`relative w-8 lg:w-12 h-8 lg:h-12 grid grid-flow-col auto-cols-auto justify-self-center items-center  ${
-                      values[1] !== "sample" &&
+                      values[1] !== "sampler" &&
                       values[1] !== "wavs" &&
                       "cursor-pointer active:scale-95"
                     }`}
