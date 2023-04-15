@@ -43,7 +43,6 @@ const useDrop = () => {
         return;
       }
       const drops = await handleAllDrops();
-      console.log({drops})
       const collections = await Promise.all(
         data?.data?.collectionMinteds.map(async (collection: Collection) => {
           const json = await fetchIPFSJSON(
@@ -75,6 +74,7 @@ const useDrop = () => {
           };
         })
       );
+      console.log({collections})
       const collectionDrops = drops
         .filter((drop: any) =>
           drop.collectionIds.includes(collections[0].collectionId)

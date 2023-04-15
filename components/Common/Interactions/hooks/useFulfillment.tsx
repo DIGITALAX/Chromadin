@@ -137,22 +137,48 @@ const useFulfillment = () => {
         }
       }
     } else {
-      setTotalAmount(
-        Number(
-          mainNFT?.price[
-            mainNFT?.acceptedTokens.indexOf(
-              acceptedTokens.find((token) => token[0] === currency)?.[1]!
-            )
-          ]
-        ) /
-          10 ** 18
-      );
+      let number;
+      if (
+        mainNFT?.acceptedTokens.find(
+          (token) =>
+            token ===
+            acceptedTokens.find((token) => token[0] === currency)?.[1]!
+        )
+      ) {
+        number =
+          Number(
+            mainNFT?.price[
+              mainNFT?.acceptedTokens.indexOf(
+                acceptedTokens.find((token) => token[0] === currency)?.[1]!
+              )
+            ]
+          ) /
+          10 ** 18;
+      } else {
+        setCurrency(
+          acceptedTokens.find(
+            (token) => token[1] === mainNFT?.acceptedTokens[0]
+          )?.[0]!
+        );
+        number =
+          Number(
+            mainNFT?.price[
+              mainNFT?.acceptedTokens.indexOf(
+                acceptedTokens.find(
+                  (token) => token[1] === mainNFT?.acceptedTokens[0]
+                )?.[0]!
+              )
+            ]
+          ) /
+          10 ** 18;
+      }
+      setTotalAmount(number);
     }
   };
 
   useEffect(() => {
     getTotalAmount();
-  }, [currency, posterSize, stickerPack, posterAmount, productType]);
+  }, [currency, posterSize, stickerPack, posterAmount, productType, mainNFT]);
 
   return {
     baseColor,
