@@ -22,7 +22,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
               <div className="relative w-full min-w-full h-32 flex flex-col galaxy:flex-row hover:opacity-80 cursor-pointer border-b border-white animate-pulse"  key={index}>
                 <div
                   className="relative w-full h-44 lg:h-full"
-                  id="vending"
+                  id="staticLoad"
                 ></div>
                 <div className="relative w-full h-32 galaxy:h-full p-1">
                   <div className="relative border border-white w-full h-full p-px rounded-lg">

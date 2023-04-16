@@ -46,3 +46,7 @@ export type FollowerOnlyProps = {
   approved: boolean;
   approveCurrency: () => Promise<void>;
 };
+
+export type ImageLargeProps = {
+  mainImage: string;
+}

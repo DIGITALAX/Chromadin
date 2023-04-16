@@ -88,7 +88,11 @@ const NFT: FunctionComponent<NFTProps> = ({ mainNFT, viewer }): JSX.Element => {
   const dispatch = useDispatch();
   return (
     <div className="relative w-full h-full sm:h-80 xl:h-72 flex flex-col sm:flex-row">
-      <MainDrop mainNFT={mainNFT} collectionsLoading={collectionsLoading} />
+      <MainDrop
+        mainNFT={mainNFT}
+        collectionsLoading={collectionsLoading}
+        dispatch={dispatch}
+      />
       {viewer !== "collect" ? (
         <UserComment
           authStatus={authStatus}

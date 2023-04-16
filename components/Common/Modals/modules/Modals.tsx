@@ -9,6 +9,7 @@ import useConnect from "../../SideBar/hooks/useConnect";
 import FollowerOnly from "./FollowerOnly";
 import useFollowers from "../../Interactions/hooks/useFollowers";
 import Claim from "./Claim";
+import ImageLarge from "./ImageLarge";
 
 const Modals = () => {
   const indexingModal = useSelector(
@@ -31,6 +32,12 @@ const Modals = () => {
   );
   const claimModal = useSelector(
     (state: RootState) => state.app.noHandleReducer
+  );
+  const mainImage = useSelector(
+    (state: RootState) => state.app.mainNFTReducer.value?.media
+  );
+  const imageViewer = useSelector(
+    (state: RootState) => state.app.imageViewerReducer
   );
   const {
     profile,
@@ -74,9 +81,8 @@ const Modals = () => {
         />
       )}
       {collectModal?.open && <Collect message={collectModal?.message} />}
-      {
-        claimModal?.value && <Claim />
-      }
+      {claimModal?.value && <Claim />}
+      {imageViewer.value && <ImageLarge mainImage={mainImage!} />}
       {indexingModal?.value && (
         <IndexingModal message={indexingModal?.message} />
       )}

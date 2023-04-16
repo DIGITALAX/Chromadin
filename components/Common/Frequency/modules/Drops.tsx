@@ -20,7 +20,7 @@ const Drops: FunctionComponent<DropsProps> = ({
               <div className="relative w-60 h-40 flex flex-col items-center shrink-0 cursor-pointer"  key={index}>
                 <div
                   className="relative w-full h-full border-white border"
-                  id="vending"
+                  id="staticLoad"
                 ></div>
                 <div className="relative w-full h-fit flex flex-row items-center gap-2">
                   <div className="rounded-full bg-verde h-2 w-2"></div>
@@ -65,7 +65,7 @@ const Drops: FunctionComponent<DropsProps> = ({
                 >
                   <div
                     className="relative w-full h-full border-white border"
-                    id="vending"
+                    id="staticLoad"
                   >
                     <Image
                       src={`${INFURA_GATEWAY}/ipfs/${

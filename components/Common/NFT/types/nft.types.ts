@@ -79,6 +79,7 @@ export type UserCommentProps = {
 export type MainDropProps = {
   mainNFT: MainNFT | undefined;
   collectionsLoading: boolean;
+  dispatch: Dispatch<AnyAction>;
 };
 
 export interface MainNFT {

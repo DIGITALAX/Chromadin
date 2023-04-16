@@ -8,9 +8,9 @@ const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
   const formattedURL = createProfilePicture(profile);
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center bg-black border-t border-white">
-      <div className="absolute w-full h-full xl:h-[60vw] flex grow top-0">
+      <div className="absolute w-full h-full xl:h-[40vw] flex grow top-0">
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/QmUFwK9nUrUnAoVm3fhbw2XqtUAdzz2js8ju7LjdGXVQe5`}
+          src={`${INFURA_GATEWAY}/ipfs/QmUBMaicGmBVTqUr5QXaqEu1AkavAhprwpDXKbMiy74g8p`}
           layout="fill"
           objectFit="cover"
         />

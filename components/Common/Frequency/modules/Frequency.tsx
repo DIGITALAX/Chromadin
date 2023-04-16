@@ -77,7 +77,7 @@ const Frequency: FunctionComponent = (): JSX.Element => {
             loop
             className="flex w-full h-full p-7"
           >
-            <source src={"/videos/mosh.mp4"} type="video/mp4" id="vending" />
+            <source src={"/videos/mosh.mp4"} type="video/mp4" id="staticLoad" />
           </video>
         </div>
       </div>

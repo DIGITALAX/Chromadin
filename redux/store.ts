@@ -18,6 +18,7 @@ import approvalArgsReducer from "./reducers/approvalArgsSlice";
 import postCollectReducer from "./reducers/postCollectSlice";
 import followerOnlyReducer from "./reducers/followerOnlySlice";
 import noHandleReducer from "./reducers/noHandleSlice";
+import imageViewerReducer from "./reducers/imageViewerSlice";
 
 const reducer = combineReducers({
   authStatusReducer,
@@ -38,6 +39,7 @@ const reducer = combineReducers({
   postCollectReducer,
   followerOnlyReducer,
   noHandleReducer,
+  imageViewerReducer,
 });
 
 export const store = configureStore({

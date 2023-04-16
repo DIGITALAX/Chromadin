@@ -32,10 +32,13 @@ const Vending: FunctionComponent<VendingProps> = ({
         <>
           {Array.from({ length: 8 }).map((_: any, index: number) => {
             return (
-              <div className="relative w-full h-72 flex flex-col items-center justify-center opacity-30 animate-pulse p-2 gap-2"  key={index}>
+              <div
+                className="relative w-full h-72 flex flex-col items-center justify-center opacity-30 animate-pulse p-2 gap-2"
+                key={index}
+              >
                 <div
                   className="rounded-tr-2xl w-full h-full"
-                  id="vending"
+                  id="staticLoad"
                 ></div>
                 <div className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3">
                   <div
@@ -65,7 +68,7 @@ const Vending: FunctionComponent<VendingProps> = ({
               >
                 <div
                   className="relative w-full h-full cursor-pointer rounded-tr-2xl"
-                  id="vending"
+                  id="staticLoad"
                   onClick={() =>
                     dispatch(
                       setMainNFT({
