@@ -1,5 +1,5 @@
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   useContractWrite,
@@ -116,13 +116,35 @@ const useComment = () => {
     }
   };
 
+  const handleKeyDownDelete = (e: KeyboardEvent<Element>) => {
+    const highlightedContent = document.querySelector("#highlighted-content")!;
+    const selection = window.getSelection();
+    if (e.key === "Backspace" && selection?.toString() !== "") {
+      const range = selection!.getRangeAt(0);
+      const start = range.startOffset;
+      const end = range.endOffset;
+      const newHTML = commentHTML.slice(0, start) + commentHTML.slice(end);
+      setCommentHTML(newHTML);
+      highlightedContent.innerHTML = newHTML;
+      e.preventDefault();
+    } else if (
+      e.key === "Backspace" &&
+      commentDescription.length === 0 &&
+      commentHTML.length === 0
+    ) {
+      (e.currentTarget! as any).value = "";
+      highlightedContent.innerHTML = "";
+      e.preventDefault();
+    }
+  };
+
   const handleCommentDescription = async (e: any): Promise<void> => {
     let resultElement = document.querySelector("#highlighted-content");
-    if (e.target.value[e.target.value.length - 1] == "\n") {
-      e.target.value += " ";
-    }
+    const newValue = e.target.value.endsWith("\n")
+      ? e.target.value + " "
+      : e.target.value;
     setCommentHTML(getCommentHTML(e, resultElement as Element));
-    setCommentDescription(e.target.value);
+    setCommentDescription(newValue);
     const postStorage = JSON.parse(getCommentData() || "{}");
     setCommentData(
       JSON.stringify({
@@ -353,6 +375,7 @@ const useComment = () => {
     handleSetGif,
     gifOpen,
     setGifOpen,
+    handleKeyDownDelete,
   };
 };
 

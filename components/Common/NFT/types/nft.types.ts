@@ -1,6 +1,6 @@
 import { UploadedMedia } from "@/components/Home/types/home.types";
 import { Erc20, Profile } from "@/components/Home/types/lens.types";
-import { FormEvent, Ref } from "react";
+import { FormEvent, KeyboardEvent, Ref } from "react";
 import { AnyAction, Dispatch } from "redux";
 
 export type NFTProps = {
@@ -74,6 +74,7 @@ export type UserCommentProps = {
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
   dispatch: Dispatch<AnyAction>;
+  handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
 };
 
 export type MainDropProps = {
