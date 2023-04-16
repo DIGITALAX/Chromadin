@@ -13,6 +13,7 @@ import { ApolloQueryResult } from "@apollo/client";
 import { setMainVideo } from "@/redux/reducers/mainVideoSlice";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import json from "./../../../../public/videos/local.json";
+import { setChannelsRedux } from "@/redux/reducers/channelsSlice";
 
 const useChannels = (): UseChannelsResults => {
   const authStatus = useSelector(
@@ -20,6 +21,9 @@ const useChannels = (): UseChannelsResults => {
   );
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile?.id
+  );
+  const channelsDispatched = useSelector(
+    (state: RootState) => state.app.channelsReducer.value
   );
   const dispatch = useDispatch();
   const [videos, setVideos] = useState<Publication[]>([]);
@@ -49,7 +53,8 @@ const useChannels = (): UseChannelsResults => {
       const sortedArr: any[] = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
-      setVideos(sortedArr.reverse());
+      dispatch(setChannelsRedux(sortedArr.reverse()));
+      setVideos(sortedArr);
       if (authStatus && lensProfile) {
         hasReactedArr = await checkPostReactions(
           {
@@ -83,7 +88,9 @@ const useChannels = (): UseChannelsResults => {
   };
 
   useEffect(() => {
-    getVideos();
+    if (!channelsDispatched || channelsDispatched.length < 1) {
+      getVideos();
+    }
   }, [lensProfile]);
 
   return { videos, liked, mirrored, tab, setTab, videosLoading };

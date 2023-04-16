@@ -19,6 +19,7 @@ import postCollectReducer from "./reducers/postCollectSlice";
 import followerOnlyReducer from "./reducers/followerOnlySlice";
 import noHandleReducer from "./reducers/noHandleSlice";
 import imageViewerReducer from "./reducers/imageViewerSlice";
+import channelsReducer from "./reducers/channelsSlice";
 
 const reducer = combineReducers({
   authStatusReducer,
@@ -40,6 +41,7 @@ const reducer = combineReducers({
   followerOnlyReducer,
   noHandleReducer,
   imageViewerReducer,
+  channelsReducer,
 });
 
 export const store = configureStore({

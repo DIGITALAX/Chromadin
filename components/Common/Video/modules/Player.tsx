@@ -21,6 +21,7 @@ const Player: FunctionComponent<PlayerProps> = ({
   setCurrentTime,
   setDuration,
   wrapperRef,
+  dispatchVideos
 }): JSX.Element => {
   return (
     <div
@@ -56,6 +57,7 @@ const Player: FunctionComponent<PlayerProps> = ({
           volume={volume}
           setCurrentTime={setCurrentTime}
           setDuration={setDuration}
+          dispatchVideos={dispatchVideos}
         />
       )}
     </div>

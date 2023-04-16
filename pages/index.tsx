@@ -26,6 +26,9 @@ const Home: NextPage = (): JSX.Element => {
   const authStatus = useSelector(
     (state: RootState) => state.app.authStatusReducer.value
   );
+  const dispatchVideos = useSelector(
+    (state: RootState) => state.app.channelsReducer.value
+  );
   const dispatch = useDispatch();
   const { handleConnect, handleLensSignIn, connected } = useConnect();
   const { videos, liked, mirrored, tab, setTab, videosLoading } = useChannels();
@@ -55,6 +58,7 @@ const Home: NextPage = (): JSX.Element => {
               viewer={viewer}
               dispatch={dispatch}
               videosLoading={videosLoading}
+              dispatchVideos={dispatchVideos}
             />
           </div>
           <div className="relative w-full h-full flex flex-col gap-5 items-center justify-center">
@@ -78,6 +82,7 @@ const Home: NextPage = (): JSX.Element => {
               liked={liked}
               mirrored={mirrored}
               videosLoading={videosLoading}
+              dispatchVideos={dispatchVideos}
             />
           ) : (
             <Interactions viewer={viewer} />

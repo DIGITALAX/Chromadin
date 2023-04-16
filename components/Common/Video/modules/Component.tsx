@@ -7,7 +7,6 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 import { ComponentProps } from "../types/controls.types";
 import ReactPlayer from "react-player/lazy";
 
-
 const Component: FunctionComponent<ComponentProps> = ({
   streamRef,
   mainVideo,
@@ -18,9 +17,13 @@ const Component: FunctionComponent<ComponentProps> = ({
   volume,
   setCurrentTime,
   setDuration,
+  dispatchVideos,
 }): JSX.Element => {
   const dispatch = useDispatch();
-  const currentIndex = lodash.findIndex(videos, { id: mainVideo.id });
+  const currentIndex = lodash.findIndex(
+    videos?.length > 0 ? videos : dispatchVideos,
+    { id: mainVideo.id }
+  );
   return (
     <ReactPlayer
       url={mainVideo.local}
@@ -38,16 +41,34 @@ const Component: FunctionComponent<ComponentProps> = ({
         dispatch(
           setMainVideo({
             actionVideo: `${INFURA_GATEWAY}/ipfs/${
-              videos[
+              (videos?.length > 0 ? videos : dispatchVideos)[
                 (currentIndex + 1) % videos.length
               ].metadata.media[0].original.url.split("ipfs://")[1]
             }`,
-            actionCollected:
-              videos[(currentIndex + 1) % videos.length].hasCollectedByMe,
-            actionLiked: likedArray[(currentIndex + 1) % videos.length],
-            actionMirrored: mirroredArray[(currentIndex + 1) % videos.length],
-            actionId: videos[(currentIndex + 1) % videos.length].id,
-            actionLocal: `${json[(currentIndex + 1) % videos.length].link}`,
+            actionCollected: (videos?.length > 0 ? videos : dispatchVideos)[
+              (currentIndex + 1) %
+                (videos?.length > 0 ? videos : dispatchVideos).length
+            ].hasCollectedByMe,
+            actionLiked:
+              likedArray[
+                (currentIndex + 1) %
+                  (videos?.length > 0 ? videos : dispatchVideos).length
+              ],
+            actionMirrored:
+              mirroredArray[
+                (currentIndex + 1) %
+                  (videos?.length > 0 ? videos : dispatchVideos).length
+              ],
+            actionId: (videos?.length > 0 ? videos : dispatchVideos)[
+              (currentIndex + 1) %
+                (videos?.length > 0 ? videos : dispatchVideos).length
+            ].id,
+            actionLocal: `${
+              json[
+                (currentIndex + 1) %
+                  (videos?.length > 0 ? videos : dispatchVideos).length
+              ].link
+            }`,
           })
         )
       }

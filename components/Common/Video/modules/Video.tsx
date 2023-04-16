@@ -4,6 +4,8 @@ import useControls from "../hooks/useControls";
 import { VideoProps } from "../types/controls.types";
 import Player from "./Player";
 import useChannels from "../../SideBar/hooks/useChannels";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
   const {
@@ -37,6 +39,9 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
     handleSeek,
   } = useControls();
   const { videos, mirrored, liked, videosLoading } = useChannels();
+  const dispatchVideos = useSelector(
+    (state: RootState) => state.app.channelsReducer.value
+  );
   return (
     <div
       className={`relative w-full ${
@@ -64,6 +69,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           volume={volume}
           wrapperRef={wrapperRef}
           videosLoading={videosLoading}
+          dispatchVideos={dispatchVideos}
         />
         <Controls
           fullScreen={fullScreen}
@@ -95,6 +101,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           setIsPlaying={setIsPlaying}
           progressRef={progressRef}
           handleSeek={handleSeek}
+          dispatchVideos={dispatchVideos}
         />
       </div>
     </div>

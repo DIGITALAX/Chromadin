@@ -12,6 +12,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
   liked,
   mirrored,
   videosLoading,
+  dispatchVideos
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 lg:h-128 flex flex-col overflow-y-scroll border border-white/80">
@@ -56,7 +57,8 @@ const Channels: FunctionComponent<ChannelsProps> = ({
           })}
         </>
       ) : (
-        videos?.map((content: Publication, index: number) => {
+        (videos?.length > 0 || dispatchVideos?.length > 0) &&
+        (videos?.length > 0 ? videos : dispatchVideos)?.map((content: Publication, index: number) => {
           return (
             <div
               className="relative w-full min-w-full h-fit lg:h-32 flex flex-col galaxy:flex-row hover:opacity-80 cursor-pointer border-b border-white"

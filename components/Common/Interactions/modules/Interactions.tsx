@@ -46,6 +46,9 @@ const Interactions: FunctionComponent<InteractionProps> = ({
   const authStatus = useSelector(
     (state: RootState) => state.app.authStatusReducer.value
   );
+  const dispatchVideos = useSelector(
+    (state: RootState) => state.app.channelsReducer.value
+  );
   const dispatch = useDispatch();
   return (
     <div className="relative w-full lg:w-80 lg:shrink-0 xl:h-full flex-col border border-white h-100 lg:h-128 xl:min-h-[55rem] flex overflow-y-scroll">
@@ -69,7 +72,11 @@ const Interactions: FunctionComponent<InteractionProps> = ({
             commentors={commentors}
             getMorePostComments={getMorePostComments}
             commentsLoading={commentsLoading}
-            video={lodash.find(videos, { id: mainVideo.id })!}
+            video={
+              lodash.find(videos?.length > 0 ? videos : dispatchVideos, {
+                id: mainVideo.id,
+              })!
+            }
             hasMoreComments={hasMoreComments}
             mirrorComment={mirrorVideo}
             collectComment={collectVideo}

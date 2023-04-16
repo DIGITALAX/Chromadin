@@ -7,6 +7,7 @@ export type ChannelsProps = {
   liked: boolean[];
   mirrored: boolean[];
   videosLoading: boolean;
+  dispatchVideos: Publication[];
 };
 
 export type UseChannelsResults = {
@@ -71,4 +72,5 @@ export type SideBarProps = {
   mirrored: boolean[];
   viewer: string;
   videosLoading: boolean;
+  dispatchVideos: Publication[];
 };

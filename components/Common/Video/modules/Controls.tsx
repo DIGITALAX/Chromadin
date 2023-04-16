@@ -38,9 +38,13 @@ const Controls: FunctionComponent<ControlsProps> = ({
   setIsPlaying,
   progressRef,
   handleSeek,
+  dispatchVideos,
 }): JSX.Element => {
   const dispatch = useDispatch();
-  const currentIndex = lodash.findIndex(videos, { id: mainVideo.id });
+  const currentIndex = lodash.findIndex(
+    videos?.length > 0 ? videos : dispatchVideos,
+    { id: mainVideo.id }
+  );
   return (
     <div className="relative h-fit flex flex-col preG:flex-row w-full gap-3 items-center galaxy:px-2 justify-center">
       <div className="relative w-fit preG:w-56 h-full flex justify-center items-center gap-3">
@@ -164,52 +168,60 @@ const Controls: FunctionComponent<ControlsProps> = ({
             dispatch(
               setMainVideo({
                 actionVideo: `${INFURA_GATEWAY}/ipfs/${
-                  videos[
-                    currentIndex === videos.length - 1
+                  (videos?.length > 0 ? videos : dispatchVideos)[
+                    currentIndex ===
+                    (videos?.length > 0 ? videos : dispatchVideos).length - 1
                       ? 0
                       : currentIndex === 0
-                      ? videos.length - 1
+                      ? (videos?.length > 0 ? videos : dispatchVideos).length -
+                        1
                       : currentIndex - 1
                   ].metadata.media[0].original.url.split("ipfs://")[1]
                 }`,
-                actionCollected:
-                  videos[
-                    currentIndex === videos.length - 1
-                      ? 0
-                      : currentIndex === 0
-                      ? videos.length - 1
-                      : currentIndex - 1
-                  ]?.hasCollectedByMe,
+                actionCollected: (videos?.length > 0 ? videos : dispatchVideos)[
+                  currentIndex ===
+                  (videos?.length > 0 ? videos : dispatchVideos).length - 1
+                    ? 0
+                    : currentIndex === 0
+                    ? (videos?.length > 0 ? videos : dispatchVideos).length - 1
+                    : currentIndex - 1
+                ]?.hasCollectedByMe,
                 actionLiked:
                   likedArray[
-                    currentIndex === videos.length - 1
+                    currentIndex ===
+                    (videos?.length > 0 ? videos : dispatchVideos).length - 1
                       ? 0
                       : currentIndex === 0
-                      ? videos.length - 1
+                      ? (videos?.length > 0 ? videos : dispatchVideos).length -
+                        1
                       : currentIndex - 1
                   ],
                 actionMirrored:
                   mirroredArray[
-                    currentIndex === videos.length - 1
+                    currentIndex ===
+                    (videos?.length > 0 ? videos : dispatchVideos).length - 1
                       ? 0
                       : currentIndex === 0
-                      ? videos.length - 1
+                      ? (videos?.length > 0 ? videos : dispatchVideos).length -
+                        1
                       : currentIndex - 1
                   ],
-                actionId:
-                  videos[
-                    currentIndex === videos.length - 1
-                      ? 0
-                      : currentIndex === 0
-                      ? videos.length - 1
-                      : currentIndex - 1
-                  ].id,
+                actionId: (videos?.length > 0 ? videos : dispatchVideos)[
+                  currentIndex ===
+                  (videos?.length > 0 ? videos : dispatchVideos).length - 1
+                    ? 0
+                    : currentIndex === 0
+                    ? (videos?.length > 0 ? videos : dispatchVideos).length - 1
+                    : currentIndex - 1
+                ].id,
                 actionLocal: `${
                   json[
-                    currentIndex === videos.length - 1
+                    currentIndex ===
+                    (videos?.length > 0 ? videos : dispatchVideos).length - 1
                       ? 0
                       : currentIndex === 0
-                      ? videos.length - 1
+                      ? (videos?.length > 0 ? videos : dispatchVideos).length -
+                        1
                       : currentIndex - 1
                   ].link
                 }`,
@@ -247,17 +259,17 @@ const Controls: FunctionComponent<ControlsProps> = ({
             dispatch(
               setMainVideo({
                 actionVideo: `${INFURA_GATEWAY}/ipfs/${
-                  videos[
-                    (currentIndex + 1) % videos.length
+                  ( videos?.length > 0 ? videos : dispatchVideos)[
+                    (currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length
                   ].metadata.media[0].original.url.split("ipfs://")[1]
                 }`,
                 actionCollected:
-                  videos[(currentIndex + 1) % videos.length].hasCollectedByMe,
-                actionLiked: likedArray[(currentIndex + 1) % videos.length],
+                ( videos?.length > 0 ? videos : dispatchVideos)[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length].hasCollectedByMe,
+                actionLiked: likedArray[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length],
                 actionMirrored:
-                  mirroredArray[(currentIndex + 1) % videos.length],
-                actionId: videos[(currentIndex + 1) % videos.length].id,
-                actionLocal: `${json[(currentIndex + 1) % videos.length].link}`,
+                  mirroredArray[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length],
+                actionId: ( videos?.length > 0 ? videos : dispatchVideos)[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length].id,
+                actionLocal: `${json[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length].link}`,
               })
             )
           }
