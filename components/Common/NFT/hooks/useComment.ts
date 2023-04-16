@@ -119,14 +119,29 @@ const useComment = () => {
   const handleKeyDownDelete = (e: KeyboardEvent<Element>) => {
     const highlightedContent = document.querySelector("#highlighted-content")!;
     const selection = window.getSelection();
+
     if (e.key === "Backspace" && selection?.toString() !== "") {
-      const range = selection!.getRangeAt(0);
-      const start = range.startOffset;
-      const end = range.endOffset;
-      const newHTML = commentHTML.slice(0, start) + commentHTML.slice(end);
-      setCommentHTML(newHTML);
-      highlightedContent.innerHTML = newHTML;
-      e.preventDefault();
+      const start = textElement.current!.selectionStart;
+      const end = textElement.current!.selectionEnd;
+
+      if (start === 0 && end === textElement.current!.value.length) {
+        setCommentDescription("");
+        setCommentHTML("");
+        highlightedContent.innerHTML = "";
+      } else {
+        const selectedText = selection!.toString();
+        const selectedHtml = highlightedContent.innerHTML.substring(start, end);
+        const strippedHtml = selectedHtml.replace(/( style="[^"]*")|( style='[^']*')/g, "");
+        const strippedText = selectedText.replace(/<[^>]*>/g, "");
+  
+        const newHTML = commentHTML.slice(0, start) + strippedHtml + commentHTML.slice(end);
+        const newDescription = commentDescription.slice(0, start) + strippedText + commentDescription.slice(end);
+  
+        setCommentHTML(newHTML);
+        setCommentDescription(newDescription);
+        (e.currentTarget! as any).value = newDescription;
+        highlightedContent.innerHTML = newHTML;
+      }
     } else if (
       e.key === "Backspace" &&
       commentDescription.length === 0 &&
