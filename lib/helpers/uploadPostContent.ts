@@ -65,7 +65,7 @@ const uploadPostContent = async (
     locale: "en",
     tags: null,
     createdOn: new Date(),
-    appId: "thedial",
+    appId: "chromadin",
   };
 
   try {
