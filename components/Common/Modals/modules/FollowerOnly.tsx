@@ -62,6 +62,7 @@ const FollowerOnly: FunctionComponent<FollowerOnlyProps> = ({
                   layout="fill"
                   objectFit="cover"
                   className="rounded-full w-full h-full flex"
+                  draggable={false}
                 />
               )}
             </div>

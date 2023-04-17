@@ -30,6 +30,7 @@ const Options: FunctionComponent<OptionsProps> = ({
           src={`${INFURA_GATEWAY}/ipfs/QmSmqvoqB88FsKruGmZHGg65MZfC4dxHH6KpMBrHrUDxQs`}
           alt="opt"
           fill
+          draggable={false}
         />
       </div>
       <label
@@ -50,6 +51,7 @@ const Options: FunctionComponent<OptionsProps> = ({
             src={`${INFURA_GATEWAY}/ipfs/QmR3SNUJj2BNc8iTCAZ1pf6CngJkKwi6vJ36YSroF4N6HE`}
             alt="opt"
             fill
+            draggable={false}
           />
         ) : (
           <AiOutlineLoading color="white" size={15} />
@@ -88,6 +90,7 @@ const Options: FunctionComponent<OptionsProps> = ({
             src={`${INFURA_GATEWAY}/ipfs/Qme5Ss6at8oXuaUr8ADqTZojr44Sf81P2M5GszNYTB8Mhq`}
             alt="opt"
             fill
+            draggable={false}
           />
         ) : (
           <AiOutlineLoading color="white" size={15} />
@@ -119,6 +122,7 @@ const Options: FunctionComponent<OptionsProps> = ({
           src={`${INFURA_GATEWAY}/ipfs/QmeMxvbUP4ryQYdX8c6THtUfnJ3phgvSgbaQScHfVghgpz`}
           alt="opt"
           fill
+          draggable={false}
         />
       </div>
     </div>

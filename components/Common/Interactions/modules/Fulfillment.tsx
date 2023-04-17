@@ -29,6 +29,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmUFwK9nUrUnAoVm3fhbw2XqtUAdzz2js8ju7LjdGXVQe5`}
           layout="fill"
+          draggable={false}
           objectFit="cover"
         />
       </div>

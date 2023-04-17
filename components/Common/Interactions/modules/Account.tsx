@@ -13,6 +13,7 @@ const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
           src={`${INFURA_GATEWAY}/ipfs/QmUBMaicGmBVTqUr5QXaqEu1AkavAhprwpDXKbMiy74g8p`}
           layout="fill"
           objectFit="cover"
+          draggable={false}
         />
       </div>
       {profile ? (

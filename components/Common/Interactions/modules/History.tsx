@@ -20,6 +20,7 @@ const History: FunctionComponent = (): JSX.Element => {
           src={`${INFURA_GATEWAY}/ipfs/QmPKeuGZU2QZQm8GVhp7X3WvhzELLnmL5VNCFitgzCP6od`}
           layout="fill"
           objectFit="cover"
+          draggable={false}
         />
       </div>
       <div className="relative bottom-0 w-full h-fit py-2 border-y border-white text-white font-arcade uppercase items-end justify-center flex">

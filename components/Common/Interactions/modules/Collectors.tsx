@@ -66,6 +66,7 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
                         src={profileImage}
                         layout="fill"
                         objectFit="cover"
+                        draggable={false}
                       />
                     </div>
                     <div className="relative w-full h-fit text-ama font-arcade">

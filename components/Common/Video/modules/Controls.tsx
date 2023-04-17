@@ -58,6 +58,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
               alt="expand"
               fill
               className="flex items-center"
+              draggable={false}
             />
           </div>
         </div>
@@ -100,6 +101,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
               width={12}
               height={12}
               alt="heart"
+              draggable={false}
             />
           ) : (
             <Image
@@ -107,6 +109,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
               width={12}
               height={12}
               alt="backward"
+              draggable={false}
             />
           )}
         </div>

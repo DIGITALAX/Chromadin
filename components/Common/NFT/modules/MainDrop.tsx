@@ -62,6 +62,7 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
             alt="expand"
             layout="fill"
             className="flex items-center"
+            draggable={false}
           />
         </div>
       </div>
