@@ -263,16 +263,16 @@ const Controls: FunctionComponent<ControlsProps> = ({
               setMainVideo({
                 actionVideo: `${INFURA_GATEWAY}/ipfs/${
                   ( videos?.length > 0 ? videos : dispatchVideos)[
-                    (currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length
+                    (currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos)?.length
                   ].metadata.media[0].original.url.split("ipfs://")[1]
                 }`,
                 actionCollected:
-                ( videos?.length > 0 ? videos : dispatchVideos)[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length].hasCollectedByMe,
-                actionLiked: likedArray[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length],
+                ( videos?.length > 0 ? videos : dispatchVideos)[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos)?.length].hasCollectedByMe,
+                actionLiked: likedArray[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos)?.length],
                 actionMirrored:
-                  mirroredArray[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length],
+                  mirroredArray[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos)?.length],
                 actionId: ( videos?.length > 0 ? videos : dispatchVideos)[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length].id,
-                actionLocal: `${json[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos).length].link}`,
+                actionLocal: `${json[(currentIndex + 1) % ( videos?.length > 0 ? videos : dispatchVideos)?.length].link}`,
               })
             )
           }

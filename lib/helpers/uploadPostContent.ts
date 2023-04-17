@@ -46,7 +46,7 @@ const uploadPostContent = async (
     imageMimeType: "image/png",
     name: postDescription ? postDescription?.slice(0, 20) : "The Dial",
     mainContentFocus:
-      videos.length > 0
+      videos?.length > 0
         ? "VIDEO"
         : newImages.length > 0
         ? "IMAGE"

@@ -54,7 +54,7 @@ const useInteractions = () => {
         !comments ||
         !comments.data ||
         !comments.data.publications ||
-        comments.data.publications.items.length < 1
+        comments.data.publications.items?.length < 1
       ) {
         setCommentsLoading(false);
         return;
@@ -63,7 +63,7 @@ const useInteractions = () => {
       const sortedArr = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
-      if (sortedArr.length < 30) {
+      if (sortedArr?.length < 30) {
         setHasMoreComments(false);
       } else {
         setHasMoreComments(true);
@@ -119,7 +119,7 @@ const useInteractions = () => {
         !comments ||
         !comments.data ||
         !comments.data.publications ||
-        comments.data.publications.items.length < 1
+        comments.data.publications.items?.length < 1
       ) {
         setCommentsLoading(false);
         return;
@@ -128,7 +128,7 @@ const useInteractions = () => {
       const sortedArr = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
-      if (sortedArr.length < 30) {
+      if (sortedArr?.length < 30) {
         setHasMoreComments(false);
       }
       setCommentors([...commentors, ...sortedArr]);
@@ -166,7 +166,7 @@ const useInteractions = () => {
       );
       setCollectors(sortedArr);
       setCollectPageInfo(collects?.data.whoCollectedPublication.pageInfo);
-      if (sortedArr.length < 30) {
+      if (sortedArr?.length < 30) {
         setHasMoreCollects(false);
       } else {
         setHasMoreCollects(true);
@@ -192,7 +192,7 @@ const useInteractions = () => {
       const sortedArr: any[] = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
-      if (sortedArr.length < 2) {
+      if (sortedArr?.length < 2) {
         setHasMoreCollects(false);
       }
       setCollectors([...collectors, ...sortedArr]);

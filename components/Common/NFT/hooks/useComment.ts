@@ -124,7 +124,7 @@ const useComment = () => {
       const start = textElement.current!.selectionStart;
       const end = textElement.current!.selectionEnd;
 
-      if (start === 0 && end === textElement.current!.value.length) {
+      if (start === 0 && end === textElement.current!.value?.length) {
         setCommentDescription("");
         setCommentHTML("");
         highlightedContent.innerHTML = "";
@@ -144,8 +144,8 @@ const useComment = () => {
       }
     } else if (
       e.key === "Backspace" &&
-      commentDescription.length === 0 &&
-      commentHTML.length === 0
+      commentDescription?.length === 0 &&
+      commentHTML?.length === 0
     ) {
       (e.currentTarget! as any).value = "";
       highlightedContent.innerHTML = "";
@@ -168,19 +168,19 @@ const useComment = () => {
       })
     );
     if (
-      e.target.value.split(" ")[e.target.value.split(" ").length - 1][0] ===
+      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1][0] ===
         "@" &&
-      e.target.value.split(" ")[e.target.value.split(" ").length - 1].length ===
+      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1]?.length ===
         1
     ) {
       setCaretCoord(getCaretPos(e, textElement));
       setProfilesOpen(true);
     }
     if (
-      e.target.value.split(" ")[e.target.value.split(" ").length - 1][0] === "@"
+      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1][0] === "@"
     ) {
       const allProfiles = await searchProfile({
-        query: e.target.value.split(" ")[e.target.value.split(" ").length - 1],
+        query: e.target.value.split(" ")[e.target.value.split(" ")?.length - 1],
         type: "PROFILE",
         limit: 50,
       });
@@ -211,8 +211,8 @@ const useComment = () => {
     if (
       (!commentDescription ||
         commentDescription === "" ||
-        commentDescription.trim().length < 0) &&
-      (!postImages?.length || postImages.length < 1)
+        commentDescription.trim()?.length < 0) &&
+      (!postImages?.length || postImages?.length < 1)
     ) {
       return;
     }
@@ -354,7 +354,7 @@ const useComment = () => {
       setCommentDescription(JSON.parse(savedData).post);
       let resultElement = document.querySelector("#highlighted-content");
       if (
-        JSON.parse(savedData).post[JSON.parse(savedData).post.length - 1] ==
+        JSON.parse(savedData).post[JSON.parse(savedData).post?.length - 1] ==
         "\n"
       ) {
         JSON.parse(savedData).post += " ";

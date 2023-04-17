@@ -7,12 +7,12 @@ const useDrops = (): DropsResults => {
   const { collections } = useDrop();
 
   const moveForward = (): void => {
-    setCurrentIndex((currentIndex + 1) % collections.length);
+    setCurrentIndex((currentIndex + 1) % collections?.length);
   };
 
   const moveBackward = (): void => {
     setCurrentIndex(
-      (currentIndex - 1 + collections.length) % collections.length
+      (currentIndex - 1 + collections?.length) % collections?.length
     );
   };
 

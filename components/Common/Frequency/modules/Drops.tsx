@@ -35,7 +35,7 @@ const Drops: FunctionComponent<DropsProps> = ({
               </div>
             );
           })
-        : (collections.length < 0 ? dispatchCollections : collections)?.map(
+        : (collections?.length < 0 ? dispatchCollections : collections)?.map(
             (collection: Collection, index: number) => {
               const profileImage = createProfilePicture(
                 collection.profile,

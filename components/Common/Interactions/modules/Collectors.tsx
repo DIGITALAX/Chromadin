@@ -18,7 +18,7 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
           <div className="relative w-full h-60 justify-center items-center flex">
             <FetchMoreLoading size="6" />
           </div>
-        ) : collectors.length < 1 ? (
+        ) : collectors?.length < 1 ? (
           <div className="relative text-white font-arcade w-full h-60 justify-center items-start p-3 flex text-center">
             Be the first to collect this stream :)
           </div>

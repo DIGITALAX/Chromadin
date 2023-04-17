@@ -136,7 +136,7 @@ const useDrop = () => {
   };
 
   useEffect(() => {
-    if (!collectionsDispatched || collectionsDispatched.length < 1) {
+    if (!collectionsDispatched || collectionsDispatched?.length < 1) {
       handleAllCollections();
     }
   }, []);
