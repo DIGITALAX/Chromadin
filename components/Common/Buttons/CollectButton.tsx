@@ -16,10 +16,10 @@ const CollectButton: FunctionComponent<CollectButtonProps> = ({
 }): JSX.Element => {
   let newValues: string[] = [];
   if (values) {
-    if (isString(values[0])) {
+    if (isString(values?.[0])) {
       newValues = values as string[];
     } else {
-      newValues = values.flatMap((value) => (value as Erc20)?.symbol);
+      newValues = values?.flatMap((value) => (value as Erc20)?.symbol);
     }
   } else {
     newValues = ["yes", "no"];

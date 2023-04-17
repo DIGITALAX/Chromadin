@@ -199,7 +199,6 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                         name="collectLimit"
                         col={"1"}
                         row={"1"}
-                        valueChange={limit}
                         handleValueChange={setLimit}
                       />
                     )}
@@ -228,14 +227,12 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                       col={"1"}
                       row={"1"}
                       step="0.00001"
-                      valueChange={value}
                       handleValueChange={setValue}
                     />
                   )}
                   {collectible === "yes" && chargeCollect === "yes" && (
                     <CollectInput
                       min="0"
-                      max="100"
                       defaultValue={referral.toString()}
                       placeholder={referral.toString()}
                       id="referral"
@@ -244,7 +241,6 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                       col={"1"}
                       row={"1"}
                       step="0.1"
-                      valueChange={referral}
                       handleValueChange={setReferral}
                     />
                   )}

@@ -52,9 +52,9 @@ const useInteractions = () => {
       }
       if (
         !comments ||
-        !comments.data ||
-        !comments.data.publications ||
-        comments.data.publications.items?.length < 1
+        !comments?.data ||
+        !comments?.data?.publications ||
+        comments?.data?.publications?.items?.length < 1
       ) {
         setCommentsLoading(false);
         return;
@@ -117,14 +117,14 @@ const useInteractions = () => {
       }
       if (
         !comments ||
-        !comments.data ||
-        !comments.data.publications ||
-        comments.data.publications.items?.length < 1
+        !comments?.data ||
+        !comments?.data?.publications ||
+        comments?.data?.publications?.items?.length < 1
       ) {
         setCommentsLoading(false);
         return;
       }
-      const arr: any[] = [...comments.data.publications.items];
+      const arr: any[] = [...comments?.data?.publications?.items];
       const sortedArr = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
@@ -160,12 +160,12 @@ const useInteractions = () => {
         publicationId: mainVideo.id,
         limit: 30,
       });
-      const arr: any[] = [...collects.data.whoCollectedPublication.items];
+      const arr: any[] = [...collects?.data?.whoCollectedPublication.items];
       const sortedArr: any[] = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
       setCollectors(sortedArr);
-      setCollectPageInfo(collects?.data.whoCollectedPublication.pageInfo);
+      setCollectPageInfo(collects?.data?.whoCollectedPublication?.pageInfo);
       if (sortedArr?.length < 30) {
         setHasMoreCollects(false);
       } else {
@@ -184,7 +184,7 @@ const useInteractions = () => {
     }
     try {
       const collects = await whoCollectedPublications({
-        publicationId: mainVideo.id,
+        publicationId: mainVideo?.id,
         limit: 30,
         cursor: collectPageInfo?.next,
       });
@@ -196,7 +196,7 @@ const useInteractions = () => {
         setHasMoreCollects(false);
       }
       setCollectors([...collectors, ...sortedArr]);
-      setCollectPageInfo(collects?.data.whoCollectedPublication.pageInfo);
+      setCollectPageInfo(collects?.data?.whoCollectedPublication?.pageInfo);
     } catch (err: any) {
       console.error(err.message);
     }

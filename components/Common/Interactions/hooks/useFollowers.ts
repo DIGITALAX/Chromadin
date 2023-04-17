@@ -62,9 +62,9 @@ const useFollowers = () => {
   const getProfile = async (): Promise<void> => {
     try {
       const prof = await getOneProfile({
-        profileId: followerId.followerId,
+        profileId: followerId?.followerId,
       });
-      setProfile(prof.data.profile);
+      setProfile(prof?.data?.profile);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -142,7 +142,7 @@ const useFollowers = () => {
         ],
       });
 
-      const typedData: any = response?.data.createFollowTypedData.typedData;
+      const typedData: any = response?.data?.createFollowTypedData?.typedData;
 
       const signature: any = await signTypedDataAsync({
         domain: omit(typedData?.domain, ["__typename"]),
@@ -159,13 +159,13 @@ const useFollowers = () => {
         const { v, r, s } = splitSignature(signature);
         const followArgs: FollowArgs = {
           follower: address as string,
-          profileIds: typedData.value.profileIds,
-          datas: typedData.value.datas,
+          profileIds: typedData?.value?.profileIds,
+          datas: typedData?.value?.datas,
           sig: {
             v,
             r,
             s,
-            deadline: typedData.value.deadline,
+            deadline: typedData?.value?.deadline,
           },
         };
         setFollowArgs(followArgs);

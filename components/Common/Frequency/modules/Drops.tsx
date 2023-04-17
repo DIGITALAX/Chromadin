@@ -38,7 +38,7 @@ const Drops: FunctionComponent<DropsProps> = ({
         : (collections?.length < 0 ? dispatchCollections : collections)?.map(
             (collection: Collection, index: number) => {
               const profileImage = createProfilePicture(
-                collection.profile,
+                collection?.profile,
                 false
               );
               return (
@@ -48,17 +48,17 @@ const Drops: FunctionComponent<DropsProps> = ({
                   onClick={() =>
                     dispatch(
                       setMainNFT({
-                        name: collection.name,
-                        media: collection.uri.image.split("ipfs://")[1],
-                        description: collection.uri.description,
-                        type: collection.uri.type,
-                        drop: collection.drop,
+                        name: collection?.name,
+                        media: collection?.uri?.image?.split("ipfs://")[1],
+                        description: collection?.uri?.description,
+                        type: collection?.uri?.type,
+                        drop: collection?.drop,
                         creator: {
                           media: profileImage,
-                          name: collection.profile?.handle,
+                          name: collection?.profile?.handle,
                         },
-                        price: collection.prices,
-                        acceptedTokens: collection.acceptedTokens,
+                        price: collection?.prices,
+                        acceptedTokens: collection?.acceptedTokens,
                       })
                     )
                   }

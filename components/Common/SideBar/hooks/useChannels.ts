@@ -88,7 +88,7 @@ const useChannels = (): UseChannelsResults => {
   };
 
   useEffect(() => {
-    if (!channelsDispatched || channelsDispatched.length < 1) {
+    if (!channelsDispatched || channelsDispatched?.length < 1) {
       getVideos();
     }
   }, [lensProfile]);

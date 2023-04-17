@@ -241,7 +241,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                               size={9}
                               color="white"
                               className={`${
-                                collectCommentLoading[index] && "animate-spin"
+                                collectCommentLoading?.[index] && "animate-spin"
                               }
                                 `}
                             />
@@ -272,12 +272,12 @@ const Comments: FunctionComponent<CommentsProps> = ({
                           }`}
                           onClick={() => mirrorComment(comment?.id)}
                         >
-                          {mirrorCommentLoading[index] ? (
+                          {mirrorCommentLoading?.[index] ? (
                             <AiOutlineLoading
                               size={9}
                               color="white"
                               className={`${
-                                mirrorCommentLoading[index] && "animate-spin"
+                                mirrorCommentLoading?.[index] && "animate-spin"
                               }
                                 `}
                             />

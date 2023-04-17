@@ -6,15 +6,12 @@ const CollectInput: FunctionComponent<CollectInputProps> = ({
   name,
   step,
   min,
-  max,
   placeholder,
   defaultValue,
   col,
   row,
   label,
-  valueChange,
   handleValueChange,
-  mixtape,
 }): JSX.Element => {
   return (
     <div
@@ -34,7 +31,7 @@ const CollectInput: FunctionComponent<CollectInputProps> = ({
         placeholder={placeholder}
         className={`relative w-20 bg-white text-offBlack h-10 row-start-2 rounded-md p-1.5 font-arcade justify-self-start self-center caret-transparent`}
         onChange={(e: FormEvent) =>
-          handleValueChange((e.target as HTMLFormElement)?.value)
+          handleValueChange((e?.target as HTMLFormElement)?.value)
         }
       />
     </div>

@@ -58,7 +58,7 @@ const Vending: FunctionComponent<VendingProps> = ({
         (collections?.length > 0 ? collections : dispatchCollections)?.map(
           (collection: Collection, index: number) => {
             const profilePicture = createProfilePicture(
-              collection.profile,
+              collection?.profile,
               false
             );
             return (
@@ -77,18 +77,18 @@ const Vending: FunctionComponent<VendingProps> = ({
                           .split("ipfs://")[1]
                           .replace(/"/g, "")
                           .trim(),
-                        description: collection.uri.description,
-                        type: collection.uri.type,
-                        drop: collection.drop,
+                        description: collection?.uri?.description,
+                        type: collection?.uri?.type,
+                        drop: collection?.drop,
                         creator: {
                           media: createProfilePicture(
                             collection.profile,
                             false
                           ),
-                          name: collection.profile?.handle,
+                          name: collection?.profile?.handle,
                         },
-                        price: collection.prices,
-                        acceptedTokens: collection.acceptedTokens,
+                        price: collection?.prices,
+                        acceptedTokens: collection?.acceptedTokens,
                       })
                     )
                   }
@@ -107,10 +107,10 @@ const Vending: FunctionComponent<VendingProps> = ({
                 </div>
                 <div className="relative flex flex-row w-full h-fit gap-2  text-sm font-arcade">
                   <div className="relative uppercase text-white w-fit h-fit cursor-pointer whitespace-nowrap">
-                    {collection.name}
+                    {collection?.name}
                   </div>
                   <div className="relative w-full h-fit text-ama justify-end flex">
-                    {collection.amount}
+                    {collection?.amount}
                   </div>
                 </div>
                 <div className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3">
@@ -129,7 +129,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                     )}
                   </div>
                   <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
-                    @{collection.profile?.handle?.split(".lens")[0]}
+                    @{collection?.profile?.handle?.split(".lens")[0]}
                   </div>
                 </div>
               </div>

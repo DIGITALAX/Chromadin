@@ -38,18 +38,18 @@ const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
             <input
               disabled
               className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-br-lg rounded-tl-lg border border-white/30 px-2 text-sm"
-              value={`@${profile.handle}`}
+              value={`@${profile?.handle}`}
             />
             <input
               disabled
               className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-br-lg rounded-tl-lg border border-white/30 px-2 text-sm"
-              value={`${profile.id}`}
+              value={`${profile?.id}`}
             />
           </div>
           <input
             disabled
             className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-br-lg rounded-tl-lg border border-white/30 px-2 text-sm"
-            value={`${profile.name}`}
+            value={`${profile?.name}`}
           />
           <textarea
             disabled
@@ -57,7 +57,7 @@ const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
             style={{
               resize: "none",
             }}
-            value={`${profile.bio}`}
+            value={`${profile?.bio}`}
           ></textarea>
         </div>
       ) : (

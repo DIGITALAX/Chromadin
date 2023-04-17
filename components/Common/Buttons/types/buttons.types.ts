@@ -17,13 +17,10 @@ export type CollectButtonProps = {
     name: string;
     step?: string;
     min?: string;
-    max?: string;
     placeholder?: string;
     defaultValue?: string;
     col?: string;
     row?: string;
     label?: string;
-    valueChange: number;
     handleValueChange: (e: number) => void;
-    mixtape?: boolean;
   };

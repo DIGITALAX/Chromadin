@@ -27,6 +27,7 @@ const Connect: FunctionComponent<ConnectProps> = ({
             fill
             alt="qr"
             draggable={false}
+            priority
           />
         </div>
         <div className="relative w-fit h-full flex font-earl text-white text-xs">

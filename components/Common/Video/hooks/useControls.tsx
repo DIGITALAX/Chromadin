@@ -123,8 +123,8 @@ const useControls = (): UseControlsResults => {
 
   useEffect(() => {
     if (fullScreen) {
-      if (!document.fullscreenElement) {
-        wrapperRef.current!.requestFullscreen();
+      if (!document?.fullscreenElement) {
+        wrapperRef?.current!?.requestFullscreen();
         setFullScreen(false);
       }
     }
