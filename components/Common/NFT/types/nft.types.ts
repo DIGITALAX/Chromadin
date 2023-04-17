@@ -39,7 +39,6 @@ export type UserCommentProps = {
   setGifOpen: (e: boolean) => void;
   gifOpen: boolean;
   collectOpen: boolean;
-  setCollectOpen: (e: boolean) => void;
   enabledCurrencies: Erc20[];
   audienceTypes: string[];
   setAudienceType: (e: string) => void;
@@ -114,7 +113,7 @@ export type OptionsProps = {
   setGifOpen: (e: boolean) => void;
   gifOpen: boolean;
   collectOpen: boolean;
-  setCollectOpen: (e: boolean) => void;
+  dispatch: Dispatch<AnyAction>
 };
 
 export type ImageUploadsProps = {

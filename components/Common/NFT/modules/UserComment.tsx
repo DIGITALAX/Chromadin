@@ -39,7 +39,6 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
   setGifOpen,
   gifOpen,
   collectOpen,
-  setCollectOpen,
   collectNotif,
   referral,
   setCollectible,
@@ -254,7 +253,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
               <textarea
                 id="post"
                 onScroll={(e: any) => syncScroll(e, "highlighted-content")}
-                onChange={(e: FormEvent) => {
+                onInput={(e: FormEvent) => {
                   handleCommentDescription(e);
                   syncScroll(e, "highlighted-content");
                 }}
@@ -337,7 +336,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
               setGifOpen={setGifOpen}
               gifOpen={gifOpen}
               collectOpen={collectOpen}
-              setCollectOpen={setCollectOpen}
+              dispatch={dispatch}
             />
           </div>
           <div className="relative w-full h-fit justify-end flex flex-row gap-2 items-center">

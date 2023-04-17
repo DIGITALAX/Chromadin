@@ -57,6 +57,9 @@ const useComment = () => {
   const mainVideo = useSelector(
     (state: RootState) => state.app.mainVideoReducer
   );
+  const collectOpen = useSelector(
+    (state: RootState) => state.app.collectOpenReducer.value
+  );
   const dispatcher = useSelector(
     (state: RootState) => state.app.dispatcherReducer.value
   );
@@ -119,7 +122,7 @@ const useComment = () => {
   const handleKeyDownDelete = (e: KeyboardEvent<Element>) => {
     const highlightedContent = document.querySelector("#highlighted-content")!;
     const selection = window.getSelection();
-
+    const postStorage = JSON.parse(getCommentData() || "{}");
     if (e.key === "Backspace" && selection?.toString() !== "") {
       const start = textElement.current!.selectionStart;
       const end = textElement.current!.selectionEnd;
@@ -127,20 +130,39 @@ const useComment = () => {
       if (start === 0 && end === textElement.current!.value?.length) {
         setCommentDescription("");
         setCommentHTML("");
-        highlightedContent.innerHTML = "";
+        // highlightedContent.innerHTML = "";
+        setCommentData(
+          JSON.stringify({
+            ...postStorage,
+            post: "",
+          })
+        );
       } else {
         const selectedText = selection!.toString();
         const selectedHtml = highlightedContent.innerHTML.substring(start, end);
-        const strippedHtml = selectedHtml.replace(/( style="[^"]*")|( style='[^']*')/g, "");
+        const strippedHtml = selectedHtml.replace(
+          /( style="[^"]*")|( style='[^']*')/g,
+          ""
+        );
         const strippedText = selectedText.replace(/<[^>]*>/g, "");
-  
-        const newHTML = commentHTML.slice(0, start) + strippedHtml + commentHTML.slice(end);
-        const newDescription = commentDescription.slice(0, start) + strippedText + commentDescription.slice(end);
-  
+
+        const newHTML =
+          commentHTML.slice(0, start) + strippedHtml + commentHTML.slice(end);
+        const newDescription =
+          commentDescription.slice(0, start) +
+          strippedText +
+          commentDescription.slice(end);
+
         setCommentHTML(newHTML);
         setCommentDescription(newDescription);
         (e.currentTarget! as any).value = newDescription;
-        highlightedContent.innerHTML = newHTML;
+        // highlightedContent.innerHTML = newHTML;
+        setCommentData(
+          JSON.stringify({
+            ...postStorage,
+            post: newDescription,
+          })
+        );
       }
     } else if (
       e.key === "Backspace" &&
@@ -148,7 +170,13 @@ const useComment = () => {
       commentHTML?.length === 0
     ) {
       (e.currentTarget! as any).value = "";
-      highlightedContent.innerHTML = "";
+      // highlightedContent.innerHTML = "";
+      setCommentData(
+        JSON.stringify({
+          ...postStorage,
+          post: "",
+        })
+      );
       e.preventDefault();
     }
   };
@@ -170,14 +198,15 @@ const useComment = () => {
     if (
       e.target.value.split(" ")[e.target.value.split(" ")?.length - 1][0] ===
         "@" &&
-      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1]?.length ===
-        1
+      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1]
+        ?.length === 1
     ) {
       setCaretCoord(getCaretPos(e, textElement));
       setProfilesOpen(true);
     }
     if (
-      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1][0] === "@"
+      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1][0] ===
+      "@"
     ) {
       const allProfiles = await searchProfile({
         query: e.target.value.split(" ")[e.target.value.split(" ")?.length - 1],
@@ -197,7 +226,7 @@ const useComment = () => {
     setCommentHTML("");
     setGifs([]);
     dispatch(setPostImages(undefined));
-    (document as any).querySelector("#highlighted-content").innerHTML = "";
+    // (document as any).querySelector("#highlighted-content").innerHTML = "";
     removeCommentData();
     dispatch(
       setIndexModal({
@@ -338,7 +367,7 @@ const useComment = () => {
       })
     );
 
-    if (newHTMLPost) (resultElement as any).innerHTML = newHTMLPost;
+    // if (newHTMLPost) (resultElement as any).innerHTML = newHTMLPost;
     setCommentHTML(newHTMLPost);
   };
 
@@ -372,6 +401,13 @@ const useComment = () => {
   useEffect(() => {
     dispatch(setPostImages(gifs));
   }, [gifs]);
+
+  useEffect(() => {
+    if (document.querySelector("#highlighted-content")) {
+      document.querySelector("#highlighted-content")!.innerHTML =
+        commentHTML.length === 0 ? "Have something to say?" : commentHTML;
+    }
+  }, [commentHTML, gifOpen, collectOpen]);
 
   return {
     commentVideo,

@@ -11,6 +11,9 @@ const useCollectOptions = () => {
   const profileId = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile?.id
   );
+  const collectOpen = useSelector(
+    (state: RootState) => state.app.collectOpenReducer.value
+  );
   const [enabledCurrencies, setEnabledCurrencies] = useState<Erc20[]>([]);
   const [audienceType, setAudienceType] = useState<string>("everyone");
   const [enabledCurrency, setEnabledCurrency] = useState<string>();
@@ -31,7 +34,6 @@ const useCollectOptions = () => {
   const [referral, setReferral] = useState<number>(0);
   const { address } = useAccount();
   const audienceTypes: string[] = ["followers", "everyone"];
-  const [collectOpen, setCollectOpen] = useState<boolean>(false);
   const [collectNotif, setCollectNotif] = useState<string>("");
 
   useMemo(() => {
@@ -101,8 +103,6 @@ const useCollectOptions = () => {
   ]);
 
   return {
-    setCollectOpen,
-    collectOpen,
     handleCollectValues,
     collectNotif,
     referral,

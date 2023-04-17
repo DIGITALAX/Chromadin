@@ -33,8 +33,6 @@ const NFT: FunctionComponent<NFTProps> = ({ mainNFT, viewer }): JSX.Element => {
     handleKeyDownDelete,
   } = useComment();
   const {
-    setCollectOpen,
-    collectOpen,
     collectNotif,
     referral,
     setCollectible,
@@ -83,6 +81,9 @@ const NFT: FunctionComponent<NFTProps> = ({ mainNFT, viewer }): JSX.Element => {
   const profileId = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile?.id
   );
+  const collectOpen = useSelector(
+    (state: RootState) => state.app.collectOpenReducer.value
+  );
   const postImagesDispatched = useSelector(
     (state: RootState) => state.app.postImageReducer.value
   );
@@ -123,7 +124,6 @@ const NFT: FunctionComponent<NFTProps> = ({ mainNFT, viewer }): JSX.Element => {
           setGifOpen={setGifOpen}
           gifOpen={gifOpen}
           collectOpen={collectOpen}
-          setCollectOpen={setCollectOpen}
           collectNotif={collectNotif}
           referral={referral}
           setCollectible={setCollectible}

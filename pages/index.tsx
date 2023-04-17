@@ -33,7 +33,7 @@ const Home: NextPage = (): JSX.Element => {
   const { handleConnect, handleLensSignIn, connected } = useConnect();
   const { videos, liked, mirrored, tab, setTab, videosLoading } = useChannels();
   return (
-    <div className="relative w-full h-full flex flex-col overflow-x-hidden">
+    <div className="relative w-full h-full flex flex-col overflow-x-hidden selection:bg-ama selection:text-moda">
       <Head>
         <title>Chromadin</title>
         <link rel="icon" href="/favicon.ico" />

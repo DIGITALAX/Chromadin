@@ -5,6 +5,7 @@ import { FormEvent, FunctionComponent } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { OptionsProps } from "../types/nft.types";
+import { setCollectOpen } from "@/redux/reducers/collectOpenSlice";
 
 const Options: FunctionComponent<OptionsProps> = ({
   videoLoading,
@@ -15,7 +16,7 @@ const Options: FunctionComponent<OptionsProps> = ({
   gifOpen,
   setGifOpen,
   collectOpen,
-  setCollectOpen,
+  dispatch
 }): JSX.Element => {
   const postImages = useSelector(
     (state: RootState) => state.app.postImageReducer.value
@@ -27,7 +28,7 @@ const Options: FunctionComponent<OptionsProps> = ({
           postImages?.length === 4 && "opacity-20"
         }`}
         onClick={() => {
-          setCollectOpen(false);
+          dispatch(setCollectOpen(false));
           setGifOpen(!gifOpen);
         }}
       >
@@ -120,7 +121,7 @@ const Options: FunctionComponent<OptionsProps> = ({
         className="relative w-4 h-4 items-center flex cursor-pointer"
         onClick={() => {
           setGifOpen(false);
-          setCollectOpen(!collectOpen);
+          dispatch(setCollectOpen(!collectOpen));
         }}
       >
         <Image
