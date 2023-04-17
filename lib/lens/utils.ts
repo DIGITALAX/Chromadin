@@ -28,6 +28,8 @@ export const getAuthenticationToken = () => {
 
     if (!data) return null;
 
+
+
     return JSON.parse(data) as {
       accessToken: string;
       refreshToken: string;

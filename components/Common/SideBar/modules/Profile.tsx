@@ -31,7 +31,7 @@ const Profile: FunctionComponent<ProfileProps> = ({ profile }): JSX.Element => {
           />
         )}
       </div>
-      <div className="relative w-fit h-fit text-sm font-geom text-pesa">
+      <div className="relative w-fit h-fit text-sm sm:text-xs lg:text-sm font-geom text-pesa">
         @{profile?.handle?.split(".lens")[0] || ""}
       </div>
     </div>
