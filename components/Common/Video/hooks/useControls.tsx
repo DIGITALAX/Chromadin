@@ -33,6 +33,7 @@ import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
 import { setPurchase } from "@/redux/reducers/purchaseSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
 import ReactPlayer from "react-player";
+import { waitForTransaction } from "@wagmi/core";
 
 const useControls = (): UseControlsResults => {
   const { commentors } = useInteractions();
@@ -320,7 +321,9 @@ const useControls = (): UseControlsResults => {
           actionMessage: "Indexing Interaction",
         })
       );
-      const res = await tx?.wait();
+      const res = await waitForTransaction({
+        hash: tx?.hash!,
+      });
       await handleIndexCheck(res?.transactionHash, dispatch, true);
     } catch (err: any) {
       setMirrorLoading(false);
@@ -443,7 +446,9 @@ const useControls = (): UseControlsResults => {
           actionMessage: "Indexing Interaction",
         })
       );
-      const res = await tx?.wait();
+      const res = await waitForTransaction({
+        hash: tx?.hash!,
+      });
       await handleIndexCheck(res?.transactionHash, dispatch, false);
     } catch (err: any) {
       console.error(err.message);
@@ -553,8 +558,10 @@ const useControls = (): UseControlsResults => {
   const callApprovalSign = async (): Promise<void> => {
     try {
       const tx = await sendTransactionAsync?.();
-      await tx?.wait();
-      await pollUntilIndexed(tx?.hash as string, false);
+      const res = await waitForTransaction({
+        hash: tx?.hash!,
+      });
+      await pollUntilIndexed(res?.transactionHash as string, false);
       await getCollectInfo();
     } catch (err: any) {
       setApprovalLoading(false);
@@ -587,7 +594,6 @@ const useControls = (): UseControlsResults => {
       getCollectInfo();
     }
   }, [purchase.open]);
-
 
   return {
     streamRef,

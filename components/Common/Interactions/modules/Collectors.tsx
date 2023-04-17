@@ -61,7 +61,10 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
                     className="relative w-full h-fit flex flex-row gap-3"
                     key={index}
                   >
-                    <div className="relative w-6 h-6 border border-white">
+                    <div
+                      className="relative w-6 h-6 border border-white"
+                      id="crt"
+                    >
                       <Image
                         src={profileImage}
                         layout="fill"

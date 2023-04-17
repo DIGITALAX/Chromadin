@@ -29,6 +29,7 @@ import { Profile } from "@/components/Home/types/lens.types";
 import getCaretPos from "@/lib/helpers/getCaretPos";
 import { searchProfile } from "@/graphql/lens/queries/search";
 import { setPostImages } from "@/redux/reducers/postImageSlice";
+import { waitForTransaction } from "@wagmi/core";
 
 const useComment = () => {
   const [commentLoading, setCommentLoading] = useState<boolean>(false);
@@ -340,8 +341,10 @@ const useComment = () => {
     try {
       const tx = await commentWriteAsync?.();
       clearComment();
-      const res = await tx?.wait();
-      await handleIndexCheck(res, dispatch, true);
+      const res = await waitForTransaction({
+        hash: tx?.hash!,
+      });
+      await handleIndexCheck(res?.transactionHash, dispatch, true);
     } catch (err) {
       console.error(err);
       setCommentLoading(false);

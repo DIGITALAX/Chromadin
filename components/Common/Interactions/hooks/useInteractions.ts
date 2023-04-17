@@ -50,11 +50,7 @@ const useInteractions = () => {
           commentsRankingFilter: "RELEVANT",
         });
       }
-      if (
-        !comments ||
-        !comments?.data ||
-        !comments?.data?.publications 
-      ) {
+      if (!comments || !comments?.data || !comments?.data?.publications) {
         setCommentsLoading(false);
         return;
       }

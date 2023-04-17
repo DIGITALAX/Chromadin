@@ -30,6 +30,7 @@ import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import pollUntilIndexed from "@/lib/helpers/checkIndexed";
 import { setModal } from "@/redux/reducers/modalSlice";
 import { setFollowerOnly } from "@/redux/reducers/followerOnlySlice";
+import { waitForTransaction } from "@wagmi/core";
 
 const useFollowers = () => {
   const dispatch = useDispatch();
@@ -102,8 +103,10 @@ const useFollowers = () => {
   const callApprovalSign = async (): Promise<void> => {
     try {
       const tx = await sendTransactionAsync?.();
-      await tx?.wait();
-      await pollUntilIndexed(tx?.hash as string, false);
+      const res = await waitForTransaction({
+        hash: tx?.hash!,
+      });
+      await pollUntilIndexed(res?.transactionHash as string, false);
       await approvedFollow();
     } catch (err: any) {
       setFollowLoading(false);
