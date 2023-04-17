@@ -23,8 +23,13 @@ const Options: FunctionComponent<OptionsProps> = ({
   return (
     <div className="relative w-fit h-fit flex flex-row gap-2 pl-2">
       <div
-        className="relative w-4 h-4 items-center flex cursor-pointer"
-        onClick={() => {setCollectOpen(false); setGifOpen(!gifOpen)}}
+        className={`relative w-4 h-4 items-center flex cursor-pointer ${
+          postImages?.length === 4 && "opacity-20"
+        }`}
+        onClick={() => {
+          setCollectOpen(false);
+          setGifOpen(!gifOpen);
+        }}
       >
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmSmqvoqB88FsKruGmZHGg65MZfC4dxHH6KpMBrHrUDxQs`}

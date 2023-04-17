@@ -92,7 +92,7 @@ const useComment = () => {
   };
 
   const handleSetGif = (result: any): void => {
-    if ((postImages as any)?.length <= 4) {
+    if ((postImages as any)?.length < 4) {
       setGifs([
         ...(postImages as any),
         {
