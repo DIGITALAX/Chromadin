@@ -53,8 +53,7 @@ const useInteractions = () => {
       if (
         !comments ||
         !comments?.data ||
-        !comments?.data?.publications ||
-        comments?.data?.publications?.items?.length < 1
+        !comments?.data?.publications 
       ) {
         setCommentsLoading(false);
         return;
