@@ -65,12 +65,14 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
                       className="relative w-6 h-6 border border-white"
                       id="crt"
                     >
-                      <Image
-                        src={profileImage}
-                        layout="fill"
-                        objectFit="cover"
-                        draggable={false}
-                      />
+                      {profileImage !== "" && (
+                        <Image
+                          src={profileImage}
+                          layout="fill"
+                          objectFit="cover"
+                          draggable={false}
+                        />
+                      )}
                     </div>
                     <div className="relative w-full h-fit text-ama font-arcade">
                       {collector?.defaultProfile?.handle}

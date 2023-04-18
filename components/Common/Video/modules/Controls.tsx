@@ -39,6 +39,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
   progressRef,
   handleSeek,
   dispatchVideos,
+  collectedArray,
 }): JSX.Element => {
   const dispatch = useDispatch();
   const currentIndex = lodash.findIndex(
@@ -198,14 +199,16 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       : currentIndex - 1
                   ].metadata.media[0].original.url.split("ipfs://")[1]
                 }`,
-                actionCollected: (videos?.length > 0 ? videos : dispatchVideos)[
-                  currentIndex ===
-                  (videos?.length > 0 ? videos : dispatchVideos).length - 1
-                    ? 0
-                    : currentIndex === 0
-                    ? (videos?.length > 0 ? videos : dispatchVideos).length - 1
-                    : currentIndex - 1
-                ]?.hasCollectedByMe,
+                actionCollected:
+                  collectedArray[
+                    currentIndex ===
+                    (videos?.length > 0 ? videos : dispatchVideos).length - 1
+                      ? 0
+                      : currentIndex === 0
+                      ? (videos?.length > 0 ? videos : dispatchVideos).length -
+                        1
+                      : currentIndex - 1
+                  ],
                 actionLiked:
                   likedArray[
                     currentIndex ===
@@ -284,10 +287,11 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       (videos?.length > 0 ? videos : dispatchVideos)?.length
                   ].metadata.media[0].original.url.split("ipfs://")[1]
                 }`,
-                actionCollected: (videos?.length > 0 ? videos : dispatchVideos)[
-                  (currentIndex + 1) %
-                    (videos?.length > 0 ? videos : dispatchVideos)?.length
-                ].hasCollectedByMe,
+                actionCollected:
+                  collectedArray[
+                    (currentIndex + 1) %
+                      (videos?.length > 0 ? videos : dispatchVideos)?.length
+                  ],
                 actionLiked:
                   likedArray[
                     (currentIndex + 1) %

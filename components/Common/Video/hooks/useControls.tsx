@@ -34,6 +34,7 @@ import { setPurchase } from "@/redux/reducers/purchaseSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
 import ReactPlayer from "react-player";
 import { waitForTransaction } from "@wagmi/core";
+import { setReactId } from "@/redux/reducers/reactIdSlice";
 
 const useControls = (): UseControlsResults => {
   const { commentors } = useInteractions();
@@ -135,6 +136,7 @@ const useControls = (): UseControlsResults => {
     let index: any, react: any;
     if (!id) {
       setLikeLoading(true);
+      dispatch(setReactId(mainVideo.id));
     } else {
       index = commentors?.findIndex((commentor) => commentor.id === id);
       if (index >= 0) {
@@ -144,8 +146,8 @@ const useControls = (): UseControlsResults => {
           return updatedArray;
         });
       }
+      setLikeLoading(true);
     }
-    setLikeLoading(true);
     if (!profileId && !authStatus) {
       setLikeLoading(false);
       if (index >= 0) {
@@ -197,6 +199,7 @@ const useControls = (): UseControlsResults => {
 
     if (!id) {
       setMirrorLoading(true);
+      dispatch(setReactId(mainVideo.id));
     } else {
       index = commentors.findIndex((commentor) => commentor.id === id);
       if (index >= 0) {
@@ -336,6 +339,7 @@ const useControls = (): UseControlsResults => {
     let index: any;
     if (!id) {
       setCollectLoading(true);
+      dispatch(setReactId(mainVideo.id));
     } else {
       index = commentors.findIndex((commentor) => commentor.id === id);
       if (index >= 0) {

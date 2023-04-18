@@ -8,12 +8,14 @@ export type ChannelsProps = {
   mirrored: boolean[];
   videosLoading: boolean;
   dispatchVideos: Publication[];
+  collected: boolean[];
 };
 
 export type UseChannelsResults = {
   videos: Publication[];
   liked: boolean[];
   mirrored: boolean[];
+  collected: boolean[];
   tab: number;
   setTab: (e: number) => void;
   videosLoading: boolean;
@@ -73,4 +75,5 @@ export type SideBarProps = {
   viewer: string;
   videosLoading: boolean;
   dispatchVideos: Publication[];
+  collected: boolean[];
 };

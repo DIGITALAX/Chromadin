@@ -18,6 +18,7 @@ const Component: FunctionComponent<ComponentProps> = ({
   setCurrentTime,
   setDuration,
   dispatchVideos,
+  collectedArray,
 }): JSX.Element => {
   const dispatch = useDispatch();
   const currentIndex = lodash.findIndex(
@@ -45,10 +46,11 @@ const Component: FunctionComponent<ComponentProps> = ({
                 (currentIndex + 1) % videos?.length
               ].metadata.media[0].original.url.split("ipfs://")[1]
             }`,
-            actionCollected: (videos?.length > 0 ? videos : dispatchVideos)[
-              (currentIndex + 1) %
-                (videos?.length > 0 ? videos : dispatchVideos)?.length
-            ].hasCollectedByMe,
+            actionCollected:
+              collectedArray[
+                (currentIndex + 1) %
+                  (videos?.length > 0 ? videos : dispatchVideos)?.length
+              ],
             actionLiked:
               likedArray[
                 (currentIndex + 1) %

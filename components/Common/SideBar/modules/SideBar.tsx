@@ -20,7 +20,8 @@ const SideBar: FunctionComponent<SideBarProps> = ({
   mirrored,
   viewer,
   videosLoading,
-  dispatchVideos
+  dispatchVideos,
+  collected,
 }): JSX.Element => {
   return (
     <div className="relative w-full lg:w-80 h-fit lg:h-full flex flex-col">
@@ -34,6 +35,7 @@ const SideBar: FunctionComponent<SideBarProps> = ({
           mirrored={mirrored}
           videosLoading={videosLoading}
           dispatchVideos={dispatchVideos}
+          collected={collected}
         />
       ) : (
         <Interactions viewer={viewer} />

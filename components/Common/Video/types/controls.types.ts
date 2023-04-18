@@ -36,6 +36,7 @@ export type ControlsProps = {
     e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
   ) => void;
   dispatchVideos: Publication[];
+  collectedArray: boolean[];
 };
 
 export type UseControlsResults = {
@@ -95,7 +96,8 @@ export type PlayerProps = {
   setCurrentTime: (e: number) => void;
   setDuration: (e: number) => void;
   wrapperRef: Ref<HTMLDivElement>;
-  dispatchVideos: Publication[]
+  dispatchVideos: Publication[];
+  collectedArray: boolean[];
 };
 
 export type ComponentProps = {
@@ -109,4 +111,5 @@ export type ComponentProps = {
   setCurrentTime: (e: number) => void;
   setDuration: (e: number) => void;
   dispatchVideos: Publication[];
+  collectedArray: boolean[];
 };

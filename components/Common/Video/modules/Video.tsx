@@ -38,7 +38,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
     progressRef,
     handleSeek,
   } = useControls();
-  const { videos, mirrored, liked, videosLoading } = useChannels();
+  const { videos, mirrored, liked, videosLoading, collected } = useChannels();
   const dispatchVideos = useSelector(
     (state: RootState) => state.app.channelsReducer.value
   );
@@ -70,6 +70,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           wrapperRef={wrapperRef}
           videosLoading={videosLoading}
           dispatchVideos={dispatchVideos}
+          collectedArray={collected}
         />
         <Controls
           fullScreen={fullScreen}
@@ -102,6 +103,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           progressRef={progressRef}
           handleSeek={handleSeek}
           dispatchVideos={dispatchVideos}
+          collectedArray={collected}
         />
       </div>
     </div>

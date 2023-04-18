@@ -31,7 +31,8 @@ const Home: NextPage = (): JSX.Element => {
   );
   const dispatch = useDispatch();
   const { handleConnect, handleLensSignIn, connected } = useConnect();
-  const { videos, liked, mirrored, tab, setTab, videosLoading } = useChannels();
+  const { videos, liked, mirrored, tab, setTab, videosLoading, collected } =
+    useChannels();
   return (
     <div className="relative w-full h-full flex flex-col overflow-x-hidden selection:bg-ama selection:text-moda">
       <Head>
@@ -59,6 +60,7 @@ const Home: NextPage = (): JSX.Element => {
               dispatch={dispatch}
               videosLoading={videosLoading}
               dispatchVideos={dispatchVideos}
+              collected={collected}
             />
           </div>
           <div className="relative w-full h-full flex flex-col gap-5 items-center justify-center">
@@ -83,6 +85,7 @@ const Home: NextPage = (): JSX.Element => {
               mirrored={mirrored}
               videosLoading={videosLoading}
               dispatchVideos={dispatchVideos}
+              collected={collected}
             />
           ) : (
             <Interactions viewer={viewer} />

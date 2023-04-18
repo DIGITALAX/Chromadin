@@ -21,6 +21,7 @@ import noHandleReducer from "./reducers/noHandleSlice";
 import imageViewerReducer from "./reducers/imageViewerSlice";
 import channelsReducer from "./reducers/channelsSlice";
 import collectOpenReducer from "./reducers/collectOpenSlice";
+import reactIdReducer from "./reducers/reactIdSlice";
 
 const reducer = combineReducers({
   authStatusReducer,
@@ -44,6 +45,7 @@ const reducer = combineReducers({
   imageViewerReducer,
   channelsReducer,
   collectOpenReducer,
+  reactIdReducer
 });
 
 export const store = configureStore({
