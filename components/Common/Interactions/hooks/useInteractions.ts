@@ -21,7 +21,7 @@ const useInteractions = () => {
   const [collectLoading, setCollectLoading] = useState<boolean>(false);
   const [hasMoreCollects, setHasMoreCollects] = useState<boolean>(true);
   const [hasMoreComments, setHasMoreComments] = useState<boolean>(true);
-
+  
   const profileId = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile?.id
   );
