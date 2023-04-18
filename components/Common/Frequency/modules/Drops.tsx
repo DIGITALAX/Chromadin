@@ -5,6 +5,7 @@ import { Collection } from "@/components/Home/types/home.types";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
+import { setOptions } from "@/redux/reducers/optionsSlice";
 
 const Drops: FunctionComponent<DropsProps> = ({
   collections,
@@ -17,7 +18,10 @@ const Drops: FunctionComponent<DropsProps> = ({
       {collectionsLoading
         ? Array.from({ length: 7 }).map((_: any, index: number) => {
             return (
-              <div className="relative w-60 h-40 flex flex-col items-center shrink-0 cursor-pointer"  key={index}>
+              <div
+                className="relative w-60 h-40 flex flex-col items-center shrink-0 cursor-pointer"
+                key={index}
+              >
                 <div
                   className="relative w-full h-full border-white border"
                   id="staticLoad"
@@ -45,7 +49,7 @@ const Drops: FunctionComponent<DropsProps> = ({
                 <div
                   className="relative w-60 h-40 flex flex-col items-center shrink-0 cursor-pointer"
                   key={index}
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
                       setMainNFT({
                         name: collection?.name,
@@ -60,8 +64,9 @@ const Drops: FunctionComponent<DropsProps> = ({
                         price: collection?.prices,
                         acceptedTokens: collection?.acceptedTokens,
                       })
-                    )
-                  }
+                    );
+                    dispatch(setOptions("fulfillment"));
+                  }}
                 >
                   <div
                     className="relative w-full h-full border-white border"

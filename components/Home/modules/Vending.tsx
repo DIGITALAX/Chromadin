@@ -7,6 +7,7 @@ import useDrop from "../hooks/useDrop";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { setOptions } from "@/redux/reducers/optionsSlice";
 
 const Vending: FunctionComponent<VendingProps> = ({
   dispatch,
@@ -69,7 +70,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                 <div
                   className="relative w-full h-full cursor-pointer rounded-tr-2xl"
                   id="staticLoad"
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
                       setMainNFT({
                         name: collection?.name,
@@ -90,8 +91,9 @@ const Vending: FunctionComponent<VendingProps> = ({
                         price: collection?.prices,
                         acceptedTokens: collection?.acceptedTokens,
                       })
-                    )
-                  }
+                    );
+                    dispatch(setOptions("fulfillment"));
+                  }}
                 >
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
