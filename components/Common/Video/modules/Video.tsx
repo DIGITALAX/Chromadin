@@ -38,7 +38,16 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
     progressRef,
     handleSeek,
   } = useControls();
-  const { videos, mirrored, liked, videosLoading, collected } = useChannels();
+  const {
+    videos,
+    mirrored,
+    liked,
+    videosLoading,
+    collected,
+    collectAmount,
+    mirrorAmount,
+    likeAmount,
+  } = useChannels();
   const dispatchVideos = useSelector(
     (state: RootState) => state.app.channelsReducer.value
   );
@@ -104,6 +113,9 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           handleSeek={handleSeek}
           dispatchVideos={dispatchVideos}
           collectedArray={collected}
+          collectAmount={collectAmount}
+          mirrorAmount={mirrorAmount}
+          likeAmount={likeAmount}
         />
       </div>
     </div>

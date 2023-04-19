@@ -37,6 +37,9 @@ export type ControlsProps = {
   ) => void;
   dispatchVideos: Publication[];
   collectedArray: boolean[];
+  collectAmount: number[];
+  mirrorAmount: number[];
+  likeAmount: number[];
 };
 
 export type UseControlsResults = {

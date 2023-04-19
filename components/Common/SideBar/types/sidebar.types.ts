@@ -19,6 +19,9 @@ export type UseChannelsResults = {
   tab: number;
   setTab: (e: number) => void;
   videosLoading: boolean;
+  likeAmount: number[];
+  collectAmount: number[];
+  mirrorAmount: number[];
 };
 
 export type UseConnectResults = {

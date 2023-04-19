@@ -40,6 +40,9 @@ const Controls: FunctionComponent<ControlsProps> = ({
   handleSeek,
   dispatchVideos,
   collectedArray,
+  collectAmount,
+  mirrorAmount,
+  likeAmount,
 }): JSX.Element => {
   const dispatch = useDispatch();
   const currentIndex = lodash.findIndex(
@@ -118,7 +121,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             )}
           </div>
           <div className="relative w-fit h-fit font-earl text-white text-xs">
-            {videos[currentIndex]?.stats?.totalUpvotes}
+            {likeAmount[currentIndex]}
           </div>
         </div>
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
@@ -149,7 +152,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             )}
           </div>
           <div className="relative w-fit h-fit font-earl text-white text-xs">
-            {videos[currentIndex]?.stats?.totalAmountOfCollects}
+            {collectAmount[currentIndex]}
           </div>
         </div>
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
@@ -180,7 +183,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             )}
           </div>
           <div className="relative w-fit h-fit font-earl text-white text-xs">
-            {videos[currentIndex]?.stats?.totalAmountOfMirrors}
+            {mirrorAmount[currentIndex]}
           </div>
         </div>
         <div

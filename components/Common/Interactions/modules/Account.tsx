@@ -53,7 +53,7 @@ const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
           />
           <textarea
             disabled
-            className="relative bg-offBlack font-arcade text-white/50 w-full h-14 rounded-br-lg rounded-tl-lg border border-white/30 px-2 py-1 text-sm"
+            className="relative bg-offBlack font-arcade text-white/50 w-full h-28 rounded-br-lg rounded-tl-lg border border-white/30 px-2 py-1 text-sm"
             style={{
               resize: "none",
             }}

@@ -43,6 +43,9 @@ const useChannels = (): UseChannelsResults => {
   const [mirrored, setMirrored] = useState<boolean[]>([]);
   const [tab, setTab] = useState<number>(0);
   const [videosLoading, setVideosLoading] = useState<boolean>(false);
+  const [mirrorAmount, setMirrorAmount] = useState<number[]>([]);
+  const [likeAmount, setLikeAmount] = useState<number[]>([]);
+  const [collectAmount, setCollectAmount] = useState<number[]>([]);
 
   const getVideos = async (): Promise<void> => {
     setVideosLoading(true);
@@ -68,6 +71,15 @@ const useChannels = (): UseChannelsResults => {
       dispatch(setChannelsRedux(sortedArr.reverse()));
       setVideos(sortedArr);
       setCollected(sortedArr.map((obj: Publication) => obj.hasCollectedByMe));
+      setMirrorAmount(
+        sortedArr.map((obj: Publication) => obj.stats.totalAmountOfMirrors)
+      );
+      setCollectAmount(
+        sortedArr.map((obj: Publication) => obj.stats.totalAmountOfCollects)
+      );
+      setLikeAmount(
+        sortedArr.map((obj: Publication) => obj.stats.totalUpvotes)
+      );
       if (authStatus && lensProfile) {
         hasReactedArr = await checkPostReactions(
           {
@@ -138,6 +150,15 @@ const useChannels = (): UseChannelsResults => {
         .map((obj: Publication) => obj.hasCollectedByMe);
       setCollected(hasCollectedArr);
       setMirrored(hasMirroredArr);
+      setMirrorAmount(
+        sortedArr.map((obj: Publication) => obj.stats.totalAmountOfMirrors)
+      );
+      setCollectAmount(
+        sortedArr.map((obj: Publication) => obj.stats.totalAmountOfCollects)
+      );
+      setLikeAmount(
+        sortedArr.map((obj: Publication) => obj.stats.totalUpvotes)
+      );
       if (reactId === mainVideo.id) {
         const currentIndex = lodash.findIndex(
           videos?.length > 0 ? videos : channelsDispatched,
@@ -172,7 +193,18 @@ const useChannels = (): UseChannelsResults => {
     }
   }, [lensProfile]);
 
-  return { videos, liked, mirrored, tab, setTab, videosLoading, collected };
+  return {
+    videos,
+    liked,
+    mirrored,
+    tab,
+    setTab,
+    videosLoading,
+    collected,
+    likeAmount,
+    collectAmount,
+    mirrorAmount,
+  };
 };
 
 export default useChannels;

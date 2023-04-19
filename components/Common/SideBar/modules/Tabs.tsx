@@ -16,7 +16,7 @@ const Tabs: FunctionComponent<TabProps> = ({
           setTab(tab === 0 ? 1 : 0);
         }}
       >
-        <div className="relative w-full h-fit flex items-center flex flex-row gap-2 justify-center">
+        <div className="relative w-full h-fit flex items-center flex flex-row gap-2 justify-center text-xs galaxy:text-base">
           <span
             className={`${
               tab === 1 ? "text-moda" : "text-ama"
