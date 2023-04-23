@@ -49,4 +49,8 @@ export type FollowerOnlyProps = {
 
 export type ImageLargeProps = {
   mainImage: string;
-}
+};
+
+export type SuccessProps = {
+  media: string;
+};

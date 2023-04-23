@@ -1,10 +1,8 @@
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
-import IRLOptions from "./IRLOptions";
-import { setProductType } from "@/redux/reducers/productTypeSlice";
-import { useDispatch } from "react-redux";
 import { FulfillmentProps } from "../types/interactions.types";
+import Purchase from "./Purchase";
 
 const Fulfillment: FunctionComponent<FulfillmentProps> = ({
   baseColor,
@@ -20,11 +18,15 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
   posterAmount,
   setPosterAmount,
   totalAmount,
-  acceptedtokens
+  acceptedtokens,
+  approved,
+  mainNFT,
+  approveSpend,
+  buyNFT,
+  purchaseLoading,
 }): JSX.Element => {
-  const dispatch = useDispatch();
   return (
-    <div className="relative w-full h-fit flex flex-col items-start justify-center bg-black border-t border-white gap-3">
+    <div className="relative w-full h-full xl:h-[45.8rem] flex items-start justify-center bg-black border-t border-white">
       <div className="absolute w-full h-full justify-stretch flex">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmUFwK9nUrUnAoVm3fhbw2XqtUAdzz2js8ju7LjdGXVQe5`}
@@ -33,14 +35,38 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
           objectFit="cover"
         />
       </div>
-      <div className="relative w-full h-full text-center items-center font-earl text-moda text-lg p-3">
-        Drop fulfillment that’s IRL & decentralized, too?
-        <br />
-        <br />
-        Tune in to find out what <br />
-        it’s all about.
+      <div className="relative w-full h-fit flex flex-col overflow-y-scroll py-4 items-center justify-center gap-3">
+        <div className="relative w-full h-full text-center items-start font-earl text-moda text-lg p-3 flex justify-center">
+          This NFT unlocks IRL fulfillment with token gated creator posts
+          incoming.
+        </div>
+        <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-xl flex text-center">
+          {mainNFT?.name}
+        </div>
+        <div className="relative w-full preG:w-1/2 lg:w-full h-fit items-center justify-center text-white font-earl text-xs flex text-center px-3">
+          {mainNFT?.description}
+        </div>
+        <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-base flex">
+          {Number(mainNFT?.tokenIds?.length) -
+            (mainNFT?.tokensSold?.length
+              ? mainNFT?.tokensSold?.length
+              : 0)}{" "}
+          / {Number(mainNFT?.tokenIds?.length)}
+        </div>
+        <Purchase
+          acceptedtokens={acceptedtokens}
+          approved={approved}
+          currency={currency}
+          setCurrency={setCurrency}
+          totalAmount={totalAmount}
+          mainNFT={mainNFT}
+          approveSpend={approveSpend}
+          buyNFT={buyNFT}
+          purchaseLoading={purchaseLoading}
+        />
       </div>
-      <div className="relative w-full h-fit flex flex-row items-center justify-center gap-6">
+
+      {/* <div className="relative w-full h-fit flex flex-row items-center justify-center gap-6">
         {Array.from([
           ["QmY68nkuFyZdDbYzKZD2hLMNkHTq9o8jAzq8tjWeZWACdZ", "poster"],
           ["QmSDRK7jnqLpb2bedHGoGnB8r8rBd9YX4JPwU5GjGRne36", "ropa"],
@@ -69,8 +95,8 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
             </div>
           );
         })}
-      </div>
-      <div className="relative w-full h-fit flex items-center justify-center">
+      </div> */}
+      {/* <div className="relative w-full h-fit flex items-center justify-center">
         <IRLOptions
           baseColor={baseColor}
           selectSize={selectSize}
@@ -83,8 +109,8 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
           setPosterAmount={setPosterAmount}
           posterAmount={posterAmount}
         />
-      </div>
-      <div className="relative w-full h-fit flex flex-col gap-2 p-3">
+      </div> */}
+      {/* <div className="relative w-full h-fit flex flex-col gap-2 p-3 xl:pb-3 pb-4">
         <div className="relative w-full h-fit flex flex-col gap-2">
           <input
             disabled
@@ -109,61 +135,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
             value={"State"}
           />
         </div>
-      </div>
-      <div className="relative w-full h-fit flex flex-row items-center gap-3 pt-4 justify-center px-3">
-        <div className="relative w-fit h-fit flex flex-row items-center justify-center gap-2">
-          {Array.from([
-            [
-              "QmYYUQ8nGDnyuk8jQSung1WmTksvLEQBXjnCctdRrKtsNk",
-              "MATIC",
-              "0x0000000000000000000000000000000000001010",
-            ],
-            [
-              "QmZRhUgjK6bJM8fC7uV145yf66q2e7vGeT7CLosw1SdMdN",
-              "WETH",
-              "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-            ],
-            [
-              "QmSbpsDRwxSCPBWPkwWvcb49jViSxzmNHjYy3AcGF3qM2x",
-              "USDT",
-              "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-            ],
-            [
-              "QmS6f8vrNZok9j4pJttUuWpNrjsf4vP9RD5mRL36z6UdaL",
-              "MONA",
-              "0x6968105460f67c3bf751be7c15f92f5286fd0ce5",
-            ],
-          ])
-            .filter((item) => acceptedtokens.includes(item[2]))
-            .map((item: string[], index: number) => {
-              return (
-                <div
-                  className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
-                    currency === item[1] ? "opacity-50" : "opacity-100"
-                  }`}
-                  key={index}
-                  onClick={() => setCurrency(item[1])}
-                >
-                  <Image
-                    src={`${INFURA_GATEWAY}/ipfs/${item[0]}`}
-                    className="flex"
-                    draggable={false}
-                    width={30}
-                    height={35}
-                  />
-                </div>
-              );
-            })}
-        </div>
-        <div className="relative w-1/2 h-fit font-digi text-white text-xs items-center justify-center flex whitespace-nowrap">
-          Total: {totalAmount} {currency}
-        </div>
-      </div>
-      <div className="relative w-full h-fit font-earl items-center justify-center flex text-sm xl:pb-32 pb-8 pt-4">
-        <div className="relative rounded-lg p-1.5 w-24 text-center h-fit border-white border bg-verde/60 text-white cursor-pointer hover:bg-moda">
-          BUY NOW
-        </div>
-      </div>
+      </div> */}
     </div>
   );
 };

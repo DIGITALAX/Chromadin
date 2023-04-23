@@ -5,10 +5,9 @@ const DROPS = `
   query {
     dropCreateds(orderBy: dropId) {
       dropId
-      dropURI
-      creator
       collectionIds
-      blockTimestamp
+      creator
+      dropURI
     }
   }
 `;

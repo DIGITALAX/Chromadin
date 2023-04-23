@@ -7,7 +7,7 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 const Account: FunctionComponent<AccountProps> = ({ profile }): JSX.Element => {
   const formattedURL = createProfilePicture(profile);
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center bg-black border-t border-white">
+    <div className="relative w-full h-full xl:h-[45.8rem] flex flex-col items-center justify-center bg-black border-t border-white">
       <div className="absolute w-full h-full xl:h-[40vw] flex grow top-0">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmUBMaicGmBVTqUr5QXaqEu1AkavAhprwpDXKbMiy74g8p`}

@@ -8,7 +8,9 @@ import useDrop from "@/components/Home/hooks/useDrop";
 import { RootState } from "@/redux/store";
 
 const Frequency: FunctionComponent = (): JSX.Element => {
-  const { moveBackward, moveForward, currentIndex } = useDrops();
+  const { moveBackward, moveForward, currentIndex,   moshArray,
+    moshVideoRef,
+    currentVideoIndex, } = useDrops();
   const { collections, collectionsLoading } = useDrop();
   const dispatch = useDispatch();
   const dispatchCollections = useSelector(
@@ -68,16 +70,20 @@ const Frequency: FunctionComponent = (): JSX.Element => {
           collectionsLoading={collectionsLoading}
         />
       </div>
-      <div className="absolute w-80 h-full hidden md:flex bg-offBlack border-l border-white/70 right-0">
+      <div className="absolute w-80 h-full hidden md:flex bg-offBlack border-l border-white/70 right-0" id="staticLoad">
         <div className="relative w-full h-full justify-center flex">
           <video
             muted
             playsInline
             autoPlay
-            loop
-            className="flex w-full h-full p-7"
+            className="flex w-full h-full"
+            ref={moshVideoRef}
           >
-            <source src={"/videos/mosh.mp4"} type="video/mp4" id="staticLoad" />
+            <source
+              src={moshArray[currentVideoIndex]}
+              type="video/mp4"
+              id="staticLoad"
+            />
           </video>
         </div>
       </div>

@@ -10,6 +10,8 @@ import FollowerOnly from "./FollowerOnly";
 import useFollowers from "../../Interactions/hooks/useFollowers";
 import Claim from "./Claim";
 import ImageLarge from "./ImageLarge";
+import Error from "./Error";
+import Success from "./Success";
 
 const Modals = () => {
   const indexingModal = useSelector(
@@ -21,6 +23,10 @@ const Modals = () => {
   const purchaseModal = useSelector(
     (state: RootState) => state.app.purchaseReducer
   );
+  const successModal = useSelector(
+    (state: RootState) => state.app.successReducer
+  );
+  const errorModal = useSelector((state: RootState) => state.app.errorReducer);
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile?.id
   );
@@ -83,6 +89,8 @@ const Modals = () => {
       {collectModal?.open && <Collect message={collectModal?.message} />}
       {claimModal?.value && <Claim />}
       {imageViewer.value && <ImageLarge mainImage={mainImage!} />}
+      {errorModal.value && <Error />}
+      {successModal.open && <Success media={successModal.media} />}
       {indexingModal?.value && (
         <IndexingModal message={indexingModal?.message} />
       )}

@@ -13,7 +13,7 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full bg-offBlack flex flex-col">
-      <div className="relative w-full h-full flex flex-col">
+       <div className="relative w-full h-full flex flex-col pb-2">
         {collectLoading ? (
           <div className="relative w-full h-60 justify-center items-center flex">
             <FetchMoreLoading size="6" />

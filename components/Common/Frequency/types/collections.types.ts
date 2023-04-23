@@ -1,4 +1,5 @@
 import { Collection } from "@/components/Home/types/home.types";
+import { Ref } from "react";
 import { AnyAction, Dispatch } from "redux";
 
 export type DropsProps = {
@@ -12,4 +13,7 @@ export type DropsResults = {
   moveBackward: () => void;
   moveForward: () => void;
   currentIndex: number;
+  moshArray: string[];
+  moshVideoRef: Ref<HTMLVideoElement>;
+  currentVideoIndex: number;
 };

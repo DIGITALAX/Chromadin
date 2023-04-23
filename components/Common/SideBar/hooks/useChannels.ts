@@ -68,17 +68,21 @@ const useChannels = (): UseChannelsResults => {
       const sortedArr: any[] = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
-      dispatch(setChannelsRedux(sortedArr.reverse()));
-      setVideos(sortedArr);
-      setCollected(sortedArr.map((obj: Publication) => obj.hasCollectedByMe));
+      const reversedArr = sortedArr.reverse();
+      const lastTwo = reversedArr.splice(-2);
+      [lastTwo[0], lastTwo[1]] = [lastTwo[1], lastTwo[0]];
+      reversedArr.unshift(...lastTwo.reverse());
+      dispatch(setChannelsRedux(reversedArr));
+      setVideos(reversedArr);
+      setCollected(reversedArr.map((obj: Publication) => obj.hasCollectedByMe));
       setMirrorAmount(
-        sortedArr.map((obj: Publication) => obj.stats.totalAmountOfMirrors)
+        reversedArr.map((obj: Publication) => obj.stats.totalAmountOfMirrors)
       );
       setCollectAmount(
-        sortedArr.map((obj: Publication) => obj.stats.totalAmountOfCollects)
+        reversedArr.map((obj: Publication) => obj.stats.totalAmountOfCollects)
       );
       setLikeAmount(
-        sortedArr.map((obj: Publication) => obj.stats.totalUpvotes)
+        reversedArr.map((obj: Publication) => obj.stats.totalUpvotes)
       );
       if (authStatus && lensProfile) {
         hasReactedArr = await checkPostReactions(
@@ -90,18 +94,20 @@ const useChannels = (): UseChannelsResults => {
           lensProfile
         );
         setLiked(hasReactedArr);
-        hasMirroredArr = await checkIfMirrored(sortedArr, lensProfile);
+        hasMirroredArr = await checkIfMirrored(reversedArr, lensProfile);
         setMirrored(hasMirroredArr);
       }
       dispatch(
         setMainVideo({
           actionVideo: `${INFURA_GATEWAY}/ipfs/${
-            sortedArr[0]?.metadata?.media[0]?.original?.url?.split("ipfs://")[1]
+            reversedArr[0]?.metadata?.media[0]?.original?.url?.split(
+              "ipfs://"
+            )[1]
           }`,
-          actionCollected: sortedArr[0]?.hasCollectedByMe,
+          actionCollected: reversedArr[0]?.hasCollectedByMe,
           actionLiked: hasReactedArr?.[0],
           actionMirrored: hasMirroredArr?.[0],
-          actionId: sortedArr[0].id,
+          actionId: reversedArr[0].id,
           actionLocal: `${json[0].link}`,
         })
       );
@@ -132,6 +138,10 @@ const useChannels = (): UseChannelsResults => {
       const sortedArr: any[] = arr.sort(
         (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
+      const reversedArr = sortedArr.reverse();
+      const lastTwo = reversedArr.splice(-2);
+      [lastTwo[0], lastTwo[1]] = [lastTwo[1], lastTwo[0]];
+      reversedArr.unshift(...lastTwo.reverse());
       const hasReactedArr = await checkPostReactions(
         {
           profileId: "0x01c6a9",
@@ -145,19 +155,19 @@ const useChannels = (): UseChannelsResults => {
         lensProfile
       );
       setLiked(hasReactedArr);
-      const hasCollectedArr = sortedArr
-        .reverse()
-        .map((obj: Publication) => obj.hasCollectedByMe);
+      const hasCollectedArr = reversedArr.map(
+        (obj: Publication) => obj.hasCollectedByMe
+      );
       setCollected(hasCollectedArr);
       setMirrored(hasMirroredArr);
       setMirrorAmount(
-        sortedArr.map((obj: Publication) => obj.stats.totalAmountOfMirrors)
+        reversedArr.map((obj: Publication) => obj.stats.totalAmountOfMirrors)
       );
       setCollectAmount(
-        sortedArr.map((obj: Publication) => obj.stats.totalAmountOfCollects)
+        reversedArr.map((obj: Publication) => obj.stats.totalAmountOfCollects)
       );
       setLikeAmount(
-        sortedArr.map((obj: Publication) => obj.stats.totalUpvotes)
+        reversedArr.map((obj: Publication) => obj.stats.totalUpvotes)
       );
       if (reactId === mainVideo.id) {
         const currentIndex = lodash.findIndex(

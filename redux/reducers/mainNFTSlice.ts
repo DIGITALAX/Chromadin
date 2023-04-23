@@ -30,6 +30,8 @@ export const mainNFTSlice = createSlice({
         };
         price: string[];
         acceptedTokens: string[];
+        tokenIds: string[];
+        tokensSold: string[] | null;
       }>
     ) => {
       state.value = action.payload;

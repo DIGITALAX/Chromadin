@@ -199,6 +199,37 @@
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "oldPrice",
+        "type": "uint256[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "newPrice",
+        "type": "uint256[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "updater",
+        "type": "address"
+      }
+    ],
+    "name": "TokenBasePriceUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       }
     ],
     "name": "TokenBurned",
@@ -215,24 +246,12 @@
       },
       {
         "indexed": false,
-        "internalType": "uint256[]",
-        "name": "oldPrices",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "newPrices",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
         "internalType": "address",
         "name": "updater",
         "type": "address"
       }
     ],
-    "name": "TokenPricesUpdated",
+    "name": "TokenFulfillmentUpdated",
     "type": "event"
   },
   {
@@ -380,6 +399,17 @@
     "inputs": [
       { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }
     ],
+    "name": "getBasePrices",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }
+    ],
     "name": "getTokenAcceptedTokens",
     "outputs": [
       { "internalType": "address[]", "name": "", "type": "address[]" }
@@ -409,6 +439,15 @@
     "inputs": [
       { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }
     ],
+    "name": "getTokenFulfilled",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }
+    ],
     "name": "getTokenId",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
@@ -420,17 +459,6 @@
     ],
     "name": "getTokenIsBurned",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }
-    ],
-    "name": "getTokenPrices",
-    "outputs": [
-      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
-    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -464,7 +492,11 @@
         "name": "_acceptedTokens",
         "type": "address[]"
       },
-      { "internalType": "uint256[]", "name": "_prices", "type": "uint256[]" }
+      {
+        "internalType": "uint256[]",
+        "name": "_basePrices",
+        "type": "uint256[]"
+      }
     ],
     "name": "mintBatch",
     "outputs": [],
@@ -522,6 +554,16 @@
   },
   {
     "inputs": [
+      { "internalType": "uint256", "name": "_tokenId", "type": "uint256" },
+      { "internalType": "uint256[]", "name": "_newPrices", "type": "uint256[]" }
+    ],
+    "name": "setBasePrices",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "address",
         "name": "_chromadinCollectionAddress",
@@ -562,10 +604,9 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_tokenId", "type": "uint256" },
-      { "internalType": "uint256[]", "name": "_newPrices", "type": "uint256[]" }
+      { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }
     ],
-    "name": "setTokenPrices",
+    "name": "setTokenFulfilled",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -633,7 +674,8 @@
       { "internalType": "address", "name": "creator", "type": "address" },
       { "internalType": "string", "name": "uri", "type": "string" },
       { "internalType": "bool", "name": "isBurned", "type": "bool" },
-      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+      { "internalType": "uint256", "name": "timestamp", "type": "uint256" },
+      { "internalType": "bool", "name": "fulfillment", "type": "bool" }
     ],
     "stateMutability": "view",
     "type": "function"

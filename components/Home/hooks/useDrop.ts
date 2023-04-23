@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import { RootState } from "@/redux/store";
 import { setCollectionsRedux } from "@/redux/reducers/collectionsSlice";
+import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 
 const useDrop = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -18,12 +19,9 @@ const useDrop = () => {
   const collectionsDispatched = useSelector(
     (state: RootState) => state.app.collectionsReducer.value
   );
-
-  const fetchIPFSJSON = async (uri: string): Promise<any> => {
-    const response = await fetch(`${INFURA_GATEWAY}/ipfs/${uri}`);
-    const json = await response.json();
-    return json;
-  };
+  const indexModal = useSelector(
+    (state: RootState) => state.app.indexModalReducer.message
+  );
 
   const handleAllCollections = async (): Promise<void> => {
     setCollectionsLoading(true);
@@ -48,8 +46,8 @@ const useDrop = () => {
           const json = await fetchIPFSJSON(
             (collection.uri as any)
               ?.split("ipfs://")[1]
-              .replace(/"/g, "")
-              .trim()
+              ?.replace(/"/g, "")
+              ?.trim()
           );
           const collectionDrops = drops
             .filter((drop: any) =>
@@ -59,8 +57,8 @@ const useDrop = () => {
           const dropjson = await fetchIPFSJSON(
             collectionDrops[0]?.dropURI
               ?.split("ipfs://")[1]
-              .replace(/"/g, "")
-              .trim()
+              ?.replace(/"/g, "")
+              ?.trim()
           );
           let defaultProfile;
           defaultProfile = await getDefaultProfile(collection.owner);
@@ -95,8 +93,8 @@ const useDrop = () => {
       const latest = await fetchIPFSJSON(
         collectionDrops[0]?.dropURI
           ?.split("ipfs://")[1]
-          .replace(/"/g, "")
-          .trim()
+          ?.replace(/"/g, "")
+          ?.trim()
       );
       dispatch(
         setMainNFT({
@@ -112,8 +110,10 @@ const useDrop = () => {
             media: createProfilePicture(collections[0].profile, false),
             name: collections[0].profile?.handle,
           },
-          price: collections[0].prices,
+          price: collections[0].basePrices,
           acceptedTokens: collections[0].acceptedTokens,
+          tokenIds: collections[0].tokenIds,
+          tokensSold: collections[0].soldTokens,
         })
       );
       dispatch(setCollectionsRedux(collections));
@@ -140,6 +140,12 @@ const useDrop = () => {
       handleAllCollections();
     }
   }, []);
+
+  useEffect(() => {
+    if (indexModal === "Purchase Successful") {
+      handleAllCollections();
+    }
+  }, [indexModal]);
 
   return { collections, collectionsLoading, error };
 };

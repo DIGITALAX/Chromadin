@@ -7,13 +7,13 @@ import Frequency from "@/components/Common/Frequency/modules/Frequency";
 import View from "@/components/Home/View";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import Interactions from "@/components/Common/Interactions/modules/Interactions";
 import Switcher from "@/components/Common/SideBar/modules/Switcher";
 import Connect from "@/components/Common/SideBar/modules/Connect";
 import useConnect from "@/components/Common/SideBar/hooks/useConnect";
 import Channels from "@/components/Common/SideBar/modules/Channels";
 import useChannels from "@/components/Common/SideBar/hooks/useChannels";
 import Tabs from "@/components/Common/SideBar/modules/Tabs";
+import Interactions from "@/components/Common/Interactions/modules/Interactions";
 
 const Home: NextPage = (): JSX.Element => {
   const viewer = useSelector((state: RootState) => state.app.viewReducer.value);

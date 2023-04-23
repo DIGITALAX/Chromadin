@@ -75,9 +75,9 @@ const Vending: FunctionComponent<VendingProps> = ({
                       setMainNFT({
                         name: collection?.name,
                         media: collection?.uri?.image
-                          .split("ipfs://")[1]
-                          .replace(/"/g, "")
-                          .trim(),
+                          ?.split("ipfs://")[1]
+                          ?.replace(/"/g, "")
+                          ?.trim(),
                         description: collection?.uri?.description,
                         type: collection?.uri?.type,
                         drop: collection?.drop,
@@ -88,8 +88,10 @@ const Vending: FunctionComponent<VendingProps> = ({
                           ),
                           name: collection?.profile?.handle,
                         },
-                        price: collection?.prices,
+                        price: collection?.basePrices,
                         acceptedTokens: collection?.acceptedTokens,
+                        tokenIds: collection?.tokenIds,
+                        tokensSold: collection?.soldTokens,
                       })
                     );
                     dispatch(setOptions("fulfillment"));
@@ -97,9 +99,9 @@ const Vending: FunctionComponent<VendingProps> = ({
                 >
                   <Image
                     src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
-                      .split("ipfs://")[1]
-                      .replace(/"/g, "")
-                      .trim()}`}
+                      ?.split("ipfs://")[1]
+                      ?.replace(/"/g, "")
+                      ?.trim()}`}
                     alt="vending"
                     layout="fill"
                     className="rounded-tr-2xl"
@@ -107,12 +109,23 @@ const Vending: FunctionComponent<VendingProps> = ({
                     draggable={false}
                   />
                 </div>
-                <div className="relative flex flex-row w-full h-fit gap-2  text-sm font-arcade">
+                <div className="relative flex flex-row w-full h-fit gap-2 text-sm font-arcade">
                   <div className="relative uppercase text-white w-fit h-fit cursor-pointer whitespace-nowrap">
                     {collection?.name}
                   </div>
                   <div className="relative w-full h-fit text-ama justify-end flex">
-                    {collection?.amount}
+                    {!collection?.soldTokens
+                      ? `${Number(collection?.amount)} / ${Number(
+                          collection?.amount
+                        )}`
+                      : Number(collection?.amount) -
+                          collection?.soldTokens?.length ===
+                        0
+                      ? "SOLD OUT"
+                      : `${
+                          Number(collection?.amount) -
+                          collection?.soldTokens?.length
+                        } / ${Number(collection?.amount)}`}
                   </div>
                 </div>
                 <div className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3">

@@ -19,7 +19,7 @@ const Drops: FunctionComponent<DropsProps> = ({
         ? Array.from({ length: 7 }).map((_: any, index: number) => {
             return (
               <div
-                className="relative w-60 h-40 flex flex-col items-center shrink-0 cursor-pointer"
+                className="relative w-60 h-40 flex flex-col items-center shrink-0 cursor-pointer opacity-30 animate-pulse"
                 key={index}
               >
                 <div
@@ -61,8 +61,10 @@ const Drops: FunctionComponent<DropsProps> = ({
                           media: profileImage,
                           name: collection?.profile?.handle,
                         },
-                        price: collection?.prices,
+                        price: collection?.basePrices,
                         acceptedTokens: collection?.acceptedTokens,
+                        tokenIds: collection?.tokenIds,
+                        tokensSold: collection?.soldTokens,
                       })
                     );
                     dispatch(setOptions("fulfillment"));

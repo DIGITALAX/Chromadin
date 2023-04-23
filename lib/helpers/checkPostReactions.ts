@@ -16,7 +16,11 @@ const checkPostReactions = async (
         hasReactedArr.push(false);
       }
     }
-    return hasReactedArr;
+    const reversedArr = hasReactedArr.reverse();
+    const lastTwo = reversedArr.splice(-2);
+    [lastTwo[0], lastTwo[1]] = [lastTwo[1], lastTwo[0]];
+    reversedArr.unshift(...lastTwo.reverse());
+    return reversedArr;
   } catch (err: any) {
     console.error(err.message);
   }

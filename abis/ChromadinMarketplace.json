@@ -163,11 +163,6 @@
         "internalType": "address",
         "name": "_chosenTokenAddress",
         "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "_fulfillmentContent",
-        "type": "string"
       }
     ],
     "name": "buyTokens",
@@ -212,15 +207,6 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_address", "type": "address" }
-    ],
-    "name": "getBuyerToFulfillment",
-    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "uint256", "name": "_collectionId", "type": "uint256" }
     ],
     "name": "getCollectionSoldCount",
@@ -244,16 +230,6 @@
     "name": "name",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "index", "type": "uint256" },
-      { "internalType": "address", "name": "_address", "type": "address" }
-    ],
-    "name": "removeFulfillmentContent",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

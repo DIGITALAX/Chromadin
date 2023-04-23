@@ -27,8 +27,10 @@ export interface Collection {
     type: string;
   };
   profile: Profile | undefined;
-  prices: string[]
+  basePrices: string[];
   acceptedTokens: string[];
+  tokenIds: string[];
+  soldTokens: string[] | null;
 }
 
 export interface Drop {

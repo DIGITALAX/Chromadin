@@ -4,15 +4,15 @@ import { graphClient } from "@/lib/subgraph/client";
 const COLLECTIONS = `
   query {
     collectionMinteds {
-      prices
-      owner
-      name
-      id
-      collectionId
+      basePrices
       uri
-      transactionHash
+      tokenIds
       acceptedTokens
       amount
+      collectionId
+      owner
+      name
+      soldTokens
     }
   }
 `;

@@ -97,6 +97,8 @@ export interface MainNFT {
   };
   price: string[];
   acceptedTokens: string[];
+  tokenIds: string[];
+  tokensSold: string[] | null;
 }
 
 export type DescriptionProps = {
@@ -113,7 +115,7 @@ export type OptionsProps = {
   setGifOpen: (e: boolean) => void;
   gifOpen: boolean;
   collectOpen: boolean;
-  dispatch: Dispatch<AnyAction>
+  dispatch: Dispatch<AnyAction>;
 };
 
 export type ImageUploadsProps = {

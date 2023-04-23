@@ -97,8 +97,7 @@ const useFollowers = () => {
     // enabled: Boolean(approvalSendEnabled),
   });
 
-  const { sendTransactionAsync, isSuccess: approvalSuccess } =
-    useSendTransaction(approvalConfig);
+  const { sendTransactionAsync } = useSendTransaction(approvalConfig);
 
   const callApprovalSign = async (): Promise<void> => {
     try {
