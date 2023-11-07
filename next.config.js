@@ -1,0 +1,97 @@
+const webpack = require("webpack");
+/** @type {import('next').NextConfig} */
+
+const allowedOrigins = [
+  "https://api.lens.dev",
+  "https://api-v2.lens.dev/",
+  "https://chromadin.infura-ipfs.io",
+  "https://tenor.googleapis.com",
+  "https://api.studio.thegraph.com",
+  "https://api.thegraph.com",
+  "https://youtube.com",
+  "https://vimeo.com",
+  "https://gw.ipfs-lens.dev",
+  "https://www.chromadin.xyz",
+];
+
+const nextConfig = {
+  reactStrictMode: true,
+  crossOrigin: "anonymous",
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "chromadin.infura-ipfs.io",
+        pathname: "/ipfs/**",
+      },
+      {
+        protocol: "https",
+        hostname: "gw.ipfs-lens.dev",
+        pathname: "/ipfs/**",
+      },
+    ],
+    unoptimized: true,
+  },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      fs: false,
+      net: false,
+      tls: false,
+      buffer: require.resolve("buffer/"),
+    };
+
+    config.plugins.push(
+      new webpack.ProvidePlugin({
+        Buffer: ["buffer", "Buffer"],
+      })
+    );
+
+    return config;
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value: allowedOrigins.join(","),
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value:
+              "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
+          },
+        ],
+      },
+      {
+        source: "/fonts/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Credentials",
+            value: "true",
+          },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://www.chromadin.xyz",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value:
+              "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+module.exports = nextConfig;
