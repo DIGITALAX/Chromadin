@@ -4,7 +4,6 @@ import {
   QuickProfilesProps,
 } from "../types/wavs.types";
 import Image from "next/legacy/image";
-import createProfilePicture from "@/lib/helpers/createProfilePicture";
 
 const QuickProfiles: FunctionComponent<QuickProfilesProps> = ({
   quickProfiles,

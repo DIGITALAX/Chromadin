@@ -34,7 +34,7 @@ export type NFTProps = {
   clientRendered: boolean;
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   videoLoading: boolean;
   imageLoading: boolean;
   uploadImage: (e: FormEvent) => Promise<void>;
@@ -106,7 +106,7 @@ export type UserCommentProps = {
   clientRendered: boolean;
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   videoLoading: boolean;
   imageLoading: boolean;
   uploadImage: (e: FormEvent) => Promise<void>;

@@ -23,7 +23,6 @@ const useSuperCreator = () => {
   });
   const [superCreatorLoading, setSuperCreatorLoading] =
     useState<boolean>(false);
-  const [followArgs, setFollowArgs] = useState<any>();
   const dispatch = useDispatch();
   const { address } = useAccount();
   const canvasRef = useRef<HTMLCanvasElement>(null);

@@ -137,6 +137,8 @@ const useChannels = (): UseChannelsResults => {
       })
     );
   };
+
+  
   const fetchMoreVideos = async () => {
     let data: FetchResult<PublicationsQuery>,
       sortedArr: Post[] = [];

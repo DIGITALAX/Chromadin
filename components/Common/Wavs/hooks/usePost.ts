@@ -435,15 +435,15 @@ const useMakePost = () => {
     setPostLoading(false);
   };
 
-  const handleMentionClick = (user: any) => {
+  const handleMentionClick = (user: Profile) => {
     setProfilesOpen(false);
     let resultElement = document.querySelector("#highlighted-content3");
     const newHTMLPost =
       postHTML?.substring(0, postHTML.lastIndexOf("@")) +
-      `@${user?.handle}</span>`;
+      `@${user?.handle?.localName}</span>`;
     const newElementPost =
       postDescription?.substring(0, postDescription.lastIndexOf("@")) +
-      `@${user?.handle}`;
+      `@${user?.handle?.localName}`;
     setPostDescription(newElementPost);
 
     const postStorage = JSON.parse(getPostData() || "{}");

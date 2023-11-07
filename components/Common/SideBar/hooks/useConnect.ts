@@ -105,12 +105,6 @@ const useConnect = (): UseConnectResults => {
         setAddress(address as string);
 
         if (profile?.data?.defaultProfile) {
-          dispatch(
-            setNoHandle({
-              actionValue: false,
-              actionMessage: "",
-            })
-          );
           dispatch(setLensProfile(profile?.data?.defaultProfile as Profile));
         } else {
           dispatch(

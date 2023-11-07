@@ -4,14 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import addReaction from "@/graphql/lens/mutations/react";
 import { useAccount } from "wagmi";
-import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
-import LensHubProxy from "../../../../abis/LensHubProxy.json";
-import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
-import { splitSignature } from "ethers/lib/utils.js";
-import broadcast from "@/graphql/lens/mutations/broadcast";
-import { omit } from "lodash";
-import { mirror } from "@/graphql/lens/mutations/mirror";
-import collect from "@/graphql/lens/mutations/collect";
 import useInteractions from "../../Interactions/hooks/useInteractions";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import {
@@ -32,11 +24,9 @@ import { polygon } from "viem/chains";
 import {
   AddReactionMutation,
   ApprovalAllowance,
-  CreateOnchainMirrorTypedDataMutation,
   Post,
   PublicationQuery,
   PublicationReactionType,
-  RelaySuccess,
   SimpleCollectOpenActionSettings,
 } from "@/components/Home/types/generated";
 import { FetchResult } from "@apollo/client";
@@ -365,7 +355,7 @@ const useControls = (): UseControlsResults => {
             value: collectModule?.amount?.value,
           },
           actionCanCollect: true,
-          actionApproved: true,
+          actionApproved: isApproved,
           actionTotalCollects: (pubData?.publication as Post)?.stats
             ?.countOpenActions,
         })

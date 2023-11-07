@@ -65,7 +65,7 @@ export type AutoProfileFeedProps = {
   };
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   commentLoading: boolean;
   gifOpen: boolean;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;

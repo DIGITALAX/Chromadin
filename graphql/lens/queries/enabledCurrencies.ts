@@ -1,10 +1,10 @@
 import {
   EnabledCurrenciesDocument,
   EnabledCurrenciesQuery,
+  PaginatedOffsetRequest
 } from "@/components/Home/types/generated";
 import { apolloClient } from "@/lib/lens/client";
 import { FetchResult } from "@apollo/client";
-import { PaginatedOffsetRequest } from "@lens-protocol/client";
 
 const getEnabledCurrencies = async (request: PaginatedOffsetRequest): Promise<
   FetchResult<EnabledCurrenciesQuery>

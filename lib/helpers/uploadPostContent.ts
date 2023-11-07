@@ -47,15 +47,15 @@ const uploadPostContent = async (
       $schema = "https://json-schemas.lens.dev/publications/video/3.0.0.json";
       mainContentFocus = PublicationMetadataMainFocusType.Video;
       value = {
-        image: newImages?.find((item) => item.type !== "video/mp4"),
-        attachments: newImages,
+        video: videos[0],
+        attachments: videos,
       };
     } else {
       $schema = "https://json-schemas.lens.dev/publications/image/3.0.0.json";
       mainContentFocus = PublicationMetadataMainFocusType.Image;
       value = {
-        video: videos[0],
-        attachments: videos,
+        image: newImages?.find((item) => item.type !== "video/mp4"),
+        attachments: newImages,
       };
     }
   }

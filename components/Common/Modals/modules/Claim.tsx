@@ -4,6 +4,8 @@ import { FunctionComponent } from "react";
 import { ImCross } from "react-icons/im";
 import { ClaimProps } from "../types/modals.types";
 import { AiOutlineLoading } from "react-icons/ai";
+import Image from "next/legacy/image";
+import { INFURA_GATEWAY } from "@/lib/constants";
 
 const Claim: FunctionComponent<ClaimProps> = ({
   dispatch,
@@ -19,15 +21,11 @@ const Claim: FunctionComponent<ClaimProps> = ({
       <div className="relative w-full preG:w-80 h-96 col-start-1 place-self-center bg-offBlack rounded-lg border border-white">
         <div className="relative w-full h-full flex flex-col items-center justify-center">
           <div className="absolute w-full h-full flex items-start">
-            <video
-              muted
-              playsInline
-              autoPlay
-              loop
-              className="relative w-full h-full rounded-lg flex items-start justify-start object-cover"
-            >
-              <source src={"/videos/lens.mp4"} type="video/mp4" />
-            </video>
+            <Image
+              src={`${INFURA_GATEWAY}/ipfs/Qma4968Gu8irNB74GJqg9xMqs8g4aDYqsx5pTUgJAUBD28`}
+              layout="fill"
+              objectFit="cover"
+            />
             <div className="absolute w-full h-full flex bg-offBlack/70 rounded-lg"></div>
           </div>
           <div className="relative w-full h-full flex flex-col gap-10 pb-8 items-center justify-center">

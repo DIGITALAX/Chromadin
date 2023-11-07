@@ -136,7 +136,7 @@ export type PostProps = {
   handlePostDescription: (e: FormEvent<Element>) => Promise<void>;
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   gifOpen: boolean;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
   handleGifSubmit: () => Promise<void>;

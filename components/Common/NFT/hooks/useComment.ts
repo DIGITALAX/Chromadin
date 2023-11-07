@@ -297,14 +297,14 @@ const useComment = () => {
     }
   };
 
-  const handleMentionClick = (user: any) => {
+  const handleMentionClick = (user: Profile) => {
     setProfilesOpen(false);
     const newHTMLPost =
       commentHTML?.substring(0, commentHTML.lastIndexOf("@")) +
-      `@${user?.handle}</span>`;
+      `@${user?.handle?.localName}</span>`;
     const newElementPost =
       commentDescription?.substring(0, commentDescription.lastIndexOf("@")) +
-      `@${user?.handle}`;
+      `@${user?.handle?.localName}`;
     setCommentDescription(newElementPost);
 
     const postStorage = JSON.parse(getCommentData() || "{}");

@@ -264,7 +264,7 @@ export type FeedProps = {
   };
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   commentLoading: boolean;
   gifOpen: boolean;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
@@ -483,7 +483,7 @@ export type IndividualProps = {
   };
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   commentLoading: boolean;
   gifOpen: boolean;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
@@ -593,7 +593,7 @@ export type CommentsProps = {
   };
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   videoLoading: boolean;
   imageLoading: boolean;
   uploadImages: (e: FormEvent) => Promise<void>;
@@ -729,7 +729,7 @@ export type MakeCommentProps = {
   clientRendered: boolean;
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   videoLoading: boolean;
   imageLoading: boolean;
   uploadImages: (e: FormEvent) => Promise<void>;
@@ -844,7 +844,7 @@ export type ProfileFeedProps = {
   };
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   commentLoading: boolean;
   gifOpen: boolean;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
@@ -964,7 +964,7 @@ export type SwitchProps = {
   };
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   commentLoading: boolean;
   gifOpen: boolean;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
@@ -1112,7 +1112,7 @@ export type AllPostsProps = {
   };
   mentionProfiles: Profile[];
   profilesOpen: boolean;
-  handleMentionClick: (user: any) => void;
+  handleMentionClick: (user: Profile) => void;
   commentLoading: boolean;
   gifOpen: boolean;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;

@@ -152,7 +152,7 @@ const useWho = () => {
   const getPostCollects = async (): Promise<void> => {
     setCollectInfoLoading(true);
     try {
-      const collects = await await whoActed({
+      const collects = await whoActed({
         on: pubId,
         limit: LimitType.Ten,
       });

@@ -35,7 +35,7 @@ const FollowSuper: FunctionComponent<SuperFollowProps> = ({
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-10 overflow-x-scroll">
                 <div className="relative w-3/4 h-fit flex items-center w-full h-fit gap-1.5 flex-col justify-center text-white font-dosis">
                   <div className="relative w-full h-fit justify-center items-center text-lg text-center">
-                    Follow All Chromadin Creators with One Click!
+                    Sign All Autographs with One Click!
                   </div>
                   <div className="relative w-fit justify-center items-center flex text-xs">{`(Well, ${Math.ceil(
                     quickProfiles.length / 15
