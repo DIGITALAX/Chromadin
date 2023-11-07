@@ -56,14 +56,14 @@ export default function Document() {
         />
         <link
           rel="preload"
-          href="/fonts/ClashDisplay.ttf"
+          href="/fonts/DosisRegular.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/DosisRegular.ttf"
+          href="/fonts/ClashDisplay.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
