@@ -9,7 +9,6 @@ import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 import { splitSignature } from "ethers/lib/utils.js";
 import broadcast from "@/graphql/lens/mutations/broadcast";
 import { omit } from "lodash";
-import { mirror } from "@/graphql/lens/mutations/mirror";
 import collect from "@/graphql/lens/mutations/collect";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import {
@@ -26,13 +25,13 @@ import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
 import {
   ApprovalAllowance,
-  CreateOnchainMirrorTypedDataMutation,
   Post,
   PublicationQuery,
   PublicationReactionType,
   RelaySuccess,
 } from "@/components/Home/types/generated";
-import { FetchResult } from "@apollo/client";
+import mirrorSig from "@/lib/helpers/mirrorSig";
+import actSig from "@/lib/helpers/actSig";
 
 const useReactions = () => {
   const publicClient = createPublicClient({
@@ -178,95 +177,26 @@ const useReactions = () => {
       });
     }
 
-    let mirrorPost: FetchResult<CreateOnchainMirrorTypedDataMutation>;
     try {
-      mirrorPost = await mirror({
-        mirrorOn: id,
-      });
-
-      const typedData = mirrorPost.data?.createOnchainMirrorTypedData.typedData;
-
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),
       });
 
-      const signature = await clientWallet.signTypedData({
-        domain: omit(typedData?.domain, ["__typename"]),
-        types: omit(typedData?.types, ["__typename"]),
-        primaryType: "Mirror",
-        message: omit(typedData?.value, ["__typename"]),
-        account: address as `0x${string}`,
-      });
+      await mirrorSig(
+        id,
+        clientWallet,
+        publicClient,
+        address as `0x${string}`,
+        dispatch
+      );
 
-      const broadcastResult = await broadcast({
-        id: mirrorPost?.data?.createOnchainMirrorTypedData?.id,
-        signature,
-      });
-
-      if (
-        broadcastResult?.data?.broadcastOnchain?.__typename === "RelayError"
-      ) {
-        const { v, r, s } = splitSignature(signature);
-        const { request } = await publicClient.simulateContract({
-          address: LENS_HUB_PROXY_ADDRESS_MATIC,
-          abi: LensHubProxy,
-          functionName: "mirrorWithSig",
-          chain: polygon,
-          args: [
-            {
-              profileId: typedData?.value.profileId,
-              metadataURI: typedData?.value.metadataURI,
-              pointedProfileId: typedData?.value.pointedProfileId,
-              pointedPubId: typedData?.value.pointedPubId,
-              referrerProfileIds: typedData?.value.referrerProfileIds,
-              referrerPubIds: typedData?.value.referrerPubIds,
-              referenceModuleData: typedData?.value.referenceModuleData,
-              sig: {
-                v,
-                r,
-                s,
-                deadline: typedData?.value.deadline,
-              },
-            },
-          ],
-          account: address,
-        });
-        dispatch(
-          setFeedReactId({
-            actionValue: mirrorId ? mirrorId : id,
-            actionType: 1,
-          })
-        );
-        const res = await clientWallet.writeContract(request);
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Indexing Interaction",
-          })
-        );
-        await publicClient.waitForTransactionReceipt({ hash: res });
-        await handleIndexCheck(res, dispatch);
-      } else {
-        dispatch(
-          setFeedReactId({
-            actionValue: mirrorId ? mirrorId : id,
-            actionType: 1,
-          })
-        );
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Indexing Interaction",
-          })
-        );
-        setTimeout(async () => {
-          await handleIndexCheck(
-            (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-            dispatch
-          );
-        }, 7000);
-      }
+      dispatch(
+        setFeedReactId({
+          actionValue: mirrorId ? mirrorId : id,
+          actionType: 1,
+        })
+      );
     } catch (err: any) {
       if (err.message.includes("data availability publication")) {
         dispatch(
@@ -329,109 +259,28 @@ const useReactions = () => {
     }
 
     try {
-      const collectPost = await collect({
-        for: id,
-        actOn: {
-          simpleCollectOpenAction: true,
-        },
-      });
-      const typedData =
-        collectPost.data?.createActOnOpenActionTypedData.typedData;
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),
       });
 
-      const signature = await clientWallet.signTypedData({
-        domain: omit(typedData?.domain, ["__typename"]),
-        types: omit(typedData?.types, ["__typename"]),
-        primaryType: "Act",
-        message: omit(typedData?.value, ["__typename"]),
-        account: address as `0x${string}`,
-      });
+      await actSig(
+        id,
+        {
+          simpleCollectOpenAction: true,
+        },
+        clientWallet,
+        publicClient,
+        address as `0x${string}`,
+        dispatch
+      );
 
-      const broadcastResult = await broadcast({
-        id: collectPost?.data?.createActOnOpenActionTypedData?.id,
-        signature,
-      });
-
-      if (
-        broadcastResult?.data?.broadcastOnchain?.__typename === "RelayError"
-      ) {
-        const { v, r, s } = splitSignature(signature);
-        const { request } = await publicClient.simulateContract({
-          address: LENS_HUB_PROXY_ADDRESS_MATIC,
-          abi: LensHubProxy,
-          functionName: "actWithSig",
-          chain: polygon,
-          args: [
-            {
-              publicationActedProfileId:
-                typedData?.value.publicationActedProfileId,
-              publicationActedId: typedData?.value.publicationActedId,
-              actorProfileId: typedData?.value.actorProfileId,
-              referrerProfileIds: typedData?.value.referrerProfileIds,
-              referrerPubIds: typedData?.value.referrerPubIds,
-              actionModuleAddress: typedData?.value.actionModuleAddress,
-              actionModuleData: typedData?.value.actionModuleData,
-              sig: {
-                v,
-                r,
-                s,
-                deadline: typedData?.value.deadline,
-              },
-            },
-          ],
-          account: address,
-        });
-        dispatch(
-          setFeedReactId({
-            actionValue: mirrorId ? mirrorId : id,
-            actionType: 2,
-          })
-        );
-        const res = await clientWallet.writeContract(request);
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Indexing Interaction",
-          })
-        );
-        await publicClient.waitForTransactionReceipt({ hash: res });
-        dispatch(
-          setPurchase({
-            actionOpen: false,
-            actionId: "",
-            actionIndex: undefined,
-          })
-        );
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Indexing Interaction",
-          })
-        );
-        await handleIndexCheck(res, dispatch);
-      } else {
-        dispatch(
-          setFeedReactId({
-            actionValue: mirrorId ? mirrorId : id,
-            actionType: 2,
-          })
-        );
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Indexing Interaction",
-          })
-        );
-        setTimeout(async () => {
-          await handleIndexCheck(
-            (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-            dispatch
-          );
-        }, 7000);
-      }
+      dispatch(
+        setFeedReactId({
+          actionValue: mirrorId ? mirrorId : id,
+          actionType: 2,
+        })
+      );
     } catch (err: any) {
       if (err.message.includes("You do not have enough")) {
         dispatch(

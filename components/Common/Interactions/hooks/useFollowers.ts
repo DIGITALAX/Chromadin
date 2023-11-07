@@ -5,7 +5,6 @@ import {
   ApprovalAllowance,
 } from "@/components/Home/types/generated";
 import broadcast from "@/graphql/lens/mutations/broadcast";
-import createFollowTypedData from "@/graphql/lens/mutations/follow";
 import {
   getOneProfileAuth,
   getOneProfile,
@@ -31,6 +30,7 @@ import createUnfollowTypedData from "@/graphql/lens/mutations/unfollow";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
 import { FetchResult } from "@apollo/client";
+import followSig from "@/lib/helpers/followSig";
 
 const useFollowers = () => {
   const publicClient = createPublicClient({
@@ -136,72 +136,21 @@ const useFollowers = () => {
     );
 
     try {
-      const response = await createFollowTypedData({
-        follow: [{ profileId: profile?.id, followModule }],
-      });
-
-      const typedData = response?.data?.createFollowTypedData?.typedData;
-
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),
       });
 
-      const signature = await clientWallet.signTypedData({
-        domain: omit(typedData?.domain, ["__typename"]),
-        types: omit(typedData?.types, ["__typename"]),
-        primaryType: "Follow",
-        message: omit(typedData?.value, ["__typename"]),
-        account: address as `0x${string}`,
-      });
-
-      const broadcastResult = await broadcast({
-        id: response?.data?.createFollowTypedData?.id,
-        signature,
-      });
-
-      if (
-        broadcastResult?.data?.broadcastOnchain?.__typename === "RelayError"
-      ) {
-        const { v, r, s } = splitSignature(signature);
-        const { request } = await publicClient.simulateContract({
-          address: LENS_HUB_PROXY_ADDRESS_MATIC,
-          abi: LensHubProxy,
-          functionName: "followWithSig",
-          chain: polygon,
-          args: [
-            {
-              followTokenIds: typedData?.value?.followTokenIds,
-              followerProfileId: typedData?.value?.followerProfileId,
-              idsOfProfilesToFollow: typedData?.value?.idsOfProfilesToFollow,
-              datas: typedData?.value?.datas,
-              sig: {
-                v,
-                r,
-                s,
-                deadline: typedData?.value?.deadline,
-              },
-            },
-          ],
-          account: address,
-        });
-        const res = await clientWallet.writeContract(request);
-        clearFollow();
-        await publicClient.waitForTransactionReceipt({ hash: res });
-
-        await handleIndexCheck(res, dispatch);
-        await refetchProfile();
-      } else {
-        clearFollow();
-        setFollowLoading(false);
-        setTimeout(async () => {
-          await handleIndexCheck(
-            (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-            dispatch
-          );
-          await refetchProfile();
-        }, 7000);
-      }
+      await followSig(
+        [{ profileId: profile?.id, followModule }],
+        clientWallet,
+        publicClient,
+        address as `0x${string}`,
+        dispatch,
+        clearFollow,
+        refetchProfile,
+        setFollowLoading
+      );
     } catch (err: any) {
       setFollowLoading(false);
       if (err.message.includes("You do not have enough")) {
@@ -226,16 +175,23 @@ const useFollowers = () => {
     setFollowLoading(true);
 
     try {
+
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+
+
+
+
       const response = await createUnfollowTypedData({
         unfollow: [profileId],
       });
 
       const typedData = response?.data?.createUnfollowTypedData.typedData;
 
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
+     
 
       const signature = await clientWallet.signTypedData({
         domain: omit(typedData?.domain, ["__typename"]),
@@ -257,16 +213,14 @@ const useFollowers = () => {
           functionName: "unfollowWithSig",
           chain: polygon,
           args: [
+            typedData?.value?.unfollowerProfileId,
+            typedData?.value?.idsOfProfilesToUnfollow,
             {
-              unfollowerProfileId: typedData?.value?.unfollowerProfileId,
-              idsOfProfilesToUnfollow:
-                typedData?.value?.idsOfProfilesToUnfollow,
-              sig: {
-                v,
-                r,
-                s,
-                deadline: typedData?.value?.deadline,
-              },
+              v,
+              r,
+              s,
+              deadline: typedData?.value?.deadline,
+              signer: address,
             },
           ],
           account: address,

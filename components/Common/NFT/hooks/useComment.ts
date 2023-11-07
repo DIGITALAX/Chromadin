@@ -1,4 +1,3 @@
-import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
 import {
   ClipboardEvent,
   FormEvent,
@@ -9,13 +8,7 @@ import {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
-import LensHubProxy from "../../../../abis/LensHubProxy.json";
-import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
-import { createCommentTypedData } from "@/graphql/lens/mutations/comment";
 import { RootState } from "@/redux/store";
-import { splitSignature } from "ethers/lib/utils.js";
-import broadcast from "@/graphql/lens/mutations/broadcast";
-import { omit } from "lodash";
 import uploadPostContent from "@/lib/helpers/uploadPostContent";
 import {
   getCommentData,
@@ -25,12 +18,7 @@ import {
 import { MediaType, UploadedMedia } from "@/components/Home/types/home.types";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import getCommentHTML from "@/lib/helpers/commentHTML";
-import {
-  CreateOnchainCommentTypedDataMutation,
-  LimitType,
-  Profile,
-  RelaySuccess,
-} from "@/components/Home/types/generated";
+import { LimitType, Profile } from "@/components/Home/types/generated";
 import getCaretPos from "@/lib/helpers/getCaretPos";
 import { searchProfile } from "@/graphql/lens/queries/search";
 import { setPostImages } from "@/redux/reducers/postImageSlice";
@@ -39,7 +27,7 @@ import useImageUpload from "./useImageUpload";
 import { setImageLoadingRedux } from "@/redux/reducers/imageLoadingSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
-import { FetchResult } from "@apollo/client";
+import commentSig from "@/lib/helpers/commentSig";
 
 const useComment = () => {
   const publicClient = createPublicClient({
@@ -252,7 +240,6 @@ const useComment = () => {
       return;
     }
     setCommentLoading(true);
-    let result: FetchResult<CreateOnchainCommentTypedDataMutation>;
     try {
       const contentURIValue = await uploadPostContent(
         postImages,
@@ -262,88 +249,27 @@ const useComment = () => {
         dispatch
       );
 
-      result = await createCommentTypedData({
-        commentOn: commentId !== "" ? commentId : mainVideo.id,
-        contentURI: "ipfs://" + contentURIValue,
-        referenceModule: {
-          followerOnlyReferenceModule: false,
-        },
-        openActionModules: [
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      await commentSig(
+        commentId !== "" ? commentId : mainVideo.id,
+        "ipfs://" + contentURIValue,
+        [
           {
             collectOpenAction: {
               simpleCollectOpenAction: collectModuleType,
             },
           },
         ],
-      });
-
-      const typedData = result?.data?.createOnchainCommentTypedData.typedData;
-
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      const signature = await clientWallet.signTypedData({
-        domain: omit(typedData?.domain, ["__typename"]),
-        types: omit(typedData?.types, ["__typename"]),
-        primaryType: "Comment",
-        message: omit(typedData?.value, ["__typename"]),
-        account: address as `0x${string}`,
-      });
-
-      const broadcastResult = await broadcast({
-        id: result?.data?.createOnchainCommentTypedData?.id,
-        signature,
-      });
-
-      if (
-        broadcastResult?.data?.broadcastOnchain?.__typename === "RelayError"
-      ) {
-        const { v, r, s } = splitSignature(signature);
-
-        const { request } = await publicClient.simulateContract({
-          address: LENS_HUB_PROXY_ADDRESS_MATIC,
-          abi: LensHubProxy,
-          functionName: "commentWithSig",
-          chain: polygon,
-          args: [
-            {
-              profileId: typedData?.value.profileId,
-              contentURI: typedData?.value.contentURI,
-              pointedProfileId: typedData?.value.pointedProfileId,
-              pointedPubId: typedData?.value.pointedPubId,
-              referrerProfileIds: typedData?.value.referrerProfileIds,
-              referrerPubIds: typedData?.value.referrerPubIds,
-              referenceModuleData: typedData?.value.referenceModuleData,
-              actionModules: typedData?.value.actionModules,
-              actionModulesInitDatas: typedData?.value.actionModulesInitDatas,
-              referenceModule: typedData?.value.referenceModule,
-              referenceModuleInitData: typedData?.value.referenceModuleInitData,
-
-              sig: {
-                v,
-                r,
-                s,
-                deadline: typedData?.value.deadline,
-              },
-            },
-          ],
-          account: address,
-        });
-        const res = await clientWallet.writeContract(request);
-        clearComment();
-        await publicClient.waitForTransactionReceipt({ hash: res });
-        await handleIndexCheck(res, dispatch);
-      } else {
-        clearComment();
-        setTimeout(async () => {
-          await handleIndexCheck(
-            (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-            dispatch
-          );
-        }, 7000);
-      }
+        clientWallet,
+        publicClient,
+        address as `0x${string}`,
+        dispatch,
+        clearComment
+      );
     } catch (err: any) {
       console.error(err.message);
     }

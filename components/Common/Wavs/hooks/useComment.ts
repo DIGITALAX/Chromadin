@@ -35,6 +35,7 @@ import { setImageLoadingRedux } from "@/redux/reducers/imageLoadingSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
 import { FetchResult } from "@apollo/client";
+import commentSig from "@/lib/helpers/commentSig";
 
 const useComment = () => {
   const { address } = useAccount();
@@ -212,85 +213,27 @@ const useComment = () => {
         dispatch
       );
 
-      result = await createCommentTypedData({
-        commentOn: id,
-        contentURI: "ipfs://" + contentURIValue,
-        openActionModules: [
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      await commentSig(
+        id,
+        "ipfs://" + contentURIValue,
+        [
           {
             collectOpenAction: {
               simpleCollectOpenAction: collectModuleType,
             },
           },
         ],
-        referenceModule: {
-          followerOnlyReferenceModule: false,
-        },
-      });
-
-      const typedData = result.data?.createOnchainCommentTypedData.typedData;
-
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      const signature = await clientWallet.signTypedData({
-        domain: omit(typedData?.domain, ["__typename"]),
-        types: omit(typedData?.types, ["__typename"]),
-        primaryType: "Comment",
-        message: omit(typedData?.value, ["__typename"]),
-        account: address as `0x${string}`,
-      });
-
-      const broadcastResult = await broadcast({
-        id: result?.data?.createOnchainCommentTypedData?.id,
-        signature,
-      });
-
-      if (broadcastResult?.data?.broadcastOnchain?.__typename == "RelayError") {
-        const { v, r, s } = splitSignature(signature);
-
-        const { request } = await publicClient.simulateContract({
-          address: LENS_HUB_PROXY_ADDRESS_MATIC,
-          abi: LensHubProxy,
-          functionName: "commentWithSig",
-          chain: polygon,
-          args: [
-            {
-              profileId: typedData?.value.profileId,
-              contentURI: typedData?.value.contentURI,
-              pointedProfileId: typedData?.value.pointedProfileId,
-              pointedPubId: typedData?.value.pointedPubId,
-              referrerProfileIds: typedData?.value.referrerProfileIds,
-              referrerPubIds: typedData?.value.referrerPubIds,
-              referenceModuleData: typedData?.value.referenceModuleData,
-              actionModules: typedData?.value.actionModules,
-              actionModulesInitDatas: typedData?.value.actionModulesInitDatas,
-              referenceModule: typedData?.value.referenceModule,
-              referenceModuleInitData: typedData?.value.referenceModuleInitData,
-              sig: {
-                v,
-                r,
-                s,
-                deadline: typedData?.value.deadline,
-              },
-            },
-          ],
-          account: address,
-        });
-        const res = await clientWallet.writeContract(request);
-        clearComment();
-        await publicClient.waitForTransactionReceipt({ hash: res });
-        await handleIndexCheck(res, dispatch);
-      } else {
-        clearComment();
-        setTimeout(async () => {
-          await handleIndexCheck(
-            (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-            dispatch
-          );
-        }, 7000);
-      }
+        clientWallet,
+        publicClient,
+        address as `0x${string}`,
+        dispatch,
+        clearComment
+      );
     } catch (err: any) {
       if (err.message.includes("data availability publication")) {
         dispatch(

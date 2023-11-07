@@ -295,9 +295,6 @@ const useMakePost = () => {
               },
             },
           ],
-          referenceModule: {
-            followerOnlyReferenceModule: false,
-          },
         });
         typedData = data.data?.createOnchainQuoteTypedData
           ?.typedData as CreateOnchainQuoteEip712TypedData;
@@ -319,9 +316,6 @@ const useMakePost = () => {
               },
             },
           ],
-          referenceModule: {
-            followerOnlyReferenceModule: false,
-          },
         });
 
         typedData = data.data?.createOnchainPostTypedData
@@ -342,6 +336,7 @@ const useMakePost = () => {
       });
 
       const signature = await clientWallet.signTypedData(toSign as any);
+      const { v, r, s } = splitSignature(signature);
 
       const broadcastResult = await broadcast({
         id,
@@ -353,8 +348,6 @@ const useMakePost = () => {
       ) {
         let request;
         if (quote) {
-          const { v, r, s } = splitSignature(signature);
-
           request = await publicClient.simulateContract({
             address: LENS_HUB_PROXY_ADDRESS_MATIC,
             abi: LensHubProxy,
@@ -384,19 +377,18 @@ const useMakePost = () => {
                 referenceModule: typedData?.value.referenceModule,
                 referenceModuleInitData:
                   typedData?.value.referenceModuleInitData,
-                sig: {
-                  v,
-                  r,
-                  s,
-                  deadline: typedData?.value.deadline,
-                },
+              },
+              {
+                signer: address,
+                v,
+                r,
+                s,
+                deadline: typedData?.value.deadline,
               },
             ],
             account: address,
           });
         } else {
-          const { v, r, s } = splitSignature(signature);
-
           request = await publicClient.simulateContract({
             address: LENS_HUB_PROXY_ADDRESS_MATIC,
             abi: LensHubProxy,
@@ -411,12 +403,13 @@ const useMakePost = () => {
                 referenceModule: typedData?.value.referenceModule,
                 referenceModuleInitData:
                   typedData?.value.referenceModuleInitData,
-                sig: {
-                  v,
-                  r,
-                  s,
-                  deadline: typedData?.value.deadline,
-                },
+              },
+              {
+                v,
+                r,
+                s,
+                deadline: typedData?.value.deadline,
+                signer: address,
               },
             ],
             account: address,

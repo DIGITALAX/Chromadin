@@ -1,14 +1,9 @@
-import createFollowTypedData from "@/graphql/lens/mutations/follow";
-import { LENS_CREATORS, LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
+import { LENS_CREATORS } from "@/lib/constants";
 import createFollowModule from "@/lib/helpers/createFollowModule";
-import splitSignature from "@/lib/helpers/splitSignature";
 import { setModal } from "@/redux/reducers/modalSlice";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
-import LensHubProxy from "./../../../../abis/LensHubProxy.json";
-import { omit } from "lodash";
-import broadcast from "@/graphql/lens/mutations/broadcast";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { setLensProfile } from "@/redux/reducers/lensProfileSlice";
@@ -19,6 +14,7 @@ import { setRainRedux } from "@/redux/reducers/rainSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
 import { Profile } from "@/components/Home/types/generated";
+import followSig from "@/lib/helpers/followSig";
 
 const useSuperCreator = () => {
   const publicClient = createPublicClient({
@@ -77,58 +73,18 @@ const useSuperCreator = () => {
       }
 
       try {
-        const response = await createFollowTypedData({
-          follow: followers,
-        });
-
-        const typedData = response?.data?.createFollowTypedData?.typedData;
-
         const clientWallet = createWalletClient({
           chain: polygon,
           transport: custom((window as any).ethereum),
         });
 
-        const signature = await clientWallet.signTypedData({
-          domain: omit(typedData?.domain, ["__typename"]),
-          types: omit(typedData?.types, ["__typename"]),
-          primaryType: "Follow",
-          message: omit(typedData?.value, ["__typename"]),
-          account: address as `0x${string}`,
-        });
-
-        const broadcastResult = await broadcast({
-          id: response?.data?.createFollowTypedData?.id,
-          signature,
-        });
-
-        if (
-          broadcastResult?.data?.broadcastOnchain?.__typename === "RelayError"
-        ) {
-          const { v, r, s } = splitSignature(signature);
-          const { request } = await publicClient.simulateContract({
-            address: LENS_HUB_PROXY_ADDRESS_MATIC,
-            abi: LensHubProxy,
-            functionName: "followWithSig",
-            chain: polygon,
-            args: [
-              {
-                followerProfileId: typedData?.value?.followerProfileId,
-                idsOfProfilesToFollow: typedData?.value?.idsOfProfilesToFollow,
-                followTokenIds: typedData?.value?.followTokenIds,
-                datas: typedData?.value?.datas,
-                sig: {
-                  v,
-                  r,
-                  s,
-                  deadline: typedData?.value?.deadline,
-                },
-              },
-            ],
-            account: address,
-          });
-          res = await clientWallet.writeContract(request);
-          await publicClient.waitForTransactionReceipt({ hash: res });
-        }
+        await followSig(
+          followers,
+          clientWallet,
+          publicClient,
+          address as `0x${string}`,
+          dispatch
+        );
       } catch (err: any) {
         if (err.message.includes("You do not have enough")) {
           dispatch(

@@ -40,6 +40,8 @@ import {
   SimpleCollectOpenActionSettings,
 } from "@/components/Home/types/generated";
 import { FetchResult } from "@apollo/client";
+import mirrorSig from "@/lib/helpers/mirrorSig";
+import actSig from "@/lib/helpers/actSig";
 
 const useControls = (): UseControlsResults => {
   const publicClient = createPublicClient({
@@ -220,83 +222,19 @@ const useControls = (): UseControlsResults => {
       }
       return;
     }
-    let mirrorPost: FetchResult<CreateOnchainMirrorTypedDataMutation>;
     try {
-      mirrorPost = await mirror({
-        mirrorOn: id ? id : mainVideo.id,
-        mirrorReferenceModuleData: {},
-      });
-
-      const typedData =
-        mirrorPost?.data?.createOnchainMirrorTypedData.typedData;
-
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),
       });
 
-      const signature = await clientWallet.signTypedData({
-        domain: omit(typedData?.domain, ["__typename"]),
-        types: omit(typedData?.types, ["__typename"]),
-        primaryType: "Mirror",
-        message: omit(typedData?.value, ["__typename"]),
-        account: address as `0x${string}`,
-      });
-
-      const broadcastResult = await broadcast({
-        id: mirrorPost?.data?.createOnchainMirrorTypedData?.id,
-        signature,
-      });
-
-      if (broadcastResult?.data?.broadcastOnchain?.__typename == "RelayError") {
-        const { v, r, s } = splitSignature(signature);
-        const { request } = await publicClient.simulateContract({
-          address: LENS_HUB_PROXY_ADDRESS_MATIC,
-          abi: LensHubProxy,
-          functionName: "mirrorWithSig",
-          chain: polygon,
-          args: [
-            {
-              profileId: typedData?.value.profileId,
-              metadataURI: typedData?.value.metadataURI,
-              pointedProfileId: typedData?.value.pointedProfileId,
-              pointedPubId: typedData?.value.pointedPubId,
-              referrerProfileIds: typedData?.value.referrerProfileIds,
-              referrerPubIds: typedData?.value.referrerPubIds,
-              referenceModuleData: typedData?.value.referenceModuleData,
-              sig: {
-                v,
-                r,
-                s,
-                deadline: typedData?.value.deadline,
-              },
-            },
-          ],
-          account: address,
-        });
-        const res = await clientWallet.writeContract(request);
-        await publicClient.waitForTransactionReceipt({ hash: res });
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Indexing Interaction",
-          })
-        );
-        await handleIndexCheck(res, dispatch);
-      } else {
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Indexing Interaction",
-          })
-        );
-        setTimeout(async () => {
-          await handleIndexCheck(
-            (broadcastResult?.data?.broadcastOnchain as RelaySuccess).txHash,
-            dispatch
-          );
-        }, 7000);
-      }
+      await mirrorSig(
+        id ? id : mainVideo.id,
+        clientWallet,
+        publicClient,
+        address as `0x${string}`,
+        dispatch
+      );
     } catch (err: any) {
       console.error(err.message);
     }
@@ -339,89 +277,21 @@ const useControls = (): UseControlsResults => {
       return;
     }
     try {
-      const collectPost = await collect({
-        for: id ? id : mainVideo.id,
-
-        actOn: {
-          simpleCollectOpenAction: true,
-        },
-      });
-      const typedData =
-        collectPost.data?.createActOnOpenActionTypedData?.typedData;
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),
       });
 
-      const signature = await clientWallet.signTypedData({
-        domain: omit(typedData?.domain, ["__typename"]),
-        types: omit(typedData?.types, ["__typename"]),
-        primaryType: "Act",
-        message: omit(typedData?.value, ["__typename"]),
-        account: address as `0x${string}`,
-      });
-      const broadcastResult = await broadcast({
-        id: collectPost?.data?.createActOnOpenActionTypedData?.id,
-        signature,
-      });
-
-      if (broadcastResult?.data?.broadcastOnchain?.__typename == "RelayError") {
-        const { v, r, s } = splitSignature(signature);
-        const { request } = await publicClient.simulateContract({
-          address: LENS_HUB_PROXY_ADDRESS_MATIC,
-          abi: LensHubProxy,
-          functionName: "actWithSig",
-          chain: polygon,
-          args: [
-            {
-              publicationActedProfileId:
-                typedData?.value.publicationActedProfileId,
-              publicationActedId: typedData?.value.publicationActedId,
-              actorProfileId: typedData?.value.actorProfileId,
-              referrerProfileIds: typedData?.value.referrerProfileIds,
-              referrerPubIds: typedData?.value.referrerPubIds,
-              actionModuleAddress: typedData?.value.actionModuleAddress,
-              actionModuleData: typedData?.value.actionModuleData,
-              sig: {
-                v,
-                r,
-                s,
-                deadline: typedData?.value.deadline,
-              },
-            },
-          ],
-          account: address,
-        });
-        const res = await clientWallet.writeContract(request);
-        dispatch(
-          setPurchase({
-            actionOpen: false,
-            actionId: "",
-            actionIndex: undefined,
-          })
-        );
-        await publicClient.waitForTransactionReceipt({ hash: res });
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Indexing Interaction",
-          })
-        );
-        await handleIndexCheck(res, dispatch);
-      } else {
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Indexing Interaction",
-          })
-        );
-        setTimeout(async () => {
-          await handleIndexCheck(
-            (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-            dispatch
-          );
-        }, 7000);
-      }
+      await actSig(
+        id ? id : mainVideo.id,
+        {
+          simpleCollectOpenAction: true,
+        },
+        clientWallet,
+        publicClient,
+        address as `0x${string}`,
+        dispatch
+      );
     } catch (err: any) {
       setCollectLoading(false);
       if (err.message.includes("You do not have enough")) {

@@ -1,5 +1,6 @@
 import { Erc20 } from "@/components/Home/types/generated";
 import getEnabledCurrencies from "@/graphql/lens/queries/enabledCurrencies";
+import { LimitType } from "@lens-protocol/client";
 
 const availableCurrencies = async (
   setEnabledCurrencies: (e: Erc20[]) => void,
@@ -7,7 +8,9 @@ const availableCurrencies = async (
   presetCurrency?: string
 ): Promise<void> => {
   try {
-    const response = await getEnabledCurrencies();
+    const response = await getEnabledCurrencies({
+      limit: LimitType.TwentyFive,
+    });
     if (response && response.data) {
       setEnabledCurrencies(response.data.currencies.items);
       setEnabledCurrency(
