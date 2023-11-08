@@ -1,5 +1,4 @@
 import { mirror } from "@/graphql/lens/mutations/mirror";
-import { splitSignature } from "ethers/lib/utils.js";
 import { omit } from "lodash";
 import LensHubProxy from "./../../abis/LensHubProxy.json";
 import { AnyAction, Dispatch } from "redux";
@@ -41,11 +40,10 @@ const mirrorSig = async (
     });
 
     if (broadcastResult?.data?.broadcastOnchain?.__typename == "RelayError") {
-      const { v, r, s } = splitSignature(signature);
       const { request } = await publicClient.simulateContract({
         address: LENS_HUB_PROXY_ADDRESS_MATIC,
         abi: LensHubProxy,
-        functionName: "mirrorWithSig",
+        functionName: "mirror",
         chain: polygon,
         args: [
           {
@@ -56,13 +54,6 @@ const mirrorSig = async (
             referrerProfileIds: typedData?.value.referrerProfileIds,
             referrerPubIds: typedData?.value.referrerPubIds,
             referenceModuleData: typedData?.value.referenceModuleData,
-          },
-          {
-            v,
-            r,
-            s,
-            deadline: typedData?.value.deadline,
-            signer: address,
           },
         ],
         account: address,

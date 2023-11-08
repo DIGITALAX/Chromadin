@@ -4,7 +4,6 @@ import { createCommentTypedData } from "@/graphql/lens/mutations/comment";
 import LensHubProxy from "./../../abis/LensHubProxy.json";
 import { OpenActionModuleInput } from "@lens-protocol/client";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../constants";
-import { splitSignature } from "ethers/lib/utils.js";
 import { omit } from "lodash";
 import { polygon } from "viem/chains";
 import { PublicClient, WalletClient } from "viem";
@@ -44,12 +43,11 @@ const commentSig = async (
     });
 
     if (broadcastResult?.data?.broadcastOnchain?.__typename === "RelayError") {
-      const { v, r, s } = splitSignature(signature);
 
       const { request } = await publicClient.simulateContract({
         address: LENS_HUB_PROXY_ADDRESS_MATIC,
         abi: LensHubProxy,
-        functionName: "commentWithSig",
+        functionName: "comment",
         chain: polygon,
         args: [
           {
@@ -64,13 +62,6 @@ const commentSig = async (
             actionModulesInitDatas: typedData?.value.actionModulesInitDatas,
             referenceModule: typedData?.value.referenceModule,
             referenceModuleInitData: typedData?.value.referenceModuleInitData,
-          },
-          {
-            v,
-            r,
-            s,
-            deadline: typedData?.value.deadline,
-            signer: address,
           },
         ],
         account: address,

@@ -12,7 +12,6 @@ import {
 } from "@/graphql/lens/queries/getPublication";
 import checkApproved from "@/lib/helpers/checkApproved";
 import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
-import { setPurchase } from "@/redux/reducers/purchaseSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
 import ReactPlayer from "react-player";
 import { setReactId } from "@/redux/reducers/reactIdSlice";

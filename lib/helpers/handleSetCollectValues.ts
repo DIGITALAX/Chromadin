@@ -29,22 +29,27 @@ const handleSetCollectValues = (
 
   if (collectible === "yes") {
     collectModuleType = {
-      amount: chargeCollect
-        ? {
-            currency: setCurrency[0]?.contract?.address,
-            value: String(value),
-          }
-        : undefined,
+      amount:
+        chargeCollect === "yes"
+          ? {
+              currency: setCurrency[0]?.contract?.address,
+              value: String(value),
+            }
+          : undefined,
       collectLimit: limitedEdition === "yes" ? String(limit) : undefined,
       endsAt:
         timeLimit === "yes"
           ? new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
           : undefined,
       followerOnly: audienceType === "everyone" ? false : true,
-      recipient: address as string,
-      referralFee: Number(Number(referral).toFixed(2)),
+      recipient: chargeCollect === "yes" ? (address as string) : undefined,
+      referralFee:
+        chargeCollect === "yes"
+          ? Number(Number(referral).toFixed(2))
+          : undefined,
     };
   }
+
   dispatch(setCollectValueType(collectModuleType));
 };
 

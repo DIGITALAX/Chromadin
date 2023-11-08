@@ -25,7 +25,6 @@ import { Collection, UploadedMedia } from "@/components/Home/types/home.types";
 
 export type IndexingModalProps = {
   message: string | undefined;
-  distanceFromBottom: number;
 };
 
 export type CollectModalProps = {

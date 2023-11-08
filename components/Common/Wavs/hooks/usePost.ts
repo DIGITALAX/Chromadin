@@ -12,7 +12,6 @@ import { useAccount } from "wagmi";
 import LensHubProxy from "../../../../abis/LensHubProxy.json";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 import { RootState } from "@/redux/store";
-import { splitSignature } from "ethers/lib/utils.js";
 import broadcast from "@/graphql/lens/mutations/broadcast";
 import { omit } from "lodash";
 import uploadPostContent from "@/lib/helpers/uploadPostContent";
@@ -75,9 +74,6 @@ const useMakePost = () => {
   const [contentURI, setContentURI] = useState<string>();
   const dispatch = useDispatch();
   const { uploadImage } = useImageUpload();
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile
-  );
   const collectOpen = useSelector(
     (state: RootState) => state.app.collectOpenReducer.value
   );
@@ -336,7 +332,6 @@ const useMakePost = () => {
       });
 
       const signature = await clientWallet.signTypedData(toSign as any);
-      const { v, r, s } = splitSignature(signature);
 
       const broadcastResult = await broadcast({
         id,
@@ -351,7 +346,7 @@ const useMakePost = () => {
           request = await publicClient.simulateContract({
             address: LENS_HUB_PROXY_ADDRESS_MATIC,
             abi: LensHubProxy,
-            functionName: "quoteWithSig",
+            functionName: "quote",
             chain: polygon,
             args: [
               {
@@ -378,13 +373,6 @@ const useMakePost = () => {
                 referenceModuleInitData:
                   typedData?.value.referenceModuleInitData,
               },
-              {
-                signer: address,
-                v,
-                r,
-                s,
-                deadline: typedData?.value.deadline,
-              },
             ],
             account: address,
           });
@@ -392,7 +380,7 @@ const useMakePost = () => {
           request = await publicClient.simulateContract({
             address: LENS_HUB_PROXY_ADDRESS_MATIC,
             abi: LensHubProxy,
-            functionName: "postWithSig",
+            functionName: "post",
             chain: polygon,
             args: [
               {
@@ -403,13 +391,6 @@ const useMakePost = () => {
                 referenceModule: typedData?.value.referenceModule,
                 referenceModuleInitData:
                   typedData?.value.referenceModuleInitData,
-              },
-              {
-                v,
-                r,
-                s,
-                deadline: typedData?.value.deadline,
-                signer: address,
               },
             ],
             account: address,

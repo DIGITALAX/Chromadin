@@ -1,4 +1,3 @@
-import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
 import {
   ClipboardEvent,
   FormEvent,
@@ -9,20 +8,13 @@ import {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAccount } from "wagmi";
-import LensHubProxy from "../../../../abis/LensHubProxy.json";
-import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
-import { createCommentTypedData } from "@/graphql/lens/mutations/comment";
 import { RootState } from "@/redux/store";
-import { splitSignature } from "ethers/lib/utils.js";
-import broadcast from "@/graphql/lens/mutations/broadcast";
-import { omit } from "lodash";
 import uploadPostContent from "@/lib/helpers/uploadPostContent";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import {
   CreateOnchainCommentTypedDataMutation,
   LimitType,
   Profile,
-  RelaySuccess,
 } from "@/components/Home/types/generated";
 import getCommentHTML from "@/lib/helpers/commentHTML";
 import getCaretPos from "@/lib/helpers/getCaretPos";

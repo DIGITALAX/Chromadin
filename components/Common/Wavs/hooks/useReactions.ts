@@ -3,13 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import addReaction from "@/graphql/lens/mutations/react";
 import { useAccount } from "wagmi";
-import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
-import LensHubProxy from "../../../../abis/LensHubProxy.json";
-import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
-import { splitSignature } from "ethers/lib/utils.js";
-import broadcast from "@/graphql/lens/mutations/broadcast";
-import { omit } from "lodash";
-import collect from "@/graphql/lens/mutations/collect";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import {
   getPublication,
@@ -17,7 +10,6 @@ import {
 } from "@/graphql/lens/queries/getPublication";
 import checkApproved from "@/lib/helpers/checkApproved";
 import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
-import { setPurchase } from "@/redux/reducers/purchaseSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
 import pollUntilIndexed from "@/graphql/lens/queries/checkIndexed";
 import { setFeedReactId } from "@/redux/reducers/feedReactIdSlice";
@@ -28,7 +20,6 @@ import {
   Post,
   PublicationQuery,
   PublicationReactionType,
-  RelaySuccess,
 } from "@/components/Home/types/generated";
 import mirrorSig from "@/lib/helpers/mirrorSig";
 import actSig from "@/lib/helpers/actSig";

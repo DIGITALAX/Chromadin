@@ -13,7 +13,6 @@ import checkApproved from "@/lib/helpers/checkApproved";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import { RootState } from "@/redux/store";
-import { splitSignature } from "ethers/lib/utils.js";
 import { omit } from "lodash";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -175,23 +174,16 @@ const useFollowers = () => {
     setFollowLoading(true);
 
     try {
-
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),
       });
-
-
-
-
 
       const response = await createUnfollowTypedData({
         unfollow: [profileId],
       });
 
       const typedData = response?.data?.createUnfollowTypedData.typedData;
-
-     
 
       const signature = await clientWallet.signTypedData({
         domain: omit(typedData?.domain, ["__typename"]),
@@ -206,22 +198,14 @@ const useFollowers = () => {
         signature,
       });
       if (broadcastResult?.data?.broadcastOnchain?.__typename == "RelayError") {
-        const { v, r, s } = splitSignature(signature);
         const { request } = await publicClient.simulateContract({
           address: LENS_HUB_PROXY_ADDRESS_MATIC,
           abi: LensHubProxy,
-          functionName: "unfollowWithSig",
+          functionName: "unfollow",
           chain: polygon,
           args: [
             typedData?.value?.unfollowerProfileId,
             typedData?.value?.idsOfProfilesToUnfollow,
-            {
-              v,
-              r,
-              s,
-              deadline: typedData?.value?.deadline,
-              signer: address,
-            },
           ],
           account: address,
         });
