@@ -1,13 +1,9 @@
 import { FunctionComponent } from "react";
 import { ChannelsProps } from "../types/sidebar.types";
 import { INFURA_GATEWAY } from "@/lib/constants";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { setMainVideo } from "@/redux/reducers/mainVideoSlice";
-import {
-  Post,
-  PublicationMetadata,
-  VideoMetadataV3,
-} from "@/components/Home/types/generated";
+import { Post, VideoMetadataV3 } from "@/components/Home/types/generated";
 import json from "./../../../../public/videos/local.json";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -94,26 +90,13 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                     )
                   }
                 >
-                  {content?.metadata?.marketplace?.animationUrl?.split(
-                    "ipfs://"
-                  )[1] && (
+                  {json[index]?.poster && (
                     <div className="relative w-full h-32">
-                      <video
-                        muted
-                        playsInline
-                        preload="metadata"
-                        className="relative object-cover w-full h-full"
-                        poster={`${INFURA_GATEWAY}/ipfs/${json[index]?.poster}`}
-                      >
-                        <source
-                          src={`${INFURA_GATEWAY}/ipfs/${
-                            content?.metadata?.marketplace?.animationUrl?.split(
-                              "ipfs://"
-                            )[1]
-                          }`}
-                          type="video/mp4"
-                        />
-                      </video>
+                      <Image
+                        layout="fill"
+                        objectFit="cover"
+                        src={`${INFURA_GATEWAY}/ipfs/${json[index]?.poster}`}
+                      />
                     </div>
                   )}
                   <div className="relative w-full h-fit galaxy:h-32 p-1">
