@@ -32,7 +32,7 @@ const Search: FunctionComponent<SearchProps> = ({
           className="absolute w-full overflow-y-scroll top-10 rounded-md z-1 flex flex-col"
         >
           {profilesFound?.map((profile: Profile, index: number) => {
-            const profileImage: string = createProfilePicture(
+            const profileImage = createProfilePicture(
               profile?.metadata?.picture
             );
             return (
@@ -57,7 +57,7 @@ const Search: FunctionComponent<SearchProps> = ({
                     className={`relative rounded-full flex bg-white w-5 h-5 items-center justify-center col-start-1`}
                     id="crt"
                   >
-                    {profileImage !== "" && (
+                    {profileImage && (
                       <Image
                         src={profileImage}
                         objectFit="cover"

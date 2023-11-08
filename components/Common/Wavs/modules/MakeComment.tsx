@@ -20,7 +20,7 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
   profileId,
   commentPost,
   handleLensSignIn,
-  handleConnect,
+  openConnectModal,
   commentDescription,
   commentLoading,
   handleCommentDescription,
@@ -305,7 +305,7 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                   }}
                 >
                   {mentionProfiles?.map((user: any, index: number) => {
-                    const profileImage: string = createProfilePicture(user);
+                    const profileImage = createProfilePicture(user);
                     return (
                       <div
                         key={index}
@@ -319,7 +319,7 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                             className={`relative rounded-full flex bg-white w-3 h-3 items-center justify-center col-start-1`}
                             id="crt"
                           >
-                            {profileImage !== "" && (
+                            {profileImage && (
                               <Image
                                 src={profileImage}
                                 objectFit="cover"
@@ -366,7 +366,7 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                 }`}
                 onClick={
                   !profileId && !address
-                    ? () => handleConnect()
+                    ? openConnectModal
                     : address && !profileId
                     ? () => handleLensSignIn()
                     : commentLoading

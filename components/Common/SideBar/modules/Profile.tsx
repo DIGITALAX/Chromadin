@@ -39,7 +39,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
       }}
     >
       <div className={`relative rounded-full w-6 h-6`} id="crt">
-        {picture !== "" && (
+        {picture && (
           <Image
             src={picture}
             fill
