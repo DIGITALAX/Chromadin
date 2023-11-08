@@ -335,8 +335,7 @@ const Post: FunctionComponent<PostProps> = ({
                           >
                             {mentionProfiles?.map(
                               (user: any, index: number) => {
-                                const profileImage: string =
-                                  createProfilePicture(user);
+                                const profileImage = createProfilePicture(user);
                                 return (
                                   <div
                                     key={index}
@@ -350,7 +349,7 @@ const Post: FunctionComponent<PostProps> = ({
                                         className={`relative rounded-full flex bg-white w-3 h-3 items-center justify-center col-start-1`}
                                         id="crt"
                                       >
-                                        {profileImage !== "" && (
+                                        {profileImage && (
                                           <Image
                                             src={profileImage}
                                             objectFit="cover"

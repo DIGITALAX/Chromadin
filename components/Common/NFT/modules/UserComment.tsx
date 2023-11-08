@@ -306,7 +306,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                   }}
                 >
                   {mentionProfiles?.map((user: Profile, index: number) => {
-                    const profileImage: string = createProfilePicture(
+                    const profileImage = createProfilePicture(
                       user.metadata?.picture
                     );
                     return (
@@ -322,7 +322,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                             className={`relative rounded-full flex bg-white w-3 h-3 items-center justify-center col-start-1`}
                             id="crt"
                           >
-                            {profileImage !== "" && (
+                            {profileImage && (
                               <Image
                                 src={profileImage}
                                 objectFit="cover"
