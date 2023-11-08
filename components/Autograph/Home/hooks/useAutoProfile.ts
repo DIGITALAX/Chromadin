@@ -380,6 +380,7 @@ const useAutoProfile = () => {
               tags: {
                 all: ["encrypted", "chromadin", "labyrinth"],
               },
+              
             },
           },
           limit: LimitType.Ten,
@@ -404,9 +405,9 @@ const useAutoProfile = () => {
         return;
       }
 
-      const arr: any[] = [...data?.data?.publications?.items];
+      const arr: Post[] = [...data?.data?.publications?.items] as Post[];
       let sortedArr = arr.sort(
-        (a: any, b: any) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
+        (a: Post, b: Post) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
 
       sortedArr = sortedArr.map((post) => {

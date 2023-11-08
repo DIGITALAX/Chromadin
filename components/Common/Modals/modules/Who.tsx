@@ -8,7 +8,6 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { WhoProps } from "../types/modals.types";
 import {
   Profile,
-  ProfileWhoReactedResult,
 } from "@/components/Home/types/generated";
 
 const Who: FunctionComponent<WhoProps> = ({

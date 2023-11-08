@@ -103,12 +103,12 @@ const useAllPosts = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [followerOnly, setFollowerOnly] = useState<boolean[]>(
-    Array.from({ length: feedDispatch.length }, () => false)
+    Array.from({ length: feedDispatch?.length }, () => false)
   );
   const [postsLoading, setPostsLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [followerOnlyDecrypt, setFollowerOnlyDecrypt] = useState<boolean[]>(
-    Array.from({ length: feedDispatch.length }, () => false)
+    Array.from({ length: feedDispatch?.length }, () => false)
   );
   const [decryptLoading, setDecryptLoading] = useState<boolean>(false);
   const [hasMoreDecrypt, setHasMoreDecrypt] = useState<boolean>(true);
@@ -861,7 +861,7 @@ const useAllPosts = () => {
     try {
       let collections: Collection[] = [];
 
-      for (let name = 0; name <= decrypt.collections.length - 1; name++) {
+      for (let name = 0; name <= decrypt?.collections?.length - 1; name++) {
         const collection = await getCollectionsDecrypt(
           decrypt.collections[name],
           decrypt.owner as string
@@ -930,11 +930,11 @@ const useAllPosts = () => {
   useEffect(() => {
     if (router.asPath.includes("#chat")) {
       if (filterDecrypt) {
-        if (decryptFeed.length < 1 || !decryptFeed) {
+        if (decryptFeed?.length < 1 || !decryptFeed) {
           getDecryptFeed();
         }
       } else {
-        if (!feedDispatch || feedDispatch.length < 1) {
+        if (!feedDispatch || feedDispatch?.length < 1) {
           getTimeline();
         }
       }

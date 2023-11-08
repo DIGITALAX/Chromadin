@@ -197,7 +197,7 @@ const useIndividual = () => {
         setCommentsLoading(false);
         return;
       }
-      const sortedArr: any[] = [...comments?.data?.publications?.items];
+      const sortedArr: Comment[] = [...comments?.data?.publications?.items] as  Comment[] ;
       if (sortedArr?.length < 10) {
         setHasMoreComments(false);
       }

@@ -1,6 +1,6 @@
 import Profile from "./Profile";
 import Image from "next/legacy/image";
-import { AiFillEye, AiOutlineRetweet } from "react-icons/ai";
+import { AiFillEye, AiOutlineLoading, AiOutlineRetweet } from "react-icons/ai";
 import { FunctionComponent } from "react";
 import { FeedPublicationProps } from "../types/wavs.types";
 import { setImageFeedViewer } from "@/redux/reducers/imageFeedViewerSlice";
@@ -11,9 +11,12 @@ import {
   Comment,
   Post,
   PublicationMetadataMedia,
+  TextOnlyMetadataV3,
 } from "@/components/Home/types/generated";
 import { metadataMedia, postMetadata } from "@/lib/helpers/postMetadata";
 import Quote from "./Quote";
+import { setDecrypt } from "@/redux/reducers/decryptSlice";
+import { BiLock } from "react-icons/bi";
 
 const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
   publication,
@@ -47,6 +50,7 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
   setOpenMirrorChoice,
   openMirrorChoice,
 }): JSX.Element => {
+  const metadata = postMetadata(publication);
   return (
     <div
       className={`relative w-full ${
@@ -86,7 +90,11 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
       />
       <div
         className={`relative w-full h-auto grow rounded-md grid grid-flow-row auto-rows-auto p-3 preG:p-6 gap-6 border-2  bg-gradient-to-r ${
-          (publication as any)?.gated
+          (publication as any)?.gated ||
+          (publication?.__typename === "Mirror"
+            ? publication?.mirrorOn
+            : (publication as Post)
+          )?.isEncrypted
             ? "from-gray-400 via-gray-600 to-gray-800 border-white"
             : "from-offBlack via-gray-600 to-black border-black"
         }`}
@@ -161,7 +169,15 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
             <div
               dangerouslySetInnerHTML={{
                 __html: descriptionRegex(
-                  (publication as any)?.gated
+                  !(publication as any)?.gated &&
+                    (publication?.__typename === "Mirror"
+                      ? publication?.mirrorOn
+                      : (publication as Post)
+                    )?.isEncrypted
+                    ? publication?.__typename !== "Mirror"
+                      ? ((publication as Post)?.metadata as any)?.title
+                      : (publication?.mirrorOn?.metadata as any)?.title
+                    : (publication as any)?.gated
                     ? (publication as any)?.result?.content
                     : publication?.__typename !== "Mirror"
                     ? (publication as Post)?.metadata?.content
@@ -180,18 +196,19 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               : "row-start-2"
           }`}
         >
-          {postMetadata(publication) &&
-            postMetadata(publication)?.map(
-              (item: PublicationMetadataMedia, index: number) => {
-                const media = metadataMedia(item);
-                return (
+          {metadata &&
+            metadata !== null &&
+            metadata?.map((item: PublicationMetadataMedia, index: number) => {
+              const media = metadataMedia(item);
+              return (
+                media?.url && (
                   <div
                     key={index}
                     className={`${
                       media?.type !== "Audio"
                         ? "h-40 preG:h-60 border-2 border-black rounded-lg bg-black"
                         : "h-10"
-                    } w-40  preG:w-60 relative grid grid-flow-col auto-cols-auto col-start-${
+                    } w-40 preG:w-60 relative flex items-center justify-center col-start-${
                       index + 1
                     } ${
                       media?.type === "Image" &&
@@ -208,7 +225,7 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
                       )
                     }
                   >
-                    <div className="relative w-full h-full col-start-1 flex rounded-md">
+                    <div className="relative w-full h-full flex rounded-md items-center justify-center">
                       {media?.type === "Image" ? (
                         <Image
                           src={media?.url}
@@ -254,99 +271,9 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
                       )}
                     </div>
                   </div>
-                );
-              }
-            )}
-
-          {/* {!publication?.gated &&  publication?.__typename === "Mirror"
-              ? publication?.mirrorOn?.metadata?.__typename === "ImageMetadataV3" || "VideoMetadataV3" &&
-            (
-            publication?.__typename === "Mirror"
-              ? publication?.mirrorOn?.metadata?.__typename === "ImageMetadataV3"
-              : publication?.metadata?.media
-            )?.map((image: MediaSet | string, index: number) => {
-              let formattedImageURL: string;
-
-              if (publication?.decrypted) {
-                if (image.item.includes("ipfs://")) {
-                  formattedImageURL = `${INFURA_GATEWAY}/ipfs/${
-                    image.item?.split("ipfs://")[1]
-                  }`;
-                } else {
-                  formattedImageURL = image.item;
-                }
-              } else {
-                if ((image as MediaSet).original.url.includes("ipfs://")) {
-                  formattedImageURL = `${INFURA_GATEWAY}/ipfs/${
-                    (image as MediaSet).original.url?.split("ipfs://")[1]
-                  }`;
-                } else {
-                  formattedImageURL = (image as MediaSet).original.url;
-                }
-              }
-
-              return (
-                
+                )
               );
-                    })}
-        </div>
-        {(publication as any)?.gated ? (
-          <div
-            className={`relative w-full h-full ${
-              publication?.__typename === "Mirror" ||
-              publication?.__typename === "Comment"
-                ? "row-start-4"
-                : "row-start-3"
-            } grid grid-flow-col auto-cols-auto`}
-          >
-            {
-              <div
-                className={`relative w-fit h-full col-start-1 row-start-1 sm:col-start-2 sm:pt-0 pt-3 justify-self-end self-center grid grid-flow-col auto-cols-auto font-digi gap-1 cursor-pointer hover:opacity-70 active:scale-95 text-white`}
-                onClick={() =>
-                  router.asPath.includes("/autograph/") && decryptPost
-                    ? decryptPost(publication as Post)
-                    : dispatch(
-                        setDecrypt({
-                          actionOpen: true,
-                          actionCollections: (publication?.__typename ===
-                          "Mirror"
-                            ? publication?.mirrorOn
-                            : (publication as Post)
-                          )?.metadata?.content
-
-                            ?.split("gate.")[1]
-                            ?.split("are ready to collect")[0]
-                            .split(",")
-                            .map((word: string) => word.trim()),
-                          actionName: publication?.by?.ownedBy?.address,
-                        })
-                      )
-                }
-              >
-                <div
-                  className={`relative w-fit h-fit self-end col-start-1 text-sm flex items-center`}
-                >
-                  Decrypt
-                </div>
-                <div
-                  className={`relative w-fit h-fit col-start-2 self-end -top-1 ${
-                    decryptLoading && "animate-spin"
-                  }`}
-                >
-                  {decryptLoading ? (
-                    <AiOutlineLoading size={12} />
-                  ) : (
-                    <BiLock color={"white"} size={15} />
-                  )}
-                </div>
-              </div>
-            }
-          </div>
-        ) : (
-          
-            )}
-          </div>
-        )} */}
+            })}
         </div>
         <div
           className={`relative w-full h-fit ${
@@ -361,9 +288,30 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               ? publication?.id
               : publication?.mirrorOn.id) && (
             <div
-              className={`relative w-fit h-full col-start-1 row-start-1 sm:col-start-2 sm:pt-0 pt-3 justify-self-end self-center grid grid-flow-col auto-cols-auto font-digi gap-1 cursor-pointer hover:opacity-70 active:scale-95 text-white`}
+              className={`relative w-fit h-full col-start-1 row-start-1 sm:col-start-2 sm:pt-0 pt-3  grid grid-flow-col auto-cols-auto font-digi gap-1 cursor-pointer justify-self-end self-end hover:opacity-70 active:scale-95 text-white`}
               onClick={() =>
-                !router.asPath.includes("/autograph/")
+                (publication as any)?.gated ||
+                (publication?.__typename === "Mirror"
+                  ? publication?.mirrorOn
+                  : (publication as Post)
+                )?.isEncrypted
+                  ? dispatch(
+                      setDecrypt({
+                        actionOpen: true,
+                        actionCollections: (publication?.__typename === "Mirror"
+                          ? (publication?.mirrorOn?.metadata as TextOnlyMetadataV3)
+                              ?.content
+                          : ((publication as Post)?.metadata as TextOnlyMetadataV3)
+                              ?.content
+                        )
+                          ?.split("gate.")[1]
+                          ?.split("are ready to collect")[0]
+                          .split(",")
+                          .map((word: string) => word.trim()),
+                        actionName: publication?.by?.ownedBy?.address,
+                      })
+                    )
+                  : !router.asPath.includes("/autograph/")
                   ? router.push(
                       router.asPath.includes("&post=")
                         ? router.asPath.includes("?option=")
@@ -416,13 +364,35 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
                     )
               }
             >
-              <div className="relative w-fit h-fit self-end col-start-1 text-sm">
-                {publication?.__typename !== "Comment"
+              <div className="relative w-fit h-fit flex  self-center  text-sm">
+                {(publication as any)?.gated ||
+                (publication?.__typename === "Mirror"
+                  ? publication?.mirrorOn
+                  : (publication as Post)
+                )?.isEncrypted
+                  ? "Decrypt"
+                  : publication?.__typename !== "Comment"
                   ? "View Post"
                   : "View Comment"}
               </div>
-              <div className="relative w-fit h-fit col-start-2 self-end">
-                <AiFillEye color={"white"} size={20} />
+              <div
+                className={`relative w-fit h-fit self-center flex ${
+                  decryptLoading && "animate-spin"
+                }`}
+              >
+                {(publication as any)?.gated ||
+                (publication?.__typename === "Mirror"
+                  ? publication?.mirrorOn
+                  : (publication as Post)
+                )?.isEncrypted ? (
+                  decryptLoading ? (
+                    <AiOutlineLoading size={12} />
+                  ) : (
+                    <BiLock color={"white"} size={15} />
+                  )
+                ) : (
+                  <AiFillEye color={"white"} size={20} />
+                )}
               </div>
             </div>
           )}
