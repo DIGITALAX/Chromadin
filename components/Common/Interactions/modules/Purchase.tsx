@@ -50,32 +50,33 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
                   )
             }
           >
-            {(mainNFT as MainNFT).type === "video/mp4" ? (
-              <video
-                playsInline
-                className="rounded-br-lg rounded-tl-lg w-full h-full object-cover"
-                loop
-                controls={(mainNFT as MainNFT).hasAudio ? false : true}
-                key={(mainNFT as MainNFT).media}
-                id={(mainNFT as MainNFT).media}
-                muted
-              >
-                <source
+            {(mainNFT as MainNFT).media &&
+              ((mainNFT as MainNFT).type === "video/mp4" ? (
+                <video
+                  playsInline
+                  className="rounded-br-lg rounded-tl-lg w-full h-full object-cover"
+                  loop
+                  controls={(mainNFT as MainNFT).hasAudio ? false : true}
+                  key={(mainNFT as MainNFT).media}
+                  id={(mainNFT as MainNFT).media}
+                  muted
+                >
+                  <source
+                    src={`${INFURA_GATEWAY}/ipfs/${(mainNFT as MainNFT).media}`}
+                    type="video/mp4"
+                    draggable={false}
+                  />
+                </video>
+              ) : (
+                <Image
                   src={`${INFURA_GATEWAY}/ipfs/${(mainNFT as MainNFT).media}`}
-                  type="video/mp4"
+                  className="rounded-br-lg rounded-tl-lg w-full h-full"
+                  layout="fill"
                   draggable={false}
+                  objectFit="cover"
+                  key={(mainNFT as MainNFT).media}
                 />
-              </video>
-            ) : (
-              <Image
-                src={`${INFURA_GATEWAY}/ipfs/${(mainNFT as MainNFT).media}`}
-                className="rounded-br-lg rounded-tl-lg w-full h-full"
-                layout="fill"
-                draggable={false}
-                objectFit="cover"
-                key={(mainNFT as MainNFT).media}
-              />
-            )}
+              ))}
             {((mainNFT as MainNFT).audio || (mainNFT as MainNFT).hasAudio) && (
               <div
                 className="absolute w-full h-fit flex bottom-0 cursor-default"

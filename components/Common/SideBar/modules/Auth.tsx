@@ -5,7 +5,7 @@ import { AuthProps } from "../types/sidebar.types";
 
 const Auth: FunctionComponent<AuthProps> = ({
   connected,
-  handleConnect,
+  openConnectModal,
   handleLensSignIn,
   profile,
   mainPage,
@@ -25,7 +25,7 @@ const Auth: FunctionComponent<AuthProps> = ({
     default:
       return (
         <Wallet
-          handleTransaction={connected ? handleLensSignIn : handleConnect}
+          handleTransaction={connected ? handleLensSignIn : openConnectModal}
           buttonText={connected ? "SOCIAL" : "CONNECT"}
           isConnected={connected}
           mainPage={mainPage}

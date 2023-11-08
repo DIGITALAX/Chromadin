@@ -39,21 +39,20 @@ export type UseChannelsResults = {
 };
 
 export type UseConnectResults = {
-  handleConnect: () => void;
   handleLensSignIn: () => Promise<void>;
   handleRefreshProfile: () => Promise<void>;
   signInLoading: boolean;
 };
 
 export type ConnectProps = {
-  handleConnect: () => void;
+  openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   connected: boolean;
   profile: Profile | undefined;
 };
 
 export type AuthProps = {
-  handleConnect: () => void;
+  openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   connected: boolean;
   profile: Profile | undefined;
@@ -61,7 +60,7 @@ export type AuthProps = {
 };
 
 export type WalletProps = {
-  handleTransaction: () => void;
+  handleTransaction: (() => void) | undefined;
   isConnected: boolean;
   buttonText: string;
   mainPage?: boolean;
@@ -79,7 +78,7 @@ export type TabProps = {
 };
 
 export type SideBarProps = {
-  handleConnect: () => void;
+  openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   connected: boolean;
   profile: Profile | undefined;

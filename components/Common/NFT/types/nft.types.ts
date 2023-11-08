@@ -21,7 +21,7 @@ export type NFTProps = {
   profileId: string;
   commentVideo: () => Promise<void>;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal: (() => void) | undefined;
   commentDescription: string;
   commentLoading: boolean;
   handleCommentDescription: (e: FormEvent) => Promise<void>;
@@ -93,7 +93,7 @@ export type UserCommentProps = {
   canComment: boolean;
   commentVideo: () => Promise<void>;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal:( () => void) | undefined;
   commentDescription: string;
   commentLoading: boolean;
   handleCommentDescription: (e: FormEvent) => Promise<void>;

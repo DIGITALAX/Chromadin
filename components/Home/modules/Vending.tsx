@@ -226,9 +226,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                                 type: collection?.uri?.type,
                                 drop: collection?.drop,
                                 creator: {
-                                  media: createProfilePicture(
-                                    collection.profile?.metadata?.picture
-                                  ),
+                                  media: profilePicture!,
                                   name: collection?.profile?.handle?.localName!,
                                 },
                                 price: collection?.basePrices,
@@ -275,37 +273,38 @@ const Vending: FunctionComponent<VendingProps> = ({
                                 );
                           }}
                         >
-                          {collection.uri.type === "video/mp4" ? (
-                            <video
-                              playsInline
-                              className={`rounded-tr-2xl object-cover h-[12.5rem] w-full`}
-                              muted
-                              loop
-                              id={collection?.uri?.image}
-                              key={collection?.uri?.image}
-                            >
-                              <source
+                          {collection?.uri?.image.split("ipfs://")[1] &&
+                            (collection.uri.type === "video/mp4" ? (
+                              <video
+                                playsInline
+                                className={`rounded-tr-2xl object-cover h-[12.5rem] w-full`}
+                                muted
+                                loop
+                                id={collection?.uri?.image}
+                                key={collection?.uri?.image}
+                              >
+                                <source
+                                  src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
+                                    .split("ipfs://")[1]
+                                    .replace(/"/g, "")
+                                    .trim()}`}
+                                  type="video/mp4"
+                                  draggable={false}
+                                />
+                              </video>
+                            ) : (
+                              <Image
                                 src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
                                   .split("ipfs://")[1]
                                   .replace(/"/g, "")
                                   .trim()}`}
-                                type="video/mp4"
+                                alt="vending"
+                                layout="fill"
+                                className={`rounded-tr-2xl`}
+                                objectFit="cover"
                                 draggable={false}
                               />
-                            </video>
-                          ) : (
-                            <Image
-                              src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
-                                .split("ipfs://")[1]
-                                .replace(/"/g, "")
-                                .trim()}`}
-                              alt="vending"
-                              layout="fill"
-                              className={`rounded-tr-2xl`}
-                              objectFit="cover"
-                              draggable={false}
-                            />
-                          )}
+                            ))}
                           {collection?.coinOp && (
                             <div
                               className="absolute flex top-2 right-2 w-5 h-5 rounded-full p-px"
@@ -377,7 +376,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                             className="relative w-6 h-6 cursor-pointer border border-ama rounded-full"
                             id="crt"
                           >
-                            {profilePicture && profilePicture !== "" && (
+                            {profilePicture && (
                               <Image
                                 src={profilePicture}
                                 layout="fill"

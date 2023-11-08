@@ -50,7 +50,7 @@ const Encrypted: FunctionComponent<AutoProfileFeedProps> = ({
   results,
   handleKeyDownDelete,
   handleLensSignIn,
-  handleConnect,
+  openConnectModal,
   handleRemoveImage,
   uploadImages,
   setCollectibleDropDown,
@@ -171,7 +171,7 @@ const Encrypted: FunctionComponent<AutoProfileFeedProps> = ({
                     setGifOpen={setGifOpen}
                     handleKeyDownDelete={handleKeyDownDelete}
                     handleLensSignIn={handleLensSignIn}
-                    handleConnect={handleConnect}
+                    openConnectModal={openConnectModal}
                     handleRemoveImage={handleRemoveImage}
                     address={address}
                     profileId={profileId}

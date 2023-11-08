@@ -8,7 +8,7 @@ import Video from "@/components/Common/Video/modules/Video";
 
 const Bar: FunctionComponent<BarProps> = ({
   push,
-  handleConnect,
+  openConnectModal,
   connected,
   handleLensSignIn,
   profile,
@@ -46,7 +46,7 @@ const Bar: FunctionComponent<BarProps> = ({
           />
           <Auth
             connected={connected}
-            handleConnect={handleConnect}
+            openConnectModal={openConnectModal}
             handleLensSignIn={handleLensSignIn}
             profile={profile}
             mainPage={true}
@@ -86,7 +86,7 @@ const Bar: FunctionComponent<BarProps> = ({
         />
         <Auth
           connected={connected}
-          handleConnect={handleConnect}
+          openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
           profile={profile}
           mainPage={true}

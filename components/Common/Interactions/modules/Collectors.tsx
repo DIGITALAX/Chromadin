@@ -34,7 +34,7 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
           >
             <div className="relative w-full h-fit flex flex-col gap-3 px-4 pt-4">
               {collectors?.map((collector: Profile, index: number) => {
-                let profileImage: string = createProfilePicture(
+                let profileImage = createProfilePicture(
                   collector?.metadata?.picture
                 );
 
@@ -48,7 +48,11 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
                     onClick={() =>
                       collector?.handle?.suggestedFormatted?.localName &&
                       window.open(
-                        `https://www.chromadin.xyz/#chat?option=history&profile=${collector?.handle?.suggestedFormatted?.localName?.split("@")[1]}`
+                        `https://www.chromadin.xyz/#chat?option=history&profile=${
+                          collector?.handle?.suggestedFormatted?.localName?.split(
+                            "@"
+                          )[1]
+                        }`
                       )
                     }
                   >
@@ -56,7 +60,7 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
                       className="relative w-6 h-6 border border-white"
                       id="crt"
                     >
-                      {profileImage !== "" && (
+                      {profileImage && (
                         <Image
                           src={profileImage}
                           layout="fill"

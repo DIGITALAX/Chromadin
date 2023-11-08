@@ -27,43 +27,46 @@ const InDrop: FunctionComponent<InDropProps> = ({
                 onClick={() =>
                   push(
                     `/autograph/${
-                      autoProfile?.handle?.suggestedFormatted?.localName?.split("@")[1]
+                      autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                        "@"
+                      )[1]
                     }/collection/${coll?.name
                       ?.replace(/\s/g, "_")
                       .toLowerCase()}`
                   )
                 }
               >
-                {coll.uri.image && !coll.uri.type.includes("video") ? (
-                  <Image
-                    layout="fill"
-                    className="rounded-md w-full h-full flex"
-                    objectFit="cover"
-                    objectPosition={"center"}
-                    src={`${INFURA_GATEWAY}/ipfs/${
-                      coll.uri.image?.split("ipfs://")[1]
-                    }`}
-                    draggable={false}
-                  />
-                ) : (
-                  coll.uri.image && (
-                    <video
-                      muted
-                      autoPlay
-                      playsInline
-                      loop
-                      key={coll.uri.image}
-                      className="w-full h-full object-cover rounded-md flex"
-                    >
-                      <source
-                        src={`${INFURA_GATEWAY}/ipfs/${
-                          coll.uri.image?.split("ipfs://")[1]
-                        }`}
-                        type="video/mp4"
-                      />
-                    </video>
-                  )
-                )}
+                {coll.uri.image?.split("ipfs://")[1] &&
+                  (!coll.uri.type.includes("video") ? (
+                    <Image
+                      layout="fill"
+                      className="rounded-md w-full h-full flex"
+                      objectFit="cover"
+                      objectPosition={"center"}
+                      src={`${INFURA_GATEWAY}/ipfs/${
+                        coll.uri.image?.split("ipfs://")[1]
+                      }`}
+                      draggable={false}
+                    />
+                  ) : (
+                    coll.uri.image && (
+                      <video
+                        muted
+                        autoPlay
+                        playsInline
+                        loop
+                        key={coll.uri.image}
+                        className="w-full h-full object-cover rounded-md flex"
+                      >
+                        <source
+                          src={`${INFURA_GATEWAY}/ipfs/${
+                            coll.uri.image?.split("ipfs://")[1]
+                          }`}
+                          type="video/mp4"
+                        />
+                      </video>
+                    )
+                  ))}
                 <div className="relative absolute top-0 left-0 bg-black opacity-60 w-full h-full rounded-md hover:opacity-0"></div>
               </div>
             );

@@ -186,7 +186,7 @@ export type PostProps = {
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal:( () => void) | undefined;
   address: `0x${string}` | undefined;
   profileId: string;
   handlePost: (quote: string | undefined) => Promise<void>;
@@ -208,7 +208,7 @@ export type ClaimProps = {
   signInLoading: boolean;
   address: `0x${string}` | undefined;
   profileId: string;
-  handleConnect: () => void;
+  openConnectModal:( () => void) | undefined;
 };
 
 export type DecryptProps = {

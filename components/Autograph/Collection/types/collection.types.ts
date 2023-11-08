@@ -22,7 +22,7 @@ export type BarProps = {
     as?: Url | undefined,
     options?: any | undefined
   ) => Promise<boolean>;
-  handleConnect: () => void;
+  openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   connected: boolean;
   profile: Profile | undefined;

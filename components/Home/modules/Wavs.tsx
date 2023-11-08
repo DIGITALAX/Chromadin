@@ -9,6 +9,7 @@ import useReactions from "@/components/Common/Wavs/hooks/useReactions";
 import useSearch from "@/components/Common/Wavs/hooks/useSearch";
 import Feed from "@/components/Common/Wavs/modules/Feed";
 import { RootState } from "@/redux/store";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useRouter } from "next/router";
 import { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -94,8 +95,8 @@ const Wavs: FunctionComponent = (): JSX.Element => {
   const decryptProfileAmounts = useSelector(
     (state: RootState) => state.app.decryptProfileFeedCountReducer
   );
-
-  const { handleLensSignIn, handleConnect } = useConnect();
+  const { openConnectModal } = useConnectModal();
+  const { handleLensSignIn } = useConnect();
   const {
     followerOnly,
     postsLoading,
@@ -335,7 +336,7 @@ const Wavs: FunctionComponent = (): JSX.Element => {
         value={value}
         setValue={setValue}
         handleLensSignIn={handleLensSignIn}
-        handleConnect={handleConnect}
+        openConnectModal={openConnectModal}
         handleRemoveImage={handleRemoveImage}
         videoLoading={videoLoading}
         profileId={profileId}

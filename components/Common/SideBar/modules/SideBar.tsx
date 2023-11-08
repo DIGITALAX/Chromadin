@@ -8,7 +8,7 @@ import { SideBarProps } from "../types/sidebar.types";
 
 const SideBar: FunctionComponent<SideBarProps> = ({
   profile,
-  handleConnect,
+  openConnectModal,
   connected,
   handleLensSignIn,
   tab,
@@ -78,10 +78,10 @@ const SideBar: FunctionComponent<SideBarProps> = ({
         />
       )}
       <Connect
-        handleConnect={handleConnect}
         connected={connected}
         handleLensSignIn={handleLensSignIn}
         profile={profile}
+        openConnectModal={openConnectModal}
       />
     </div>
   );

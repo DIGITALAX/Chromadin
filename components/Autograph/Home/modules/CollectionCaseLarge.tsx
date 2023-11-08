@@ -12,15 +12,16 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
   imageLoading,
   address,
   profileId,
-  handleConnect,
+  openConnectModal,
   handleLensSignIn,
 }): JSX.Element => {
+  const pfp = createProfilePicture(autoProfile?.metadata?.picture);
   return (
     <div
       className={`relative flex rounded-md w-full h-[40rem]`}
       id="staticLoad"
     >
-      {collection?.uri?.image &&
+      {collection?.uri?.image?.split("ipfs://")[1] &&
         (!collection?.uri?.type?.includes("video") ? (
           <Image
             src={`${INFURA_GATEWAY}/ipfs/${
@@ -96,9 +97,9 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
               className="relative w-10 h-10 border border-ama rounded-full flex preG:items-center preG:justify-center justify-start items-start"
               id="crt"
             >
-              {createProfilePicture(autoProfile?.metadata?.picture) !== "" && (
+              {pfp && (
                 <Image
-                  src={createProfilePicture(autoProfile?.metadata?.picture)}
+                  src={pfp}
                   layout="fill"
                   alt="pfp"
                   className="rounded-full w-full h-full flex"
@@ -157,7 +158,7 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
               className={`relative text-ama items-start preG:items-center flex cursor-pointer hover:opacity-70 active:scale-95 flex-row gap-1`}
               onClick={
                 !address && !profileId
-                  ? () => handleConnect()
+                  ? openConnectModal
                   : address && !profileId
                   ? () => handleLensSignIn()
                   : imageLoading

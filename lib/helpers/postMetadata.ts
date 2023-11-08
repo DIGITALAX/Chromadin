@@ -14,7 +14,6 @@ import { INFURA_GATEWAY } from "../constants";
 export const postMetadata = (
   publication: Post | Mirror | Quote | Comment
 ): Maybe<PublicationMetadataMedia[]> | undefined => {
-  
   const pub =
     publication?.__typename === "Mirror"
       ? publication.mirrorOn

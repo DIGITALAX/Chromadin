@@ -30,7 +30,7 @@ const useConnect = (): UseConnectResults => {
     chain: polygon,
     transport: http(),
   });
-  const { openConnectModal } = useConnectModal();
+  const {  connectModalOpen } = useConnectModal();
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
@@ -72,16 +72,6 @@ const useConnect = (): UseConnectResults => {
   };
 
   const { signMessageAsync } = useSignMessage();
-
-  const handleConnect = (): void => {
-    openConnectModal;
-    dispatch(
-      setNoHandle({
-        actionValue: false,
-        actionMessage: "",
-      })
-    );
-  };
 
   const handleLensSignIn = async (): Promise<void> => {
     setSignInLoading(true);
@@ -171,13 +161,23 @@ const useConnect = (): UseConnectResults => {
   }, [isConnected]);
 
   useEffect(() => {
+    if (connectModalOpen) {
+      dispatch(
+        setNoHandle({
+          actionValue: false,
+          actionMessage: "",
+        })
+      );
+    }
+  }, [connectModalOpen])
+
+  useEffect(() => {
     if (router && address) {
       getWriter();
     }
   }, [address, isConnected]);
 
   return {
-    handleConnect,
     handleLensSignIn,
     handleRefreshProfile,
     signInLoading,

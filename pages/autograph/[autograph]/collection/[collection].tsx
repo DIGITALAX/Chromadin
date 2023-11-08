@@ -20,6 +20,7 @@ import useBar from "@/components/Autograph/Common/hooks/useBar";
 import WaveformComponent from "@/components/Home/modules/Waveform";
 import Checkout from "@/components/Autograph/Collection/modules/Checkout";
 import { setNftScreen } from "@/redux/reducers/nftScreenSlice";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const Collection: NextPage = (): JSX.Element => {
   const allDrops = useSelector(
@@ -52,11 +53,12 @@ const Collection: NextPage = (): JSX.Element => {
     imageIndex,
   } = useAutoCollection();
   const { isLargeScreen } = useBar();
-
+  const pfp = createProfilePicture(autoDispatch.profile?.metadata?.picture);
   const { address } = useAccount();
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
     useViewer();
-  const { handleConnect, handleLensSignIn } = useConnect();
+  const { openConnectModal } = useConnectModal();
+  const { handleLensSignIn } = useConnect();
   const {
     query: { autograph, collection },
     push,
@@ -123,7 +125,9 @@ const Collection: NextPage = (): JSX.Element => {
           <meta
             name="twitter:image"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split("@")[1]
+              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+                "@"
+              )[1]
             }/collection/${autoDispatch.collection?.name
               ?.replaceAll(" ", "_")
               ?.toLowerCase()}`}
@@ -131,7 +135,9 @@ const Collection: NextPage = (): JSX.Element => {
           <meta
             name="twitter:url"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split("@")[1]
+              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+                "@"
+              )[1]
             }/collection/${autoDispatch.collection?.name
               ?.replaceAll(" ", "_")
               ?.toLowerCase()}`}
@@ -218,7 +224,7 @@ const Collection: NextPage = (): JSX.Element => {
         </Head>
         <Bar
           push={push}
-          handleConnect={handleConnect}
+          openConnectModal={openConnectModal}
           connected={connected}
           handleLensSignIn={handleLensSignIn}
           profile={profile}
@@ -238,43 +244,45 @@ const Collection: NextPage = (): JSX.Element => {
               <div className="relative flex flex-col w-full h-full bg-offBlack/50 p-2 items-center justify-center">
                 <div className="relative w-full h-full flex">
                   {autoDispatch.collection?.uri?.image &&
-                  autoDispatch.collection.uri.type === "video/mp4" ? (
-                    <video
-                      playsInline
-                      muted
-                      loop
-                      className="flex flex-col w-full h-full object-contain"
-                      controls={autoDispatch.collection.hasAudio ? false : true}
-                      id={autoDispatch.collection?.uri?.image}
-                      key={autoDispatch.collection?.uri?.image}
-                    >
-                      <source
-                        src={`${INFURA_GATEWAY}/ipfs/${
-                          autoDispatch.collection?.uri?.image?.split(
-                            "ipfs://"
-                          )[1]
-                        }`}
-                        type="video/mp4"
-                        draggable={false}
-                      />
-                    </video>
-                  ) : (
-                    <Image
-                      src={`${INFURA_GATEWAY}/ipfs/${
-                        viewScreenNFT
-                          ? autoDispatch.collection?.uri?.image?.split(
+                    (autoDispatch.collection.uri.type === "video/mp4" ? (
+                      <video
+                        playsInline
+                        muted
+                        loop
+                        className="flex flex-col w-full h-full object-contain"
+                        controls={
+                          autoDispatch.collection.hasAudio ? false : true
+                        }
+                        id={autoDispatch.collection?.uri?.image}
+                        key={autoDispatch.collection?.uri?.image}
+                      >
+                        <source
+                          src={`${INFURA_GATEWAY}/ipfs/${
+                            autoDispatch.collection?.uri?.image?.split(
                               "ipfs://"
                             )[1]
-                          : autoDispatch.collection?.coinOp?.uri?.image[
-                              imageIndex
-                            ]?.split("ipfs://")[1]
-                      }`}
-                      layout="fill"
-                      objectFit="contain"
-                      className="flex flex-col w-full h-full"
-                      draggable={false}
-                    />
-                  )}
+                          }`}
+                          type="video/mp4"
+                          draggable={false}
+                        />
+                      </video>
+                    ) : (
+                      <Image
+                        src={`${INFURA_GATEWAY}/ipfs/${
+                          viewScreenNFT
+                            ? autoDispatch.collection?.uri?.image?.split(
+                                "ipfs://"
+                              )[1]
+                            : autoDispatch.collection?.coinOp?.uri?.image[
+                                imageIndex
+                              ]?.split("ipfs://")[1]
+                        }`}
+                        layout="fill"
+                        objectFit="contain"
+                        className="flex flex-col w-full h-full"
+                        draggable={false}
+                      />
+                    ))}
                   {!viewScreenNFT && (
                     <div
                       className={`absolute bottom-2 right-2 w-fit h-fit flex flex-row gap-1.5`}
@@ -352,7 +360,7 @@ const Collection: NextPage = (): JSX.Element => {
                   className={`relative text-ama items-center flex cursor-pointer justify-center top-1 rounded-l-md p-1 hover:opacity-70 active:scale-95 flex-row gap-1`}
                   onClick={
                     !address && !profileId
-                      ? () => handleConnect()
+                      ? openConnectModal
                       : address && !profileId
                       ? () => handleLensSignIn()
                       : imageLoading
@@ -446,19 +454,19 @@ const Collection: NextPage = (): JSX.Element => {
                 {autoDispatch.profile && autoDispatch.collection && (
                   <Link
                     className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3 cursor-pointer"
-                    href={`/autograph/${autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split("@")[1]}`}
+                    href={`/autograph/${
+                      autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+                        "@"
+                      )[1]
+                    }`}
                   >
                     <div
                       className="relative w-6 h-6 cursor-pointer border border-ama rounded-full"
                       id="crt"
                     >
-                      {createProfilePicture(
-                        autoDispatch.profile?.metadata?.picture
-                      ) !== "" && (
+                      {pfp && (
                         <Image
-                          src={createProfilePicture(
-                            autoDispatch.profile?.metadata?.picture
-                          )}
+                          src={pfp}
                           layout="fill"
                           alt="pfp"
                           className="rounded-full w-full h-full flex"
@@ -468,7 +476,9 @@ const Collection: NextPage = (): JSX.Element => {
                     </div>
                     <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
                       {
-                        autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split("@")[1]
+                        autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+                          "@"
+                        )[1]
                       }
                     </div>
                   </Link>

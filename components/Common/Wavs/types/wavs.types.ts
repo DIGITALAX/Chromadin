@@ -316,7 +316,7 @@ export type FeedProps = {
   collectNotif: string;
   profileId: string;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal:( () => void) | undefined;
   feedType: string;
   scrollRef: Ref<InfiniteScroll>;
   setScrollPos: (e: MouseEvent) => void;
@@ -535,7 +535,7 @@ export type IndividualProps = {
   collectNotif: string;
   profileId: string;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal:( () => void) | undefined;
   individualAmounts: IndividualFeedCountState;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
 };
@@ -581,7 +581,7 @@ export type CommentsProps = {
   profileId: string;
   commentPost: (id: string) => Promise<void>;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal:( () => void) | undefined;
   commentDescription: string;
   commentLoading: boolean;
   handleCommentDescription: (e: FormEvent) => Promise<void>;
@@ -716,7 +716,6 @@ export type MakeCommentProps = {
   profileId: string;
   commentPost: (id: string) => Promise<void>;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
   commentDescription: string;
   commentLoading: boolean;
   handleCommentDescription: (e: FormEvent) => Promise<void>;
@@ -736,6 +735,7 @@ export type MakeCommentProps = {
   uploadVideo: (e: FormEvent) => Promise<void>;
   handleRemoveImage: (e: UploadedMedia) => void;
   postImagesDispatched?: UploadedMedia[];
+  openConnectModal:( () => void) | undefined;
   mappedFeaturedFiles: UploadedMedia[];
   handleGifSubmit: () => Promise<void>;
   handleGif: (e: FormEvent) => void;
@@ -896,7 +896,7 @@ export type ProfileFeedProps = {
   collectNotif: string;
   profileId: string;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal:( () => void) | undefined;
   feedType: string;
   profileRef: Ref<InfiniteScroll> | undefined;
   setScrollPos?: (e: MouseEvent) => void;
@@ -1016,7 +1016,7 @@ export type SwitchProps = {
   collectNotif: string;
   profileId: string;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal:( () => void) | undefined;
   feedType: string;
   scrollRef: Ref<InfiniteScroll>;
   profileRef: Ref<InfiniteScroll>;
@@ -1164,7 +1164,7 @@ export type AllPostsProps = {
   collectNotif: string;
   profileId: string;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal:( () => void) | undefined;
   feedType: string;
   scrollRef: Ref<InfiniteScroll>;
   setScrollPos: (e: MouseEvent) => void;
@@ -1223,8 +1223,7 @@ export type SearchProps = {
 
 export type SuperCreatorProps = {
   dispatch: Dispatch<AnyAction>;
-  handleConnect: () => void;
-  profileId: string;
+  openConnectModal:( () => void) | undefined;  profileId: string;
   address: `0x${string}` | undefined;
 };
 

@@ -93,7 +93,7 @@ const Feed: FunctionComponent<FeedProps> = ({
   value,
   setValue,
   handleLensSignIn,
-  handleConnect,
+  openConnectModal,
   handleRemoveImage,
   videoLoading,
   profileId,
@@ -235,7 +235,7 @@ const Feed: FunctionComponent<FeedProps> = ({
             handleKeyDownDelete={handleKeyDownDelete}
             commentOpen={commentOpen}
             handleLensSignIn={handleLensSignIn}
-            handleConnect={handleConnect}
+            openConnectModal={openConnectModal}
             handleRemoveImage={handleRemoveImage}
             profileId={profileId}
             videoLoading={videoLoading}
@@ -365,7 +365,7 @@ const Feed: FunctionComponent<FeedProps> = ({
             value={value}
             setValue={setValue}
             handleLensSignIn={handleLensSignIn}
-            handleConnect={handleConnect}
+            openConnectModal={openConnectModal}
             handleRemoveImage={handleRemoveImage}
             videoLoading={videoLoading}
             profileId={profileId}

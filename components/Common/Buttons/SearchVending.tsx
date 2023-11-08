@@ -57,17 +57,21 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
                           draggable={false}
                         />
                       ) : (
-                        <Image
-                          src={`${INFURA_GATEWAY}/ipfs/${
-                            (result as Collection | Drop)?.uri?.image?.split(
-                              "ipfs://"
-                            )[1]
-                          }`}
-                          className="rounded-md"
-                          layout="fill"
-                          objectFit="cover"
-                          draggable={false}
-                        />
+                        (result as Collection | Drop)?.uri?.image?.split(
+                          "ipfs://"
+                        )[1] && (
+                          <Image
+                            src={`${INFURA_GATEWAY}/ipfs/${
+                              (result as Collection | Drop)?.uri?.image?.split(
+                                "ipfs://"
+                              )[1]
+                            }`}
+                            className="rounded-md"
+                            layout="fill"
+                            objectFit="cover"
+                            draggable={false}
+                          />
+                        )
                       )}
                     </div>
                     <div className="relative flex flex-col h-fit w-full items-start justify-center">

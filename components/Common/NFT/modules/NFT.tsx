@@ -59,7 +59,7 @@ const NFT: FunctionComponent<NFTProps> = ({
   preElement,
   handleImagePaste,
   collectionsLoading,
-  handleConnect,
+  openConnectModal,
   handleLensSignIn,
   router,
   dispatch,
@@ -90,7 +90,7 @@ const NFT: FunctionComponent<NFTProps> = ({
           profileId={profileId}
           commentVideo={commentVideo}
           handleLensSignIn={handleLensSignIn}
-          handleConnect={handleConnect}
+          openConnectModal={openConnectModal}
           connected={connected}
           canComment={canComment}
           commentDescription={commentDescription}

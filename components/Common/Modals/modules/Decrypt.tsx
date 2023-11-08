@@ -39,28 +39,32 @@ const Decrypt: FunctionComponent<DecryptProps> = ({
                 <div className="flex flex-row w-fit gap-3 h-fit px-4">
                   {collections?.map((coll: Collection, index: number) => {
                     return (
-                      <Link
-                        className="relative w-36 h-36 preG:w-52 preG:h-52 justify-center items-center rounded-lg border border-white cursor-pointer"
-                        id="staticLoad"
-                        key={index}
-                        href={`/autograph/${
-                          coll?.profile?.handle?.suggestedFormatted?.localName?.split("@")[1]
-                        }/collection/${coll?.name
-                          ?.replace(/\s/g, "_")
-                          .toLowerCase()}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <Image
-                          src={`${INFURA_GATEWAY}/ipfs/${
-                            coll?.uri?.image?.split("ipfs://")[1]
-                          }`}
-                          layout="fill"
-                          objectFit="cover"
-                          className="rounded-lg"
-                          draggable={false}
-                        />
-                      </Link>
+                      coll?.uri?.image?.split("ipfs://")[1] && (
+                        <Link
+                          className="relative w-36 h-36 preG:w-52 preG:h-52 justify-center items-center rounded-lg border border-white cursor-pointer"
+                          id="staticLoad"
+                          key={index}
+                          href={`/autograph/${
+                            coll?.profile?.handle?.suggestedFormatted?.localName?.split(
+                              "@"
+                            )[1]
+                          }/collection/${coll?.name
+                            ?.replace(/\s/g, "_")
+                            .toLowerCase()}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <Image
+                            src={`${INFURA_GATEWAY}/ipfs/${
+                              coll?.uri?.image?.split("ipfs://")[1]
+                            }`}
+                            layout="fill"
+                            objectFit="cover"
+                            className="rounded-lg"
+                            draggable={false}
+                          />
+                        </Link>
+                      )
                     );
                   })}
                 </div>

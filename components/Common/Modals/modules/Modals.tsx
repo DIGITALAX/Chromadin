@@ -29,6 +29,7 @@ import Decrypt from "./Decrypt";
 import IPFS from "./IPFS";
 import useChannels from "../../SideBar/hooks/useChannels";
 import useAllPosts from "../../Wavs/hooks/useAllPosts";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const Modals = () => {
   const videoRef = useRef<HTMLDivElement>(null);
@@ -127,7 +128,8 @@ const Modals = () => {
   } = useReactions();
   const router = useRouter();
   const { address } = useAccount();
-  const { handleLensSignIn, handleConnect, signInLoading } = useConnect();
+  const { openConnectModal } = useConnectModal();
+  const { handleLensSignIn, signInLoading } = useConnect();
   const dispatch = useDispatch();
   const {
     reacters,
@@ -334,7 +336,7 @@ const Modals = () => {
           clientRendered={clientRendered}
           handlePost={handlePost}
           dispatch={dispatch}
-          handleConnect={handleConnect}
+          openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
           postDescription={postDescription}
           textElement={textElement}
@@ -420,7 +422,7 @@ const Modals = () => {
           message={claimModal.message}
           signInLoading={signInLoading}
           handleLensSignIn={handleLensSignIn}
-          handleConnect={handleConnect}
+          openConnectModal={openConnectModal}
           address={address}
           profileId={lensProfile}
         />

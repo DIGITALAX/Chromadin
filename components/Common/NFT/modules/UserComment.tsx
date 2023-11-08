@@ -21,7 +21,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
   profileId,
   commentVideo,
   handleLensSignIn,
-  handleConnect,
+  openConnectModal,
   commentDescription,
   commentLoading,
   handleCommentDescription,
@@ -369,7 +369,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                 }`}
                 onClick={
                   !connected && !profileId
-                    ? () => handleConnect()
+                    ? openConnectModal
                     : connected && !profileId
                     ? () => handleLensSignIn()
                     : commentLoading

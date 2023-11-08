@@ -59,7 +59,7 @@ const FollowerOnly: FunctionComponent<FollowerOnlyProps> = ({
               className="relative w-6 h-6 rounded-full flex items-center justify-center border border-white"
               id="crt"
             >
-              {profileImage !== "" && (
+              {profileImage && (
                 <Image
                   src={profileImage}
                   layout="fill"

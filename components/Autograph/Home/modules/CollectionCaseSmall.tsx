@@ -1,5 +1,4 @@
 import { INFURA_GATEWAY } from "@/lib/constants";
-import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { CollectionCaseProps } from "../types/autograph.types";
@@ -12,56 +11,61 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
   imageLoading,
   address,
   profileId,
-  handleConnect,
+  openConnectModal,
   handleLensSignIn,
 }): JSX.Element => {
   return (
     <div className={`relative flex rounded-md w-40 h-40`} id="staticLoad">
       {collection?.uri?.image && (
         <div className="relative w-full h-full border border-ama rounded-md">
-          {!collection?.uri?.type?.includes("video") ? (
-            <Image
-              src={`${INFURA_GATEWAY}/ipfs/${
-                collection?.uri?.image?.split("ipfs://")[1]
-              }`}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-md cursor-pointer hover:opacity-80"
-              draggable={false}
-              onClick={() =>
-                router.push(
-                  `/autograph/${
-                    autoProfile?.handle?.suggestedFormatted?.localName?.split("@")[1]
-                  }/collection/${collection?.uri?.name
-                    ?.replaceAll(" ", "_")
-                    ?.toLowerCase()}`
-                )
-              }
-            />
-          ) : (
-            <video
-              muted
-              autoPlay
-              playsInline
-              className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80"
-              onClick={() =>
-                router.push(
-                  `/autograph/${
-                    autoProfile?.handle?.suggestedFormatted?.localName?.split("@")[1]
-                  }/collection/${collection?.uri?.name
-                    ?.replaceAll(" ", "_")
-                    ?.toLowerCase()}`
-                )
-              }
-            >
-              <source
+          {collection?.uri?.image?.split("ipfs://")[1] &&
+            (!collection?.uri?.type?.includes("video") ? (
+              <Image
                 src={`${INFURA_GATEWAY}/ipfs/${
                   collection?.uri?.image?.split("ipfs://")[1]
                 }`}
-                type="video/mp4"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-md cursor-pointer hover:opacity-80"
+                draggable={false}
+                onClick={() =>
+                  router.push(
+                    `/autograph/${
+                      autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                        "@"
+                      )[1]
+                    }/collection/${collection?.uri?.name
+                      ?.replaceAll(" ", "_")
+                      ?.toLowerCase()}`
+                  )
+                }
               />
-            </video>
-          )}
+            ) : (
+              <video
+                muted
+                autoPlay
+                playsInline
+                className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80"
+                onClick={() =>
+                  router.push(
+                    `/autograph/${
+                      autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                        "@"
+                      )[1]
+                    }/collection/${collection?.uri?.name
+                      ?.replaceAll(" ", "_")
+                      ?.toLowerCase()}`
+                  )
+                }
+              >
+                <source
+                  src={`${INFURA_GATEWAY}/ipfs/${
+                    collection?.uri?.image?.split("ipfs://")[1]
+                  }`}
+                  type="video/mp4"
+                />
+              </video>
+            ))}
         </div>
       )}
       {collection?.coinOp && (
@@ -103,7 +107,7 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
           className={`relative text-ama items-center flex cursor-pointer bg-black border border-ama rounded-l-md p-1 hover:opacity-70 active:scale-95 flex-row gap-1`}
           onClick={
             !address && !profileId
-              ? () => handleConnect()
+              ? openConnectModal
               : address && !profileId
               ? () => handleLensSignIn()
               : imageLoading

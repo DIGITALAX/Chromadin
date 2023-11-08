@@ -135,7 +135,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                           className="relative w-6 h-6 border border-white"
                           id="crt"
                         >
-                          {profileImage !== "" && (
+                          {profileImage && (
                             <Image
                               objectFit="cover"
                               alt="pfp"
@@ -206,51 +206,54 @@ const Comments: FunctionComponent<CommentsProps> = ({
                                     key={index}
                                     className="relative w-24 h-24 grid grid-flow-col auto-cols-auto"
                                   >
-                                    {(
-                                      media.__typename ===
-                                      "PublicationMetadataMediaImage"
-                                        ? media
-                                        : (media as NftImage).image
-                                    ) ? (
-                                      <Image
-                                        src={formattedImageURL}
-                                        layout="fill"
-                                        objectFit="cover"
-                                        draggable={false}
-                                        className="rounded-lg"
-                                      />
-                                    ) : formattedImageURL.includes("index") ? (
-                                      <div className="rounded-md absolute w-full h-full object-cover">
-                                        <ReactPlayer
-                                          url={formattedImageURL}
-                                          controls={true}
-                                          muted={true}
-                                          playsinline
-                                          loop
-                                          style={{
-                                            borderRadius: "0.375rem",
-                                            objectFit: "cover",
-                                          }}
-                                          width="100%"
-                                          height="100%"
-                                          className="rounded-md"
-                                        />
-                                      </div>
-                                    ) : (
-                                      <video
-                                        muted
-                                        controls
-                                        playsInline
-                                        autoPlay
-                                        loop
-                                        className="rounded-md absolute w-full h-full object-cover"
-                                      >
-                                        <source
+                                    {formattedImageURL &&
+                                      ((
+                                        media.__typename ===
+                                        "PublicationMetadataMediaImage"
+                                          ? media
+                                          : (media as NftImage).image
+                                      ) ? (
+                                        <Image
                                           src={formattedImageURL}
-                                          type="video/mp4"
+                                          layout="fill"
+                                          objectFit="cover"
+                                          draggable={false}
+                                          className="rounded-lg"
                                         />
-                                      </video>
-                                    )}
+                                      ) : formattedImageURL.includes(
+                                          "index"
+                                        ) ? (
+                                        <div className="rounded-md absolute w-full h-full object-cover">
+                                          <ReactPlayer
+                                            url={formattedImageURL}
+                                            controls={true}
+                                            muted={true}
+                                            playsinline
+                                            loop
+                                            style={{
+                                              borderRadius: "0.375rem",
+                                              objectFit: "cover",
+                                            }}
+                                            width="100%"
+                                            height="100%"
+                                            className="rounded-md"
+                                          />
+                                        </div>
+                                      ) : (
+                                        <video
+                                          muted
+                                          controls
+                                          playsInline
+                                          autoPlay
+                                          loop
+                                          className="rounded-md absolute w-full h-full object-cover"
+                                        >
+                                          <source
+                                            src={formattedImageURL}
+                                            type="video/mp4"
+                                          />
+                                        </video>
+                                      ))}
                                   </div>
                                 );
                               }

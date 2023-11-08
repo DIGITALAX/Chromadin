@@ -23,6 +23,7 @@ import useCollectOptions from "@/components/Common/NFT/hooks/useCollectOptions";
 import useImageUpload from "@/components/Common/NFT/hooks/useImageUpload";
 import RouterChange from "@/components/Common/Loading/RouterChange";
 import { TriStateValue } from "@/components/Home/types/generated";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const Home: NextPage = (): JSX.Element => {
   const viewer = useSelector((state: RootState) => state.app.viewReducer.value);
@@ -65,7 +66,8 @@ const Home: NextPage = (): JSX.Element => {
   );
   const dispatch = useDispatch();
   const router = useRouter();
-  const { handleConnect, handleLensSignIn } = useConnect();
+  const { handleLensSignIn } = useConnect();
+  const { openConnectModal } = useConnectModal();
   const { tab, setTab, fetchMoreVideos, scrollHeight } = useChannels();
   const {
     commentors,
@@ -177,7 +179,7 @@ const Home: NextPage = (): JSX.Element => {
           <div className="relative w-full h-full flex flex-row items-center">
             <div className="relative w-fit h-full hidden lg:flex">
               <SideBar
-                handleConnect={handleConnect}
+                openConnectModal={openConnectModal}
                 connected={connected}
                 handleLensSignIn={handleLensSignIn}
                 profile={profile}
@@ -229,7 +231,7 @@ const Home: NextPage = (): JSX.Element => {
                   profileId={profile?.id}
                   commentVideo={commentVideo}
                   handleLensSignIn={handleLensSignIn}
-                  handleConnect={handleConnect}
+                  openConnectModal={openConnectModal}
                   commentDescription={commentDescription}
                   commentLoading={commentLoading}
                   handleCommentDescription={handleCommentDescription}
@@ -299,7 +301,7 @@ const Home: NextPage = (): JSX.Element => {
           </div>
           <div className="w-full h-fit flex flex-col lg:hidden">
             <Connect
-              handleConnect={handleConnect}
+              openConnectModal={openConnectModal}
               connected={connected}
               handleLensSignIn={handleLensSignIn}
               profile={profile}

@@ -92,7 +92,7 @@ const Individual: FunctionComponent<IndividualProps> = ({
   value,
   setValue,
   handleLensSignIn,
-  handleConnect,
+  openConnectModal,
   handleRemoveImage,
   videoLoading,
   profileId,
@@ -186,7 +186,7 @@ const Individual: FunctionComponent<IndividualProps> = ({
               setGifOpen={setGifOpen}
               handleKeyDownDelete={handleKeyDownDelete}
               handleLensSignIn={handleLensSignIn}
-              handleConnect={handleConnect}
+              openConnectModal={openConnectModal}
               handleRemoveImage={handleRemoveImage}
               address={address}
               profileId={profileId}
@@ -292,7 +292,7 @@ const Individual: FunctionComponent<IndividualProps> = ({
         setGifOpen={setGifOpen}
         handleKeyDownDelete={handleKeyDownDelete}
         handleLensSignIn={handleLensSignIn}
-        handleConnect={handleConnect}
+        openConnectModal={openConnectModal}
         handleRemoveImage={handleRemoveImage}
         profileId={profileId}
         videoLoading={videoLoading}

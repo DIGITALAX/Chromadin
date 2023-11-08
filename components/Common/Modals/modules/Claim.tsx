@@ -14,7 +14,7 @@ const Claim: FunctionComponent<ClaimProps> = ({
   signInLoading,
   address,
   profileId,
-  handleConnect,
+  openConnectModal,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -63,7 +63,7 @@ const Claim: FunctionComponent<ClaimProps> = ({
                   onClick={
                     address && !profileId
                       ? () => handleLensSignIn()
-                      : () => handleConnect()
+                      : openConnectModal
                   }
                   className="relative w-28 h-10 flex px-4 cursor-pointer active:scale-95 bg-lensLight/80 font-earl text-white rounded-md items-center justify-center"
                 >

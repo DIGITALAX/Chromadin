@@ -180,10 +180,13 @@ const useDrop = () => {
             image: collectionDrops[0]?.uri?.image,
           },
           creator: {
-            media: createProfilePicture(
+            media:
               coinOpCollections![coinOpCollections!?.length - 1].profile
-                ?.metadata?.picture
-            ),
+                ?.metadata?.picture! &&
+              createProfilePicture(
+                coinOpCollections![coinOpCollections!?.length - 1].profile
+                  ?.metadata?.picture
+              )!,
             name: coinOpCollections![coinOpCollections!?.length - 1].profile
               ?.handle?.localName!,
           },

@@ -14,6 +14,7 @@ const Account: FunctionComponent<AccountProps> = ({
   dispatch,
   router,
 }): JSX.Element => {
+  const pfp = createProfilePicture(profile?.metadata?.picture);
   return (
     <div className="relative w-full h-fit flex flex-col gap-2 items-start justify-center break-words">
       <div
@@ -58,7 +59,9 @@ const Account: FunctionComponent<AccountProps> = ({
               )
             }
           >
-            {profile?.operations.isFollowedByMe?.isFinalisedOnchain ? "Unfollow" : "Follow"}
+            {profile?.operations.isFollowedByMe?.isFinalisedOnchain
+              ? "Unfollow"
+              : "Follow"}
           </div>
           {profile?.operations.isFollowingMe?.isFinalisedOnchain && (
             <div className="relative w-fit h-fit flex bg-gray-400/30 p-1 rounded-md">
@@ -73,9 +76,9 @@ const Account: FunctionComponent<AccountProps> = ({
             className="relative w-20 h-20 rounded-full flex items-center justify-center"
             id="crt"
           >
-            {createProfilePicture(profile?.metadata?.picture) && (
+            {pfp && (
               <Image
-                src={createProfilePicture(profile?.metadata?.picture)}
+                src={pfp}
                 className="rounded-full flex w-full h-full"
                 layout="fill"
                 objectFit="cover"

@@ -58,7 +58,7 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
   results,
   handleKeyDownDelete,
   handleLensSignIn,
-  handleConnect,
+  openConnectModal,
   handleRemoveImage,
   uploadImages,
   setCollectibleDropDown,
@@ -280,7 +280,7 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
                         setGifOpen={setGifOpen}
                         handleKeyDownDelete={handleKeyDownDelete}
                         handleLensSignIn={handleLensSignIn}
-                        handleConnect={handleConnect}
+                        openConnectModal={openConnectModal}
                         handleRemoveImage={handleRemoveImage}
                         address={address}
                         profileId={profileId}

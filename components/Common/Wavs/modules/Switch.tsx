@@ -46,7 +46,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
   results,
   handleKeyDownDelete,
   handleLensSignIn,
-  handleConnect,
+  openConnectModal,
   handleRemoveImage,
   uploadImages,
   setCollectible,
@@ -183,7 +183,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
           setGifOpen={setGifOpen}
           handleKeyDownDelete={handleKeyDownDelete}
           handleLensSignIn={handleLensSignIn}
-          handleConnect={handleConnect}
+             openConnectModal={openConnectModal}
           handleRemoveImage={handleRemoveImage}
           profileId={profileId}
           videoLoading={videoLoading}
@@ -287,7 +287,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
           handleKeyDownDelete={handleKeyDownDelete}
           commentOpen={commentOpen}
           handleLensSignIn={handleLensSignIn}
-          handleConnect={handleConnect}
+             openConnectModal={openConnectModal}
           handleRemoveImage={handleRemoveImage}
           profileId={profileId}
           videoLoading={videoLoading}

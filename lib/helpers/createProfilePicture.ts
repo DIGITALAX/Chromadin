@@ -7,11 +7,11 @@ import { INFURA_GATEWAY } from "../constants";
 
 const createProfilePicture = (
   publication: Maybe<ProfilePicture> | undefined
-): string => {
+): string | undefined => {
   let profileImage: string;
 
   if (!publication) {
-    return "";
+    return undefined;
   }
 
   if (publication?.__typename === "ImageSet") {

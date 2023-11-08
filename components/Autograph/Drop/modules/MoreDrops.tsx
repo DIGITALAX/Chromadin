@@ -24,7 +24,9 @@ const MoreDrops: FunctionComponent<MoreDropsProps> = ({
                 onClick={() =>
                   push(
                     `/autograph/${
-                      autoProfile?.handle?.suggestedFormatted?.localName?.split("@")[1]
+                      autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                        "@"
+                      )[1]
                     }/collection/${collection.name
                       ?.replaceAll(" ", "_")
                       ?.toLowerCase()}`
@@ -36,31 +38,31 @@ const MoreDrops: FunctionComponent<MoreDropsProps> = ({
                   id="staticLoad"
                 >
                   {collection?.uri?.image &&
-                  collection?.uri?.type?.includes("video") ? (
-                    <video
-                      muted
-                      autoPlay
-                      playsInline
-                      className="w-full h-full object-cover rounded-md"
-                    >
-                      <source
+                    (collection?.uri?.type?.includes("video") ? (
+                      <video
+                        muted
+                        autoPlay
+                        playsInline
+                        className="w-full h-full object-cover rounded-md"
+                      >
+                        <source
+                          src={`${INFURA_GATEWAY}/ipfs/${
+                            collection?.uri?.image?.split("ipfs://")[1]
+                          }`}
+                          type="video/mp4"
+                        />
+                      </video>
+                    ) : (
+                      <Image
+                        draggable={false}
                         src={`${INFURA_GATEWAY}/ipfs/${
                           collection?.uri?.image?.split("ipfs://")[1]
                         }`}
-                        type="video/mp4"
+                        layout="fill"
+                        objectFit="cover"
+                        className="rounded-md"
                       />
-                    </video>
-                  ) : (
-                    <Image
-                      draggable={false}
-                      src={`${INFURA_GATEWAY}/ipfs/${
-                        collection?.uri?.image?.split("ipfs://")[1]
-                      }`}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded-md"
-                    />
-                  )}
+                    ))}
                   <div className="absolute w-full h-fit flex flex-col gap-2 justify-end ml-auto items-end right-0 top-4">
                     <div
                       className={`relative flex w-fit p-1 rounded-l-md h-fit text-ama font-mana items-end justify-end whitespace-nowrap text-xxs bg-black right-0 border border-ama`}

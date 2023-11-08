@@ -45,7 +45,7 @@ const CoinOp: FunctionComponent<CoinOpProps> = ({
                   className="w-52 h-52 relative flex rounded-md border border-ama"
                   id="staticLoad"
                 >
-                  {item?.uri?.image?.[0] && (
+                  {item?.uri?.image?.[0]?.split("ipfs://")[1] && (
                     <Image
                       draggable={false}
                       src={`${INFURA_GATEWAY}/ipfs/${

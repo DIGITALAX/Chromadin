@@ -12,9 +12,10 @@ const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
   imageLoading,
   address,
   profileId,
-  handleConnect,
+  openConnectModal,
   handleLensSignIn,
 }): JSX.Element => {
+  const pfp = createProfilePicture(autoProfile?.metadata?.picture);
   return (
     <div className={`relative flex rounded-md w-72 h-80`} id="staticLoad">
       {collection?.uri?.image && (
@@ -31,7 +32,9 @@ const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
               onClick={() =>
                 router.push(
                   `/autograph/${
-                    autoProfile?.handle?.suggestedFormatted?.localName?.split("@")[1]
+                    autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                      "@"
+                    )[1]
                   }/collection/${collection?.uri?.name
                     ?.replaceAll(" ", "_")
                     ?.toLowerCase()}`
@@ -47,7 +50,9 @@ const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
               onClick={() =>
                 router.push(
                   `/autograph/${
-                    autoProfile?.handle?.suggestedFormatted?.localName?.split("@")[1]
+                    autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                      "@"
+                    )[1]
                   }/collection/${collection?.uri?.name
                     ?.replaceAll(" ", "_")
                     ?.toLowerCase()}`
@@ -103,7 +108,7 @@ const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
           className={`relative text-ama items-center flex cursor-pointer bg-black border border-ama rounded-l-md p-1 hover:opacity-70 active:scale-95 flex-row gap-1`}
           onClick={
             !address && !profileId
-              ? () => handleConnect()
+              ? openConnectModal
               : address && !profileId
               ? () => handleLensSignIn()
               : imageLoading
@@ -136,9 +141,9 @@ const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
           className="relative w-8 h-8 border border-ama rounded-full flex items-start right-24 z-1 top-3 justify-start"
           id="crt"
         >
-          {createProfilePicture(autoProfile?.metadata?.picture) !== "" && (
+          {pfp && (
             <Image
-              src={createProfilePicture(autoProfile?.metadata?.picture)}
+              src={pfp}
               layout="fill"
               alt="pfp"
               className="rounded-full w-full h-full flex"

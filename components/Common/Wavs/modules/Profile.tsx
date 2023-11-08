@@ -131,7 +131,7 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
                   )
             }
           >
-            {profileImage !== "" && (
+            {profileImage && (
               <Image
                 src={profileImage}
                 objectFit="cover"

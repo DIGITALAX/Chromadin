@@ -94,24 +94,28 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                     )
                   }
                 >
-                  <div className="relative w-full h-32">
-                    <video
-                      muted
-                      playsInline
-                      preload="metadata"
-                      className="relative object-cover w-full h-full"
-                      poster={`${INFURA_GATEWAY}/ipfs/${json[index]?.poster}`}
-                    >
-                      <source
-                        src={`${INFURA_GATEWAY}/ipfs/${
-                          content?.metadata?.marketplace?.animationUrl?.split(
-                            "ipfs://"
-                          )[1]
-                        }`}
-                        type="video/mp4"
-                      />
-                    </video>
-                  </div>
+                  {content?.metadata?.marketplace?.animationUrl?.split(
+                    "ipfs://"
+                  )[1] && (
+                    <div className="relative w-full h-32">
+                      <video
+                        muted
+                        playsInline
+                        preload="metadata"
+                        className="relative object-cover w-full h-full"
+                        poster={`${INFURA_GATEWAY}/ipfs/${json[index]?.poster}`}
+                      >
+                        <source
+                          src={`${INFURA_GATEWAY}/ipfs/${
+                            content?.metadata?.marketplace?.animationUrl?.split(
+                              "ipfs://"
+                            )[1]
+                          }`}
+                          type="video/mp4"
+                        />
+                      </video>
+                    </div>
+                  )}
                   <div className="relative w-full h-fit galaxy:h-32 p-1">
                     <div className="relative border border-white w-full h-full p-px rounded-lg">
                       <div className="relative p-2 w-full h-full border border-white flex flex-col items-center gap-2 rounded-lg">

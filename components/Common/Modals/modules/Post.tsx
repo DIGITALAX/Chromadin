@@ -79,7 +79,7 @@ const Post: FunctionComponent<PostProps> = ({
   setGifOpen,
   collectNotif,
   handleLensSignIn,
-  handleConnect,
+  openConnectModal,
   address,
   profileId,
   handlePost,
@@ -404,7 +404,7 @@ const Post: FunctionComponent<PostProps> = ({
                           }`}
                           onClick={
                             !profileId && !address
-                              ? () => handleConnect()
+                              ? openConnectModal
                               : address && !profileId
                               ? () => handleLensSignIn()
                               : postLoading

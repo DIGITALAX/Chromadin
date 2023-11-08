@@ -12,6 +12,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
   autoProfile,
   push,
 }): JSX.Element => {
+  const pfp = createProfilePicture(autoProfile?.metadata?.picture);
   return (
     <div className="relative w-full h-full flex flex-col gap-3">
       <div className="relative w-fit h-fit text-white font-earl text-3xl">
@@ -28,9 +29,9 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
             className="relative w-6 h-6 cursor-pointer border border-ama rounded-full"
             id="crt"
           >
-            {createProfilePicture(autoProfile?.metadata?.picture) !== "" && (
+            {pfp && (
               <Image
-                src={createProfilePicture(autoProfile?.metadata?.picture)}
+                src={pfp}
                 layout="fill"
                 alt="pfp"
                 className="rounded-full w-full h-full flex"
@@ -62,31 +63,32 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
               }
             >
               <div className="relative w-48 h-48 rounded-md" id="staticLoad">
-                {collection?.uri?.type?.includes("video") ? (
-                  <video
-                    muted
-                    autoPlay
-                    playsInline
-                    className="w-full h-full object-cover rounded-md"
-                  >
-                    <source
+                {collection?.uri?.image?.split("ipfs://")[1] &&
+                  (collection?.uri?.type?.includes("video") ? (
+                    <video
+                      muted
+                      autoPlay
+                      playsInline
+                      className="w-full h-full object-cover rounded-md"
+                    >
+                      <source
+                        src={`${INFURA_GATEWAY}/ipfs/${
+                          collection?.uri?.image?.split("ipfs://")[1]
+                        }`}
+                        type="video/mp4"
+                      />
+                    </video>
+                  ) : (
+                    <Image
                       src={`${INFURA_GATEWAY}/ipfs/${
                         collection?.uri?.image?.split("ipfs://")[1]
                       }`}
-                      type="video/mp4"
+                      layout="fill"
+                      objectFit="cover"
+                      className="rounded-md"
+                      draggable={false}
                     />
-                  </video>
-                ) : (
-                  <Image
-                    src={`${INFURA_GATEWAY}/ipfs/${
-                      collection?.uri?.image?.split("ipfs://")[1]
-                    }`}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-md"
-                    draggable={false}
-                  />
-                )}
+                  ))}
                 <div className="absolute w-full h-fit flex flex-col gap-2 justify-end ml-auto items-end right-0 top-4">
                   <div
                     className={`relative flex w-fit p-1 rounded-l-md h-fit text-ama font-mana items-end justify-end whitespace-nowrap text-xs bg-black right-0 border border-ama`}

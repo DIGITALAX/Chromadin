@@ -117,7 +117,7 @@ export type AutoProfileFeedProps = {
   collectNotif: string;
   profileId: string;
   handleLensSignIn: () => Promise<void>;
-  handleConnect: () => void;
+  openConnectModal: (() => void) | undefined;
   feedType: string;
   profile: Profile | undefined;
   profileCollections?: Collection[];
@@ -136,7 +136,7 @@ export type CollectionsProps = {
   imageLoading: boolean;
   address: `0x${string}` | undefined;
   profileId: string;
-  handleConnect: () => void;
+  openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
 };
 
@@ -148,7 +148,7 @@ export type CollectionCaseProps = {
   imageLoading: boolean;
   address: `0x${string}` | undefined;
   profileId: string;
-  handleConnect: () => void;
+  openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
 };
 

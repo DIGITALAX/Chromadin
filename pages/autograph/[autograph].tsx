@@ -17,6 +17,7 @@ import useReactions from "@/components/Common/Wavs/hooks/useReactions";
 import Account from "@/components/Common/Wavs/modules/Account";
 import useViewer from "@/components/Home/hooks/useViewer";
 import { RootState } from "@/redux/store";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -68,7 +69,8 @@ const Autograph: NextPage = (): JSX.Element => {
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
     useViewer();
-  const { handleConnect, handleLensSignIn } = useConnect();
+  const { handleLensSignIn } = useConnect();
+  const { openConnectModal } = useConnectModal();
   const { autographLoading, getAllCollections, handleShareCollection } =
     useAutograph();
   const { isLargeScreen } = useBar();
@@ -219,7 +221,7 @@ const Autograph: NextPage = (): JSX.Element => {
             content={autoDispatch.profile?.handle?.suggestedFormatted?.localName
               ?.split("@")[1]
               ?.toUpperCase()}
-          /> 
+          />
           <meta
             name="og:description"
             content={autoDispatch.profile?.metadata?.bio}
@@ -336,7 +338,7 @@ const Autograph: NextPage = (): JSX.Element => {
         </Head>
         <Bar
           push={push}
-          handleConnect={handleConnect}
+          openConnectModal={openConnectModal}
           connected={connected}
           handleLensSignIn={handleLensSignIn}
           profile={profile}
@@ -412,7 +414,7 @@ const Autograph: NextPage = (): JSX.Element => {
                         setGifOpen={setGifOpen}
                         handleKeyDownDelete={handleKeyDownDelete}
                         handleLensSignIn={handleLensSignIn}
-                        handleConnect={handleConnect}
+                        openConnectModal={openConnectModal}
                         handleRemoveImage={handleRemoveImage}
                         profileId={profileId}
                         videoLoading={videoLoading}
@@ -478,7 +480,7 @@ const Autograph: NextPage = (): JSX.Element => {
                     imageLoading={imageLoading}
                     address={address}
                     profileId={profileId}
-                    handleConnect={handleConnect}
+                    openConnectModal={openConnectModal}
                     handleLensSignIn={handleLensSignIn}
                   />
                 </div>
@@ -525,7 +527,7 @@ const Autograph: NextPage = (): JSX.Element => {
                       setGifOpen={setGifOpen}
                       handleKeyDownDelete={handleKeyDownDelete}
                       handleLensSignIn={handleLensSignIn}
-                      handleConnect={handleConnect}
+                      openConnectModal={openConnectModal}
                       handleRemoveImage={handleRemoveImage}
                       profileId={profileId}
                       videoLoading={videoLoading}

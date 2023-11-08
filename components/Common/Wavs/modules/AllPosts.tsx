@@ -39,7 +39,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   profileId,
   caretCoord,
   handleCommentDescription,
-  handleConnect,
+  openConnectModal,
   handleRemoveImage,
   commentLoading,
   mentionProfiles,
@@ -127,7 +127,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
           <div className="relative flex flex-col sm:flex-row lg:flex-col stuck2:flex-row gap-5 sm:gap-1 lg:gap-3 stuck2:gap-1 w-full sm:w-auto h-fit ml-auto sm:pt-0 pt-3">
             <SuperCreator
               dispatch={dispatch}
-              handleConnect={handleConnect}
+              openConnectModal={openConnectModal}
               address={address}
               profileId={profileId}
             />
@@ -262,7 +262,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                         setGifOpen={setGifOpen}
                         handleKeyDownDelete={handleKeyDownDelete}
                         handleLensSignIn={handleLensSignIn}
-                        handleConnect={handleConnect}
+                        openConnectModal={openConnectModal}
                         handleRemoveImage={handleRemoveImage}
                         address={address}
                         profileId={profileId}

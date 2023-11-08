@@ -4,7 +4,7 @@ import { setSuperFollow } from "@/redux/reducers/superFollowSlice";
 import { setNoHandle } from "@/redux/reducers/noHandleSlice";
 
 const SuperCreator: FunctionComponent<SuperCreatorProps> = ({
-  handleConnect,
+  openConnectModal,
   address,
   profileId,
   dispatch,
@@ -16,7 +16,7 @@ const SuperCreator: FunctionComponent<SuperCreatorProps> = ({
           className={`relative text-sm w-fit h-fit justify-center flex border border-white font-earl border-dashed py-px px-2 flex items-center rounded-md active:scale-95 hover:text-moda cursor-pointer `}
           onClick={
             !address
-              ? () => handleConnect()
+              ? openConnectModal
               : address && !profileId
               ? () =>
                   dispatch(

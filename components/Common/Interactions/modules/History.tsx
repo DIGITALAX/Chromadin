@@ -145,7 +145,7 @@ const History: FunctionComponent<HistoryProps> = ({
                         className="relative w-6 h-6 border border-white flex justify-start items-center rounded-full"
                         id="crt"
                       >
-                        {pfp !== "" && (
+                        {pfp && (
                           <Image
                             objectFit="cover"
                             alt="pfp"

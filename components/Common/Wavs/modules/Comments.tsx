@@ -27,7 +27,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
   profileId,
   commentPost,
   handleLensSignIn,
-  handleConnect,
+  openConnectModal,
   commentDescription,
   commentLoading,
   handleCommentDescription,
@@ -176,7 +176,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                       setGifOpen={setGifOpen}
                       handleKeyDownDelete={handleKeyDownDelete}
                       handleLensSignIn={handleLensSignIn}
-                      handleConnect={handleConnect}
+                      openConnectModal={openConnectModal}
                       handleRemoveImage={handleRemoveImage}
                       address={address}
                       profileId={profileId}

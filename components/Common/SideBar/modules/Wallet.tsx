@@ -18,7 +18,7 @@ const Wallet: FunctionComponent<WalletProps> = ({
           ? "gap-1 w-40"
           : "border-white border rounded-tl-lg rounded-br-lg w-full sm:w-40 lg:w-full"
       }`}
-      onClick={() => handleTransaction()}
+      onClick={isConnected ? () => handleTransaction!() : handleTransaction}
     >
       <div
         className={`relative w-full h-full flex items-center justify-center ${

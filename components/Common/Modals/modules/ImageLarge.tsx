@@ -26,24 +26,25 @@ const ImageLarge: FunctionComponent<ImageLargeProps> = ({
         <div className="relative w-full h-full flex py-8 flex items-center justify-center">
           <div className="relative w-4/5 h-4/5 justify-center flex items-center">
             <div className="relative w-full h-full row-start-1 grid grid-flow-col auto-cols-auto px-4">
-              {!type?.includes("video") ? (
-                <Image
-                  src={`${INFURA_GATEWAY}/ipfs/${mainImage}`}
-                  layout="fill"
-                  objectFit="contain"
-                  draggable={false}
-                />
-              ) : (
-                <video
-                  controls
-                  className="rounded-md absolute w-full h-full object-contain"
-                >
-                  <source
+              {mainImage &&
+                (!type?.includes("video") ? (
+                  <Image
                     src={`${INFURA_GATEWAY}/ipfs/${mainImage}`}
-                    type="video/mp4"
+                    layout="fill"
+                    objectFit="contain"
+                    draggable={false}
                   />
-                </video>
-              )}
+                ) : (
+                  <video
+                    controls
+                    className="rounded-md absolute w-full h-full object-contain"
+                  >
+                    <source
+                      src={`${INFURA_GATEWAY}/ipfs/${mainImage}`}
+                      type="video/mp4"
+                    />
+                  </video>
+                ))}
             </div>
           </div>
         </div>

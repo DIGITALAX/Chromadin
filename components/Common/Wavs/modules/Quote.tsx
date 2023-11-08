@@ -52,7 +52,7 @@ const Quote: FunctionComponent<QuoteProps> = ({ publication }): JSX.Element => {
               className={`absolute rounded-full flex bg-white w-8 h-full justify-self-center sm:right-6 col-start-1`}
               id="crt"
             >
-              {profileImage !== "" && (
+              {profileImage && (
                 <Image
                   src={profileImage}
                   objectFit="cover"

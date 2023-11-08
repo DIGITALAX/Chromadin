@@ -60,13 +60,15 @@ const Success: FunctionComponent<SuccessProps> = ({
                   className="relative w-1/2 h-36 preG:h-52 lg:h-40 xl:h-52 justify-center items-center rounded-lg border border-white"
                   id="staticLoad"
                 >
-                  <Image
-                    src={`${INFURA_GATEWAY}/ipfs/${media}`}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-lg"
-                    draggable={false}
-                  />
+                  {media && (
+                    <Image
+                      src={`${INFURA_GATEWAY}/ipfs/${media}`}
+                      layout="fill"
+                      objectFit="cover"
+                      className="rounded-lg"
+                      draggable={false}
+                    />
+                  )}
                 </div>
               </div>
             </div>

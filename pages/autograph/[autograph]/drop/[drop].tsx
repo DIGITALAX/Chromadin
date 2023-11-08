@@ -7,6 +7,7 @@ import RouterChange from "@/components/Common/Loading/RouterChange";
 import useConnect from "@/components/Common/SideBar/hooks/useConnect";
 import useViewer from "@/components/Home/hooks/useViewer";
 import { RootState } from "@/redux/store";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -32,7 +33,8 @@ const Drop: NextPage = (): JSX.Element => {
   } = useRouter();
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
     useViewer();
-  const { handleConnect, handleLensSignIn } = useConnect();
+  const { handleLensSignIn } = useConnect();
+  const { openConnectModal } = useConnectModal();
   const { isLargeScreen } = useBar();
   const { dropLoading, getDrop, otherDrops } = useAutoDrop();
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
@@ -192,7 +194,7 @@ const Drop: NextPage = (): JSX.Element => {
         </Head>
         <Bar
           push={push}
-          handleConnect={handleConnect}
+          openConnectModal={openConnectModal}
           connected={connected}
           handleLensSignIn={handleLensSignIn}
           profile={profile}

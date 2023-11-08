@@ -22,33 +22,34 @@ const ImageUploads: FunctionComponent<ImageUploadsProps> = ({
               }`}
             >
               <div className="relative w-full h-full flex col-start-1 grid grid-flow-col auto-cols-auto">
-                {image.type !== 0 ? (
-                  <Image
-                    src={
-                      image.type === 1
-                        ? `${INFURA_GATEWAY}/ipfs/${image.cid}`
-                        : `${image.cid}`
-                    }
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition={"center"}
-                    className="rounded-md absolute"
-                    draggable={false}
-                  />
-                ) : (
-                  <video
-                    muted
-                    playsInline
-                    autoPlay
-                    controls
-                    className="rounded-md absolute w-full h-full object-cover"
-                  >
-                    <source
-                      src={`${INFURA_GATEWAY}/ipfs/${image.cid}`}
-                      type="video/mp4"
+                {image.cid &&
+                  (image.type !== 0 ? (
+                    <Image
+                      src={
+                        image.type === 1
+                          ? `${INFURA_GATEWAY}/ipfs/${image.cid}`
+                          : `${image.cid}`
+                      }
+                      layout="fill"
+                      objectFit="cover"
+                      objectPosition={"center"}
+                      className="rounded-md absolute"
+                      draggable={false}
                     />
-                  </video>
-                )}
+                  ) : (
+                    <video
+                      muted
+                      playsInline
+                      autoPlay
+                      controls
+                      className="rounded-md absolute w-full h-full object-cover"
+                    >
+                      <source
+                        src={`${INFURA_GATEWAY}/ipfs/${image.cid}`}
+                        type="video/mp4"
+                      />
+                    </video>
+                  ))}
                 <div
                   className={`relative w-fit h-fit col-start-1 justify-self-end self-start p-px ${
                     !commentLoading && "cursor-pointer active:scale-95"

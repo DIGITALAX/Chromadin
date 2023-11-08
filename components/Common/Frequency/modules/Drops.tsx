@@ -59,8 +59,10 @@ const Drops: FunctionComponent<DropsProps> = ({
                       type: collection?.uri?.type,
                       drop: collection?.drop,
                       creator: {
-                        media: profileImage,
-                        name: collection?.profile?.handle?.localName?.split("@")[1]!,
+                        media: profileImage!,
+                        name: collection?.profile?.handle?.localName?.split(
+                          "@"
+                        )[1]!,
                       },
                       price: collection?.basePrices,
                       acceptedTokens: collection?.acceptedTokens,
@@ -75,8 +77,9 @@ const Drops: FunctionComponent<DropsProps> = ({
                   if (router.asPath.includes("/autograph")) {
                     router.replace(
                       `/autograph/${
-                        collection?.profile?.handle?.suggestedFormatted
-                          ?.localName?.split("@")[1]
+                        collection?.profile?.handle?.suggestedFormatted?.localName?.split(
+                          "@"
+                        )[1]
                       }/collection/${collection?.name
                         ?.replaceAll(" ", "_")
                         ?.toLowerCase()}`
@@ -152,37 +155,38 @@ const Drops: FunctionComponent<DropsProps> = ({
                   className="relative w-full h-full border-white border"
                   id="staticLoad"
                 >
-                  {collection.uri.type === "video/mp4" ? (
-                    <video
-                      playsInline
-                      autoPlay
-                      className={`w-full h-36 object-cover`}
-                      muted
-                      loop
-                      key={collection?.uri?.image}
-                    >
-                      <source
-                        src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
-                          .split("ipfs://")[1]
-                          .replace(/"/g, "")
-                          .trim()}`}
-                        type="video/mp4"
+                  {collection?.uri?.image &&
+                    (collection.uri.type === "video/mp4" ? (
+                      <video
+                        playsInline
+                        autoPlay
+                        className={`w-full h-36 object-cover`}
+                        muted
+                        loop
+                        key={collection?.uri?.image}
+                      >
+                        <source
+                          src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
+                            .split("ipfs://")[1]
+                            .replace(/"/g, "")
+                            .trim()}`}
+                          type="video/mp4"
+                          draggable={false}
+                        />
+                      </video>
+                    ) : (
+                      <Image
+                        src={`${INFURA_GATEWAY}/ipfs/${
+                          collection.uri.image.split("ipfs://")[1]
+                        }`}
+                        layout="fill"
+                        objectFit="cover"
+                        objectPosition="top"
+                        className="w-full h-full"
                         draggable={false}
+                        key={collection?.uri?.image}
                       />
-                    </video>
-                  ) : (
-                    <Image
-                      src={`${INFURA_GATEWAY}/ipfs/${
-                        collection.uri.image.split("ipfs://")[1]
-                      }`}
-                      layout="fill"
-                      objectFit="cover"
-                      objectPosition="top"
-                      className="w-full h-full"
-                      draggable={false}
-                      key={collection?.uri?.image}
-                    />
-                  )}
+                    ))}
                 </div>
                 <div className="relative w-full h-fit flex flex-row items-center gap-2">
                   <div className="rounded-full bg-verde h-2 w-2"></div>
