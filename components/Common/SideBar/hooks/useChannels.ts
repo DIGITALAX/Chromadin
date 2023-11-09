@@ -3,8 +3,8 @@ import { UseChannelsResults } from "../types/sidebar.types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import {
-  profilePublications,
-  profilePublicationsAuth,
+  getPublications,
+  getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
 import { FetchResult } from "@apollo/client";
 import { setMainVideo } from "@/redux/reducers/mainVideoSlice";
@@ -67,7 +67,7 @@ const useChannels = (): UseChannelsResults => {
       sortedArr: Post[] = [];
     try {
       if (lensProfile) {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
@@ -75,7 +75,7 @@ const useChannels = (): UseChannelsResults => {
           },
         });
       } else {
-        data = await profilePublications({
+        data = await getPublications({
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
@@ -148,7 +148,7 @@ const useChannels = (): UseChannelsResults => {
     }
     try {
       if (lensProfile) {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
@@ -157,7 +157,7 @@ const useChannels = (): UseChannelsResults => {
           cursor: paginated?.next,
         });
       } else {
-        data = await profilePublications({
+        data = await getPublications({
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
@@ -243,7 +243,7 @@ const useChannels = (): UseChannelsResults => {
     let data: FetchResult<PublicationsQuery>;
     try {
       if (lensProfile) {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
@@ -251,7 +251,7 @@ const useChannels = (): UseChannelsResults => {
           },
         });
       } else {
-        data = await profilePublications({
+        data = await getPublications({
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],

@@ -12,8 +12,8 @@ import {
   getOneProfile,
 } from "@/graphql/lens/queries/getProfile";
 import {
-  profilePublications,
-  profilePublicationsAuth,
+  getPublications,
+  getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
 import { setProfileFeedCount } from "@/redux/reducers/profileFeedCountSlice";
 import { setProfileFeedRedux } from "@/redux/reducers/profileFeedSlice";
@@ -117,7 +117,7 @@ const useProfileFeed = () => {
     let data;
     try {
       if (!lensProfile) {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: [profileId?.profile?.id],
             publicationTypes: [
@@ -129,7 +129,7 @@ const useProfileFeed = () => {
           limit: LimitType.Ten,
         });
       } else {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: [profileId?.profile?.id],
             publicationTypes: [
@@ -234,7 +234,7 @@ const useProfileFeed = () => {
       }
 
       if (!lensProfile) {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: [profileId?.profile?.id],
             publicationTypes: [
@@ -247,7 +247,7 @@ const useProfileFeed = () => {
           cursor: profilePageData?.next,
         });
       } else {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: [profileId?.profile?.id],
             publicationTypes: [
@@ -363,7 +363,7 @@ const useProfileFeed = () => {
     let data;
     try {
       if (!lensProfile) {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: [profileId?.profile?.id],
             publicationTypes: [PublicationType.Post],
@@ -376,7 +376,7 @@ const useProfileFeed = () => {
           limit: LimitType.Ten,
         });
       } else {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: [profileId?.profile?.id],
             publicationTypes: [PublicationType.Post],
@@ -451,7 +451,7 @@ const useProfileFeed = () => {
       }
 
       if (!lensProfile) {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: [profileId?.profile?.id],
             publicationTypes: [PublicationType.Post],
@@ -465,7 +465,7 @@ const useProfileFeed = () => {
           cursor: decryptProfilePageData?.next,
         });
       } else {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: [profileId?.profile?.id],
             publicationTypes: [PublicationType.Post],

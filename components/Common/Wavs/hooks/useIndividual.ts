@@ -21,8 +21,8 @@ import {
   Quote,
 } from "@/components/Home/types/generated";
 import {
-  profilePublications,
-  profilePublicationsAuth,
+  getPublications,
+  getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
 import { FetchResult } from "@apollo/client";
 import { decryptPostIndividual } from "@/lib/helpers/decryptPost";
@@ -82,7 +82,7 @@ const useIndividual = () => {
       let comments: FetchResult<PublicationsQuery>;
 
       if (lensProfile) {
-        comments = await profilePublicationsAuth({
+        comments = await getPublicationsAuth({
           where: {
             commentOn: {
               id: feedType,
@@ -94,7 +94,7 @@ const useIndividual = () => {
           limit: LimitType.Ten,
         });
       } else {
-        comments = await profilePublications({
+        comments = await getPublications({
           where: {
             commentOn: {
               id: feedType,
@@ -162,7 +162,7 @@ const useIndividual = () => {
       }
       let comments: FetchResult<PublicationsQuery>;
       if (lensProfile) {
-        comments = await profilePublicationsAuth({
+        comments = await getPublicationsAuth({
           where: {
             commentOn: {
               id: feedType,
@@ -175,7 +175,7 @@ const useIndividual = () => {
           cursor: paginated?.next,
         });
       } else {
-        comments = await profilePublications({
+        comments = await getPublications({
           where: {
             commentOn: {
               id: feedType,

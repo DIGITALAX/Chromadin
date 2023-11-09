@@ -1,6 +1,6 @@
 import {
-  profilePublications,
-  profilePublicationsAuth,
+  getPublications,
+  getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/router";
@@ -100,7 +100,7 @@ const useAutoProfile = () => {
     let data;
     try {
       if (!lensProfile) {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: autoDispatch?.profile?.id,
             publicationTypes: [
@@ -112,7 +112,7 @@ const useAutoProfile = () => {
           limit: LimitType.Ten,
         });
       } else {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: autoDispatch?.profile?.id,
             publicationTypes: [
@@ -230,7 +230,7 @@ const useAutoProfile = () => {
       }
 
       if (!lensProfile) {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: autoDispatch?.profile?.id,
             publicationTypes: [
@@ -243,7 +243,7 @@ const useAutoProfile = () => {
           cursor: profilePageData?.next,
         });
       } else {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: autoDispatch?.profile?.id,
             publicationTypes: [
@@ -372,7 +372,7 @@ const useAutoProfile = () => {
     let data;
     try {
       if (!lensProfile) {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: [autoDispatch?.profile?.id],
             publicationTypes: [PublicationType.Post],
@@ -386,7 +386,7 @@ const useAutoProfile = () => {
           limit: LimitType.Ten,
         });
       } else {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: [autoDispatch?.profile?.id],
             publicationTypes: [PublicationType.Post],
@@ -506,7 +506,7 @@ const useAutoProfile = () => {
       }
 
       if (!lensProfile) {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: [autoDispatch?.profile?.id],
             publicationTypes: [PublicationType.Post],
@@ -520,7 +520,7 @@ const useAutoProfile = () => {
           cursor: decryptProfilePageData?.next,
         });
       } else {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: [autoDispatch?.profile?.id],
             publicationTypes: [PublicationType.Post],

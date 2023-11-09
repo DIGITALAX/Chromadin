@@ -6,19 +6,19 @@ import {
 import { apolloClient, authClient } from "@/lib/lens/client";
 import { FetchResult } from "@apollo/client";
 
-export const profilePublicationsAuth = async (
+export const getPublicationsAuth = async (
   request: PublicationsRequest
 ): Promise<FetchResult<PublicationsQuery>> => {
-  try {
-    return await apolloClient.query({
-      query: PublicationsDocument,
-      variables: {
-        request,
-      },
-      fetchPolicy: "no-cache",
-      errorPolicy: "all",
-    });
-  } catch (err) {
+  const data = await apolloClient.query({
+    query: PublicationsDocument,
+    variables: {
+      request,
+    },
+    fetchPolicy: "no-cache",
+    errorPolicy: "all",
+  });
+
+  if (data.error || (data.error as any).name) {
     return await authClient.query({
       query: PublicationsDocument,
       variables: {
@@ -28,9 +28,11 @@ export const profilePublicationsAuth = async (
       errorPolicy: "all",
     });
   }
+
+  return data;
 };
 
-export const profilePublications = async (
+export const getPublications = async (
   request: PublicationsRequest
 ): Promise<FetchResult<PublicationsQuery>> => {
   return await authClient.query({

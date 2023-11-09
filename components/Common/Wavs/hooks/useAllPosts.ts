@@ -32,8 +32,8 @@ import {
   getCollectionsDecryptUpdated,
 } from "@/graphql/subgraph/queries/getAllCollections";
 import {
-  profilePublications,
-  profilePublicationsAuth,
+  getPublications,
+  getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
 import { decryptPostArray } from "@/lib/helpers/decryptPost";
 
@@ -122,7 +122,7 @@ const useAllPosts = () => {
       let data;
 
       if (lensProfile) {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: LENS_CREATORS,
             publicationTypes: [
@@ -134,7 +134,7 @@ const useAllPosts = () => {
           limit: LimitType.Ten,
         });
       } else {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: LENS_CREATORS,
             publicationTypes: [
@@ -239,7 +239,7 @@ const useAllPosts = () => {
       let data;
 
       if (lensProfile) {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             from: LENS_CREATORS,
             publicationTypes: [
@@ -252,7 +252,7 @@ const useAllPosts = () => {
           cursor: paginated?.next,
         });
       } else {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             from: LENS_CREATORS,
             publicationTypes: [
@@ -369,7 +369,7 @@ const useAllPosts = () => {
       let data;
 
       if (lensProfile) {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             metadata: {
               tags: {
@@ -381,7 +381,7 @@ const useAllPosts = () => {
           limit: LimitType.Ten,
         });
       } else {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             metadata: {
               tags: {
@@ -455,7 +455,7 @@ const useAllPosts = () => {
       let data;
 
       if (lensProfile) {
-        data = await profilePublicationsAuth({
+        data = await getPublicationsAuth({
           where: {
             metadata: {
               tags: {
@@ -468,7 +468,7 @@ const useAllPosts = () => {
           cursor: decryptPaginated?.next,
         });
       } else {
-        data = await profilePublications({
+        data = await getPublications({
           where: {
             metadata: {
               tags: {
