@@ -14,7 +14,7 @@ import { RootState } from "@/redux/store";
 import { FetchResult } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 
 const useInteractions = () => {
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
