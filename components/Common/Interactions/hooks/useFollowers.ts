@@ -24,7 +24,6 @@ import { setLensProfile } from "@/redux/reducers/lensProfileSlice";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { setModal } from "@/redux/reducers/modalSlice";
 import { setFollowerOnly } from "@/redux/reducers/followerOnlySlice";
-import pollUntilIndexed from "@/graphql/lens/queries/checkIndexed";
 import createUnfollowTypedData from "@/graphql/lens/mutations/unfollow";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
@@ -100,9 +99,12 @@ const useFollowers = () => {
         value: BigInt(approvalArgs?.data as string),
       });
       const tx = await publicClient.waitForTransactionReceipt({ hash: res });
-      await pollUntilIndexed({
-        forTxHash: tx.transactionHash,
-      });
+      await handleIndexCheck(
+        {
+          forTxHash: tx.transactionHash,
+        },
+        dispatch
+      );
       await approvedFollow();
     } catch (err: any) {
       setFollowLoading(false);
@@ -211,7 +213,12 @@ const useFollowers = () => {
         const res = await clientWallet.writeContract(request);
         clearFollow();
         const tx = await publicClient.waitForTransactionReceipt({ hash: res });
-        await handleIndexCheck(tx.transactionHash, dispatch);
+        await handleIndexCheck(
+          {
+            forTxHash: tx.transactionHash,
+          },
+          dispatch
+        );
         await refetchProfile();
       } else {
         dispatch(

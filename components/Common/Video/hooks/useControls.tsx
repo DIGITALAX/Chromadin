@@ -15,7 +15,6 @@ import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
 import ReactPlayer from "react-player";
 import { setReactId } from "@/redux/reducers/reactIdSlice";
-import pollUntilIndexed from "@/graphql/lens/queries/checkIndexed";
 import { setVideoSync } from "@/redux/reducers/videoSyncSlice";
 import { setSeek } from "@/redux/reducers/seekSecondSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
@@ -31,6 +30,7 @@ import {
 import { FetchResult } from "@apollo/client";
 import mirrorSig from "@/lib/helpers/mirrorSig";
 import actSig from "@/lib/helpers/actSig";
+import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 
 const useControls = (): UseControlsResults => {
   const publicClient = createPublicClient({
@@ -378,9 +378,12 @@ const useControls = (): UseControlsResults => {
         value: BigInt(approvalArgs?.data as string),
       });
       const tx = await publicClient.waitForTransactionReceipt({ hash: res });
-      await pollUntilIndexed({
-        forTxHash: tx.transactionHash,
-      });
+      await handleIndexCheck(
+        {
+          forTxHash: tx.transactionHash,
+        },
+        dispatch
+      );
       await getCollectInfo();
     } catch (err: any) {
       setApprovalLoading(false);

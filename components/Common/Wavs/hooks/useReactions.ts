@@ -11,7 +11,6 @@ import {
 import checkApproved from "@/lib/helpers/checkApproved";
 import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
-import pollUntilIndexed from "@/graphql/lens/queries/checkIndexed";
 import { setFeedReactId } from "@/redux/reducers/feedReactIdSlice";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
@@ -23,6 +22,7 @@ import {
 } from "@/components/Home/types/generated";
 import mirrorSig from "@/lib/helpers/mirrorSig";
 import actSig from "@/lib/helpers/actSig";
+import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 
 const useReactions = () => {
   const publicClient = createPublicClient({
@@ -408,9 +408,12 @@ const useReactions = () => {
         value: BigInt(approvalArgs?.data as string),
       });
       const tx = await publicClient.waitForTransactionReceipt({ hash: res });
-      await pollUntilIndexed({
-        forTxHash: tx.transactionHash,
-      });
+      await handleIndexCheck(
+        {
+          forTxHash: tx.transactionHash,
+        },
+        dispatch
+      );
       await getCollectInfo();
     } catch (err: any) {
       setApprovalLoading(false);
