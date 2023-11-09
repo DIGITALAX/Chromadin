@@ -57,7 +57,9 @@ const followSig = async (
       clearFollow && clearFollow();
       await publicClient.waitForTransactionReceipt({ hash: res });
 
-      await handleIndexCheck(res, dispatch);
+      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+
+      await handleIndexCheck(tx.transactionHash, dispatch);
       refetchProfile && (await refetchProfile());
     } else {
       clearFollow && clearFollow();

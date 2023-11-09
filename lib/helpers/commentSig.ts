@@ -70,7 +70,9 @@ const commentSig = async (
       clearComment();
       await publicClient.waitForTransactionReceipt({ hash: res });
 
-      await handleIndexCheck(res, dispatch);
+      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+
+      await handleIndexCheck(tx.transactionHash, dispatch);
     } else {
       clearComment();
       setTimeout(async () => {

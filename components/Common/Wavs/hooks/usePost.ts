@@ -398,8 +398,9 @@ const useMakePost = () => {
         }
         const res = await clientWallet.writeContract(request.request);
         clearPost();
-        await publicClient.waitForTransactionReceipt({ hash: res });
-        await handleIndexCheck(res, dispatch);
+        const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+
+        await handleIndexCheck(tx.transactionHash, dispatch);
         dispatch(setPostSent(true));
       } else {
         clearPost();

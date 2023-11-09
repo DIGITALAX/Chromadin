@@ -99,9 +99,9 @@ const useFollowers = () => {
         account: approvalArgs?.from as `0x${string}`,
         value: BigInt(approvalArgs?.data as string),
       });
-      await publicClient.waitForTransactionReceipt({ hash: res });
+      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
       await pollUntilIndexed({
-        forTxHash: res,
+        forTxHash: tx.transactionHash,
       });
       await approvedFollow();
     } catch (err: any) {
@@ -130,7 +130,7 @@ const useFollowers = () => {
     const followModule = createFollowModule(
       profile?.followModule?.type as any,
       (profile?.followModule as any)?.amount?.value,
-      (profile?.followModule as any)?.amount?.asset?.address,
+      (profile?.followModule as any)?.amount?.asset?.address
     );
 
     try {
@@ -210,9 +210,8 @@ const useFollowers = () => {
         });
         const res = await clientWallet.writeContract(request);
         clearFollow();
-        await publicClient.waitForTransactionReceipt({ hash: res });
-
-        await handleIndexCheck(res, dispatch);
+        const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+        await handleIndexCheck(tx.transactionHash, dispatch);
         await refetchProfile();
       } else {
         dispatch(

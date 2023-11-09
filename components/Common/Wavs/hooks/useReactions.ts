@@ -407,9 +407,9 @@ const useReactions = () => {
         account: approvalArgs?.from as `0x${string}`,
         value: BigInt(approvalArgs?.data as string),
       });
-      await publicClient.waitForTransactionReceipt({ hash: res });
+      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
       await pollUntilIndexed({
-        forTxHash: res,
+        forTxHash: tx.transactionHash,
       });
       await getCollectInfo();
     } catch (err: any) {

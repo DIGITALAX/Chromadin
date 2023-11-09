@@ -100,7 +100,9 @@ const useSuperCreator = () => {
 
     try {
       setSuperCreatorLoading(false);
-      await handleIndexCheck(res, dispatch);
+      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+
+      await handleIndexCheck(tx.transactionHash, dispatch);
       await refetchProfile();
       setSuperCreatorLoading(false);
       dispatch(setRainRedux(true));

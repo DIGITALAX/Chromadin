@@ -65,7 +65,9 @@ const mirrorSig = async (
           actionMessage: "Indexing Interaction",
         })
       );
-      await handleIndexCheck(res, dispatch);
+      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+
+      await handleIndexCheck(tx.transactionHash, dispatch);
     } else {
       dispatch(
         setIndexModal({
