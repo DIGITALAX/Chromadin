@@ -19,9 +19,15 @@ export const postMetadata = (
       ? publication.mirrorOn
       : (publication as Post);
 
-  return pub?.metadata?.__typename === "VideoMetadataV3" ||
-    pub?.metadata?.__typename === "ImageMetadataV3" ||
-    pub?.metadata?.__typename === "AudioMetadataV3"
+  return pub.isEncrypted &&
+    (pub as any).decrypted &&
+    ((pub as any)?.decrypted?.__typename === "VideoMetadataV3" ||
+      (pub as any)?.__typename === "ImageMetadataV3" ||
+      (pub as any)?.__typename === "AudioMetadataV3")
+    ? [(pub as any)?.asset, ...((pub as any)?.attachments || [])]
+    : pub?.metadata?.__typename === "VideoMetadataV3" ||
+      pub?.metadata?.__typename === "ImageMetadataV3" ||
+      pub?.metadata?.__typename === "AudioMetadataV3"
     ? [pub?.metadata?.asset, ...(pub?.metadata?.attachments || [])]
     : undefined;
 };

@@ -50,7 +50,6 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
   openMirrorChoice,
 }): JSX.Element => {
   const metadata = postMetadata(publication);
-
   return (
     <div
       className={`relative w-full ${
@@ -173,9 +172,22 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
                     ? publication?.mirrorOn
                     : (publication as Post)
                   )?.isEncrypted
-                    ? publication?.__typename !== "Mirror"
-                      ? ((publication as Post)?.metadata as any)?.title
-                      : (publication?.mirrorOn?.metadata as any)?.title
+                    ? (
+                        (publication?.__typename !== "Mirror"
+                          ? publication
+                          : publication.mirrorOn) as any
+                      )?.decrypted?.content
+                      ? (
+                          (publication?.__typename !== "Mirror"
+                            ? publication
+                            : publication.mirrorOn) as any
+                        )?.decrypted?.content
+                      : (
+                          (publication?.__typename === "Mirror"
+                            ? publication?.mirrorOn
+                            : (publication as Post)
+                          )?.metadata as any
+                        )?.title
                     : publication?.__typename !== "Mirror"
                     ? (publication as Post)?.metadata?.content
                     : publication?.mirrorOn?.metadata?.content
@@ -196,7 +208,9 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
           {metadata &&
             metadata !== null &&
             metadata?.map((item: PublicationMetadataMedia, index: number) => {
-              const media = metadataMedia(item);
+              const media = metadataMedia(
+                item
+              );
               return (
                 media?.url && (
                   <div
@@ -280,129 +294,129 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               : "row-start-3"
           } grid grid-flow-col auto-cols-auto justify-end items-end`}
         >
-          {feedType !==
+          {(feedType !==
             (publication?.__typename !== "Mirror"
               ? publication?.id
               : publication?.mirrorOn.id) ||
-            ((publication?.__typename === "Mirror"
+            (publication?.__typename === "Mirror"
               ? publication?.mirrorOn
               : (publication as Post)
-            )?.isEncrypted && (
-              <div
-                className={`relative w-fit h-full col-start-1 row-start-1 sm:col-start-2 sm:pt-0 pt-3  grid grid-flow-col auto-cols-auto font-digi gap-1 cursor-pointer justify-self-end self-end hover:opacity-70 active:scale-95 text-white`}
-                onClick={() =>
-                  (publication as any)?.gated ||
-                  (publication?.__typename === "Mirror"
-                    ? publication?.mirrorOn
-                    : (publication as Post)
-                  )?.isEncrypted
-                    ? decryptPost &&
-                      (publication?.__typename === "Mirror"
-                        ? publication?.mirrorOn
-                        : (publication as Post)
-                      )?.operations?.canDecrypt?.result
-                      ? decryptPost!(publication as Post)
-                      : dispatch(
-                          setDecrypt({
-                            actionOpen: true,
-                            actionCollections: (publication?.__typename ===
-                            "Mirror"
-                              ? publication?.mirrorOn
-                              : (publication as Post)
-                            )?.metadata?.content
+            )?.isEncrypted) && (
+            <div
+              className={`relative w-fit h-full col-start-1 row-start-1 sm:col-start-2 sm:pt-0 pt-3  grid grid-flow-col auto-cols-auto font-digi gap-1 cursor-pointer justify-self-end self-end hover:opacity-70 active:scale-95 text-white`}
+              onClick={() =>
+                (publication as any)?.gated ||
+                (publication?.__typename === "Mirror"
+                  ? publication?.mirrorOn
+                  : (publication as Post)
+                )?.isEncrypted
+                  ? decryptPost &&
+                    (publication?.__typename === "Mirror"
+                      ? publication?.mirrorOn
+                      : (publication as Post)
+                    )?.operations?.canDecrypt
+                    ? decryptPost!(publication as Post)
+                    : dispatch(
+                        setDecrypt({
+                          actionOpen: true,
+                          actionCollections: (publication?.__typename ===
+                          "Mirror"
+                            ? publication?.mirrorOn
+                            : (publication as Post)
+                          )?.metadata?.content
 
-                              ?.split("gate.")[1]
-                              ?.split("are ready to collect")[0]
-                              .split(",")
-                              .map((word: string) => word.trim()),
-                            actionName: publication?.by?.ownedBy?.address,
-                          })
-                        )
-                    : !router.asPath.includes("/autograph/")
-                    ? router.push(
-                        router.asPath.includes("&post=")
-                          ? router.asPath.includes("?option=")
-                            ? router.asPath.split("&post=")[0] +
-                              `&post=${
-                                publication?.__typename !== "Mirror"
-                                  ? publication?.id
-                                  : publication?.mirrorOn.id
-                              }`
-                            : router.asPath.split("&post=")[0] +
-                              `?option=history&post=${
-                                publication?.__typename !== "Mirror"
-                                  ? publication?.id
-                                  : publication?.mirrorOn.id
-                              }`
-                          : router.asPath.includes("&profile=")
-                          ? router.asPath.includes("?option=")
-                            ? router.asPath.split("&profile=")[0] +
-                              `&post=${
-                                publication?.__typename !== "Mirror"
-                                  ? publication?.id
-                                  : publication?.mirrorOn.id
-                              }`
-                            : router.asPath.split("&profile=")[0] +
-                              `?option=history&post=${
-                                publication?.__typename !== "Mirror"
-                                  ? publication?.id
-                                  : publication?.mirrorOn.id
-                              }`
-                          : router.asPath.includes("?option=")
-                          ? router.asPath +
+                            ?.split("gate.")[1]
+                            ?.split("are ready to collect")[0]
+                            .split(",")
+                            .map((word: string) => word.trim()),
+                          actionName: publication?.by?.ownedBy?.address,
+                        })
+                      )
+                  : !router.asPath.includes("/autograph/")
+                  ? router.push(
+                      router.asPath.includes("&post=")
+                        ? router.asPath.includes("?option=")
+                          ? router.asPath.split("&post=")[0] +
                             `&post=${
                               publication?.__typename !== "Mirror"
                                 ? publication?.id
                                 : publication?.mirrorOn.id
                             }`
-                          : router.asPath +
+                          : router.asPath.split("&post=")[0] +
                             `?option=history&post=${
                               publication?.__typename !== "Mirror"
                                 ? publication?.id
                                 : publication?.mirrorOn.id
                             }`
-                      )
-                    : router.replace(
-                        `/#chat?option=history&post=${
-                          publication?.__typename !== "Mirror"
-                            ? publication?.id
-                            : publication?.mirrorOn.id
-                        }`
-                      )
-                }
-              >
-                <div className="relative w-fit h-fit flex  self-center  text-sm">
-                  {(publication as any)?.gated ||
-                  (publication?.__typename === "Mirror"
-                    ? publication?.mirrorOn
-                    : (publication as Post)
-                  )?.isEncrypted
-                    ? "Decrypt"
-                    : publication?.__typename !== "Comment"
-                    ? "View Post"
-                    : "View Comment"}
-                </div>
-                <div
-                  className={`relative w-fit h-fit self-center flex ${
-                    decryptLoading && "animate-spin"
-                  }`}
-                >
-                  {(publication as any)?.gated ||
-                  (publication?.__typename === "Mirror"
-                    ? publication?.mirrorOn
-                    : (publication as Post)
-                  )?.isEncrypted ? (
-                    decryptLoading ? (
-                      <AiOutlineLoading size={12} />
-                    ) : (
-                      <BiLock color={"white"} size={15} />
+                        : router.asPath.includes("&profile=")
+                        ? router.asPath.includes("?option=")
+                          ? router.asPath.split("&profile=")[0] +
+                            `&post=${
+                              publication?.__typename !== "Mirror"
+                                ? publication?.id
+                                : publication?.mirrorOn.id
+                            }`
+                          : router.asPath.split("&profile=")[0] +
+                            `?option=history&post=${
+                              publication?.__typename !== "Mirror"
+                                ? publication?.id
+                                : publication?.mirrorOn.id
+                            }`
+                        : router.asPath.includes("?option=")
+                        ? router.asPath +
+                          `&post=${
+                            publication?.__typename !== "Mirror"
+                              ? publication?.id
+                              : publication?.mirrorOn.id
+                          }`
+                        : router.asPath +
+                          `?option=history&post=${
+                            publication?.__typename !== "Mirror"
+                              ? publication?.id
+                              : publication?.mirrorOn.id
+                          }`
                     )
-                  ) : (
-                    <AiFillEye color={"white"} size={20} />
-                  )}
-                </div>
+                  : router.replace(
+                      `/#chat?option=history&post=${
+                        publication?.__typename !== "Mirror"
+                          ? publication?.id
+                          : publication?.mirrorOn.id
+                      }`
+                    )
+              }
+            >
+              <div className="relative w-fit h-fit flex  self-center  text-sm">
+                {(publication as any)?.gated ||
+                (publication?.__typename === "Mirror"
+                  ? publication?.mirrorOn
+                  : (publication as Post)
+                )?.isEncrypted
+                  ? "Decrypt"
+                  : publication?.__typename !== "Comment"
+                  ? "View Post"
+                  : "View Comment"}
               </div>
-            ))}
+              <div
+                className={`relative w-fit h-fit self-center flex ${
+                  decryptLoading && "animate-spin"
+                }`}
+              >
+                {(publication as any)?.gated ||
+                (publication?.__typename === "Mirror"
+                  ? publication?.mirrorOn
+                  : (publication as Post)
+                )?.isEncrypted ? (
+                  decryptLoading ? (
+                    <AiOutlineLoading size={12} />
+                  ) : (
+                    <BiLock color={"white"} size={15} />
+                  )
+                ) : (
+                  <AiFillEye color={"white"} size={20} />
+                )}
+              </div>
+            </div>
+          )}
         </div>
         {publication?.__typename === "Quote" && (
           <div

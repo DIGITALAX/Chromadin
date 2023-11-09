@@ -380,7 +380,6 @@ const useAutoProfile = () => {
               tags: {
                 all: ["encrypted", "chromadin", "labyrinth"],
               },
-              
             },
           },
           limit: LimitType.Ten,
