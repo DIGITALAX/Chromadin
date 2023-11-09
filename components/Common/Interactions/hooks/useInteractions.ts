@@ -67,11 +67,14 @@ const useInteractions = () => {
           limit: LimitType.TwentyFive,
         });
       }
+
       if (!comments || !comments?.data || !comments?.data?.publications) {
         setCommentsLoading(false);
         return;
       }
-      const sortedArr: Comment[] = [...comments?.data?.publications?.items] as Comment[];
+      const sortedArr: Comment[] = [
+        ...comments?.data?.publications?.items,
+      ] as Comment[];
       if (sortedArr?.length < 25) {
         setHasMoreComments(false);
       } else {
@@ -130,7 +133,9 @@ const useInteractions = () => {
         setCommentsLoading(false);
         return;
       }
-      const sortedArr: Comment[] = [...comments?.data?.publications?.items] as Comment[];
+      const sortedArr: Comment[] = [
+        ...comments?.data?.publications?.items,
+      ] as Comment[];
       if (sortedArr?.length < 25) {
         setHasMoreComments(false);
       }
@@ -205,7 +210,9 @@ const useInteractions = () => {
   useEffect(() => {
     if (
       index.message === "Successfully Indexed" &&
-      router.asPath?.includes("#stream")
+      !router.asPath?.includes("#chat") &&
+      !router.asPath?.includes("#collect") &&
+      !router.asPath?.includes("#sampler")
     ) {
       getPostComments();
       getPostCollects();
