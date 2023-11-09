@@ -26,7 +26,6 @@ const uploadPostContent = async (
           : image.type === 2
           ? "image/gif"
           : "video/mp4",
-      altTag: image.cid,
     });
   });
 

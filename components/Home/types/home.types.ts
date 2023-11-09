@@ -68,7 +68,6 @@ export interface UploadedMedia {
 export interface PostImage {
   item: string;
   type: string;
-  altTag: string;
 }
 
 export interface ApprovalArgs {
