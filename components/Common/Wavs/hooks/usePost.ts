@@ -400,7 +400,12 @@ const useMakePost = () => {
         clearPost();
         const tx = await publicClient.waitForTransactionReceipt({ hash: res });
 
-        await handleIndexCheck(tx.transactionHash, dispatch);
+        await handleIndexCheck(
+          {
+            forTxHash: tx.transactionHash,
+          },
+          dispatch
+        );
         dispatch(setPostSent(true));
       } else {
         clearPost();

@@ -46,7 +46,6 @@ const useSuperCreator = () => {
   const followSuper = async () => {
     setSuperCreatorLoading(true);
 
-    let res: `0x${string}` = "0x";
     const batchSize = 15;
     const numBatches = Math.ceil(LENS_CREATORS.length / batchSize);
     for (let batchIndex = 0; batchIndex < numBatches; batchIndex++) {
@@ -61,7 +60,7 @@ const useSuperCreator = () => {
         const followModule = createFollowModule(
           quickProfiles[i]?.followModule?.type as any,
           (quickProfiles[i]?.followModule as any)?.amount?.value,
-          (quickProfiles[i]?.followModule as any)?.amount?.asset?.address,
+          (quickProfiles[i]?.followModule as any)?.amount?.asset?.address
         );
 
         followers.push({
@@ -97,20 +96,6 @@ const useSuperCreator = () => {
         console.error(err.message);
       }
     }
-
-    try {
-      setSuperCreatorLoading(false);
-      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
-
-      await handleIndexCheck(tx.transactionHash, dispatch);
-      await refetchProfile();
-      setSuperCreatorLoading(false);
-      dispatch(setRainRedux(true));
-      setTimeout(() => {
-        dispatch(setRainRedux(false));
-        dispatch(setSuperFollow(false));
-      }, 4000);
-    } catch (err: any) {}
     setSuperCreatorLoading(false);
   };
 

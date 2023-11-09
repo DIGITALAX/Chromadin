@@ -59,7 +59,12 @@ const followSig = async (
 
       const tx = await publicClient.waitForTransactionReceipt({ hash: res });
 
-      await handleIndexCheck(tx.transactionHash, dispatch);
+      await handleIndexCheck(
+        {
+          forTxHash: tx.transactionHash,
+        },
+        dispatch
+      );
       refetchProfile && (await refetchProfile());
     } else {
       clearFollow && clearFollow();
