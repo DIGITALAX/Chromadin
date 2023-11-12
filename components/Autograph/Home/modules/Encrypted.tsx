@@ -31,7 +31,6 @@ const Encrypted: FunctionComponent<AutoProfileFeedProps> = ({
   handleCommentDescription,
   textElement,
   commentDescription,
-  profileId,
   videoLoading,
   handleSetGif,
   gifOpen,
@@ -98,6 +97,7 @@ const Encrypted: FunctionComponent<AutoProfileFeedProps> = ({
   clientRendered,
   openMirrorChoice,
   setOpenMirrorChoice,
+  lensProfile
 }): JSX.Element => {
   return (
     <InfiniteScroll
@@ -174,7 +174,7 @@ const Encrypted: FunctionComponent<AutoProfileFeedProps> = ({
                     openConnectModal={openConnectModal}
                     handleRemoveImage={handleRemoveImage}
                     address={address}
-                    profileId={profileId}
+                    lensProfile={lensProfile}
                     videoLoading={videoLoading}
                     uploadImages={uploadImages}
                     uploadVideo={uploadVideo}

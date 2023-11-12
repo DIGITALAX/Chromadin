@@ -11,7 +11,9 @@ import NotFound from "@/components/Common/Loading/NotFound";
 import RouterChange from "@/components/Common/Loading/RouterChange";
 import useCollectOptions from "@/components/Common/NFT/hooks/useCollectOptions";
 import useImageUpload from "@/components/Common/NFT/hooks/useImageUpload";
+import useChannels from "@/components/Common/SideBar/hooks/useChannels";
 import useConnect from "@/components/Common/SideBar/hooks/useConnect";
+import useControls from "@/components/Common/Video/hooks/useControls";
 import useComment from "@/components/Common/Wavs/hooks/useComment";
 import useReactions from "@/components/Common/Wavs/hooks/useReactions";
 import Account from "@/components/Common/Wavs/modules/Account";
@@ -20,61 +22,135 @@ import { RootState } from "@/redux/store";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { NextPage } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { createPublicClient, http } from "viem";
+import { polygon } from "viem/chains";
 import { useAccount } from "wagmi";
 
-const Autograph: NextPage = (): JSX.Element => {
+const Autograph: NextPage<{ router: NextRouter }> = ({
+  router,
+}): JSX.Element => {
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
+  const { autograph } = router.query;
+  const dispatch = useDispatch();
+  const { address, isConnected } = useAccount();
+  const { openConnectModal, connectModalOpen } = useConnectModal();
   const autoDispatch = useSelector(
     (state: RootState) => state.app.autographReducer
+  );
+  const approvalArgs = useSelector(
+    (state: RootState) => state.app.approvalArgsReducer.args
+  );
+  const feed = useSelector((state: RootState) => state.app.feedReducer.value);
+  const videoSync = useSelector(
+    (state: RootState) => state.app.videoSyncReducer
   );
   const allDrops = useSelector(
     (state: RootState) => state.app.dropsReducer.value
   );
-  const profile = useSelector(
+  const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
   const profileType = useSelector(
     (state: RootState) => state.app.profileReducer.profile?.id
   );
+  const index = useSelector((state: RootState) => state.app.indexModalReducer);
+  const collectModuleType = useSelector(
+    (state: RootState) => state.app.collectValueTypeReducer?.type
+  );
+  const dispatchVideos = useSelector(
+    (state: RootState) => state.app.channelsReducer.value
+  );
+  const mainVideo = useSelector(
+    (state: RootState) => state.app.mainVideoReducer
+  );
   const commentOpen = useSelector(
     (state: RootState) => state.app.openCommentReducer.value
   );
+  const postOpen = useSelector(
+    (state: RootState) => state.app.makePostReducer.value
+  );
+  const page = useSelector((state: RootState) => state.app.viewReducer.value);
   const quickProfiles = useSelector(
     (state: RootState) => state.app.quickProfilesReducer.value
   );
   const collectOpen = useSelector(
     (state: RootState) => state.app.collectOpenReducer.value
   );
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
+  const seek = useSelector(
+    (state: RootState) => state.app.seekSecondReducer.seek
   );
+  const commentId = useSelector(
+    (state: RootState) => state.app.secondaryCommentReducer.value
+  );
+  const fullScreenVideo = useSelector(
+    (state: RootState) => state.app.fullScreenVideoReducer
+  );
+  const hasMore = useSelector(
+    (state: RootState) => state.app.hasMoreVideosReducer.value
+  );
+  const reactId = useSelector(
+    (state: RootState) => state.app.reactIdReducer.value
+  );
+  const purchase = useSelector((state: RootState) => state.app.purchaseReducer);
   const postImagesDispatched = useSelector(
     (state: RootState) => state.app.postImageReducer.value
+  );
+  const publicationImages = useSelector(
+    (state: RootState) => state.app.publicationImageReducer.value
   );
   const imageLoading = useSelector(
     (state: RootState) => state.app.imageLoadingReducer.value
   );
+  const reactions = useSelector(
+    (state: RootState) => state.app.videoCountReducer
+  );
   const connected = useSelector(
     (state: RootState) => state.app.connectedReducer.value
   );
-
-  const router = useRouter();
-  const { push } = router;
-  const { autograph } = router.query;
-  const dispatch = useDispatch();
-  const { address } = useAccount();
   const [notFound, setNotFound] = useState<boolean>(false);
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
-    useViewer();
-  const { handleLensSignIn } = useConnect();
-  const { openConnectModal } = useConnectModal();
+    useViewer(router, dispatch, quickProfiles, allDrops);
+  const {
+    videoLoading,
+    uploadVideo,
+    handleRemoveImage,
+    mappedFeaturedFiles,
+    uploadImage,
+    clientRendered,
+  } = useImageUpload(
+    dispatch,
+    page,
+    postOpen,
+    postImagesDispatched,
+    publicationImages
+  );
+  const { handleLensSignIn } = useConnect(
+    router,
+    address,
+    isConnected,
+    dispatch,
+    connectModalOpen,
+    publicClient
+  );
   const { autographLoading, getAllCollections, handleShareCollection } =
-    useAutograph();
+    useAutograph(dispatch, uploadImage, lensProfile, allDrops);
   const { isLargeScreen } = useBar();
-  const { reactPost, collectPost, mirrorPost } = useReactions();
+  const { reactPost, collectPost, mirrorPost } = useReactions(
+    publicClient,
+    dispatch,
+    address,
+    lensProfile,
+    feed,
+    approvalArgs,
+    purchase
+  );
   const {
     commentPost,
     commentDescription,
@@ -94,7 +170,16 @@ const Autograph: NextPage = (): JSX.Element => {
     handleKeyDownDelete,
     preElement,
     handleImagePaste,
-  } = useComment();
+  } = useComment(
+    dispatch,
+    publicClient,
+    address,
+    uploadImage,
+    lensProfile,
+    collectModuleType,
+    postImagesDispatched,
+    collectOpen
+  );
   const {
     collectNotif,
     referral,
@@ -129,15 +214,7 @@ const Autograph: NextPage = (): JSX.Element => {
     setEnabledCurrency,
     value,
     setValue,
-  } = useCollectOptions();
-  const {
-    videoLoading,
-    uploadVideo,
-    handleRemoveImage,
-    mappedFeaturedFiles,
-    uploadImage,
-    clientRendered,
-  } = useImageUpload();
+  } = useCollectOptions(dispatch, lensProfile, collectOpen);
   const {
     hasMoreProfile,
     fetchMoreProfile,
@@ -161,7 +238,49 @@ const Autograph: NextPage = (): JSX.Element => {
     decryptLoading,
     setOpenProfileMirrorChoice,
     openProfileMirrorChoice,
-  } = useAutoProfile();
+  } = useAutoProfile(router, dispatch, address, autoDispatch, lensProfile);
+  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
+    dispatch,
+    mainVideo,
+    lensProfile,
+    dispatchVideos,
+    index.message,
+    reactId,
+    videoSync,
+    reactions
+  );
+  const {
+    streamRef,
+    formatTime,
+    volume,
+    handleVolumeChange,
+    volumeOpen,
+    setVolumeOpen,
+    handleHeart,
+    mirrorVideo,
+    collectVideo,
+    likeVideo,
+    mirrorLoading,
+    collectLoading,
+    likeLoading,
+    wrapperRef,
+    progressRef,
+    handleSeek,
+  } = useControls(
+    dispatch,
+    address,
+    publicClient,
+    purchase,
+    seek,
+    approvalArgs,
+    mainVideo,
+    videoSync,
+    lensProfile,
+    fullScreenVideo,
+    commentId,
+    index,
+    router
+  );
 
   useEffect(() => {
     if (
@@ -337,23 +456,48 @@ const Autograph: NextPage = (): JSX.Element => {
           />
         </Head>
         <Bar
-          push={push}
+          router={router}
           openConnectModal={openConnectModal}
           connected={connected}
           handleLensSignIn={handleLensSignIn}
-          profile={profile}
+          lensProfile={lensProfile}
           handleSearch={handleSearch}
           searchOpen={searchOpen}
           searchResults={searchResults}
           handleSearchChoose={handleSearchChoose}
           isLargeScreen={isLargeScreen}
+          hasMore={hasMore}
+          reactions={reactions}
+          streamRef={streamRef}
+          formatTime={formatTime}
+          volume={volume}
+          handleVolumeChange={handleVolumeChange}
+          volumeOpen={volumeOpen}
+          setVolumeOpen={setVolumeOpen}
+          handleHeart={handleHeart}
+          mirrorVideo={mirrorVideo}
+          collectVideo={collectVideo}
+          likeVideo={likeVideo}
+          mirrorLoading={mirrorLoading}
+          collectLoading={collectLoading}
+          likeLoading={likeLoading}
+          mainVideo={mainVideo}
+          wrapperRef={wrapperRef}
+          progressRef={progressRef}
+          handleSeek={handleSeek}
+          videoSync={videoSync}
+          fetchMoreVideos={fetchMoreVideos}
+          videosLoading={videosLoading}
+          setVideosLoading={setVideosLoading}
+          dispatch={dispatch}
+          dispatchVideos={dispatchVideos}
         />
         {quickProfiles &&
         allDrops &&
         notFound &&
         !quickProfiles?.some(
           (prof) =>
-            prof.handle?.split(".lens")[0]?.toLowerCase() ===
+            prof.handle?.toLowerCase() ===
             (autograph as string).toLowerCase()
         ) ? (
           <NotFound router={router} />
@@ -380,7 +524,7 @@ const Autograph: NextPage = (): JSX.Element => {
                     ) : (
                       <AutoProfileFeed
                         clientRendered={clientRendered}
-                        feedType={profile?.id}
+                        feedType={lensProfile?.id}
                         hasMoreProfile={hasMoreProfile}
                         fetchMoreProfile={fetchMoreProfile}
                         profileFeed={profileFeed}
@@ -390,6 +534,7 @@ const Autograph: NextPage = (): JSX.Element => {
                         reactPost={reactPost}
                         commentPost={commentPost}
                         commentOpen={commentOpen}
+                        lensProfile={lensProfile}
                         address={address}
                         followerOnly={followerOnlyProfileDecrypt}
                         mirrorLoading={mirrorProfileLoading}
@@ -416,7 +561,6 @@ const Autograph: NextPage = (): JSX.Element => {
                         handleLensSignIn={handleLensSignIn}
                         openConnectModal={openConnectModal}
                         handleRemoveImage={handleRemoveImage}
-                        profileId={profileId}
                         videoLoading={videoLoading}
                         uploadImages={uploadImage}
                         uploadVideo={uploadVideo}
@@ -479,7 +623,7 @@ const Autograph: NextPage = (): JSX.Element => {
                     autoProfile={autoDispatch.profile}
                     imageLoading={imageLoading}
                     address={address}
-                    profileId={profileId}
+                    lensProfile={lensProfile}
                     openConnectModal={openConnectModal}
                     handleLensSignIn={handleLensSignIn}
                   />
@@ -493,7 +637,7 @@ const Autograph: NextPage = (): JSX.Element => {
                     </div>
                     <Encrypted
                       clientRendered={clientRendered}
-                      feedType={profile?.id}
+                      feedType={lensProfile?.id}
                       hasMoreProfile={hasMoreDecryptProfile}
                       fetchMoreProfile={fetchMoreProfileDecrypt}
                       profileFeed={decryptProfileFeed}
@@ -529,7 +673,6 @@ const Autograph: NextPage = (): JSX.Element => {
                       handleLensSignIn={handleLensSignIn}
                       openConnectModal={openConnectModal}
                       handleRemoveImage={handleRemoveImage}
-                      profileId={profileId}
                       videoLoading={videoLoading}
                       uploadImages={uploadImage}
                       uploadVideo={uploadVideo}
@@ -580,6 +723,7 @@ const Autograph: NextPage = (): JSX.Element => {
                       router={router}
                       decryptPost={decryptPost}
                       decryptLoading={decryptLoading}
+                      lensProfile={lensProfile}
                     />
                   </div>
                 )}

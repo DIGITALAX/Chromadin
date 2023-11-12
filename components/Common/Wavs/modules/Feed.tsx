@@ -96,7 +96,6 @@ const Feed: FunctionComponent<FeedProps> = ({
   openConnectModal,
   handleRemoveImage,
   videoLoading,
-  profileId,
   uploadImages,
   uploadVideo,
   imageLoading,
@@ -166,6 +165,8 @@ const Feed: FunctionComponent<FeedProps> = ({
   setOpenMirrorChoice,
   setOpenProfileMirrorChoice,
   openProfileMirrorChoice,
+  lensProfile,
+  history,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 h-fit flex flex-col items-start justify-start gap-4">
@@ -179,12 +180,13 @@ const Feed: FunctionComponent<FeedProps> = ({
           />
           <MakePost
             dispatch={dispatch}
-            profileId={profileId}
+            lensProfile={lensProfile}
             address={address}
           />
         </div>
         {feedType !== "" ? (
           <Individual
+            history={history}
             preElement={preElement}
             dispatch={dispatch}
             commentors={commentors}
@@ -237,7 +239,7 @@ const Feed: FunctionComponent<FeedProps> = ({
             handleLensSignIn={handleLensSignIn}
             openConnectModal={openConnectModal}
             handleRemoveImage={handleRemoveImage}
-            profileId={profileId}
+            lensProfile={lensProfile}
             videoLoading={videoLoading}
             uploadImages={uploadImages}
             uploadVideo={uploadVideo}
@@ -302,6 +304,7 @@ const Feed: FunctionComponent<FeedProps> = ({
           </div>
         ) : (
           <Switch
+            history={history}
             preElement={preElement}
             dispatch={dispatch}
             followerOnly={followerOnly}
@@ -368,7 +371,7 @@ const Feed: FunctionComponent<FeedProps> = ({
             openConnectModal={openConnectModal}
             handleRemoveImage={handleRemoveImage}
             videoLoading={videoLoading}
-            profileId={profileId}
+            lensProfile={lensProfile}
             uploadImages={uploadImages}
             uploadVideo={uploadVideo}
             imageLoading={imageLoading}

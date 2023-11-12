@@ -5,49 +5,37 @@ import {
   COIN_OP_MARKET,
   COIN_OP_ORACLE,
 } from "@/lib/constants";
-import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
 import { ethers } from "ethers";
 import ChromadinMarketplaceABI from "./../../../../abis/ChromadinMarketplace.json";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
-import { setSuccess } from "@/redux/reducers/successSlice";
+import { SuccessState, setSuccess } from "@/redux/reducers/successSlice";
 import { setError } from "@/redux/reducers/errorSlice";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { PublicClient, createWalletClient, custom } from "viem";
 import CoinOpMarketABI from "./../../../../abis/CoinOpMarketABI.json";
 import { polygon } from "viem/chains";
-import { setEncryptedInfo } from "@/redux/reducers/encryptedInformationSlice";
-import { setLitClient } from "@/redux/reducers/litClientSlice";
 import { encryptItems } from "@/lib/helpers/encryptItems";
 import { PreRoll } from "@/components/Common/NFT/types/nft.types";
 import { setModal } from "@/redux/reducers/modalSlice";
 import { removeFulfillmentDetailsLocalStorage } from "@/lib/subgraph/utils";
-import { setFulfillmentDetails } from "@/redux/reducers/fulfillmentDetailsSlice";
+import {
+  Details,
+  setFulfillmentDetails,
+} from "@/redux/reducers/fulfillmentDetailsSlice";
+import { AnyAction, Dispatch } from "redux";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { AutoCollectionState } from "@/redux/reducers/autoCollectionSlice";
 
-const usePurchase = () => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
-  const dispatch = useDispatch();
-  const autoDispatch = useSelector(
-    (state: RootState) => state.app.autoCollectionReducer
-  );
-  const litClient = useSelector(
-    (state: RootState) => state.app.litClientReducer.value
-  );
-  const fulfillmentDetails = useSelector(
-    (state: RootState) => state.app.fulfillmentDetailsReducer.value
-  );
-  const encrypted = useSelector(
-    (state: RootState) => state.app.encryptedInformationReducer
-  );
-  const viewScreenNFT = useSelector(
-    (state: RootState) => state.app.nftScreenReducer.value
-  );
-  const success = useSelector((state: RootState) => state.app.successReducer);
-  const { address } = useAccount();
+const usePurchase = (
+  publicClient: PublicClient,
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  autoDispatch: AutoCollectionState,
+  fulfillmentDetails: Details,
+  viewScreenNFT: boolean,
+  success: SuccessState,
+  client: LitNodeClient
+) => {
   const [approved, setApproved] = useState<boolean>(false);
   const [tokenId, setTokenId] = useState<string>();
   const [oracleValue, setOracleValue] = useState<number>(1);
@@ -444,8 +432,7 @@ const usePurchase = () => {
       ];
 
       const returned = await encryptItems(
-        litClient,
-        dispatch,
+        client,
         {
           sizes: [autoDispatch?.collection?.coinOp?.chosenSize!],
           colors: [autoDispatch?.collection?.coinOp?.chosenColor!],

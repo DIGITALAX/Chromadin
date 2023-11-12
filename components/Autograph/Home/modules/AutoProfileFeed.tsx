@@ -33,7 +33,6 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
   handleCommentDescription,
   textElement,
   commentDescription,
-  profileId,
   videoLoading,
   handleSetGif,
   gifOpen,
@@ -98,6 +97,7 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
   decryptPost,
   decryptLoading,
   clientRendered,
+  lensProfile,
 }) => {
   return (
     <>
@@ -150,7 +150,6 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
                     decryptLoading={decryptLoading}
                     openMirrorChoice={openMirrorChoice}
                     setOpenMirrorChoice={setOpenMirrorChoice}
-
                   />
                   {(publication?.__typename === "Mirror"
                     ? publication?.mirrorOn?.id
@@ -176,7 +175,6 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
                       openConnectModal={openConnectModal}
                       handleRemoveImage={handleRemoveImage}
                       address={address}
-                      profileId={profileId}
                       videoLoading={videoLoading}
                       uploadImages={uploadImages}
                       uploadVideo={uploadVideo}
@@ -222,6 +220,7 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
                       preElement={preElement}
                       handleImagePaste={handleImagePaste}
                       clientRendered={clientRendered}
+                      lensProfile={lensProfile}
                       canComment={
                         publication?.__typename === "Mirror"
                           ? publication?.mirrorOn?.operations?.canComment ===

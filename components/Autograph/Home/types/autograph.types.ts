@@ -21,6 +21,7 @@ export type AutoProfileFeedProps = {
   clientRendered: boolean;
   dispatch: Dispatch<AnyAction>;
   followerOnly: boolean[];
+  lensProfile: Profile | undefined;
   profileFeed: (Post | Mirror | Quote)[];
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
@@ -115,7 +116,6 @@ export type AutoProfileFeedProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-  profileId: string;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
   feedType: string;
@@ -135,7 +135,7 @@ export type CollectionsProps = {
   handleShareCollection: (collection: Collection) => Promise<void>;
   imageLoading: boolean;
   address: `0x${string}` | undefined;
-  profileId: string;
+  lensProfile: Profile | undefined;
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
 };
@@ -147,7 +147,7 @@ export type CollectionCaseProps = {
   handleShareCollection: (collection: Collection) => Promise<void>;
   imageLoading: boolean;
   address: `0x${string}` | undefined;
-  profileId: string;
+  lensProfile: Profile | undefined;
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
 };

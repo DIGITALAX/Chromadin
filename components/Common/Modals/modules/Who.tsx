@@ -114,7 +114,7 @@ const Who: FunctionComponent<WhoProps> = ({
                                             )[1]
                                           }`
                                     )
-                                  : router.replace(
+                                  : router?.replace(
                                       `/#chat?option=history&profile=${
                                         reacter?.handle?.suggestedFormatted?.localName?.split(
                                           "@"

@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { whoReacted } from "@/graphql/lens/queries/reactors";
 import {
   LimitType,
@@ -10,8 +8,9 @@ import {
 } from "@/components/Home/types/generated";
 import getProfiles from "@/graphql/lens/queries/getProfiles";
 import { whoActed } from "@/graphql/lens/queries/whoActed";
+import { ReactionStateState } from "@/redux/reducers/reactionStateSlice";
 
-const useWho = () => {
+const useWho = (reaction: ReactionStateState) => {
   const [reactInfoLoading, setReactInfoLoading] = useState<boolean>(false);
   const [reacters, setReacters] = useState<any[]>([]);
   const [reactionPageInfo, setReactionPageInfo] = useState<any>();
@@ -25,18 +24,11 @@ const useWho = () => {
   const [hasMoreMirror, setHasMoreMirror] = useState<boolean>(true);
   const [hasMoreCollect, setHasMoreCollect] = useState<boolean>(true);
 
-  const pubId = useSelector(
-    (state: RootState) => state.app.reactionStateReducer.value
-  );
-  const reaction = useSelector(
-    (state: RootState) => state.app.reactionStateReducer
-  );
-
   const getPostReactions = async (): Promise<void> => {
     setReactInfoLoading(true);
     try {
       const reactions = await whoReacted({
-        for: pubId,
+        for: reaction?.value,
         limit: LimitType.Ten,
         where: {
           anyOf: [PublicationReactionType.Upvote],
@@ -67,7 +59,7 @@ const useWho = () => {
         return;
       }
       const reactions = await whoReacted({
-        for: pubId,
+        for: reaction?.value,
         limit: LimitType.Ten,
         where: {
           anyOf: [PublicationReactionType.Upvote],
@@ -78,7 +70,6 @@ const useWho = () => {
       const arr: ProfileWhoReactedResult[] = [
         ...(reactions?.data?.whoReactedPublication?.items || []),
       ] as ProfileWhoReactedResult[];
-
       if (arr?.length < 10) {
         setHasMoreReact(false);
       } else {
@@ -96,7 +87,7 @@ const useWho = () => {
     try {
       const mirrors = await getProfiles({
         where: {
-          whoMirroredPublication: pubId,
+          whoMirroredPublication: reaction?.value,
         },
         limit: LimitType.Ten,
       });
@@ -127,7 +118,7 @@ const useWho = () => {
       }
       const mirrors = await getProfiles({
         where: {
-          whoMirroredPublication: pubId,
+          whoMirroredPublication: reaction?.value,
         },
         limit: LimitType.Ten,
         cursor: mirrorPageInfo?.next,
@@ -153,7 +144,7 @@ const useWho = () => {
     setCollectInfoLoading(true);
     try {
       const collects = await whoActed({
-        on: pubId,
+        on: reaction?.value,
         limit: LimitType.Ten,
       });
       const arr: Profile[] = [
@@ -181,7 +172,7 @@ const useWho = () => {
         return;
       }
       const collects = await whoActed({
-        on: pubId,
+        on: reaction?.value,
         limit: LimitType.Ten,
         cursor: collectPageInfo?.next,
       });

@@ -75,7 +75,7 @@ const Drops: FunctionComponent<DropsProps> = ({
                     })
                   );
                   if (router.asPath.includes("/autograph")) {
-                    router.replace(
+                    router?.replace(
                       `/autograph/${
                         collection?.profile?.handle?.suggestedFormatted?.localName?.split(
                           "@"

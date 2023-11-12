@@ -1,20 +1,20 @@
 import { setStatsRedux } from "@/redux/reducers/statsSlice";
-import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { UseStatsResults } from "../types/sampler.types";
 import getDailyMappings from "@/graphql/subgraph/queries/getDailyMappings";
 import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 import { setPiesRedux } from "@/redux/reducers/piesSlice";
 import { setRatesRedux } from "@/redux/reducers/ratesSlice";
 import { setGraphRedux } from "@/redux/reducers/graphSlice";
+import { AnyAction, Dispatch } from "redux";
 
-const useStats = (): UseStatsResults => {
-  const viewer = useSelector((state: RootState) => state.app.viewReducer.value);
-  const stats = useSelector((state: RootState) => state.app.statsReducer.value);
+const useStats = (
+  dispatch: Dispatch<AnyAction>,
+  viewer: string,
+  stats: any[]
+): UseStatsResults => {
   const [statsLoading, setStatsLoading] = useState<boolean>(false);
-  const dispatch = useDispatch();
-  const [statTitles, setStatTitles] = useState<any[][]>([
+  const [statsTitles, setStatsTitles] = useState<any[][]>([
     ["Top 50 Mirrorers (All Time)"],
     ["Top 50 Collectors (All Time)"],
     ["Top 50 Authors (All Time)"],
@@ -41,72 +41,46 @@ const useStats = (): UseStatsResults => {
         [
           "Top 50 Mirrorers (All Time)",
           await fetchIPFSJSON(
-            (res.data?.dailyMappingsAddeds[0]?._topMirrorers as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
+            res.data?.dailyMappingsAddeds[0]?._topMirrorers as any
           ),
         ],
         [
           "Top 50 Collectors (All Time)",
           await fetchIPFSJSON(
-            (res.data?.dailyMappingsAddeds[0]?._topCollectors as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
+            res.data?.dailyMappingsAddeds[0]?._topCollectors as any
           ),
         ],
         [
           "Top 50 Authors (All Time)",
           await fetchIPFSJSON(
-            (res.data?.dailyMappingsAddeds[0]?._topPosters as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
+            res.data?.dailyMappingsAddeds[0]?._topPosters as any
           ),
         ],
         [
           "Unique Collects (24HRS)",
-          await fetchIPFSJSON(
-            (res.data?.dailyMappingsAddeds[0]?._unique as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          ),
+          await fetchIPFSJSON(res.data?.dailyMappingsAddeds[0]?._unique as any),
         ],
         [
           "Pub Collect β (All Time)",
           await fetchIPFSJSON(
-            (res.data?.dailyMappingsAddeds[0]?._amountToCollect as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
+            res.data?.dailyMappingsAddeds[0]?._amountToCollect as any
           ),
         ],
         [
           "Pub Collect β (72HRS)",
           await fetchIPFSJSON(
-            (res.data?.dailyMappingsAddeds[0]?._amountToCollect72 as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
+            res.data?.dailyMappingsAddeds[0]?._amountToCollect72 as any
           ),
         ],
         [
           "Amount Paid Leaderboard (72HRS)",
           await fetchIPFSJSON(
-            (res.data?.dailyMappingsAddeds[0]?._highestSpend as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
+            res.data?.dailyMappingsAddeds[0]?._highestSpend as any
           ),
         ],
       ];
       const jsonFollow = await fetchIPFSJSON(
-        (res.data?.dailyMappingsAddeds[0]?._topFollowed as any)
-          ?.split("ipfs://")[1]
-          ?.replace(/"/g, "")
-          ?.trim()
+        res.data?.dailyMappingsAddeds[0]?._topFollowed as any
       );
       const total = jsonFollow.reduce(
         (accumulator: number, currentValue: any) =>
@@ -124,10 +98,7 @@ const useStats = (): UseStatsResults => {
       });
 
       const jsonRevenue = await fetchIPFSJSON(
-        (res.data?.dailyMappingsAddeds[0]?._revenueChange as any)
-          ?.split("ipfs://")[1]
-          ?.replace(/"/g, "")
-          ?.trim()
+        res.data?.dailyMappingsAddeds[0]?._revenueChange as any
       );
       const changes = [
         ((Number(jsonRevenue[1].total_amount_24) -
@@ -140,10 +111,7 @@ const useStats = (): UseStatsResults => {
           100,
       ];
       const jsonGraph = await fetchIPFSJSON(
-        (res.data?.dailyMappingsAddeds[0]?._graph as any)
-          ?.split("ipfs://")[1]
-          ?.replace(/"/g, "")
-          ?.trim()
+        res.data?.dailyMappingsAddeds[0]?._graph as any
       );
       const graphData = jsonGraph.map((jsonGraph: any[], index: number) => {
         let totalCount: number;
@@ -184,7 +152,7 @@ const useStats = (): UseStatsResults => {
         { name: "hashtags", data: graphData[0] },
       ];
 
-      setStatTitles(stats);
+      setStatsTitles(stats);
       setTopAccountsFollowed(follow);
       setTotalChanges(changes);
       setGraphData(graphs);
@@ -206,7 +174,7 @@ const useStats = (): UseStatsResults => {
   }, [viewer]);
 
   return {
-    statTitles,
+    statsTitles,
     statsLoading,
     topAccountsFollowed,
     totalChanges,

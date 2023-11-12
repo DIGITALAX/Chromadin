@@ -2,36 +2,27 @@ import { LENS_CREATORS } from "@/lib/constants";
 import createFollowModule from "@/lib/helpers/createFollowModule";
 import { setModal } from "@/redux/reducers/modalSlice";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
-import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { setLensProfile } from "@/redux/reducers/lensProfileSlice";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
-import { RootState } from "@/redux/store";
-import { setSuperFollow } from "@/redux/reducers/superFollowSlice";
-import { setRainRedux } from "@/redux/reducers/rainSlice";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import { Profile } from "@/components/Home/types/generated";
 import followSig from "@/lib/helpers/followSig";
+import { AnyAction, Dispatch } from "redux";
+import { QuickProfilesInterface } from "../types/wavs.types";
 
-const useSuperCreator = () => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
+const useSuperCreator = (
+  publicClient: PublicClient,
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  rain: boolean,
+  quickProfiles: QuickProfilesInterface[]
+) => {
   const [superCreatorLoading, setSuperCreatorLoading] =
     useState<boolean>(false);
-  const dispatch = useDispatch();
-  const { address } = useAccount();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<MutableRefObject<number | null>>(null);
-  const quickProfiles = useSelector(
-    (state: RootState) => state.app.quickProfilesReducer.value
-  );
-  const rain = useSelector((state: RootState) => state.app.rainReducer.value);
-
   const refetchProfile = async (): Promise<void> => {
     try {
       const profile = await getDefaultProfile({
@@ -82,6 +73,8 @@ const useSuperCreator = () => {
           address as `0x${string}`,
           dispatch
         );
+
+        await refetchProfile();
       } catch (err: any) {
         if (err.message.includes("You do not have enough")) {
           dispatch(

@@ -6,9 +6,7 @@ import { useEffect, useState } from "react";
 import { Collection, Drop } from "../types/home.types";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { setMainNFT } from "@/redux/reducers/mainNFTSlice";
-import { useDispatch, useSelector } from "react-redux";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
-import { RootState } from "@/redux/store";
 import { setCollectionsRedux } from "@/redux/reducers/collectionsSlice";
 import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 import { setDropsRedux } from "@/redux/reducers/dropsSlice";
@@ -18,38 +16,36 @@ import { QuickProfilesInterface } from "@/components/Common/Wavs/types/wavs.type
 import { INFURA_GATEWAY, LENS_CREATORS } from "@/lib/constants";
 import getProfiles from "@/graphql/lens/queries/getProfiles";
 import { setQuickProfilesRedux } from "@/redux/reducers/quickProfilesSlice";
-import { useRouter } from "next/router";
-import { Profile } from "../types/generated";
+import { Mirror, Post, Profile, Quote } from "../types/generated";
 import getAllDrops, {
   getAllDropsUpdated,
 } from "@/graphql/subgraph/queries/getAllDrops";
 import { getCoinOpCollection } from "@/lib/helpers/getCoinOp";
+import { AnyAction, Dispatch } from "redux";
+import { NextRouter } from "next/router";
 
-const useDrop = () => {
+const useDrop = (
+  router: NextRouter,
+  dispatch: Dispatch<AnyAction>,
+  collectionsDispatched: Collection[],
+  paginated: {
+    skip: number;
+    first: number;
+    skipUpdated: number;
+    firstUpdated: number;
+  },
+  dropsDispatched: Drop[],
+  hasMoreCollections: {
+    new: boolean;
+    old: boolean;
+  },
+  feedDispatch: (Post | Quote | Mirror)[],
+  decryptFeed: Post[]
+) => {
   const [collectionsLoading, setCollectionsLoading] = useState<boolean>(false);
   const [moreCollectionsLoading, setMoreCollectionsLoading] =
     useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const dispatch = useDispatch();
-  const collectionsDispatched = useSelector(
-    (state: RootState) => state.app.collectionsReducer.value
-  );
-  const paginated = useSelector(
-    (state: RootState) => state.app.collectionPaginatedReducer
-  );
-  const dropsDispatched = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
-  );
-  const hasMoreCollections = useSelector(
-    (state: RootState) => state.app.hasMoreCollectionReducer.value
-  );
-  const feedDispatch = useSelector(
-    (state: RootState) => state.app.feedReducer.value
-  );
-  const decryptFeed = useSelector(
-    (state: RootState) => state.app.decryptFeedReducer.value
-  );
-  const router = useRouter();
 
   const handleAllCollections = async (): Promise<void> => {
     setCollectionsLoading(true);
@@ -100,12 +96,7 @@ const useDrop = () => {
       const drops = await handleAllDrops();
       const fullDrops = await Promise.all(
         drops?.map(async (drop: Drop) => {
-          const dropjson = await fetchIPFSJSON(
-            (drop as any)?.dropURI
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          );
+          const dropjson = await fetchIPFSJSON((drop as any)?.dropURI);
 
           return {
             ...drop,
@@ -403,12 +394,7 @@ const useDrop = () => {
     try {
       return await Promise.all(
         validCollections.map(async (collection: Collection) => {
-          const json = await fetchIPFSJSON(
-            (collection.uri as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          );
+          const json = await fetchIPFSJSON(collection.uri as any);
 
           const type = await fetch(
             `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,

@@ -9,6 +9,7 @@ const Auth: FunctionComponent<AuthProps> = ({
   handleLensSignIn,
   profile,
   mainPage,
+  router
 }): JSX.Element => {
   let action: string;
   const decideStringAction = () => {
@@ -20,7 +21,7 @@ const Auth: FunctionComponent<AuthProps> = ({
 
   switch (decideStringAction()) {
     case "profile":
-      return <Profile profile={profile} mainPage={mainPage} />;
+      return <Profile router={router} profile={profile} mainPage={mainPage} />;
 
     default:
       return (

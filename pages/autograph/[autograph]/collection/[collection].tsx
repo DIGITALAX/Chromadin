@@ -12,37 +12,134 @@ import { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/legacy/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import useBar from "@/components/Autograph/Common/hooks/useBar";
 import WaveformComponent from "@/components/Home/modules/Waveform";
 import Checkout from "@/components/Autograph/Collection/modules/Checkout";
 import { setNftScreen } from "@/redux/reducers/nftScreenSlice";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
+import { createPublicClient, http } from "viem";
+import { polygon } from "viem/chains";
+import useImageUpload from "@/components/Common/NFT/hooks/useImageUpload";
+import usePurchase from "@/components/Autograph/Collection/hooks/usePurchase";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import useChannels from "@/components/Common/SideBar/hooks/useChannels";
+import useControls from "@/components/Common/Video/hooks/useControls";
 
-const Collection: NextPage = (): JSX.Element => {
+const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
+  router,
+  client,
+}): JSX.Element => {
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
+  const dispatch = useDispatch();
+  const { address, isConnected } = useAccount();
+  const { autograph, collection } = router.query;
+  const { openConnectModal, connectModalOpen } = useConnectModal();
+  const { chain } = useNetwork();
+  const { openChainModal } = useChainModal();
   const allDrops = useSelector(
     (state: RootState) => state.app.dropsReducer.value
   );
   const autoDispatch = useSelector(
     (state: RootState) => state.app.autoCollectionReducer
   );
+  const purchase = useSelector((state: RootState) => state.app.purchaseReducer);
+  const fullScreenVideo = useSelector(
+    (state: RootState) => state.app.fullScreenVideoReducer
+  );
   const imageLoading = useSelector(
     (state: RootState) => state.app.imageLoadingReducer.value
-  );
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
   );
   const viewScreenNFT = useSelector(
     (state: RootState) => state.app.nftScreenReducer.value
   );
+  const commentId = useSelector(
+    (state: RootState) => state.app.secondaryCommentReducer.value
+  );
   const connected = useSelector(
     (state: RootState) => state.app.connectedReducer?.value
   );
-  const profile = useSelector(
+  const success = useSelector((state: RootState) => state.app.successReducer);
+  const quickProfiles = useSelector(
+    (state: RootState) => state.app.quickProfilesReducer.value
+  );
+  const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
+  );
+  const fulfillmentDetails = useSelector(
+    (state: RootState) => state.app.fulfillmentDetailsReducer.value
+  );
+  const mainVideo = useSelector(
+    (state: RootState) => state.app.mainVideoReducer
+  );
+  const index = useSelector((state: RootState) => state.app.indexModalReducer);
+  const postOpen = useSelector(
+    (state: RootState) => state.app.makePostReducer.value
+  );
+  const dispatchVideos = useSelector(
+    (state: RootState) => state.app.channelsReducer.value
+  );
+  const videoSync = useSelector(
+    (state: RootState) => state.app.videoSyncReducer
+  );
+  const reactId = useSelector(
+    (state: RootState) => state.app.reactIdReducer.value
+  );
+  const approvalArgs = useSelector(
+    (state: RootState) => state.app.approvalArgsReducer.args
+  );
+  const reactions = useSelector(
+    (state: RootState) => state.app.videoCountReducer
+  );
+  const hasMore = useSelector(
+    (state: RootState) => state.app.hasMoreVideosReducer.value
+  );
+  const page = useSelector((state: RootState) => state.app.viewReducer.value);
+  const postImages = useSelector(
+    (state: RootState) => state.app.postImageReducer.value
+  );
+  const publicationImages = useSelector(
+    (state: RootState) => state.app.publicationImageReducer.value
+  );
+  const seek = useSelector(
+    (state: RootState) => state.app.seekSecondReducer.seek
+  );
+  const encryptedInformation = useSelector(
+    (state: RootState) => state.app.encryptedInformationReducer.information
+  );
+  const { uploadImage } = useImageUpload(
+    dispatch,
+    page,
+    postOpen,
+    postImages,
+    publicationImages
+  );
+  const {
+    purchaseLoading,
+    buyNFT,
+    totalAmount,
+    approved,
+    approveSpend,
+    currency,
+    setCurrency,
+    handleCheckoutCrypto,
+    oracleValue,
+    cryptoCheckoutLoading,
+  } = usePurchase(
+    publicClient,
+    dispatch,
+    address,
+    autoDispatch,
+    fulfillmentDetails,
+    viewScreenNFT,
+    success,
+    client
   );
   const {
     collectionLoading,
@@ -51,20 +148,69 @@ const Collection: NextPage = (): JSX.Element => {
     handleShareCollection,
     setImageIndex,
     imageIndex,
-  } = useAutoCollection();
+  } = useAutoCollection(
+    dispatch,
+    lensProfile,
+    viewScreenNFT,
+    autoDispatch.collection,
+    allDrops,
+    uploadImage
+  );
+  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
+    dispatch,
+    mainVideo,
+    lensProfile,
+    dispatchVideos,
+    index.message,
+    reactId,
+    videoSync,
+    reactions
+  );
+  const {
+    streamRef,
+    formatTime,
+    volume,
+    handleVolumeChange,
+    volumeOpen,
+    setVolumeOpen,
+    handleHeart,
+    mirrorVideo,
+    collectVideo,
+    likeVideo,
+    mirrorLoading,
+    collectLoading,
+    likeLoading,
+    wrapperRef,
+    progressRef,
+    handleSeek,
+  } = useControls(
+    dispatch,
+    address,
+    publicClient,
+    purchase,
+    seek,
+    approvalArgs,
+    mainVideo,
+    videoSync,
+    lensProfile,
+    fullScreenVideo,
+    commentId,
+    index,
+    router
+  );
   const { isLargeScreen } = useBar();
   const pfp = createProfilePicture(autoDispatch.profile?.metadata?.picture);
-  const { address } = useAccount();
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
-    useViewer();
-  const { openConnectModal } = useConnectModal();
-  const { handleLensSignIn } = useConnect();
-  const {
-    query: { autograph, collection },
-    push,
-  } = useRouter();
+    useViewer(router, dispatch, quickProfiles, allDrops);
+  const { handleLensSignIn } = useConnect(
+    router,
+    address,
+    isConnected,
+    dispatch,
+    connectModalOpen,
+    publicClient
+  );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!collectionLoading && autograph && collection && allDrops.length > 0) {
@@ -223,16 +369,41 @@ const Collection: NextPage = (): JSX.Element => {
           />
         </Head>
         <Bar
-          push={push}
+          router={router}
           openConnectModal={openConnectModal}
           connected={connected}
           handleLensSignIn={handleLensSignIn}
-          profile={profile}
+          lensProfile={lensProfile}
           handleSearch={handleSearch}
           searchOpen={searchOpen}
           searchResults={searchResults}
           handleSearchChoose={handleSearchChoose}
           isLargeScreen={isLargeScreen}
+          hasMore={hasMore}
+          reactions={reactions}
+          streamRef={streamRef}
+          formatTime={formatTime}
+          volume={volume}
+          handleVolumeChange={handleVolumeChange}
+          volumeOpen={volumeOpen}
+          setVolumeOpen={setVolumeOpen}
+          handleHeart={handleHeart}
+          mirrorVideo={mirrorVideo}
+          collectVideo={collectVideo}
+          likeVideo={likeVideo}
+          mirrorLoading={mirrorLoading}
+          collectLoading={collectLoading}
+          likeLoading={likeLoading}
+          mainVideo={mainVideo}
+          wrapperRef={wrapperRef}
+          progressRef={progressRef}
+          handleSeek={handleSeek}
+          videoSync={videoSync}
+          fetchMoreVideos={fetchMoreVideos}
+          videosLoading={videosLoading}
+          setVideosLoading={setVideosLoading}
+          dispatch={dispatch}
+          dispatchVideos={dispatchVideos}
         />
         {autoDispatch.collection && autoDispatch.profile && (
           <div
@@ -359,9 +530,9 @@ const Collection: NextPage = (): JSX.Element => {
                 <div
                   className={`relative text-ama items-center flex cursor-pointer justify-center top-1 rounded-l-md p-1 hover:opacity-70 active:scale-95 flex-row gap-1`}
                   onClick={
-                    !address && !profileId
+                    !address && !lensProfile?.id
                       ? openConnectModal
-                      : address && !profileId
+                      : address && !lensProfile?.id
                       ? () => handleLensSignIn()
                       : imageLoading
                       ? () => {}
@@ -487,12 +658,33 @@ const Collection: NextPage = (): JSX.Element => {
                   {autoDispatch.collection?.uri?.description}
                 </div>
               </div>
-              <Checkout push={push} dispatch={dispatch} address={address} />
+              <Checkout
+                dispatch={dispatch}
+                address={address}
+                viewScreenNFT={viewScreenNFT}
+                router={router}
+                autoDispatch={autoDispatch}
+                encryptedInformation={encryptedInformation}
+                fulfillmentDetails={fulfillmentDetails}
+                openChainModal={openChainModal}
+                openConnectModal={openConnectModal}
+                chain={chain}
+                purchaseLoading={purchaseLoading}
+                buyNFT={buyNFT}
+                totalAmount={totalAmount}
+                approved={approved}
+                approveSpend={approveSpend}
+                currency={currency}
+                setCurrency={setCurrency}
+                handleCheckoutCrypto={handleCheckoutCrypto}
+                oracleValue={oracleValue}
+                cryptoCheckoutLoading={cryptoCheckoutLoading}
+              />
               {otherCollectionsDrop?.length > 0 && (
                 <InDrop
                   autoCollection={autoDispatch.collection}
                   otherCollectionsDrop={otherCollectionsDrop}
-                  push={push}
+                  router={router}
                   autoProfile={autoDispatch.profile}
                 />
               )}

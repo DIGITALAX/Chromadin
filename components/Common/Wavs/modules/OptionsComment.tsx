@@ -1,9 +1,7 @@
 import { INFURA_GATEWAY } from "@/lib/constants";
-import { RootState } from "@/redux/store";
 import Image from "next/image";
 import { FormEvent, FunctionComponent } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
-import { useSelector } from "react-redux";
 import { setCollectOpen } from "@/redux/reducers/collectOpenSlice";
 import { OptionsCommentProps } from "../types/wavs.types";
 
@@ -17,10 +15,8 @@ const OptionsComment: FunctionComponent<OptionsCommentProps> = ({
   setGifOpen,
   collectOpen,
   dispatch,
+  postImages,
 }): JSX.Element => {
-  const postImages = useSelector(
-    (state: RootState) => state.app.postImageReducer.value
-  );
   return (
     <div className="relative w-fit h-fit flex flex-row gap-2 pl-2">
       <div

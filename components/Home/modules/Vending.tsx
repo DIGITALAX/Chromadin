@@ -3,13 +3,9 @@ import { setMainNFT } from "@/redux/reducers/mainNFTSlice";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { Collection, VendingProps } from "../types/home.types";
-import useDrop from "../hooks/useDrop";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import SearchVending from "@/components/Common/Buttons/SearchVending";
 import FilterVending from "@/components/Common/Buttons/FilterVending";
-import useViewer from "../hooks/useViewer";
 import { setPriceFilter } from "@/redux/reducers/priceFilterSlice";
 import { setDateFilter } from "@/redux/reducers/dateFilterSlice";
 import lodash from "lodash";
@@ -20,36 +16,23 @@ import WaveformComponent from "./Waveform";
 const Vending: FunctionComponent<VendingProps> = ({
   dispatch,
   router,
+  setDropDownPriceSort,
+  dropDownPriceSort,
+  dropDownDateSort,
+  setDropDownDateSort,
+  handleSearch,
+  searchOpen,
+  searchResults,
+  handleSearchChoose,
+  collectionsLoading,
+  error,
+  moreCollectionsLoading,
+  handleGetMoreCollections,
+  dateFilter,
+  priceFilter,
+  dispatchCollections,
+  hasMoreCollections,
 }): JSX.Element => {
-  const {
-    collectionsLoading,
-    error,
-    moreCollectionsLoading,
-    handleGetMoreCollections,
-  } = useDrop();
-  const {
-    setDropDownPriceSort,
-    dropDownPriceSort,
-    dropDownDateSort,
-    setDropDownDateSort,
-    handleSearch,
-    searchOpen,
-    searchResults,
-    handleSearchChoose,
-  } = useViewer();
-  const dispatchCollections = useSelector(
-    (state: RootState) => state.app.collectionsReducer.value
-  );
-  const priceFilter = useSelector(
-    (state: RootState) => state.app.priceFilterReducer
-  );
-  const dateFilter = useSelector(
-    (state: RootState) => state.app.dateFilterReducer
-  );
-  const hasMoreCollections = useSelector(
-    (state: RootState) => state.app.hasMoreCollectionReducer.value
-  );
-
   return (
     <div
       className={`relative w-full overflow-y-scroll gap-3 h-[28.6rem] p-4 flex flex-col`}

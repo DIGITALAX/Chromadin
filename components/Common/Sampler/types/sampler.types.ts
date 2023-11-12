@@ -9,13 +9,13 @@ export type TopBarProps = {
 };
 
 export type StatsProps = {
-  statTitles: any[][];
+  statsTitles: any[][];
   statsRedux: any[][];
   statsLoading: boolean;
 };
 
 export type UseStatsResults = {
-  statTitles: any[][];
+  statsTitles: any[][];
   statsLoading: boolean;
   totalChanges: number[];
   topAccountsFollowed: {

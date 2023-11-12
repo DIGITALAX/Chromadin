@@ -71,11 +71,11 @@ const NFT: FunctionComponent<NFTProps> = ({
   clientRendered,
   imageLoading,
   commentId,
-  profileId,
   collectOpen,
   postImagesDispatched,
   connected,
   canComment,
+  lensProfile,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full sm:h-80 xl:h-72 flex flex-col sm:flex-row">
@@ -87,7 +87,7 @@ const NFT: FunctionComponent<NFTProps> = ({
       />
       {viewer !== "collect" ? (
         <UserComment
-          profileId={profileId}
+          lensProfile={lensProfile}
           commentVideo={commentVideo}
           handleLensSignIn={handleLensSignIn}
           openConnectModal={openConnectModal}

@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ProfilePaginatedState {
-  value: any;
+  value: string | undefined;
 }
 
 const initialProfilePaginatedState: ProfilePaginatedState = {
-  value: {},
+  value: undefined,
 };
 
 export const ProfilePaginatedSlice = createSlice({

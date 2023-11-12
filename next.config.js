@@ -12,6 +12,7 @@ const allowedOrigins = [
   "https://vimeo.com",
   "https://gw.ipfs-lens.dev",
   "https://www.chromadin.xyz",
+  "https://arweave.net/",
 ];
 
 const nextConfig = {

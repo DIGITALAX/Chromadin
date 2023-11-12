@@ -40,6 +40,9 @@ export type CollectInfoProps = {
   totalCollected?: number;
   canClick?: boolean;
   isApproved?: boolean;
+  lensProfile: Profile | undefined;
+  address: `0x${string}` | undefined;
+  openConnectModal: (() => void) | undefined;
   approveCurrency?: () => Promise<void>;
   handleCollect?: (id?: string) => Promise<void>;
   collectLoading: boolean;
@@ -50,10 +53,11 @@ export type CollectInfoProps = {
 
 export type PurchaseProps = {
   collectInfoLoading: boolean;
+  openConnectModal: (() => void) | undefined;
   approvalLoading: boolean;
   address: `0x${string}` | undefined;
   collectModuleValues: PostCollectValuesState;
-  lensProfile: string;
+  lensProfile: Profile | undefined;
   collectComment: (id?: any) => Promise<void>;
   collectLoading: boolean;
   approveCurrency: () => Promise<void>;
@@ -137,6 +141,7 @@ export type PostProps = {
   profilesOpen: boolean;
   handleMentionClick: (user: Profile) => void;
   gifOpen: boolean;
+  lensProfile: Profile | undefined;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
   handleGifSubmit: () => Promise<void>;
   handleGif: (e: FormEvent) => void;
@@ -186,9 +191,8 @@ export type PostProps = {
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
-  profileId: string;
   handlePost: (quote: string | undefined) => Promise<void>;
   postDescription: string;
   textElement: RefObject<HTMLTextAreaElement>;
@@ -207,8 +211,8 @@ export type ClaimProps = {
   handleLensSignIn: () => Promise<void>;
   signInLoading: boolean;
   address: `0x${string}` | undefined;
-  profileId: string;
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
+  lensProfile: Profile | undefined;
 };
 
 export type DecryptProps = {

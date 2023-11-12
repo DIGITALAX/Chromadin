@@ -1,4 +1,4 @@
-import { FollowModuleRedeemInput } from "@lens-protocol/client";
+import { FollowModuleRedeemInput } from "@/components/Home/types/generated";
 
 const createFollowModule = (
   type: string | undefined,

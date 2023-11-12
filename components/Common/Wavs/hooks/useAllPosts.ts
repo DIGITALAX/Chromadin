@@ -2,30 +2,46 @@ import {
   LimitType,
   Mirror,
   Post,
+  Profile,
   PublicationType,
   Quote,
+  Comment,
 } from "@/components/Home/types/generated";
 import { INFURA_GATEWAY, LENS_CREATORS } from "@/lib/constants";
-import { setCommentFeedCount } from "@/redux/reducers/commentFeedCountSlice";
+import {
+  CommentFeedCountState,
+  setCommentFeedCount,
+} from "@/redux/reducers/commentFeedCountSlice";
 import { setFeedsRedux } from "@/redux/reducers/feedSlice";
-import { setIndividualFeedCount } from "@/redux/reducers/individualFeedCountReducer";
+import {
+  IndividualFeedCountState,
+  setIndividualFeedCount,
+} from "@/redux/reducers/individualFeedCountReducer";
 import { setPaginated } from "@/redux/reducers/paginatedSlice";
-import { setProfileFeedCount } from "@/redux/reducers/profileFeedCountSlice";
-import { setReactionFeedCount } from "@/redux/reducers/reactionFeedCountSlice";
+import {
+  ProfileFeedCountState,
+  setProfileFeedCount,
+} from "@/redux/reducers/profileFeedCountSlice";
+import {
+  ReactionFeedCountState,
+  setReactionFeedCount,
+} from "@/redux/reducers/reactionFeedCountSlice";
 import { setScrollPosRedux } from "@/redux/reducers/scrollPosSlice";
-import { RootState } from "@/redux/store";
-import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
 import { setPostSent } from "@/redux/reducers/postSentSlice";
 import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 import { setDecryptFeedRedux } from "@/redux/reducers/decryptFeedSlice";
-import { setDecryptFeedCount } from "@/redux/reducers/decryptFeedCountSlice";
+import {
+  DecryptFeedCountState,
+  setDecryptFeedCount,
+} from "@/redux/reducers/decryptFeedCountSlice";
 import { setDecryptPaginated } from "@/redux/reducers/decryptPaginatedSlice";
 import { setDecryptScrollPosRedux } from "@/redux/reducers/decryptScrollPosSlice";
-import { setDecryptProfileFeedCount } from "@/redux/reducers/decryptProfileCountSlice";
+import {
+  DecryptProfileFeedCountState,
+  setDecryptProfileFeedCount,
+} from "@/redux/reducers/decryptProfileCountSlice";
 import { Collection } from "@/components/Home/types/home.types";
 import {
   getCollectionsDecrypt,
@@ -36,72 +52,39 @@ import {
   getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
 import { decryptPostArray } from "@/lib/helpers/decryptPost";
+import { AnyAction, Dispatch } from "redux";
+import { NextRouter } from "next/router";
+import { FeedReactIdState } from "@/redux/reducers/feedReactIdSlice";
+import { DecryptState } from "@/redux/reducers/decryptSlice";
+import { IndexModalState } from "@/redux/reducers/indexModalSlice";
 
-const useAllPosts = () => {
-  const { address } = useAccount();
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const feedDispatch = useSelector(
-    (state: RootState) => state.app.feedReducer.value
-  );
-  const decryptFeed = useSelector(
-    (state: RootState) => state.app.decryptFeedReducer.value
-  );
-  const filterDecrypt = useSelector(
-    (state: RootState) => state.app.filterDecryptReducer.value
-  );
-  const decryptFeedCount = useSelector(
-    (state: RootState) => state.app.decryptFeedCountReducer
-  );
-  const indexer = useSelector(
-    (state: RootState) => state.app.indexModalReducer
-  );
-  const decrypt = useSelector((state: RootState) => state.app.decryptReducer);
-  const feedId = useSelector(
-    (state: RootState) => state.app.feedReactIdReducer
-  );
-  const reactionFeedCount = useSelector(
-    (state: RootState) => state.app.reactionFeedCountReducer
-  );
-  const postSent = useSelector(
-    (state: RootState) => state.app.postSentReducer.value
-  );
-  const feedType = useSelector(
-    (state: RootState) => state.app.feedTypeReducer.value
-  );
-  const commentFeed = useSelector(
-    (state: RootState) => state.app.commentFeedCountReducer
-  );
-  const comments = useSelector(
-    (state: RootState) => state.app.commentReducer.value
-  );
-  const paginated = useSelector(
-    (state: RootState) => state.app.paginatedReducer.value
-  );
-  const individual = useSelector(
-    (state: RootState) => state.app.individualFeedCountReducer
-  );
-  const profile = useSelector(
-    (state: RootState) => state.app.profileReducer.profile
-  );
-  const profileFeedCount = useSelector(
-    (state: RootState) => state.app.profileFeedCountReducer
-  );
-  const profileDispatch = useSelector(
-    (state: RootState) => state.app.profileFeedReducer.value
-  );
-  const decryptPaginated = useSelector(
-    (state: RootState) => state.app.decryptPaginatedReducer.value
-  );
-  const decryptProfileFeedCount = useSelector(
-    (state: RootState) => state.app.decryptProfileFeedCountReducer
-  );
-
+const useAllPosts = (
+  address: `0x${string}` | undefined,
+  dispatch: Dispatch<AnyAction>,
+  router: NextRouter,
+  lensProfile: Profile | undefined,
+  profile: Profile | undefined,
+  feedDispatch: (Post | Mirror | Quote)[],
+  profileDispatch: (Post | Quote | Mirror)[],
+  decryptFeed: Post[],
+  filterDecrypt: boolean,
+  decryptFeedCount: DecryptFeedCountState,
+  indexer: IndexModalState,
+  decrypt: DecryptState,
+  feedId: FeedReactIdState,
+  reactionFeedCount: ReactionFeedCountState,
+  postSent: boolean,
+  feedType: string,
+  commentFeed: CommentFeedCountState,
+  comments: Comment[],
+  paginated: string | undefined,
+  decryptPaginated: string | undefined,
+  individual: IndividualFeedCountState,
+  decryptProfileFeedCount: DecryptProfileFeedCountState,
+  profileFeedCount: ProfileFeedCountState
+) => {
   const scrollRef = useRef<InfiniteScroll>(null);
   const scrollRefDecrypt = useRef<InfiniteScroll>(null);
-  const dispatch = useDispatch();
-  const router = useRouter();
   const [followerOnly, setFollowerOnly] = useState<boolean[]>(
     Array.from({ length: feedDispatch?.length }, () => false)
   );
@@ -121,7 +104,7 @@ const useAllPosts = () => {
     try {
       let data;
 
-      if (lensProfile) {
+      if (lensProfile?.id) {
         data = await getPublicationsAuth({
           where: {
             from: LENS_CREATORS,
@@ -168,7 +151,7 @@ const useAllPosts = () => {
       } else {
         setHasMore(true);
       }
-      dispatch(setPaginated(data?.data?.publications?.pageInfo));
+      dispatch(setPaginated(data?.data?.publications?.pageInfo?.next));
 
       setFollowerOnly(
         sortedArr.map((obj: Post | Quote | Mirror) =>
@@ -231,14 +214,14 @@ const useAllPosts = () => {
 
   const fetchMore = async () => {
     try {
-      if (!paginated?.next) {
+      if (!paginated) {
         // fix apollo duplications on null next
         setHasMore(false);
         return;
       }
       let data;
 
-      if (lensProfile) {
+      if (lensProfile?.id) {
         data = await getPublicationsAuth({
           where: {
             from: LENS_CREATORS,
@@ -249,7 +232,7 @@ const useAllPosts = () => {
             ],
           },
           limit: LimitType.Ten,
-          cursor: paginated?.next,
+          cursor: paginated,
         });
       } else {
         data = await getPublications({
@@ -262,7 +245,7 @@ const useAllPosts = () => {
             ],
           },
           limit: LimitType.Ten,
-          cursor: paginated?.next,
+          cursor: paginated,
         });
       }
 
@@ -282,7 +265,7 @@ const useAllPosts = () => {
         setHasMore(true);
       }
       dispatch(setFeedsRedux([...feedDispatch, ...sortedArr]));
-      dispatch(setPaginated(data?.data?.publications?.pageInfo));
+      dispatch(setPaginated(data?.data?.publications?.pageInfo?.next));
       setFollowerOnly([
         ...followerOnly,
         ...sortedArr.map((obj: Post | Quote | Mirror) =>
@@ -368,7 +351,7 @@ const useAllPosts = () => {
     try {
       let data;
 
-      if (lensProfile) {
+      if (lensProfile?.id) {
         data = await getPublicationsAuth({
           where: {
             metadata: {
@@ -410,7 +393,7 @@ const useAllPosts = () => {
       } else {
         setHasMoreDecrypt(true);
       }
-      dispatch(setDecryptPaginated(data?.data?.publications?.pageInfo));
+      dispatch(setDecryptPaginated(data?.data?.publications?.pageInfo?.next));
 
       setFollowerOnlyDecrypt(
         sortedArr.map((obj: Post) =>
@@ -447,14 +430,14 @@ const useAllPosts = () => {
 
   const fetchMoreDecrypt = async () => {
     try {
-      if (!decryptPaginated?.next) {
+      if (!decryptPaginated) {
         // fix apollo duplications on null next
         setHasMoreDecrypt(false);
         return;
       }
       let data;
 
-      if (lensProfile) {
+      if (lensProfile?.id) {
         data = await getPublicationsAuth({
           where: {
             metadata: {
@@ -465,7 +448,7 @@ const useAllPosts = () => {
             publicationTypes: [PublicationType.Post],
           },
           limit: LimitType.Ten,
-          cursor: decryptPaginated?.next,
+          cursor: decryptPaginated,
         });
       } else {
         data = await getPublications({
@@ -478,7 +461,7 @@ const useAllPosts = () => {
             publicationTypes: [PublicationType.Post],
           },
           limit: LimitType.Ten,
-          cursor: decryptPaginated?.next,
+          cursor: decryptPaginated,
         });
       }
 
@@ -497,7 +480,7 @@ const useAllPosts = () => {
         setHasMoreDecrypt(true);
       }
       dispatch(setDecryptFeedRedux([...decryptFeed, ...sortedArr]));
-      dispatch(setDecryptPaginated(data?.data?.publications?.pageInfo));
+      dispatch(setDecryptPaginated(data?.data?.publications?.pageInfo?.next));
       setFollowerOnlyDecrypt([
         ...followerOnlyDecrypt,
         ...sortedArr.map((obj: Post) =>
@@ -884,9 +867,7 @@ const useAllPosts = () => {
               obj.collectionId !== "104" && obj.collectionId !== "99"
           ) || []),
         ];
-        const json = await fetchIPFSJSON(
-          (data[0].uri as any)?.split("ipfs://")[1]?.replace(/"/g, "")?.trim()
-        );
+        const json = await fetchIPFSJSON(data[0].uri as any);
 
         const type = await fetch(
           `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,

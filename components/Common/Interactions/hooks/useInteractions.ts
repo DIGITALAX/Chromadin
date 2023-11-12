@@ -10,13 +10,19 @@ import {
   getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
 import { whoActed } from "@/graphql/lens/queries/whoActed";
-import { RootState } from "@/redux/store";
+import { IndexModalState } from "@/redux/reducers/indexModalSlice";
+import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
 import { FetchResult } from "@apollo/client";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { useEffect, useState } from "react";
-import {  useSelector } from "react-redux";
 
-const useInteractions = () => {
+const useInteractions = (
+  router: NextRouter,
+  profile: Profile | undefined,
+  mainVideo: MainVideoState,
+  commentId: string | undefined,
+  index: IndexModalState
+) => {
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [paginated, setPaginated] = useState<any>();
   const [commentors, setCommentors] = useState<Comment[]>([]);
@@ -25,24 +31,13 @@ const useInteractions = () => {
   const [collectLoading, setCollectLoading] = useState<boolean>(false);
   const [hasMoreCollects, setHasMoreCollects] = useState<boolean>(true);
   const [hasMoreComments, setHasMoreComments] = useState<boolean>(true);
-  const router = useRouter();
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
-  );
-  const commentId = useSelector(
-    (state: RootState) => state.app.secondaryCommentReducer.value
-  );
-  const index = useSelector((state: RootState) => state.app.indexModalReducer);
 
   const getPostComments = async (): Promise<void> => {
     setCommentsLoading(true);
     try {
       let comments: FetchResult<PublicationsQuery>;
 
-      if (profileId) {
+      if (profile?.id) {
         comments = await getPublicationsAuth({
           where: {
             commentOn: {
@@ -96,7 +91,7 @@ const useInteractions = () => {
         return;
       }
       let comments: FetchResult<PublicationsQuery>;
-      if (profileId) {
+      if (profile?.id) {
         comments = await getPublicationsAuth({
           where: {
             commentOn: {
@@ -199,13 +194,13 @@ const useInteractions = () => {
     if (mainVideo.id) {
       getPostCollects();
     }
-  }, [mainVideo.id, profileId]);
+  }, [mainVideo.id, profile?.id]);
 
   useEffect(() => {
     if (mainVideo.id) {
       getPostComments();
     }
-  }, [mainVideo.id, profileId, commentId]);
+  }, [mainVideo.id, profile?.id, commentId]);
 
   useEffect(() => {
     if (

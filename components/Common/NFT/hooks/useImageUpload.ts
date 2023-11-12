@@ -5,20 +5,21 @@ import {
   setCommentData,
   setPostData,
 } from "@/lib/lens/utils";
-import { RootState } from "@/redux/store";
 import { FormEvent, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import lodash from "lodash";
 import { setPostImages } from "@/redux/reducers/postImageSlice";
 import { setPublicationImages } from "@/redux/reducers/publicationImageSlice";
 import { setIPFS } from "@/redux/reducers/IPFSSlice";
 import { setImageLoadingRedux } from "@/redux/reducers/imageLoadingSlice";
+import { AnyAction, Dispatch } from "redux";
 
-const useImageUpload = () => {
-  const page = useSelector((state: RootState) => state.app.viewReducer.value);
-  const postOpen = useSelector(
-    (state: RootState) => state.app.makePostReducer.value
-  );
+const useImageUpload = (
+  dispatch: Dispatch<AnyAction>,
+  page: string,
+  postOpen: boolean,
+  imagesUploaded: UploadedMedia[],
+  imagesUploadedPub: UploadedMedia[]
+) => {
   const [clientRendered, setClientRendered] = useState<boolean>(false);
   const [videoLoading, setVideoLoading] = useState<boolean>(false);
   const [mappedFeaturedFiles, setMappedFeaturedFiles] = useState<
@@ -29,13 +30,6 @@ const useImageUpload = () => {
         ? JSON.parse(getCommentData() || "{}").images || []
         : JSON.parse(getPostData() || "{}").images || []
       : []
-  );
-  const dispatch = useDispatch();
-  const imagesUploaded = useSelector(
-    (state: RootState) => state.app.postImageReducer.value
-  );
-  const imagesUploadedPub = useSelector(
-    (state: RootState) => state.app.publicationImageReducer.value
   );
 
   const uploadImage = async (

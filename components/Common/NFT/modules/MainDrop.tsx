@@ -77,7 +77,7 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
             onClick={() =>
               router.push(
                 `/autograph/${
-                  mainNFT?.creator?.name?.split(".lens")[0]
+                  mainNFT?.creator?.name
                 }/collection/${mainNFT?.name
                   ?.replaceAll(" ", "_")
                   .toLowerCase()}`

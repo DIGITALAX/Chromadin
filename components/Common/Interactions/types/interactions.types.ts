@@ -5,6 +5,7 @@ import { Collection } from "@/components/Home/types/home.types";
 import { NextRouter } from "next/router";
 import { Url } from "next/dist/shared/lib/router/router";
 import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
+import { Details } from "@/redux/reducers/fulfillmentDetailsSlice";
 
 export type InteractionProps = {
   viewer: string;
@@ -28,6 +29,50 @@ export type InteractionProps = {
   router: NextRouter;
   dispatchVideos: Post[];
   mainVideo: MainVideoState;
+  historyReducer: History[];
+  historyLoading: boolean;
+  buyerHistoryReducer: History[];
+  historySwitch: boolean;
+  setHistorySwitch: (e: boolean) => void;
+  moreHistoryLoading: boolean;
+  getMoreUserHistory: () => Promise<void>;
+  getMoreBuyerHistory: () => Promise<void>;
+  hasMoreHistory: {
+    old: boolean;
+    new: boolean;
+  };
+  hasMoreHistorySpecific: {
+    old: boolean;
+    new: boolean;
+  };
+  address: `0x${string}` | undefined;
+  openConnectModal: (() => void) | undefined;
+  chain: any;
+  openChainModal: (() => void) | undefined;
+  baseColor: number;
+  selectSize: number;
+  setBaseColor: (e: number) => void;
+  setSelectSize: (e: number) => void;
+  currency: string;
+  setCurrency: (e: string) => void;
+  imageIndex: number;
+  setImageIndex: (e: number) => void;
+  totalAmount: number;
+  approved: boolean;
+  mainNFT: MainNFT | undefined;
+  approveSpend: () => Promise<void>;
+  buyNFT: () => void;
+  purchaseLoading: boolean;
+  viewScreenNFT: boolean;
+  setViewScreenNFT: (e: boolean) => void;
+  oracleValue: number;
+  cryptoCheckoutLoading: boolean;
+  encryptedInformation: string[] | undefined;
+  handleCheckoutCrypto: () => Promise<void>;
+  fulfillmentDetails: Details;
+  isCreator: boolean;
+  action: string;
+  collections: Collection[];
 };
 
 export type CommentsProps = {
@@ -63,7 +108,6 @@ export type FulfillmentProps = {
   imageIndex: number;
   setImageIndex: (e: number) => void;
   totalAmount: number;
-  acceptedtokens: string[];
   approved: boolean;
   mainNFT: MainNFT | undefined;
   approveSpend: () => Promise<void>;
@@ -82,15 +126,7 @@ export type FulfillmentProps = {
   encryptedInformation: string[] | undefined;
   chain: any;
   handleCheckoutCrypto: () => Promise<void>;
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  fulfillmentDetails: Details;
 };
 
 export type CollectorsProps = {
@@ -113,7 +149,6 @@ export interface FollowArgs {
 }
 
 export type PurchaseProps = {
-  acceptedtokens: string[];
   approved: boolean;
   currency: string;
   setCurrency: (e: string) => void;
@@ -122,12 +157,7 @@ export type PurchaseProps = {
   approveSpend: () => Promise<void>;
   buyNFT: () => void;
   purchaseLoading: boolean;
-  router?: NextRouter;
-  push?: (
-    url: Url,
-    as?: Url | undefined,
-    options?: any | undefined
-  ) => Promise<boolean>;
+  router: NextRouter;
 };
 
 export interface History {
@@ -213,28 +243,66 @@ export type PurchaseCoinOpProps = {
   encryptedInformation: string[] | undefined;
   chain: any;
   handleCheckoutCrypto: () => Promise<void>;
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  fulfillmentDetails: Details;
   hideImage?: boolean;
 };
 
 export type ShippingInfoProps = {
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  fulfillmentDetails: Details;
   dispatch: Dispatch<AnyAction>;
   hideImage?: boolean;
 };
+
+export type SwitchProps = {
+  historyReducer: History[];
+  historyLoading: boolean;
+  buyerHistoryReducer: History[];
+  historySwitch: boolean;
+  setHistorySwitch: (e: boolean) => void;
+  moreHistoryLoading: boolean;
+  getMoreUserHistory: () => Promise<void>;
+  getMoreBuyerHistory: () => Promise<void>;
+  hasMoreHistory: {
+    old: boolean;
+    new: boolean;
+  };
+  hasMoreHistorySpecific: {
+    old: boolean;
+    new: boolean;
+  };
+  dispatch: Dispatch<AnyAction>;
+  router: NextRouter;
+  address: `0x${string}` | undefined;
+  openConnectModal: (() => void) | undefined;
+  chain: any;
+  openChainModal: (() => void) | undefined;
+  baseColor: number;
+  selectSize: number;
+  setBaseColor: (e: number) => void;
+  setSelectSize: (e: number) => void;
+  currency: string;
+  setCurrency: (e: string) => void;
+  imageIndex: number;
+  setImageIndex: (e: number) => void;
+  totalAmount: number;
+  approved: boolean;
+  mainNFT: MainNFT | undefined;
+  approveSpend: () => Promise<void>;
+  buyNFT: () => void;
+  purchaseLoading: boolean;
+  viewScreenNFT: boolean;
+  setViewScreenNFT: (e: boolean) => void;
+  oracleValue: number;
+  cryptoCheckoutLoading: boolean;
+  encryptedInformation: string[] | undefined;
+  handleCheckoutCrypto: () => Promise<void>;
+  fulfillmentDetails: Details;
+  profile: Profile | undefined;
+  isCreator: boolean;
+  action: string;
+  collections: Collection[];
+};
+
+export type OptionsProps = {
+  router: NextRouter
+}

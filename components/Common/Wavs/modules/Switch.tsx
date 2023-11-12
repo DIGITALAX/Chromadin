@@ -27,7 +27,6 @@ const Switch: FunctionComponent<SwitchProps> = ({
   handleCommentDescription,
   textElement,
   commentDescription,
-  profileId,
   videoLoading,
   handleSetGif,
   gifOpen,
@@ -132,6 +131,8 @@ const Switch: FunctionComponent<SwitchProps> = ({
   openProfileMirrorChoice,
   setOpenMirrorChoice,
   openMirrorChoice,
+  lensProfile,
+  history
 }): JSX.Element => {
   let action: string;
 
@@ -146,6 +147,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
     case "profile":
       return (
         <ProfileFeed
+          history={history}
           feedType={feedType}
           hasMoreProfile={hasMoreProfile}
           fetchMoreProfile={fetchMoreProfile}
@@ -183,9 +185,9 @@ const Switch: FunctionComponent<SwitchProps> = ({
           setGifOpen={setGifOpen}
           handleKeyDownDelete={handleKeyDownDelete}
           handleLensSignIn={handleLensSignIn}
-             openConnectModal={openConnectModal}
+          openConnectModal={openConnectModal}
           handleRemoveImage={handleRemoveImage}
-          profileId={profileId}
+          lensProfile={lensProfile}
           videoLoading={videoLoading}
           uploadImages={uploadImages}
           uploadVideo={uploadVideo}
@@ -287,9 +289,9 @@ const Switch: FunctionComponent<SwitchProps> = ({
           handleKeyDownDelete={handleKeyDownDelete}
           commentOpen={commentOpen}
           handleLensSignIn={handleLensSignIn}
-             openConnectModal={openConnectModal}
+          openConnectModal={openConnectModal}
           handleRemoveImage={handleRemoveImage}
-          profileId={profileId}
+          lensProfile={lensProfile}
           videoLoading={videoLoading}
           uploadImages={uploadImages}
           uploadVideo={uploadVideo}

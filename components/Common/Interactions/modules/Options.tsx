@@ -1,10 +1,9 @@
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { FunctionComponent } from "react";
+import { OptionsProps } from "../types/interactions.types";
 
-const Options: FunctionComponent = (): JSX.Element => {
-  const router = useRouter();
+const Options: FunctionComponent<OptionsProps> = ({ router }): JSX.Element => {
   return (
     <div className="relative w-full h-28 flex flex-row items-center gap-1 justify-center bg-black xl:py-0 py-4">
       {Array.from([

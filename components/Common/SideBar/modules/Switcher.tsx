@@ -1,6 +1,5 @@
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
-import { useRouter } from "next/router";
 import { FunctionComponent } from "react";
 import MarqueeText from "react-fast-marquee";
 import { SwitcherProps } from "../types/sidebar.types";
@@ -9,8 +8,8 @@ import { setCollectOpen } from "@/redux/reducers/collectOpenSlice";
 const Switcher: FunctionComponent<SwitcherProps> = ({
   options,
   dispatch,
+  router
 }): JSX.Element => {
-  const router = useRouter();
   return (
     <div className="relative w-full h-fit flex-col flex-wrap">
       <video

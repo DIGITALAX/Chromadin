@@ -18,7 +18,7 @@ import { setModal } from "@/redux/reducers/modalSlice";
 import { Profile } from "@/components/Home/types/generated";
 
 const UserComment: FunctionComponent<UserCommentProps> = ({
-  profileId,
+  lensProfile,
   commentVideo,
   handleLensSignIn,
   openConnectModal,
@@ -359,6 +359,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
               gifOpen={gifOpen}
               collectOpen={collectOpen}
               dispatch={dispatch}
+              postImages={postImagesDispatched}
             />
           </div>
           <div className="relative w-full h-fit justify-end flex flex-row gap-2 items-center">
@@ -368,9 +369,9 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                   commentLoading && "animate-spin"
                 }`}
                 onClick={
-                  !connected && !profileId
+                  !connected && !lensProfile?.id
                     ? openConnectModal
-                    : connected && !profileId
+                    : connected && !lensProfile?.id
                     ? () => handleLensSignIn()
                     : commentLoading
                     ? () => {}
@@ -385,9 +386,9 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                     : () => commentVideo()
                 }
               >
-                {!connected && !profileId ? (
+                {!connected && !lensProfile?.id ? (
                   "CONNECT"
-                ) : connected && !profileId ? (
+                ) : connected && !lensProfile?.id ? (
                   "SIGN IN"
                 ) : commentLoading ? (
                   <AiOutlineLoading size={10} color="white" />

@@ -1,11 +1,9 @@
 import * as LitJsSdk from "@lit-protocol/lit-node-client";
-import { connectLit } from "./connectLit";
-import { AnyAction, Dispatch } from "redux";
 import { PreRoll } from "@/components/Common/NFT/types/nft.types";
+import { Details } from "@/redux/reducers/fulfillmentDetailsSlice";
 
 export const encryptItems = async (
-  litClient: LitJsSdk.LitNodeClient | undefined,
-  dispatch: Dispatch<AnyAction>,
+  client: LitJsSdk.LitNodeClient | undefined,
   information: {
     sizes: string[];
     colors: string[];
@@ -13,23 +11,11 @@ export const encryptItems = async (
     collectionAmounts: number[];
   },
   fulfillerGroups: { [key: string]: PreRoll[] },
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  },
+  fulfillmentDetails: Details,
   address: `0x${string}`,
   authSigFiat?: any
 ): Promise<{ client: any; fulfillerDetails: string[] } | undefined> => {
   try {
-    let client = litClient;
-    if (!client) {
-      client = await connectLit(dispatch);
-    }
     let authSig;
     if (!authSigFiat) {
       authSig = await LitJsSdk.checkAndSignAuthMessage({

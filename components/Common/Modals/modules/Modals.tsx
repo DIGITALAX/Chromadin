@@ -16,7 +16,7 @@ import ImageViewerModal from "./ImageViewer";
 import Who from "./Who";
 import useWho from "../../Wavs/hooks/useWho";
 import useReactions from "../../Wavs/hooks/useReactions";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import FullScreenVideo from "./FullScreenVideo";
 import { useRef } from "react";
 import FollowSuper from "./FollowSuper";
@@ -30,9 +30,22 @@ import IPFS from "./IPFS";
 import useChannels from "../../SideBar/hooks/useChannels";
 import useAllPosts from "../../Wavs/hooks/useAllPosts";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { createPublicClient, http } from "viem";
+import { polygon } from "viem/chains";
 
-const Modals = () => {
+const Modals = ({ router }: { router: NextRouter }) => {
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
+  const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const dispatch = useDispatch();
   const videoRef = useRef<HTMLDivElement>(null);
+  const quickProfiles = useSelector(
+    (state: RootState) => state.app.quickProfilesReducer.value
+  );
+  const rain = useSelector((state: RootState) => state.app.rainReducer.value);
   const indexingModal = useSelector(
     (state: RootState) => state.app.indexModalReducer
   );
@@ -54,13 +67,58 @@ const Modals = () => {
   const errorModal = useSelector((state: RootState) => state.app.errorReducer);
   const ipfsModal = useSelector((state: RootState) => state.app.IPFSReducer);
   const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
+    (state: RootState) => state.app.lensProfileReducer.profile
   );
-  const postImagesDispatched = useSelector(
+  const dispatchProfile = useSelector(
+    (state: RootState) => state.app.profileReducer.profile
+  );
+  const feedId = useSelector(
+    (state: RootState) => state.app.feedReactIdReducer
+  );
+  const profileFeedCount = useSelector(
+    (state: RootState) => state.app.profileFeedCountReducer
+  );
+  const reactionFeedCount = useSelector(
+    (state: RootState) => state.app.reactionFeedCountReducer
+  );
+  const postSent = useSelector(
+    (state: RootState) => state.app.postSentReducer.value
+  );
+  const feedType = useSelector(
+    (state: RootState) => state.app.feedTypeReducer.value
+  );
+  const commentFeed = useSelector(
+    (state: RootState) => state.app.commentFeedCountReducer
+  );
+  const comments = useSelector(
+    (state: RootState) => state.app.commentReducer.value
+  );
+  const paginated = useSelector(
+    (state: RootState) => state.app.paginatedReducer.value
+  );
+  const individual = useSelector(
+    (state: RootState) => state.app.individualFeedCountReducer
+  );
+  const postImages = useSelector(
+    (state: RootState) => state.app.postImageReducer.value
+  );
+  const publicationImages = useSelector(
     (state: RootState) => state.app.publicationImageReducer.value
+  );
+  const decryptFeed = useSelector(
+    (state: RootState) => state.app.decryptFeedReducer.value
+  );
+  const filterDecrypt = useSelector(
+    (state: RootState) => state.app.filterDecryptReducer.value
+  );
+  const decryptFeedCount = useSelector(
+    (state: RootState) => state.app.decryptFeedCountReducer
   );
   const collectModuleValues = useSelector(
     (state: RootState) => state.app.postCollectReducer
+  );
+  const collectModuleType = useSelector(
+    (state: RootState) => state?.app?.collectValueTypeReducer?.type
   );
   const followersModal = useSelector(
     (state: RootState) => state.app.followerOnlyReducer
@@ -72,11 +130,32 @@ const Modals = () => {
   const claimModal = useSelector(
     (state: RootState) => state.app.noHandleReducer
   );
+  const decryptPaginated = useSelector(
+    (state: RootState) => state.app.decryptPaginatedReducer.value
+  );
+  const feedDispatch = useSelector(
+    (state: RootState) => state.app.feedReducer.value
+  );
+  const commentId = useSelector(
+    (state: RootState) => state.app.secondaryCommentReducer?.value
+  );
+  const seek = useSelector(
+    (state: RootState) => state.app.seekSecondReducer.seek
+  );
+  const decryptProfileFeedCount = useSelector(
+    (state: RootState) => state.app.decryptProfileFeedCountReducer
+  );
+  const reactId = useSelector(
+    (state: RootState) => state.app.reactIdReducer.value
+  );
   const imageViewer = useSelector(
     (state: RootState) => state.app.imageViewerReducer
   );
   const imageFeedViewer = useSelector(
     (state: RootState) => state.app.imageFeedViewerReducer
+  );
+  const approvalArgs = useSelector(
+    (state: RootState) => state.app.approvalArgsReducer.args
   );
   const reaction = useSelector(
     (state: RootState) => state.app.reactionStateReducer
@@ -84,8 +163,13 @@ const Modals = () => {
   const hasMore = useSelector(
     (state: RootState) => state.app.hasMoreVideosReducer.value
   );
+  const reactions = useSelector(
+    (state: RootState) => state.app.videoCountReducer
+  );
+  const profileDispatch = useSelector(
+    (state: RootState) => state.app.profileFeedReducer.value
+  );
   const makePost = useSelector((state: RootState) => state.app.makePostReducer);
-  const rain = useSelector((state: RootState) => state.app.rainReducer.value);
   const dispatchVideos = useSelector(
     (state: RootState) => state.app.channelsReducer.value
   );
@@ -98,9 +182,6 @@ const Modals = () => {
   const imageLoading = useSelector(
     (state: RootState) => state.app.imageLoadingReducer.value
   );
-  const quickProfiles = useSelector(
-    (state: RootState) => state.app.quickProfilesReducer.value
-  );
   const viewer = useSelector((state: RootState) => state.app.viewReducer.value);
   const {
     profile,
@@ -109,7 +190,22 @@ const Modals = () => {
     approved,
     approveCurrency: approveFollowCurrency,
     unfollowProfile,
-  } = useFollowers();
+  } = useFollowers(
+    dispatch,
+    address,
+    publicClient,
+    approvalArgs,
+    lensProfile?.id,
+    followersModal
+  );
+  const { handleLensSignIn, signInLoading } = useConnect(
+    router,
+    address,
+    isConnected,
+    dispatch,
+    collectOpen,
+    publicClient
+  );
   const {
     collectInfoLoading: controlsCollectInfoLoading,
     approvalLoading,
@@ -118,19 +214,50 @@ const Modals = () => {
     collectVideo,
     fullVideoRef,
     wrapperRef,
-  } = useControls();
+  } = useControls(
+    dispatch,
+    address,
+    publicClient,
+    purchaseModal,
+    seek,
+    approvalArgs,
+    mainVideo,
+    videoSync,
+    lensProfile,
+    fullScreenVideo,
+    commentId,
+    indexingModal,
+    router
+  );
+  const {
+    videoLoading,
+    uploadImage,
+    uploadVideo,
+    handleRemoveImage,
+    mappedFeaturedFiles,
+    clientRendered,
+  } = useImageUpload(
+    dispatch,
+    viewer,
+    makePost?.value,
+    postImages,
+    publicationImages
+  );
   const {
     collectInfoLoading: purchaseInfoLoading,
     approvalLoading: postApprovalLoading,
     collectFeedLoading,
     approveCurrency: postApproveCurrency,
     collectPost,
-  } = useReactions();
-  const router = useRouter();
-  const { address } = useAccount();
-  const { openConnectModal } = useConnectModal();
-  const { handleLensSignIn, signInLoading } = useConnect();
-  const dispatch = useDispatch();
+  } = useReactions(
+    publicClient,
+    dispatch,
+    address,
+    lensProfile,
+    feedDispatch,
+    approvalArgs,
+    purchaseModal
+  );
   const {
     reacters,
     mirrorers,
@@ -144,8 +271,14 @@ const Modals = () => {
     hasMoreReact,
     hasMoreCollect,
     hasMoreMirror,
-  } = useWho();
-  const { followSuper, superCreatorLoading, canvasRef } = useSuperCreator();
+  } = useWho(reaction);
+  const { followSuper, superCreatorLoading, canvasRef } = useSuperCreator(
+    publicClient,
+    dispatch,
+    address,
+    rain,
+    quickProfiles
+  );
   const {
     postDescription,
     postLoading,
@@ -165,7 +298,15 @@ const Modals = () => {
     handlePost,
     preElement,
     handleImagePaste,
-  } = useMakePost();
+  } = useMakePost(
+    address,
+    publicClient,
+    dispatch,
+    collectOpen,
+    collectModuleType,
+    publicationImages,
+    uploadImage
+  );
   const {
     collectNotif,
     referral,
@@ -200,17 +341,42 @@ const Modals = () => {
     setEnabledCurrency,
     value,
     setValue,
-  } = useCollectOptions();
-  const {
-    videoLoading,
-    uploadImage,
-    uploadVideo,
-    handleRemoveImage,
-    mappedFeaturedFiles,
-    clientRendered,
-  } = useImageUpload();
-  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels();
-  const { decryptCollections } = useAllPosts();
+  } = useCollectOptions(dispatch, lensProfile, collectOpen);
+  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
+    dispatch,
+    mainVideo,
+    lensProfile,
+    dispatchVideos,
+    indexingModal?.message,
+    reactId,
+    videoSync,
+    reactions
+  );
+  const { decryptCollections } = useAllPosts(
+    address,
+    dispatch,
+    router,
+    lensProfile,
+    dispatchProfile,
+    feedDispatch,
+    profileDispatch,
+    decryptFeed,
+    filterDecrypt,
+    decryptFeedCount,
+    indexingModal,
+    decrypt,
+    feedId,
+    reactionFeedCount,
+    postSent,
+    feedType,
+    commentFeed,
+    comments,
+    paginated,
+    decryptPaginated,
+    individual,
+    decryptProfileFeedCount,
+    profileFeedCount
+  );
 
   return (
     <>
@@ -275,6 +441,7 @@ const Modals = () => {
               ? purchaseInfoLoading
               : controlsCollectInfoLoading
           }
+          openConnectModal={openConnectModal}
           approvalLoading={
             router.asPath?.includes("#chat")
               ? postApprovalLoading
@@ -355,7 +522,7 @@ const Modals = () => {
           handleKeyDownDelete={handleKeyDownDelete}
           handleRemoveImage={handleRemoveImage}
           address={address}
-          profileId={lensProfile}
+          lensProfile={lensProfile}
           videoLoading={videoLoading}
           uploadImages={uploadImage}
           uploadVideo={uploadVideo}
@@ -396,7 +563,7 @@ const Modals = () => {
           collectible={collectible}
           collectibleDropDown={collectibleDropDown}
           currencyDropDown={currencyDropDown}
-          postImagesDispatched={postImagesDispatched}
+          postImagesDispatched={publicationImages}
           preElement={preElement}
           handleImagePaste={handleImagePaste}
         />
@@ -424,7 +591,7 @@ const Modals = () => {
           handleLensSignIn={handleLensSignIn}
           openConnectModal={openConnectModal}
           address={address}
-          profileId={lensProfile}
+          lensProfile={lensProfile}
         />
       )}
       {imageFeedViewer?.open && (

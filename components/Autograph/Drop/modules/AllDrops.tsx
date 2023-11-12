@@ -10,7 +10,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
   autoDrop,
   autoCollections,
   autoProfile,
-  push,
+  router,
 }): JSX.Element => {
   const pfp = createProfilePicture(autoProfile?.metadata?.picture);
   return (
@@ -51,7 +51,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
               key={index}
               className="flex flex-col relative w-fit h-fit pb-2 cursor-pointer hover:opacity-70"
               onClick={() =>
-                push(
+                router?.push(
                   `/autograph/${
                     autoProfile?.handle?.suggestedFormatted?.localName?.split(
                       "@"

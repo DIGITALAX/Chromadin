@@ -20,6 +20,7 @@ import {
   ClipboardEvent,
   FormEvent,
   KeyboardEvent,
+  MouseEvent,
   Ref,
   RefObject,
 } from "react";
@@ -193,10 +194,12 @@ export type FeedProps = {
   profile: Profile | undefined;
   router: NextRouter;
   dispatch: Dispatch<AnyAction>;
+  lensProfile: Profile | undefined;
   openPostMirrorChoice: boolean[];
   setOpenPostMirrorChoice: (e: boolean[]) => void;
   setOpenCommentMirrorChoice: (e: boolean[]) => void;
   openCommentMirrorChoice: boolean[];
+  history: string;
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
   setOpenProfileMirrorChoice: (e: boolean[]) => void;
@@ -314,9 +317,9 @@ export type FeedProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-  profileId: string;
+
   handleLensSignIn: () => Promise<void>;
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
   feedType: string;
   scrollRef: Ref<InfiniteScroll>;
   setScrollPos: (e: MouseEvent) => void;
@@ -425,7 +428,9 @@ export type IndividualProps = {
   dispatch: Dispatch<AnyAction>;
   mainPost: Post | Mirror | Quote | Comment;
   feedType: string;
+  history: string;
   profileType: string;
+  lensProfile: Profile | undefined;
   clientRendered: boolean;
   openPostMirrorChoice: boolean[];
   setOpenPostMirrorChoice: (e: boolean[]) => void;
@@ -533,9 +538,8 @@ export type IndividualProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-  profileId: string;
   handleLensSignIn: () => Promise<void>;
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
   individualAmounts: IndividualFeedCountState;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
 };
@@ -545,6 +549,7 @@ export type CommentsProps = {
   clientRendered: boolean;
   commentAmounts: CommentFeedCountState;
   commentors: Comment[];
+  lensProfile: Profile | undefined;
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
   mirrorLoading: boolean[];
@@ -578,10 +583,9 @@ export type CommentsProps = {
   setReactLoader: (e: boolean[]) => void;
   setMirrorLoader: (e: boolean[]) => void;
   setCollectLoader: (e: boolean[]) => void;
-  profileId: string;
   commentPost: (id: string) => Promise<void>;
   handleLensSignIn: () => Promise<void>;
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
   commentDescription: string;
   commentLoading: boolean;
   handleCommentDescription: (e: FormEvent) => Promise<void>;
@@ -713,10 +717,10 @@ export type ImageUploadsProps = {
 export type MakeCommentProps = {
   address: `0x${string}` | undefined;
   canComment: boolean;
-  profileId: string;
   commentPost: (id: string) => Promise<void>;
   handleLensSignIn: () => Promise<void>;
   commentDescription: string;
+  lensProfile: Profile | undefined;
   commentLoading: boolean;
   handleCommentDescription: (e: FormEvent) => Promise<void>;
   textElement: RefObject<HTMLTextAreaElement>;
@@ -735,7 +739,7 @@ export type MakeCommentProps = {
   uploadVideo: (e: FormEvent) => Promise<void>;
   handleRemoveImage: (e: UploadedMedia) => void;
   postImagesDispatched?: UploadedMedia[];
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
   mappedFeaturedFiles: UploadedMedia[];
   handleGifSubmit: () => Promise<void>;
   handleGif: (e: FormEvent) => void;
@@ -793,12 +797,14 @@ export type OptionsCommentProps = {
   gifOpen: boolean;
   collectOpen: boolean;
   dispatch: Dispatch<AnyAction>;
+  postImages: UploadedMedia[] | undefined;
 };
 
 export type ProfileFeedProps = {
   router: NextRouter;
   dispatch: Dispatch<AnyAction>;
   followerOnly: boolean[];
+  history: string;
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
   profileDispatch: (Post | Mirror | Quote)[];
@@ -859,6 +865,7 @@ export type ProfileFeedProps = {
   uploadVideo: (e: FormEvent) => Promise<void>;
   handleRemoveImage: (e: UploadedMedia) => void;
   postImagesDispatched?: UploadedMedia[];
+  lensProfile: Profile | undefined;
   mappedFeaturedFiles: UploadedMedia[];
   collectOpen: boolean;
   enabledCurrencies: Erc20[];
@@ -894,9 +901,9 @@ export type ProfileFeedProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-  profileId: string;
+
   handleLensSignIn: () => Promise<void>;
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
   feedType: string;
   profileRef: Ref<InfiniteScroll> | undefined;
   setScrollPos?: (e: MouseEvent) => void;
@@ -918,7 +925,9 @@ export type ProfileFeedProps = {
 export type SwitchProps = {
   router: NextRouter;
   filterDecrypt: boolean;
+  history: string;
   clientRendered: boolean;
+  lensProfile: Profile | undefined;
   setOpenProfileMirrorChoice: (e: boolean[]) => void;
   openProfileMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
@@ -1014,9 +1023,9 @@ export type SwitchProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-  profileId: string;
+
   handleLensSignIn: () => Promise<void>;
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
   feedType: string;
   scrollRef: Ref<InfiniteScroll>;
   profileRef: Ref<InfiniteScroll>;
@@ -1123,6 +1132,7 @@ export type AllPostsProps = {
   setGifOpen: (e: boolean) => void;
   videoLoading: boolean;
   imageLoading: boolean;
+  lensProfile: Profile | undefined;
   uploadImages: (e: FormEvent) => Promise<void>;
   uploadVideo: (e: FormEvent) => Promise<void>;
   handleRemoveImage: (e: UploadedMedia) => void;
@@ -1162,9 +1172,9 @@ export type AllPostsProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-  profileId: string;
+
   handleLensSignIn: () => Promise<void>;
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
   feedType: string;
   scrollRef: Ref<InfiniteScroll>;
   setScrollPos: (e: MouseEvent) => void;
@@ -1223,13 +1233,14 @@ export type SearchProps = {
 
 export type SuperCreatorProps = {
   dispatch: Dispatch<AnyAction>;
-  openConnectModal:( () => void) | undefined;  profileId: string;
+  openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
+  lensProfile: Profile | undefined;
 };
 
 export type MakePostProps = {
   dispatch: Dispatch<AnyAction>;
-  profileId: string;
+  lensProfile: Profile | undefined;
   address: `0x${string}` | undefined;
 };
 

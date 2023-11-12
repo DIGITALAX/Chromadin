@@ -4,19 +4,50 @@ import useAutoDrop from "@/components/Autograph/Drop/hooks/useAutoDrop";
 import AllDrops from "@/components/Autograph/Drop/modules/AllDrops";
 import MoreDrops from "@/components/Autograph/Drop/modules/MoreDrops";
 import RouterChange from "@/components/Common/Loading/RouterChange";
+import useChannels from "@/components/Common/SideBar/hooks/useChannels";
 import useConnect from "@/components/Common/SideBar/hooks/useConnect";
+import useControls from "@/components/Common/Video/hooks/useControls";
 import useViewer from "@/components/Home/hooks/useViewer";
 import { RootState } from "@/redux/store";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { NextPage } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { createPublicClient, http } from "viem";
+import { polygon } from "viem/chains";
+import { useAccount } from "wagmi";
 
-const Drop: NextPage = (): JSX.Element => {
+const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
+  const dispatch = useDispatch();
+  const { address, isConnected } = useAccount();
+  const { openConnectModal, connectModalOpen } = useConnectModal();
   const allDrops = useSelector(
     (state: RootState) => state.app.dropsReducer.value
+  );
+  const commentId = useSelector(
+    (state: RootState) => state.app.secondaryCommentReducer.value
+  );
+  const fullScreenVideo = useSelector(
+    (state: RootState) => state.app.fullScreenVideoReducer
+  );
+  const videoSync = useSelector(
+    (state: RootState) => state.app.videoSyncReducer
+  );
+  const reactions = useSelector(
+    (state: RootState) => state.app.videoCountReducer
+  );
+  const index = useSelector((state: RootState) => state.app.indexModalReducer);
+  const reactId = useSelector(
+    (state: RootState) => state.app.reactIdReducer.value
+  );
+  const dispatchVideos = useSelector(
+    (state: RootState) => state.app.channelsReducer.value
   );
   const autoDispatch = useSelector(
     (state: RootState) => state.app.autoDropReducer
@@ -24,19 +55,84 @@ const Drop: NextPage = (): JSX.Element => {
   const connected = useSelector(
     (state: RootState) => state.app.connectedReducer?.value
   );
-  const profile = useSelector(
+  const hasMore = useSelector(
+    (state: RootState) => state.app.hasMoreVideosReducer.value
+  );
+  const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
-  const {
-    query: { autograph, drop },
-    push,
-  } = useRouter();
+  const approvalArgs = useSelector(
+    (state: RootState) => state.app.approvalArgsReducer.args
+  );
+  const seek = useSelector(
+    (state: RootState) => state.app.seekSecondReducer.seek
+  );
+  const purchase = useSelector((state: RootState) => state.app.purchaseReducer);
+  const quickProfiles = useSelector(
+    (state: RootState) => state.app.quickProfilesReducer.value
+  );
+  const mainVideo = useSelector(
+    (state: RootState) => state.app.mainVideoReducer
+  );
+  const { autograph, drop } = router.query;
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
-    useViewer();
-  const { handleLensSignIn } = useConnect();
-  const { openConnectModal } = useConnectModal();
+    useViewer(router, dispatch, quickProfiles, allDrops);
+  const { handleLensSignIn } = useConnect(
+    router,
+    address,
+    isConnected,
+    dispatch,
+    connectModalOpen,
+    publicClient
+  );
   const { isLargeScreen } = useBar();
-  const { dropLoading, getDrop, otherDrops } = useAutoDrop();
+  const { dropLoading, getDrop, otherDrops } = useAutoDrop(
+    dispatch,
+    lensProfile,
+    allDrops
+  );
+  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
+    dispatch,
+    mainVideo,
+    lensProfile,
+    dispatchVideos,
+    index.message,
+    reactId,
+    videoSync,
+    reactions
+  );
+  const {
+    streamRef,
+    formatTime,
+    volume,
+    handleVolumeChange,
+    volumeOpen,
+    setVolumeOpen,
+    handleHeart,
+    mirrorVideo,
+    collectVideo,
+    likeVideo,
+    mirrorLoading,
+    collectLoading,
+    likeLoading,
+    wrapperRef,
+    progressRef,
+    handleSeek,
+  } = useControls(
+    dispatch,
+    address,
+    publicClient,
+    purchase,
+    seek,
+    approvalArgs,
+    mainVideo,
+    videoSync,
+    lensProfile,
+    fullScreenVideo,
+    commentId,
+    index,
+    router
+  );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -193,16 +289,41 @@ const Drop: NextPage = (): JSX.Element => {
           />
         </Head>
         <Bar
-          push={push}
+          router={router}
           openConnectModal={openConnectModal}
           connected={connected}
           handleLensSignIn={handleLensSignIn}
-          profile={profile}
+          lensProfile={lensProfile}
           handleSearch={handleSearch}
           searchOpen={searchOpen}
           searchResults={searchResults}
           handleSearchChoose={handleSearchChoose}
           isLargeScreen={isLargeScreen}
+          hasMore={hasMore}
+          reactions={reactions}
+          streamRef={streamRef}
+          formatTime={formatTime}
+          volume={volume}
+          handleVolumeChange={handleVolumeChange}
+          volumeOpen={volumeOpen}
+          setVolumeOpen={setVolumeOpen}
+          handleHeart={handleHeart}
+          mirrorVideo={mirrorVideo}
+          collectVideo={collectVideo}
+          likeVideo={likeVideo}
+          mirrorLoading={mirrorLoading}
+          collectLoading={collectLoading}
+          likeLoading={likeLoading}
+          mainVideo={mainVideo}
+          wrapperRef={wrapperRef}
+          progressRef={progressRef}
+          handleSeek={handleSeek}
+          videoSync={videoSync}
+          fetchMoreVideos={fetchMoreVideos}
+          videosLoading={videosLoading}
+          setVideosLoading={setVideosLoading}
+          dispatch={dispatch}
+          dispatchVideos={dispatchVideos}
         />
         {autoDispatch && (
           <div className="relative flex flex-col w-full h-fit gap-10 px-8 sm:px-20 py-10">
@@ -210,13 +331,13 @@ const Drop: NextPage = (): JSX.Element => {
               autoDrop={autoDispatch.drop}
               autoCollections={autoDispatch.collection}
               autoProfile={autoDispatch.profile}
-              push={push}
+              router={router}
             />
             {otherDrops?.length > 0 && (
               <MoreDrops
                 otherDrops={otherDrops}
                 autoProfile={autoDispatch.profile}
-                push={push}
+                router={router}
               />
             )}
           </div>

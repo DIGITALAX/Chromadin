@@ -1,12 +1,8 @@
 import Image from "next/legacy/image";
 import { FunctionComponent, useEffect } from "react";
 import moment from "moment";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { AiOutlineLoading } from "react-icons/ai";
 import { INFURA_GATEWAY } from "@/lib/constants";
-import { useAccount } from "wagmi";
 import { CollectInfoProps } from "../types/modals.types";
 
 const CollectInfo: FunctionComponent<CollectInfoProps> = ({
@@ -24,12 +20,10 @@ const CollectInfo: FunctionComponent<CollectInfoProps> = ({
   approvalLoading,
   handleLensSignIn,
   commentId,
+  lensProfile,
+  address,
+  openConnectModal,
 }): JSX.Element => {
-  const lensProfile: string = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const { address } = useAccount();
-  const { openConnectModal } = useConnectModal();
   useEffect(() => {
     //collect refresh
   }, [approvalLoading]);

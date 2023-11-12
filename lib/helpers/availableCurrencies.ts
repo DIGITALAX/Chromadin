@@ -1,6 +1,5 @@
-import { Erc20 } from "@/components/Home/types/generated";
+import { Erc20, LimitType } from "@/components/Home/types/generated";
 import getEnabledCurrencies from "@/graphql/lens/queries/enabledCurrencies";
-import { LimitType } from "@lens-protocol/client";
 
 const availableCurrencies = async (
   setEnabledCurrencies: (e: Erc20[]) => void,

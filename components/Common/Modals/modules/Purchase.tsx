@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import { ImCross } from "react-icons/im";
-import { useDispatch } from "react-redux";
 import { setPurchase } from "@/redux/reducers/purchaseSlice";
 import { AiOutlineLoading } from "react-icons/ai";
 import moment from "moment";
@@ -18,7 +17,8 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   approveCurrency,
   handleLensSignIn,
   commentId,
-  dispatch
+  dispatch,
+  openConnectModal,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -49,6 +49,9 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
                 collectLoading={collectLoading}
                 handleLensSignIn={handleLensSignIn}
                 commentId={commentId}
+                lensProfile={lensProfile}
+                address={address}
+                openConnectModal={openConnectModal}
               />
             ) : (
               <CollectInfo
@@ -94,6 +97,9 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
                 collectLoading={collectLoading}
                 handleLensSignIn={handleLensSignIn}
                 commentId={commentId}
+                lensProfile={lensProfile}
+                address={address}
+                openConnectModal={openConnectModal}
               />
             )
           ) : (

@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import RouterChange from "@/components/Common/Loading/RouterChange";
 import Frequency from "@/components/Common/Frequency/modules/Frequency";
 import Marquee from "@/components/Common/Marquee/Marquee";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(
   [polygon],
@@ -37,6 +38,7 @@ const config = createConfig({
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
   const [routerChangeLoading, setRouterChangeLoading] =
     useState<boolean>(false);
   useEffect(() => {
@@ -54,6 +56,9 @@ export default function App({ Component, pageProps }: AppProps) {
     ██║░░██║██║██║╚████║
     ██████╔╝██║██║░╚███║
     ╚═════╝░╚═╝╚═╝░░╚══╝`);
+    async () => {
+      await (client as LitNodeClient).connect();
+    };
   }, []);
 
   useEffect(() => {
@@ -85,10 +90,10 @@ export default function App({ Component, pageProps }: AppProps) {
       <WagmiConfig config={config}>
         <RainbowKitProvider chains={chains}>
           <div className="relative w-full h-full flex flex-col overflow-x-hidden">
-            <Component {...pageProps} />
-            <Frequency />
+            <Component {...pageProps} router={router} client={client} />
+            <Frequency router={router} />
             <Marquee />
-            <Modals />
+            <Modals router={router} />
           </div>
         </RainbowKitProvider>
       </WagmiConfig>

@@ -8,7 +8,6 @@ import { Collection } from "@/components/Home/types/home.types";
 import WaveformComponent from "@/components/Home/modules/Waveform";
 
 const Purchase: FunctionComponent<PurchaseProps> = ({
-  acceptedtokens,
   approved,
   currency,
   setCurrency,
@@ -18,7 +17,6 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   buyNFT,
   purchaseLoading,
   router,
-  push,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
@@ -32,22 +30,13 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
             className="relative w-60 h-60 lg:w-2/3 lg:h-52 rounded-br-lg rounded-tl-lg border border-white cursor-pointer"
             id="staticLoad"
             onClick={() =>
-              router
-                ? router.push(
-                    `/autograph/${
-                      (mainNFT as MainNFT)?.creator?.name?.split(".lens")[0]
-                    }/collection/${(mainNFT as MainNFT)?.name
-                      ?.replaceAll(" ", "_")
-                      .toLowerCase()}`
-                  )
-                : push &&
-                  push(
-                    `/autograph/${
-                      (mainNFT as MainNFT)?.creator?.name?.split(".lens")[0]
-                    }/collection/${(mainNFT as MainNFT)?.name
-                      ?.replaceAll(" ", "_")
-                      .toLowerCase()}`
-                  )
+              router.push(
+                `/autograph/${
+                  (mainNFT as MainNFT)?.creator?.name?.split("@")?.[1]
+                }/collection/${(mainNFT as MainNFT)?.name
+                  ?.replaceAll(" ", "_")
+                  .toLowerCase()}`
+              )
             }
           >
             {(mainNFT as MainNFT).media &&
@@ -100,7 +89,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
       >
         <div className="relative w-fit h-fit flex flex-row items-center justify-center gap-2">
           {ACCEPTED_TOKENS.filter((item) =>
-            acceptedtokens?.includes(item[1].toLowerCase())
+            mainNFT?.acceptedTokens?.includes(item[1].toLowerCase())
           ).map((item: string[], index: number) => {
             return (
               <div

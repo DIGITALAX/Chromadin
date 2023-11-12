@@ -1,4 +1,3 @@
-import useImageUpload from "@/components/Common/NFT/hooks/useImageUpload";
 import { Collection, Drop } from "@/components/Home/types/home.types";
 import { Profile, ProfileQuery } from "@/components/Home/types/generated";
 import {
@@ -15,20 +14,20 @@ import { getCoinOpCollection } from "@/lib/helpers/getCoinOp";
 import { setAutograph } from "@/redux/reducers/autographSlice";
 import { setImageLoadingRedux } from "@/redux/reducers/imageLoadingSlice";
 import { setMakePost } from "@/redux/reducers/makePostSlice";
-import { RootState } from "@/redux/store";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormEvent, useState } from "react";
 import { FetchResult } from "@apollo/client";
+import { AnyAction, Dispatch } from "redux";
 
-const useAutograph = () => {
-  const dispatch = useDispatch();
-  const { uploadImage } = useImageUpload();
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const allDrops = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
-  );
+const useAutograph = (
+  dispatch: Dispatch<AnyAction>,
+  uploadImage: (
+    e: File[] | FormEvent<Element>,
+    pasted?: boolean | undefined,
+    feed?: boolean | undefined
+  ) => Promise<void>,
+  profile: Profile | undefined,
+  allDrops: Drop[]
+) => {
   const [autographLoading, setAutographLoading] = useState<boolean>(false);
 
   const getAllCollections = async (autograph: string) => {
@@ -61,12 +60,7 @@ const useAutograph = () => {
             ?.updatedChromadinCollectionCollectionMinteds || []),
           ...(allColls?.data?.collectionMinteds || []),
         ]?.map(async (collection: Collection) => {
-          const json = await fetchIPFSJSON(
-            (collection.uri as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          );
+          const json = await fetchIPFSJSON(collection.uri as any);
 
           const type = await fetch(
             `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
@@ -157,7 +151,7 @@ const useAutograph = () => {
   ): Promise<Profile | undefined> => {
     try {
       let prof: FetchResult<ProfileQuery>;
-      if (lensProfile) {
+      if (profile?.id) {
         prof = await getOneProfileAuth({
           forHandle: "lens/" + (autograph as string),
         });

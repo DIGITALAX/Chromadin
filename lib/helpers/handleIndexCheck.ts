@@ -1,7 +1,7 @@
 import { AnyAction, Dispatch } from "redux";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import pollUntilIndexed from "@/graphql/lens/queries/checkIndexed";
-import { LensTransactionStatusRequest } from "@lens-protocol/client";
+import { LensTransactionStatusRequest } from "@/components/Home/types/generated";
 
 const handleIndexCheck = async (
   tx: LensTransactionStatusRequest,

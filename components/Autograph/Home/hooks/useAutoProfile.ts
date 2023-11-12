@@ -2,33 +2,29 @@ import {
   getPublications,
   getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
-import { RootState } from "@/redux/store";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
 import { setDecrypt } from "@/redux/reducers/decryptSlice";
 import {
   LimitType,
   Mirror,
   Post,
+  Profile,
   PublicationType,
   Quote,
   TextOnlyMetadataV3,
 } from "@/components/Home/types/generated";
 import { decryptPostIndividual } from "@/lib/helpers/decryptPost";
+import { AnyAction, Dispatch } from "redux";
+import { AutographState } from "@/redux/reducers/autographSlice";
+import { NextRouter } from "next/router";
 
-const useAutoProfile = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const { address } = useAccount();
-  const autoDispatch = useSelector(
-    (state: RootState) => state.app.autographReducer
-  );
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-
+const useAutoProfile = (
+  router: NextRouter,
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  autoDispatch: AutographState,
+  lensProfile: Profile | undefined
+) => {
   const [hasMoreProfile, setHasMoreProfile] = useState<boolean>(true);
   const [followerOnlyProfile, setFollowerOnlyProfile] = useState<boolean[]>(
     Array.from({ length: 10 }, () => false)

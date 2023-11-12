@@ -12,48 +12,42 @@ import {
 import checkApproved from "@/lib/helpers/checkApproved";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
-import { RootState } from "@/redux/store";
 import { omit } from "lodash";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
 import LensHubProxy from "./../../../../abis/LensHubProxy.json";
 import createFollowModule from "@/lib/helpers/createFollowModule";
 import { setLensProfile } from "@/redux/reducers/lensProfileSlice";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { setModal } from "@/redux/reducers/modalSlice";
-import { setFollowerOnly } from "@/redux/reducers/followerOnlySlice";
+import {
+  FollowerOnlyState,
+  setFollowerOnly,
+} from "@/redux/reducers/followerOnlySlice";
 import createUnfollowTypedData from "@/graphql/lens/mutations/unfollow";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import { FetchResult } from "@apollo/client";
 import followSig from "@/lib/helpers/followSig";
+import { AnyAction, Dispatch } from "redux";
+import { ApprovalArgs } from "@/components/Home/types/home.types";
 
-const useFollowers = () => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
-  const dispatch = useDispatch();
-  const { address } = useAccount();
+const useFollowers = (
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  publicClient: PublicClient,
+  approvalArgs: ApprovalArgs | undefined,
+  profileId: string | undefined,
+  followerId: FollowerOnlyState
+) => {
   const [profile, setProfile] = useState<Profile | undefined>();
   const [followLoading, setFollowLoading] = useState<boolean>(false);
-  const followerId = useSelector(
-    (state: RootState) => state.app.followerOnlyReducer
-  );
-  const approvalArgs = useSelector(
-    (state: RootState) => state.app.approvalArgsReducer.args
-  );
   const [approved, setApproved] = useState<boolean>(false);
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
 
   const getProfile = async (): Promise<void> => {
     try {
       let prof: FetchResult<ProfileQuery>;
-      if (profileId) {
+      if (profile?.id) {
         prof = await getOneProfileAuth({
           forProfileId: followerId?.followerId,
         });
@@ -78,7 +72,7 @@ const useFollowers = () => {
       (profile?.followModule as any)?.amount?.value,
       dispatch,
       address,
-      profileId
+      profileId!
     );
     const isApproved = parseInt(approvalData?.allowance?.value as string, 16);
     setApproved(
@@ -181,7 +175,7 @@ const useFollowers = () => {
       });
 
       const response = await createUnfollowTypedData({
-        unfollow: [profileId],
+        unfollow: [followerId?.id],
       });
 
       const typedData = response?.data?.createUnfollowTypedData.typedData;

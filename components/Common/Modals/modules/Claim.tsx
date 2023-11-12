@@ -13,7 +13,7 @@ const Claim: FunctionComponent<ClaimProps> = ({
   handleLensSignIn,
   signInLoading,
   address,
-  profileId,
+  lensProfile,
   openConnectModal,
 }): JSX.Element => {
   return (
@@ -61,7 +61,7 @@ const Claim: FunctionComponent<ClaimProps> = ({
               ) : (
                 <div
                   onClick={
-                    address && !profileId
+                    address && !lensProfile?.id
                       ? () => handleLensSignIn()
                       : openConnectModal
                   }
@@ -74,7 +74,7 @@ const Claim: FunctionComponent<ClaimProps> = ({
                   >
                     {signInLoading ? (
                       <AiOutlineLoading />
-                    ) : address && !profileId ? (
+                    ) : address && !lensProfile?.id ? (
                       "Sign In"
                     ) : (
                       "Connect"

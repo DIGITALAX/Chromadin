@@ -1,9 +1,6 @@
 import { setOptions } from "@/redux/reducers/optionsSlice";
 import { setView } from "@/redux/reducers/viewSlice";
-import { RootState } from "@/redux/store";
-import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Collection, Drop } from "../types/home.types";
 import {
   getCollectionsSearch,
@@ -13,17 +10,15 @@ import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 import { QuickProfilesInterface } from "@/components/Common/Wavs/types/wavs.types";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { INFURA_GATEWAY } from "@/lib/constants";
+import { NextRouter } from "next/router";
+import { AnyAction, Dispatch } from "redux";
 
-const useViewer = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const viewer = useSelector((state: RootState) => state.app.viewReducer.value);
-  const dropsDispatched = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
-  );
-  const quickProfiles = useSelector(
-    (state: RootState) => state.app.quickProfilesReducer.value
-  );
+const useViewer = (
+  router: NextRouter,
+  dispatch: Dispatch<AnyAction>,
+  quickProfiles: QuickProfilesInterface[],
+  dropsDispatched: Drop[]
+) => {
   const [dropDownPriceSort, setDropDownPriceSort] = useState<boolean>(false);
   const [dropDownDateSort, setDropDownDateSort] = useState<boolean>(false);
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
@@ -62,12 +57,7 @@ const useViewer = () => {
               obj.collectionId !== "104" && obj.collectionId !== "99"
           ) || []),
         ].map(async (collection: any) => {
-          const json = await fetchIPFSJSON(
-            (collection as any)?.uri
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          );
+          const json = await fetchIPFSJSON((collection as any)?.uri);
           const type = await fetch(
             `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
             { method: "HEAD" }
@@ -187,7 +177,6 @@ const useViewer = () => {
   };
 
   return {
-    viewer,
     dropDownPriceSort,
     setDropDownPriceSort,
     dropDownDateSort,

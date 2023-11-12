@@ -1,11 +1,12 @@
 import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { UseControlsResults } from "../types/controls.types";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import addReaction from "@/graphql/lens/mutations/react";
-import { useAccount } from "wagmi";
+import { PublicClient } from "wagmi";
 import useInteractions from "../../Interactions/hooks/useInteractions";
-import { setIndexModal } from "@/redux/reducers/indexModalSlice";
+import {
+  IndexModalState,
+  setIndexModal,
+} from "@/redux/reducers/indexModalSlice";
 import {
   getPublication,
   getPublicationAuth,
@@ -15,14 +16,15 @@ import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
 import ReactPlayer from "react-player";
 import { setReactId } from "@/redux/reducers/reactIdSlice";
-import { setVideoSync } from "@/redux/reducers/videoSyncSlice";
+import { VideoSyncState, setVideoSync } from "@/redux/reducers/videoSyncSlice";
 import { setSeek } from "@/redux/reducers/seekSecondSlice";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import {
   AddReactionMutation,
   ApprovalAllowance,
   Post,
+  Profile,
   PublicationQuery,
   PublicationReactionType,
   SimpleCollectOpenActionSettings,
@@ -31,18 +33,39 @@ import { FetchResult } from "@apollo/client";
 import mirrorSig from "@/lib/helpers/mirrorSig";
 import actSig from "@/lib/helpers/actSig";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
+import { AnyAction, Dispatch } from "redux";
+import { ApprovalArgs } from "@/components/Home/types/home.types";
+import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
+import { PurchaseState } from "@/redux/reducers/purchaseSlice";
+import { NextRouter } from "next/router";
+import { FullScreenVideoState } from "@/redux/reducers/fullScreenVideoSlice";
 
-const useControls = (): UseControlsResults => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
-  const { commentors } = useInteractions();
+const useControls = (
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  publicClient: PublicClient,
+  purchase: PurchaseState,
+  seek: number,
+  approvalArgs: ApprovalArgs | undefined,
+  mainVideo: MainVideoState,
+  videoSync: VideoSyncState,
+  profile: Profile | undefined,
+  fullScreenVideo: FullScreenVideoState,
+  commentId: string | undefined,
+  index: IndexModalState,
+  router: NextRouter
+): UseControlsResults => {
+  const { commentors } = useInteractions(
+    router,
+    profile,
+    mainVideo,
+    commentId,
+    index
+  );
   const streamRef = useRef<ReactPlayer>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const fullVideoRef = useRef<ReactPlayer>(null);
   const progressRef = useRef<HTMLDivElement>(null);
-
   const [volume, setVolume] = useState<number>(1);
   const [volumeOpen, setVolumeOpen] = useState<boolean>(false);
   const [likeLoading, setLikeLoading] = useState<boolean>(false);
@@ -59,27 +82,6 @@ const useControls = (): UseControlsResults => {
   const [collectCommentLoading, setCollectCommentLoading] = useState<boolean[]>(
     Array.from({ length: commentors?.length }, () => false)
   );
-  const dispatch = useDispatch();
-  const { address } = useAccount();
-  const seek = useSelector(
-    (state: RootState) => state.app.seekSecondReducer.seek
-  );
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const videoSync = useSelector(
-    (state: RootState) => state.app.videoSyncReducer
-  );
-  const fullScreenVideo = useSelector(
-    (state: RootState) => state.app.fullScreenVideoReducer
-  );
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
-  );
-  const approvalArgs = useSelector(
-    (state: RootState) => state.app.approvalArgsReducer.args
-  );
-  const purchase = useSelector((state: RootState) => state.app.purchaseReducer);
 
   const handleHeart = () => {
     dispatch(
@@ -138,7 +140,7 @@ const useControls = (): UseControlsResults => {
       }
       setLikeLoading(true);
     }
-    if (!profileId) {
+    if (!profile?.id) {
       setLikeLoading(false);
       if (index! >= 0) {
         setLikeCommentLoading((prev) => {
@@ -200,7 +202,7 @@ const useControls = (): UseControlsResults => {
       }
     }
 
-    if (!profileId) {
+    if (!profile?.id) {
       setMirrorLoading(false);
       if (index! >= 0) {
         setMirrorCommentLoading((prev) => {
@@ -254,7 +256,7 @@ const useControls = (): UseControlsResults => {
       }
     }
 
-    if (!profileId) {
+    if (!profile?.id) {
       setCollectLoading(false);
       if (index! >= 0) {
         setCollectCommentLoading((prev) => {
@@ -310,7 +312,7 @@ const useControls = (): UseControlsResults => {
     setCollectInfoLoading(true);
     try {
       let pubData: PublicationQuery;
-      if (profileId) {
+      if (profile?.id) {
         const { data } = await getPublicationAuth({
           forId: purchase.id,
         });
@@ -332,7 +334,7 @@ const useControls = (): UseControlsResults => {
         collectModule?.amount?.value,
         dispatch,
         address,
-        profileId
+        profile?.id
       );
       const isApproved = parseInt(approvalData?.allowance?.value as string, 16);
       dispatch(
@@ -469,8 +471,6 @@ const useControls = (): UseControlsResults => {
     collectVideo,
     mirrorVideo,
     likeVideo,
-    mainVideo,
-    profileId,
     mirrorCommentLoading,
     likeCommentLoading,
     collectCommentLoading,

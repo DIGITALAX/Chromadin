@@ -1,257 +1,174 @@
-import useCollectOptions from "@/components/Common/NFT/hooks/useCollectOptions";
-import useImageUpload from "@/components/Common/NFT/hooks/useImageUpload";
-import useConnect from "@/components/Common/SideBar/hooks/useConnect";
-import useAllPosts from "@/components/Common/Wavs/hooks/useAllPosts";
-import useComment from "@/components/Common/Wavs/hooks/useComment";
-import useIndividual from "@/components/Common/Wavs/hooks/useIndividual";
-import useProfileFeed from "@/components/Common/Wavs/hooks/useProfileFeed";
-import useReactions from "@/components/Common/Wavs/hooks/useReactions";
-import useSearch from "@/components/Common/Wavs/hooks/useSearch";
 import Feed from "@/components/Common/Wavs/modules/Feed";
-import { RootState } from "@/redux/store";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useRouter } from "next/router";
 import { FunctionComponent } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
+import { WavsProps } from "../types/home.types";
 
-const Wavs: FunctionComponent = (): JSX.Element => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const { address } = useAccount();
-
-  const feedDispatch = useSelector(
-    (state: RootState) => state.app.feedReducer.value
-  );
-  const reactionAmounts = useSelector(
-    (state: RootState) => state.app.reactionFeedCountReducer
-  );
-  const feedType = useSelector(
-    (state: RootState) => state.app.feedTypeReducer.value
-  );
-  const commentAmounts = useSelector(
-    (state: RootState) => state.app.commentFeedCountReducer
-  );
-  const commentOpen = useSelector(
-    (state: RootState) => state.app.openCommentReducer.value
-  );
-  const collectOpen = useSelector(
-    (state: RootState) => state.app.collectOpenReducer.value
-  );
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const postImagesDispatched = useSelector(
-    (state: RootState) => state.app.postImageReducer.value
-  );
-  const profile = useSelector(
-    (state: RootState) => state.app.profileReducer.profile
-  );
-  const commentors = useSelector(
-    (state: RootState) => state.app.commentReducer.value
-  );
-  const filterDecrypt = useSelector(
-    (state: RootState) => state.app.filterDecryptReducer.value
-  );
-  const scrollPos = useSelector(
-    (state: RootState) => state.app.scrollPosReducer.value
-  );
-  const decryptScrollPos = useSelector(
-    (state: RootState) => state.app.decryptScrollPosReducer.value
-  );
-  const profileScroll = useSelector(
-    (state: RootState) => state.app.profileScrollPosReducer.value
-  );
-  const individualAmounts = useSelector(
-    (state: RootState) => state.app.individualFeedCountReducer
-  );
-  const profileAmounts = useSelector(
-    (state: RootState) => state.app.profileFeedCountReducer
-  );
-  const profileDispatch = useSelector(
-    (state: RootState) => state.app.profileFeedReducer.value
-  );
-  const quickProfiles = useSelector(
-    (state: RootState) => state.app.quickProfilesReducer.value
-  );
-  const profileType = useSelector(
-    (state: RootState) => state.app.profileReducer.profile?.id
-  );
-  const decryptFeed = useSelector(
-    (state: RootState) => state.app.decryptFeedReducer.value
-  );
-  const decryptAmounts = useSelector(
-    (state: RootState) => state.app.decryptFeedCountReducer
-  );
-  const decryptFeedProfile = useSelector(
-    (state: RootState) => state.app.decryptProfileFeedReducer.value
-  );
-  const decryptProfileScroll = useSelector(
-    (state: RootState) => state.app.decryptProfileScrollPosReducer.value
-  );
-  const imageLoading = useSelector(
-    (state: RootState) => state.app.imageLoadingReducer.value
-  );
-  const decryptProfileAmounts = useSelector(
-    (state: RootState) => state.app.decryptProfileFeedCountReducer
-  );
-  const { openConnectModal } = useConnectModal();
-  const { handleLensSignIn } = useConnect();
-  const {
-    followerOnly,
-    postsLoading,
-    hasMore,
-    fetchMore,
-    scrollRef,
-    setScrollPos,
-    followerOnlyDecrypt,
-    hasMoreDecrypt,
-    decryptLoading,
-    fetchMoreDecrypt,
-    scrollRefDecrypt,
-    setScrollPosDecrypt,
-  } = useAllPosts();
-
-  const {
-    reactPost,
-    collectPost,
-    mirrorPost,
-    reactFeedLoading,
-    mirrorFeedLoading,
-    collectFeedLoading,
-    setOpenMirrorChoice,
-    openMirrorChoice,
-  } = useReactions();
-
-  const {
-    getMorePostComments,
-    hasMoreComments,
-    commentsLoading,
-    mainPostLoading,
-    followerOnly: followerOnlyMain,
-    mainPost,
-    followerOnlyComments,
-    reactCommentLoading,
-    mirrorCommentLoading,
-    collectCommentLoading,
-    setMirrorCommentLoading,
-    setCollectCommentLoading,
-    setReactCommentLoading,
-    setCollectPostLoading,
-    setMirrorPostLoading,
-    setReactPostLoading,
-    collectPostLoading,
-    reactPostLoading,
-    mirrorPostLoading,
-    setOpenCommentMirrorChoice,
-    setOpenPostMirrorChoice,
-    openCommentMirrorChoice,
-    openPostMirrorChoice,
-  } = useIndividual();
-
-  const {
-    commentPost,
-    commentDescription,
-    textElement,
-    handleCommentDescription,
-    commentLoading,
-    caretCoord,
-    mentionProfiles,
-    profilesOpen,
-    handleMentionClick,
-    handleGifSubmit,
-    handleGif,
-    results,
-    handleSetGif,
-    gifOpen,
-    setGifOpen,
-    handleKeyDownDelete,
-    preElement,
-    handleImagePaste,
-  } = useComment();
-
-  const {
-    collectNotif,
-    referral,
-    setCollectible,
-    collectibleDropDown,
-    setCollectibleDropDown,
-    collectible,
-    setAudienceDropDown,
-    audienceType,
-    audienceTypes,
-    chargeCollect,
-    limit,
-    limitedEdition,
-    audienceDropDown,
-    setAudienceType,
-    setTimeLimit,
-    timeLimit,
-    timeLimitDropDown,
-    setTimeLimitDropDown,
-    setLimitedEdition,
-    limitedDropDown,
-    setLimitedDropDown,
-    setReferral,
-    setLimit,
-    setChargeCollect,
-    setCurrencyDropDown,
-    chargeCollectDropDown,
-    setChargeCollectDropDown,
-    enabledCurrencies,
-    enabledCurrency,
-    currencyDropDown,
-    setEnabledCurrency,
-    value,
-    setValue,
-  } = useCollectOptions();
-  const {
-    videoLoading,
-    uploadImage,
-    uploadVideo,
-    handleRemoveImage,
-    mappedFeaturedFiles,
-    clientRendered,
-  } = useImageUpload();
-
-  const {
-    hasMoreProfile,
-    fetchMoreProfile,
-    profileRef,
-    followerOnlyProfile,
-    setCollectProfileLoading,
-    setMirrorProfileLoading,
-    profileLoading,
-    mirrorProfileLoading,
-    collectProfileLoading,
-    reactProfileLoading,
-    setReactProfileLoading,
-    setProfileScroll,
-    hasMoreDecryptProfile,
-    setScrollPosDecryptProfile,
-    scrollRefDecryptProfile,
-    followerOnlyProfileDecrypt,
-    fetchMoreProfileDecrypt,
-    decryptProfileLoading,
-    profileCollections,
-    profileCollectionsLoading,
-    openProfileMirrorChoice,
-    setOpenProfileMirrorChoice,
-  } = useProfileFeed();
-
-  const {
-    searchProfiles,
-    profilesFound,
-    profilesOpenSearch,
-    fetchMoreSearch,
-    hasMoreSearch,
-    setProfilesOpenSearch,
-    setProfilesFound,
-  } = useSearch();
-
+const Wavs: FunctionComponent<WavsProps> = ({
+  dispatch,
+  router,
+  address,
+  feedDispatch,
+  reactionAmounts,
+  feedType,
+  commentAmounts,
+  commentOpen,
+  collectOpen,
+  postImagesDispatched,
+  commentors,
+  filterDecrypt,
+  scrollPos,
+  openConnectModal,
+  decryptScrollPos,
+  profileScroll,
+  individualAmounts,
+  profileAmounts,
+  profileDispatch,
+  quickProfiles,
+  profileType,
+  decryptFeed,
+  decryptAmounts,
+  decryptFeedProfile,
+  decryptProfileScroll,
+  imageLoading,
+  decryptProfileAmounts,
+  handleLensSignIn,
+  followerOnly,
+  postsLoading,
+  hasMore,
+  fetchMore,
+  scrollRef,
+  setScrollPos,
+  followerOnlyDecrypt,
+  hasMoreDecrypt,
+  decryptLoading,
+  fetchMoreDecrypt,
+  scrollRefDecrypt,
+  setScrollPosDecrypt,
+  reactPost,
+  collectPost,
+  mirrorPost,
+  setOpenMirrorChoice,
+  openMirrorChoice,
+  getMorePostComments,
+  hasMoreComments,
+  commentsLoading,
+  mainPostLoading,
+  followerOnlyMain,
+  mainPost,
+  followerOnlyComments,
+  reactCommentLoading,
+  mirrorCommentLoading,
+  collectCommentLoading,
+  setMirrorCommentLoading,
+  setCollectCommentLoading,
+  setReactCommentLoading,
+  setCollectPostLoading,
+  setMirrorPostLoading,
+  setReactPostLoading,
+  collectPostLoading,
+  reactPostLoading,
+  mirrorPostLoading,
+  setOpenCommentMirrorChoice,
+  setOpenPostMirrorChoice,
+  openCommentMirrorChoice,
+  openPostMirrorChoice,
+  commentPost,
+  commentDescription,
+  textElement,
+  handleCommentDescription,
+  commentLoading,
+  caretCoord,
+  mentionProfiles,
+  profilesOpen,
+  handleMentionClick,
+  handleGifSubmit,
+  handleGif,
+  results,
+  handleSetGif,
+  gifOpen,
+  setGifOpen,
+  handleKeyDownDelete,
+  preElement,
+  handleImagePaste,
+  collectNotif,
+  referral,
+  setCollectible,
+  collectibleDropDown,
+  setCollectibleDropDown,
+  collectible,
+  setAudienceDropDown,
+  audienceType,
+  audienceTypes,
+  chargeCollect,
+  limit,
+  limitedEdition,
+  audienceDropDown,
+  setAudienceType,
+  setTimeLimit,
+  timeLimit,
+  timeLimitDropDown,
+  setTimeLimitDropDown,
+  setLimitedEdition,
+  limitedDropDown,
+  setLimitedDropDown,
+  setReferral,
+  setLimit,
+  setChargeCollect,
+  setCurrencyDropDown,
+  chargeCollectDropDown,
+  setChargeCollectDropDown,
+  enabledCurrencies,
+  enabledCurrency,
+  currencyDropDown,
+  setEnabledCurrency,
+  value,
+  setValue,
+  videoLoading,
+  uploadImages,
+  uploadVideo,
+  handleRemoveImage,
+  mappedFeaturedFiles,
+  clientRendered,
+  hasMoreProfile,
+  fetchMoreProfile,
+  profileRef,
+  followerOnlyProfile,
+  setCollectProfileLoading,
+  setMirrorProfileLoading,
+  profileLoading,
+  mirrorProfileLoading,
+  collectProfileLoading,
+  reactProfileLoading,
+  setReactProfileLoading,
+  setProfileScroll,
+  hasMoreDecryptProfile,
+  setScrollPosDecryptProfile,
+  scrollRefDecryptProfile,
+  followerOnlyProfileDecrypt,
+  fetchMoreProfileDecrypt,
+  decryptProfileLoading,
+  profileCollections,
+  profileCollectionsLoading,
+  openProfileMirrorChoice,
+  setOpenProfileMirrorChoice,
+  searchProfiles,
+  profilesFound,
+  profilesOpenSearch,
+  fetchMoreSearch,
+  hasMoreSearch,
+  setProfilesOpenSearch,
+  setProfilesFound,
+  reactLoading,
+  mirrorLoading,
+  collectLoading,
+  lensProfile,
+  history,
+  profile,
+}): JSX.Element => {
   return (
     <div className="relative w-full h-full mid:h-[50.2rem] xl:h-[47.8rem] gap-3 flex items-start justify-center pt-10 overflow-y-scroll">
       <Feed
+        history={history}
+        lensProfile={lensProfile}
         dispatch={dispatch}
         followerOnly={followerOnly}
         feedDispatch={feedDispatch}
@@ -262,9 +179,9 @@ const Wavs: FunctionComponent = (): JSX.Element => {
         collectPost={collectPost}
         mirrorPost={mirrorPost}
         reactPost={reactPost}
-        mirrorLoading={mirrorFeedLoading}
-        collectLoading={collectFeedLoading}
-        reactLoading={reactFeedLoading}
+        mirrorLoading={mirrorLoading}
+        collectLoading={collectLoading}
+        reactLoading={reactLoading}
         reactionAmounts={reactionAmounts}
         mainPost={mainPost!}
         followerOnlyMain={followerOnlyMain}
@@ -339,8 +256,7 @@ const Wavs: FunctionComponent = (): JSX.Element => {
         openConnectModal={openConnectModal}
         handleRemoveImage={handleRemoveImage}
         videoLoading={videoLoading}
-        profileId={profileId}
-        uploadImages={uploadImage}
+        uploadImages={uploadImages}
         uploadVideo={uploadVideo}
         imageLoading={imageLoading}
         collectOpen={collectOpen}

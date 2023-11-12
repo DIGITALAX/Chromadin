@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import Crypto from "./Crypto";
 import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
-import {  PurchaseCoinOpProps } from "../types/interactions.types";
+import { PurchaseCoinOpProps } from "../types/interactions.types";
 import ShippingInfo from "./ShippingInfo";
 import { MainNFT } from "../../NFT/types/nft.types";
 import { setNftScreen } from "@/redux/reducers/nftScreenSlice";
@@ -50,7 +50,7 @@ const PurchaseCoinOp: FunctionComponent<PurchaseCoinOpProps> = ({
               router
                 ? router.push(
                     `/autograph/${
-                      (mainNFT as MainNFT)?.creator?.name?.split(".lens")[0]
+                      (mainNFT as MainNFT)?.creator?.name
                     }/collection/${mainNFT?.name
                       ?.replaceAll(" ", "_")
                       .toLowerCase()}`
@@ -58,7 +58,7 @@ const PurchaseCoinOp: FunctionComponent<PurchaseCoinOpProps> = ({
                 : push &&
                   push(
                     `/autograph/${
-                      (mainNFT as MainNFT)?.creator?.name?.split(".lens")[0]
+                      (mainNFT as MainNFT)?.creator?.name
                     }/collection/${mainNFT?.name
                       ?.replaceAll(" ", "_")
                       .toLowerCase()}`

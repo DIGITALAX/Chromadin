@@ -6,9 +6,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
-import { RootState } from "@/redux/store";
 import uploadPostContent from "@/lib/helpers/uploadPostContent";
 import {
   getCommentData,
@@ -18,23 +15,33 @@ import {
 import { MediaType, UploadedMedia } from "@/components/Home/types/home.types";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import getCommentHTML from "@/lib/helpers/commentHTML";
-import { LimitType, Profile } from "@/components/Home/types/generated";
+import { LimitType, Profile, SimpleCollectOpenActionModuleInput } from "@/components/Home/types/generated";
 import getCaretPos from "@/lib/helpers/getCaretPos";
 import { searchProfile } from "@/graphql/lens/queries/search";
 import { setPostImages } from "@/redux/reducers/postImageSlice";
 import { setCollectOpen } from "@/redux/reducers/collectOpenSlice";
-import useImageUpload from "./useImageUpload";
 import { setImageLoadingRedux } from "@/redux/reducers/imageLoadingSlice";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import commentSig from "@/lib/helpers/commentSig";
+import { AnyAction, Dispatch } from "redux";
+import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
 
-const useComment = () => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
-  const { address } = useAccount();
+const useComment = (
+  dispatch: Dispatch<AnyAction>,
+  publicClient: PublicClient,
+  address: `0x${string}` | undefined,
+  mainVideo: MainVideoState,
+  collectOpen: boolean,
+  commentId: string,
+  postImages: UploadedMedia[],
+  collectModuleType: SimpleCollectOpenActionModuleInput | undefined,
+  uploadImage: (
+    e: File[] | FormEvent<Element>,
+    pasted?: boolean | undefined,
+    feed?: boolean | undefined
+  ) => Promise<void>
+) => {
   const [commentLoading, setCommentLoading] = useState<boolean>(false);
   const [commentDescription, setCommentDescription] = useState<string>("");
   const [caretCoord, setCaretCoord] = useState<{ x: number; y: number }>({
@@ -53,26 +60,6 @@ const useComment = () => {
   const [searchGif, setSearchGif] = useState<boolean>(false);
   const [commentHTML, setCommentHTML] = useState<string>("");
   const [contentURI, setContentURI] = useState<string>();
-  const { uploadImage } = useImageUpload();
-  const dispatch = useDispatch();
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
-  );
-  const collectOpen = useSelector(
-    (state: RootState) => state.app.collectOpenReducer.value
-  );
-  const commentId = useSelector(
-    (state: RootState) => state.app.secondaryCommentReducer.value
-  );
-  const postImages = useSelector(
-    (state: RootState) => state?.app?.postImageReducer?.value
-  );
-  const collectModuleType = useSelector(
-    (state: RootState) => state?.app?.collectValueTypeReducer?.type
-  );
 
   const handleGif = (e: FormEvent): void => {
     setSearchGif((e.target as HTMLFormElement).value);

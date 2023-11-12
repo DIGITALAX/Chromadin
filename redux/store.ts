@@ -86,7 +86,6 @@ import autoDropReducer from "./reducers/autoDropSlice";
 import autographReducer from "./reducers/autographSlice";
 import fulfillmentDetailsReducer from "./reducers/fulfillmentDetailsSlice";
 import encryptedInformationReducer from "./reducers/encryptedInformationSlice";
-import litClientReducer from "./reducers/litClientSlice";
 import connectedReducer from "./reducers/connectedSlice";
 
 const reducer = combineReducers({
@@ -176,7 +175,6 @@ const reducer = combineReducers({
   fulfillmentDetailsReducer,
   connectedReducer,
   encryptedInformationReducer,
-  litClientReducer,
   nftScreenReducer,
 });
 

@@ -1,12 +1,10 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, MouseEvent } from "react";
 import { AiFillFastBackward } from "react-icons/ai";
 import InfiniteScroll from "react-infinite-scroll-component";
 import MakeComment from "./MakeComment";
 import FeedPublication from "./FeedPublication";
 import { ProfileFeedProps } from "../types/wavs.types";
 import Account from "./Account";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { BiHomeHeart } from "react-icons/bi";
 import {
   Mirror,
@@ -39,7 +37,6 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
   handleCommentDescription,
   textElement,
   commentDescription,
-  profileId,
   videoLoading,
   handleSetGif,
   gifOpen,
@@ -115,10 +112,9 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
   followerOnlyProfileDecrypt,
   handleImagePaste,
   clientRendered,
+  history,
+  lensProfile,
 }): JSX.Element => {
-  const history = useSelector(
-    (state: RootState) => state.app.historyURLReducer.value
-  );
   return (
     <div className="relative w-full h-full flex flex-col items-start justify-start gap-4 max-w-full">
       <div className="relative flex flex-col items-start justify-start gap-3 h-full w-full">
@@ -161,10 +157,10 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
           scrollableTarget={"scrollableDiv"}
           ref={filterDecrypt ? scrollRefDecryptProfile : profileRef}
           onScroll={
-            filterDecrypt
+            (filterDecrypt
               ? (e: MouseEvent) =>
                   setScrollPosDecryptProfile && setScrollPosDecryptProfile(e)
-              : (e: MouseEvent) => setScrollPos && setScrollPos(e)
+              : (e: MouseEvent) => setScrollPos && setScrollPos(e)) as any
           }
           initialScrollY={
             feedType === ""
@@ -283,7 +279,7 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
                         openConnectModal={openConnectModal}
                         handleRemoveImage={handleRemoveImage}
                         address={address}
-                        profileId={profileId}
+                        lensProfile={lensProfile}
                         videoLoading={videoLoading}
                         uploadImages={uploadImages}
                         uploadVideo={uploadVideo}

@@ -12,7 +12,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
   handleShareCollection,
   imageLoading,
   address,
-  profileId,
+  lensProfile,
   openConnectModal,
   handleLensSignIn,
 }): JSX.Element => {
@@ -27,7 +27,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
             handleShareCollection={handleShareCollection}
             imageLoading={imageLoading}
             address={address}
-            profileId={profileId}
+            lensProfile={lensProfile}
             openConnectModal={openConnectModal}
             handleLensSignIn={handleLensSignIn}
           />
@@ -54,7 +54,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
                       handleShareCollection={handleShareCollection}
                       imageLoading={imageLoading}
                       address={address}
-                      profileId={profileId}
+                      lensProfile={lensProfile}
                       openConnectModal={openConnectModal}
                       handleLensSignIn={handleLensSignIn}
                     />
@@ -82,7 +82,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
                   handleShareCollection={handleShareCollection}
                   imageLoading={imageLoading}
                   address={address}
-                  profileId={profileId}
+                  lensProfile={lensProfile}
                   openConnectModal={openConnectModal}
                   handleLensSignIn={handleLensSignIn}
                 />

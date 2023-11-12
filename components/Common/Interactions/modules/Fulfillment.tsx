@@ -9,7 +9,6 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
   currency,
   setCurrency,
   totalAmount,
-  acceptedtokens,
   approved,
   mainNFT,
   approveSpend,
@@ -115,7 +114,6 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
                   ${Number(mainNFT?.tokenIds?.length)}`}
               </div>
               <Purchase
-                acceptedtokens={acceptedtokens}
                 approved={approved}
                 currency={currency}
                 setCurrency={setCurrency}

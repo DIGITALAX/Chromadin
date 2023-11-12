@@ -1,47 +1,37 @@
 import { FunctionComponent } from "react";
 import Controls from "@/components/Common/Video/modules/Controls";
-import useControls from "../hooks/useControls";
 import { VideoProps } from "../types/controls.types";
 import Player from "./Player";
-import useChannels from "../../SideBar/hooks/useChannels";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 
-const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
-  const {
-    streamRef,
-    formatTime,
-    volume,
-    handleVolumeChange,
-    volumeOpen,
-    setVolumeOpen,
-    handleHeart,
-    mirrorVideo,
-    collectVideo,
-    likeVideo,
-    mirrorLoading,
-    collectLoading,
-    likeLoading,
-    profileId,
-    mainVideo,
-    wrapperRef,
-    progressRef,
-    handleSeek,
-  } = useControls();
-  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels();
-  const dispatch = useDispatch();
-  const dispatchVideos = useSelector(
-    (state: RootState) => state.app.channelsReducer.value
-  );
-  const videoSync = useSelector(
-    (state: RootState) => state.app.videoSyncReducer
-  );
-  const reactions = useSelector(
-    (state: RootState) => state.app.videoCountReducer
-  );
-  const hasMore = useSelector(
-    (state: RootState) => state.app.hasMoreVideosReducer.value
-  );
+const Video: FunctionComponent<VideoProps> = ({
+  viewer,
+  hasMore,
+  reactions,
+  streamRef,
+  formatTime,
+  volume,
+  handleVolumeChange,
+  volumeOpen,
+  setVolumeOpen,
+  handleHeart,
+  mirrorVideo,
+  collectVideo,
+  likeVideo,
+  mirrorLoading,
+  collectLoading,
+  likeLoading,
+  mainVideo,
+  wrapperRef,
+  progressRef,
+  handleSeek,
+  videoSync,
+  fetchMoreVideos,
+  videosLoading,
+  setVideosLoading,
+  dispatch,
+  lensProfile,
+  dispatchVideos,
+}): JSX.Element => {
   return (
     <div
       className={`${
@@ -83,6 +73,7 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
           <Controls
             formatTime={formatTime}
             volume={volume}
+            lensProfile={lensProfile}
             handleVolumeChange={handleVolumeChange}
             volumeOpen={volumeOpen}
             setVolumeOpen={setVolumeOpen}
@@ -96,7 +87,6 @@ const Video: FunctionComponent<VideoProps> = ({ viewer }): JSX.Element => {
             likeLoading={likeLoading}
             collectLoading={collectLoading}
             mirrorLoading={mirrorLoading}
-            profileId={profileId}
             mainVideo={mainVideo}
             progressRef={progressRef}
             handleSeek={handleSeek}

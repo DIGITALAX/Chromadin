@@ -17,7 +17,6 @@ import CollectButton from "../../Buttons/CollectButton";
 import CollectInput from "../../Buttons/CollectInput";
 
 const MakeComment: FunctionComponent<MakeCommentProps> = ({
-  profileId,
   commentPost,
   handleLensSignIn,
   openConnectModal,
@@ -84,6 +83,7 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
   handleImagePaste,
   clientRendered,
   canComment,
+  lensProfile,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-60 flex flex-col">
@@ -356,6 +356,7 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
               gifOpen={gifOpen}
               collectOpen={collectOpen}
               dispatch={dispatch}
+              postImages={postImagesDispatched}
             />
           </div>
           <div className="relative w-full h-fit justify-end flex flex-row gap-2 items-center">
@@ -365,9 +366,9 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                   commentLoading && "animate-spin"
                 }`}
                 onClick={
-                  !profileId && !address
+                  !lensProfile?.id && !address
                     ? openConnectModal
-                    : address && !profileId
+                    : address && !lensProfile?.id
                     ? () => handleLensSignIn()
                     : commentLoading
                     ? () => {}
@@ -382,9 +383,9 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                     : () => commentPost(commentId)
                 }
               >
-                {!address && !profileId ? (
+                {!address && !lensProfile?.id ? (
                   "CONNECT"
-                ) : address && !profileId ? (
+                ) : address && !lensProfile?.id ? (
                   "SIGN IN"
                 ) : commentLoading ? (
                   <AiOutlineLoading size={10} color="white" />

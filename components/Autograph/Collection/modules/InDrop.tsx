@@ -8,7 +8,7 @@ const InDrop: FunctionComponent<InDropProps> = ({
   otherCollectionsDrop,
   autoCollection,
   autoProfile,
-  push,
+  router,
 }): JSX.Element => {
   if (!autoCollection) {
     return <></>;
@@ -25,14 +25,14 @@ const InDrop: FunctionComponent<InDropProps> = ({
                 className="relative rounded-md cursor-pointer active:scale-95 h-28 w-28 flex-shrink-0"
                 id="staticLoad"
                 onClick={() =>
-                  push(
+                  router.push(
                     `/autograph/${
                       autoProfile?.handle?.suggestedFormatted?.localName?.split(
                         "@"
                       )[1]
                     }/collection/${coll?.name
                       ?.replace(/\s/g, "_")
-                      .toLowerCase()}`
+                      ?.toLowerCase()}`
                   )
                 }
               >

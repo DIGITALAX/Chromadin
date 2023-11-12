@@ -5,13 +5,13 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 import FetchMoreLoading from "../../Loading/FetchMoreLoading";
 
 const Stats: FunctionComponent<StatsProps> = ({
-  statTitles,
+  statsTitles,
   statsRedux,
   statsLoading,
 }): JSX.Element => {
   return (
     <div className="w-full h-96 xl:h-full relative flex flex-row gap-3 overflow-x-scroll">
-      {(statTitles.length < 1 ? statsRedux : statTitles)
+      {(statsTitles.length < 1 ? statsRedux : statsTitles)
         ?.map((innerArr) => innerArr[0])
         ?.map((statValue: string, indexOne: number) => {
           return (
@@ -37,7 +37,7 @@ const Stats: FunctionComponent<StatsProps> = ({
                         </div>
                       );
                     })
-                  : (!statTitles?.[0]?.[1] ? statsRedux : statTitles)
+                  : (!statsTitles?.[0]?.[1] ? statsRedux : statsTitles)
                       ?.map((innerArr) => innerArr[1])
                       [indexOne]?.map((value: any, indexTwo: number) => {
                         return (

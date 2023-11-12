@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export interface Details {
+  name: string;
+  contact: string;
+  address: string;
+  zip: string;
+  city: string;
+  state: string;
+  country: string;
+}
+
 export interface FulfillmentDetailsState {
-  value: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  value: Details;
 }
 
 const initialFulfillmentDetailsState: FulfillmentDetailsState = {
@@ -30,15 +32,7 @@ export const fulfillmentDetailsSlice = createSlice({
   reducers: {
     setFulfillmentDetails: (
       state: FulfillmentDetailsState,
-      action: PayloadAction<{
-        name: string;
-        contact: string;
-        address: string;
-        zip: string;
-        city: string;
-        state: string;
-        country: string;
-      }>
+      action: PayloadAction<Details>
     ) => {
       state.value = action.payload;
     },

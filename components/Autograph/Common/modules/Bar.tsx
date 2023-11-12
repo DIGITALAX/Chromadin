@@ -7,16 +7,41 @@ import SearchVending from "@/components/Common/Buttons/SearchVending";
 import Video from "@/components/Common/Video/modules/Video";
 
 const Bar: FunctionComponent<BarProps> = ({
-  push,
+  router,
   openConnectModal,
   connected,
   handleLensSignIn,
-  profile,
+  lensProfile,
   handleSearch,
   searchOpen,
   searchResults,
   handleSearchChoose,
   isLargeScreen,
+  hasMore,
+  reactions,
+  streamRef,
+  formatTime,
+  volume,
+  handleVolumeChange,
+  volumeOpen,
+  setVolumeOpen,
+  handleHeart,
+  mirrorVideo,
+  collectVideo,
+  likeVideo,
+  mirrorLoading,
+  collectLoading,
+  likeLoading,
+  mainVideo,
+  wrapperRef,
+  progressRef,
+  handleSeek,
+  videoSync,
+  fetchMoreVideos,
+  videosLoading,
+  setVideosLoading,
+  dispatch,
+  dispatchVideos,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit md:h-24 flex flex-col justify-start items-center bg-offBlack p-3 gap-3">
@@ -24,7 +49,7 @@ const Bar: FunctionComponent<BarProps> = ({
         <div className="relative flex flex-row w-fit h-fit justify-center items-end gap-3">
           <div
             className="relative w-fit h-fit font-arcade word-break uppercase text-sm lg:text-xl flex justify-center grid grid-flow-row auto-rows-auto cursor-pointer"
-            onClick={() => push("/#stream?option=history")}
+            onClick={() => router.push("/#stream?option=history")}
           >
             <span className="rainbow">CHR</span>
             <span className="rainbow">OMA</span>
@@ -33,7 +58,35 @@ const Bar: FunctionComponent<BarProps> = ({
         </div>
         {isLargeScreen && (
           <div className="relative w-full flex">
-            <Video viewer={"autograph"} />
+            <Video
+              viewer={"autograph"}
+              hasMore={hasMore}
+              reactions={reactions}
+              streamRef={streamRef}
+              formatTime={formatTime}
+              volume={volume}
+              lensProfile={lensProfile}
+              handleVolumeChange={handleVolumeChange}
+              volumeOpen={volumeOpen}
+              setVolumeOpen={setVolumeOpen}
+              handleHeart={handleHeart}
+              mirrorVideo={mirrorVideo}
+              collectVideo={collectVideo}
+              likeVideo={likeVideo}
+              mirrorLoading={mirrorLoading}
+              collectLoading={collectLoading}
+              likeLoading={likeLoading}
+              mainVideo={mainVideo}
+              wrapperRef={wrapperRef}
+              progressRef={progressRef}
+              handleSeek={handleSeek}
+              videoSync={videoSync}
+              fetchMoreVideos={fetchMoreVideos}
+              videosLoading={videosLoading}
+              setVideosLoading={setVideosLoading}
+              dispatch={dispatch}
+              dispatchVideos={dispatchVideos}
+            />
           </div>
         )}
         <div className="relative w-full h-full hidden md:flex justify-end items-center flex-row ml-auto">
@@ -45,10 +98,11 @@ const Bar: FunctionComponent<BarProps> = ({
             mainPage={true}
           />
           <Auth
+          router={router}
             connected={connected}
             openConnectModal={openConnectModal}
             handleLensSignIn={handleLensSignIn}
-            profile={profile}
+            profile={lensProfile}
             mainPage={true}
           />
         </div>
@@ -73,7 +127,35 @@ const Bar: FunctionComponent<BarProps> = ({
       </div>
       {!isLargeScreen && (
         <div className="relative w-full flex">
-          <Video viewer={"autograph"} />
+          <Video
+            viewer={"autograph"}
+            hasMore={hasMore}
+            reactions={reactions}
+            streamRef={streamRef}
+            formatTime={formatTime}
+            volume={volume}
+            handleVolumeChange={handleVolumeChange}
+            volumeOpen={volumeOpen}
+            setVolumeOpen={setVolumeOpen}
+            handleHeart={handleHeart}
+            mirrorVideo={mirrorVideo}
+            collectVideo={collectVideo}
+            likeVideo={likeVideo}
+            mirrorLoading={mirrorLoading}
+            collectLoading={collectLoading}
+            likeLoading={likeLoading}
+            mainVideo={mainVideo}
+            wrapperRef={wrapperRef}
+            progressRef={progressRef}
+            handleSeek={handleSeek}
+            videoSync={videoSync}
+            fetchMoreVideos={fetchMoreVideos}
+            videosLoading={videosLoading}
+            setVideosLoading={setVideosLoading}
+            dispatch={dispatch}
+            dispatchVideos={dispatchVideos}
+            lensProfile={lensProfile}
+          />
         </div>
       )}
       <div className="relative w-full h-full flex md:hidden justify-end items-center flex-row ml-auto">
@@ -85,10 +167,11 @@ const Bar: FunctionComponent<BarProps> = ({
           mainPage={true}
         />
         <Auth
+          router={router}
           connected={connected}
           openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
-          profile={profile}
+          profile={lensProfile}
           mainPage={true}
         />
       </div>

@@ -1,8 +1,11 @@
-import { InputMaybe, RelaySuccess } from "@/components/Home/types/generated";
+import {
+  InputMaybe,
+  RelaySuccess,
+  OpenActionModuleInput,
+} from "@/components/Home/types/generated";
 import broadcast from "@/graphql/lens/mutations/broadcast";
 import { createCommentTypedData } from "@/graphql/lens/mutations/comment";
 import LensHubProxy from "./../../abis/LensHubProxy.json";
-import { OpenActionModuleInput } from "@lens-protocol/client";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../constants";
 import { omit } from "lodash";
 import { polygon } from "viem/chains";
@@ -43,7 +46,6 @@ const commentSig = async (
     });
 
     if (broadcastResult?.data?.broadcastOnchain?.__typename === "RelayError") {
-
       const { request } = await publicClient.simulateContract({
         address: LENS_HUB_PROXY_ADDRESS_MATIC,
         abi: LensHubProxy,
@@ -72,9 +74,12 @@ const commentSig = async (
 
       const tx = await publicClient.waitForTransactionReceipt({ hash: res });
 
-      await handleIndexCheck({
-        forTxHash: tx.transactionHash,
-      }, dispatch);
+      await handleIndexCheck(
+        {
+          forTxHash: tx.transactionHash,
+        },
+        dispatch
+      );
     } else {
       clearComment();
       setTimeout(async () => {

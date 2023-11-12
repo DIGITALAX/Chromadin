@@ -24,7 +24,6 @@ const Comments: FunctionComponent<CommentsProps> = ({
   setCollectLoader,
   setMirrorLoader,
   setReactLoader,
-  profileId,
   commentPost,
   handleLensSignIn,
   openConnectModal,
@@ -93,6 +92,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
   clientRendered,
   openMirrorChoice,
   setOpenMirrorChoice,
+  lensProfile
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex min-w-full">
@@ -179,7 +179,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                       openConnectModal={openConnectModal}
                       handleRemoveImage={handleRemoveImage}
                       address={address}
-                      profileId={profileId}
+                      lensProfile={lensProfile}
                       videoLoading={videoLoading}
                       uploadImages={uploadImages}
                       uploadVideo={uploadVideo}

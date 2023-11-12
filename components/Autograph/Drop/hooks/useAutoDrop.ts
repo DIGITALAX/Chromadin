@@ -13,19 +13,15 @@ import {
 import { INFURA_GATEWAY } from "@/lib/constants";
 import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 import { setAutoDrop } from "@/redux/reducers/autoDropSlice";
-import { RootState } from "@/redux/store";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, useState } from "react";
 import { FetchResult } from "@apollo/client";
+import { AnyAction } from "redux";
 
-const useAutoDrop = () => {
-  const dispatch = useDispatch();
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const allDrops = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
-  );
+const useAutoDrop = (
+  dispatch: Dispatch<AnyAction>,
+  profile: Profile | undefined,
+  allDrops: Drop[]
+) => {
   const [dropLoading, setDropLoading] = useState<boolean>(false);
   const [otherDrops, setOtherDrops] = useState<Collection[]>([]);
 
@@ -70,12 +66,7 @@ const useAutoDrop = () => {
 
       const coll = await Promise.all(
         colls.map(async (collection: Collection) => {
-          const json = await fetchIPFSJSON(
-            (collection.uri as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          );
+          const json = await fetchIPFSJSON(collection.uri as any);
 
           const type = await fetch(
             `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
@@ -136,12 +127,7 @@ const useAutoDrop = () => {
 
       const otherDrops = await Promise.all(
         filteredColls?.map(async (collection: Collection | null) => {
-          const json = await fetchIPFSJSON(
-            (collection?.uri as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          );
+          const json = await fetchIPFSJSON(collection?.uri as any);
 
           const type = await fetch(
             `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
@@ -182,7 +168,7 @@ const useAutoDrop = () => {
   ): Promise<Profile | undefined> => {
     try {
       let prof: FetchResult<ProfileQuery>;
-      if (lensProfile) {
+      if (profile?.id) {
         prof = await getOneProfileAuth({
           forHandle: "lens/" + (autograph as string),
         });

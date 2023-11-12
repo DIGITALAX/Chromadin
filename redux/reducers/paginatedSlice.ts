@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface PaginatedState {
-  value: any;
+  value: string | undefined;
 }
 
 const initialPaginatedState: PaginatedState = {
-  value: {},
+  value: undefined,
 };
 
 export const paginatedSlice = createSlice({

@@ -3,22 +3,22 @@ import {
   getPublicationAuth,
 } from "@/graphql/lens/queries/getPublication";
 import { useEffect, useState } from "react";
-import { RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
 import { setCommentsRedux } from "@/redux/reducers/commentSlice";
-import { setCommentFeedCount } from "@/redux/reducers/commentFeedCountSlice";
-import { useRouter } from "next/router";
+import {
+  CommentFeedCountState,
+  setCommentFeedCount,
+} from "@/redux/reducers/commentFeedCountSlice";
 import { setIndividualFeedCount } from "@/redux/reducers/individualFeedCountReducer";
 import { setFeedType } from "@/redux/reducers/feedTypeSlice";
-import { useAccount } from "wagmi";
 import {
-  Comment,
   CommentRankingFilterType,
   LimitType,
   Mirror,
   Post,
+  Profile,
   PublicationsQuery,
   Quote,
+  Comment,
 } from "@/components/Home/types/generated";
 import {
   getPublications,
@@ -26,24 +26,20 @@ import {
 } from "@/graphql/lens/queries/getVideos";
 import { FetchResult } from "@apollo/client";
 import { decryptPostIndividual } from "@/lib/helpers/decryptPost";
+import { NextRouter } from "next/router";
+import { AnyAction, Dispatch } from "redux";
+import { IndexModalState } from "@/redux/reducers/indexModalSlice";
 
-const useIndividual = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const { address } = useAccount();
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const feedType = useSelector(
-    (state: RootState) => state.app.feedTypeReducer.value
-  );
-  const commentFeedCount = useSelector(
-    (state: RootState) => state.app.commentFeedCountReducer
-  );
-  const index = useSelector((state: RootState) => state.app.indexModalReducer);
-  const commentors = useSelector(
-    (state: RootState) => state.app.commentReducer.value
-  );
+const useIndividual = (
+  router: NextRouter,
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  lensProfile: Profile | undefined,
+  feedType: string,
+  commentFeedCount: CommentFeedCountState,
+  index: IndexModalState,
+  commentors: Comment[]
+) => {
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [paginated, setPaginated] = useState<any>();
   const [hasMoreComments, setHasMoreComments] = useState<boolean>(true);
@@ -197,7 +193,9 @@ const useIndividual = () => {
         setCommentsLoading(false);
         return;
       }
-      const sortedArr: Comment[] = [...comments?.data?.publications?.items] as  Comment[] ;
+      const sortedArr: Comment[] = [
+        ...comments?.data?.publications?.items,
+      ] as Comment[];
       if (sortedArr?.length < 10) {
         setHasMoreComments(false);
       }

@@ -81,7 +81,7 @@ const Post: FunctionComponent<PostProps> = ({
   handleLensSignIn,
   openConnectModal,
   address,
-  profileId,
+  lensProfile,
   handlePost,
   preElement,
   handleImagePaste,
@@ -361,7 +361,7 @@ const Post: FunctionComponent<PostProps> = ({
                                         )}
                                       </div>
                                       <div className="relative col-start-2 items-center justify-center w-fit h-fit text-xs flex">
-                                        @{user?.handle?.split(".lens")[0]}
+                                        @{user?.handle?.[0]}
                                       </div>
                                     </div>
                                   </div>
@@ -393,6 +393,7 @@ const Post: FunctionComponent<PostProps> = ({
                         gifOpen={gifOpen}
                         collectOpen={collectOpen}
                         dispatch={dispatch}
+                        postImages={postImagesDispatched}
                       />
                     </div>
                     <div className="relative w-full h-fit justify-end flex flex-row gap-2 items-center">
@@ -402,9 +403,9 @@ const Post: FunctionComponent<PostProps> = ({
                             postLoading && "animate-spin"
                           }`}
                           onClick={
-                            !profileId && !address
+                            !lensProfile?.id && !address
                               ? openConnectModal
-                              : address && !profileId
+                              : address && !lensProfile?.id
                               ? () => handleLensSignIn()
                               : postLoading
                               ? () => {}
@@ -419,9 +420,9 @@ const Post: FunctionComponent<PostProps> = ({
                               : () => handlePost(quote?.id)
                           }
                         >
-                          {!address && !profileId ? (
+                          {!address && !lensProfile?.id ? (
                             "CONNECT"
-                          ) : address && !profileId ? (
+                          ) : address && !lensProfile?.id ? (
                             "SIGN IN"
                           ) : postLoading ? (
                             <AiOutlineLoading size={10} color="white" />

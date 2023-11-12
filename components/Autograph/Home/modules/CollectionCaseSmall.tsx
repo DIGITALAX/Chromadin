@@ -10,7 +10,7 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
   handleShareCollection,
   imageLoading,
   address,
-  profileId,
+  lensProfile,
   openConnectModal,
   handleLensSignIn,
 }): JSX.Element => {
@@ -106,9 +106,9 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
         <div
           className={`relative text-ama items-center flex cursor-pointer bg-black border border-ama rounded-l-md p-1 hover:opacity-70 active:scale-95 flex-row gap-1`}
           onClick={
-            !address && !profileId
+            !address && !lensProfile?.id
               ? openConnectModal
-              : address && !profileId
+              : address && !lensProfile?.id
               ? () => handleLensSignIn()
               : imageLoading
               ? () => {}

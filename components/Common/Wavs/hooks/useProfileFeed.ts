@@ -15,23 +15,25 @@ import {
   getPublications,
   getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
-import { setProfileFeedCount } from "@/redux/reducers/profileFeedCountSlice";
+import {
+  ProfileFeedCountState,
+  setProfileFeedCount,
+} from "@/redux/reducers/profileFeedCountSlice";
 import { setProfileFeedRedux } from "@/redux/reducers/profileFeedSlice";
 import { setProfilePaginated } from "@/redux/reducers/profilePaginatedSlice";
 import { setProfileScrollPosRedux } from "@/redux/reducers/profileScrollPosSlice";
 import { setProfile } from "@/redux/reducers/profileSlice";
-import { RootState } from "@/redux/store";
-import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
 import { setPostSent } from "@/redux/reducers/postSentSlice";
 import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 import { setDecryptProfileScrollPosRedux } from "@/redux/reducers/decryptProfileScrollPosSlice";
 import { setDecryptProfilePaginated } from "@/redux/reducers/decryptProfilePaginatedSlice";
 import { setDecryptProfileFeedRedux } from "@/redux/reducers/decryptProfileFeedSlice";
-import { setDecryptProfileFeedCount } from "@/redux/reducers/decryptProfileCountSlice";
+import {
+  DecryptProfileFeedCountState,
+  setDecryptProfileFeedCount,
+} from "@/redux/reducers/decryptProfileCountSlice";
 import { Collection, Drop } from "@/components/Home/types/home.types";
 import {
   getCollectionsProfile,
@@ -43,45 +45,28 @@ import getAllDrops, {
 } from "@/graphql/subgraph/queries/getAllDrops";
 import { decryptPostArray } from "@/lib/helpers/decryptPost";
 import { FetchResult } from "@apollo/client";
+import { AnyAction, Dispatch } from "redux";
+import { QuickProfilesInterface } from "../types/wavs.types";
+import { NextRouter } from "next/router";
 
-const useProfileFeed = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const { address } = useAccount();
+const useProfileFeed = (
+  router: NextRouter,
+  address: `0x${string}` | undefined,
+  dispatch: Dispatch<AnyAction>,
+  profileDispatch: (Post | Quote | Mirror)[],
+  filterDecrypt: boolean,
+  postSent: boolean,
+  quickProfiles: QuickProfilesInterface[],
+  lensProfile: Profile | undefined,
+  feedProfile: Profile | undefined,
+  profilePageData: string | undefined,
+  profileFeedCount: ProfileFeedCountState,
+  decryptProfilePageData: string | undefined,
+  decryptProfileFeedCount: DecryptProfileFeedCountState,
+  decryptProfileFeed: Post[]
+) => {
   const profileRef = useRef<InfiniteScroll>(null);
   const scrollRefDecryptProfile = useRef<InfiniteScroll>(null);
-  const profileDispatch = useSelector(
-    (state: RootState) => state.app.profileFeedReducer.value
-  );
-  const filterDecrypt = useSelector(
-    (state: RootState) => state.app.filterDecryptReducer.value
-  );
-  const postSent = useSelector(
-    (state: RootState) => state.app.postSentReducer.value
-  );
-  const quickProfiles = useSelector(
-    (state: RootState) => state.app.quickProfilesReducer.value
-  );
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const profileId = useSelector((state: RootState) => state.app.profileReducer);
-  const profilePageData = useSelector(
-    (state: RootState) => state.app.profilePaginatedReducer.value
-  );
-  const profileFeedCount = useSelector(
-    (state: RootState) => state.app.profileFeedCountReducer
-  );
-  const decryptProfilePageData = useSelector(
-    (state: RootState) => state.app.decryptProfilePaginatedReducer.value
-  );
-  const decryptProfileFeedCount = useSelector(
-    (state: RootState) => state.app.decryptProfileFeedCountReducer
-  );
-  const decryptProfileFeed = useSelector(
-    (state: RootState) => state.app.decryptProfileFeedReducer.value
-  );
-
   const [hasMoreProfile, setHasMoreProfile] = useState<boolean>(true);
   const [openProfileMirrorChoice, setOpenProfileMirrorChoice] = useState<
     boolean[]
@@ -116,10 +101,10 @@ const useProfileFeed = () => {
     setProfileLoading(true);
     let data;
     try {
-      if (!lensProfile) {
+      if (!lensProfile?.id) {
         data = await getPublications({
           where: {
-            from: [profileId?.profile?.id],
+            from: [feedProfile?.id],
             publicationTypes: [
               PublicationType.Post,
               PublicationType.Mirror,
@@ -131,7 +116,7 @@ const useProfileFeed = () => {
       } else {
         data = await getPublicationsAuth({
           where: {
-            from: [profileId?.profile?.id],
+            from: [feedProfile?.id],
             publicationTypes: [
               PublicationType.Post,
               PublicationType.Mirror,
@@ -178,7 +163,7 @@ const useProfileFeed = () => {
             : false
         )
       );
-      dispatch(setProfilePaginated(data?.data?.publications?.pageInfo));
+      dispatch(setProfilePaginated(data?.data?.publications?.pageInfo?.next));
       dispatch(setProfileFeedRedux(sortedArr));
       dispatch(
         setProfileFeedCount({
@@ -228,15 +213,15 @@ const useProfileFeed = () => {
   const fetchMoreProfile = async () => {
     let data;
     try {
-      if (!profilePageData?.next) {
+      if (!profilePageData) {
         setHasMoreProfile(false);
         return;
       }
 
-      if (!lensProfile) {
+      if (!lensProfile?.id) {
         data = await getPublications({
           where: {
-            from: [profileId?.profile?.id],
+            from: [feedProfile?.id],
             publicationTypes: [
               PublicationType.Post,
               PublicationType.Mirror,
@@ -244,12 +229,12 @@ const useProfileFeed = () => {
             ],
           },
           limit: LimitType.Ten,
-          cursor: profilePageData?.next,
+          cursor: profilePageData,
         });
       } else {
         data = await getPublicationsAuth({
           where: {
-            from: [profileId?.profile?.id],
+            from: [feedProfile?.id],
             publicationTypes: [
               PublicationType.Post,
               PublicationType.Mirror,
@@ -257,7 +242,7 @@ const useProfileFeed = () => {
             ],
           },
           limit: LimitType.Ten,
-          cursor: profilePageData?.next,
+          cursor: profilePageData,
         });
       }
       const arr: (Post | Mirror | Quote)[] = [
@@ -351,7 +336,7 @@ const useProfileFeed = () => {
           ],
         })
       );
-      dispatch(setProfilePaginated(data?.data?.publications?.pageInfo));
+      dispatch(setProfilePaginated(data?.data?.publications?.pageInfo?.next));
       dispatch(setProfileFeedRedux([...profileDispatch, ...sortedArr]));
     } catch (err: any) {
       console.error(err.message);
@@ -362,10 +347,10 @@ const useProfileFeed = () => {
     setDecryptProfileLoading(true);
     let data;
     try {
-      if (!lensProfile) {
+      if (!lensProfile?.id) {
         data = await getPublications({
           where: {
-            from: [profileId?.profile?.id],
+            from: [feedProfile?.id],
             publicationTypes: [PublicationType.Post],
             metadata: {
               tags: {
@@ -378,7 +363,7 @@ const useProfileFeed = () => {
       } else {
         data = await getPublicationsAuth({
           where: {
-            from: [profileId?.profile?.id],
+            from: [feedProfile?.id],
             publicationTypes: [PublicationType.Post],
             metadata: {
               tags: {
@@ -415,7 +400,9 @@ const useProfileFeed = () => {
             : false
         )
       );
-      dispatch(setDecryptProfilePaginated(data?.data?.publications?.pageInfo));
+      dispatch(
+        setDecryptProfilePaginated(data?.data?.publications?.pageInfo?.next)
+      );
       dispatch(setDecryptProfileFeedRedux(sortedArr));
       dispatch(
         setDecryptProfileFeedCount({
@@ -445,15 +432,15 @@ const useProfileFeed = () => {
   const fetchMoreProfileDecrypt = async () => {
     let data;
     try {
-      if (!decryptProfilePageData?.next) {
+      if (!decryptProfilePageData) {
         setHasMoreDecryptProfile(false);
         return;
       }
 
-      if (!lensProfile) {
+      if (!lensProfile?.id) {
         data = await getPublications({
           where: {
-            from: [profileId?.profile?.id],
+            from: [feedProfile?.id],
             publicationTypes: [PublicationType.Post],
             metadata: {
               tags: {
@@ -462,12 +449,12 @@ const useProfileFeed = () => {
             },
           },
           limit: LimitType.Ten,
-          cursor: decryptProfilePageData?.next,
+          cursor: decryptProfilePageData,
         });
       } else {
         data = await getPublicationsAuth({
           where: {
-            from: [profileId?.profile?.id],
+            from: [feedProfile?.id],
             publicationTypes: [PublicationType.Post],
             metadata: {
               tags: {
@@ -476,7 +463,7 @@ const useProfileFeed = () => {
             },
           },
           limit: LimitType.Ten,
-          cursor: decryptProfilePageData?.next,
+          cursor: decryptProfilePageData,
         });
       }
       const arr: Post[] = [
@@ -534,7 +521,9 @@ const useProfileFeed = () => {
             : false
         ),
       ]);
-      dispatch(setDecryptProfilePaginated(data?.data?.publications?.pageInfo));
+      dispatch(
+        setDecryptProfilePaginated(data?.data?.publications?.pageInfo?.next)
+      );
       dispatch(
         setDecryptProfileFeedRedux([...decryptProfileFeed, ...sortedArr])
       );
@@ -547,7 +536,7 @@ const useProfileFeed = () => {
     if (
       router.asPath.includes("#chat") &&
       router.asPath.includes("&profile=") &&
-      profileId?.profile
+      feedProfile?.id
     ) {
       if (filterDecrypt) {
         getProfileDecrypt();
@@ -560,7 +549,7 @@ const useProfileFeed = () => {
     ) {
       dispatch(setProfile(undefined));
     }
-  }, [profileId.profile, router.asPath, filterDecrypt]);
+  }, [feedProfile?.id, router.asPath, filterDecrypt]);
 
   useEffect(() => {
     if (
@@ -576,7 +565,7 @@ const useProfileFeed = () => {
   const getSingleProfile = async () => {
     let prof: FetchResult<ProfileQuery>;
     try {
-      if (lensProfile) {
+      if (lensProfile?.id) {
         prof = await getOneProfileAuth({
           forHandle: "lens/" + router.asPath.split("&profile=")[1],
         });
@@ -647,12 +636,7 @@ const useProfileFeed = () => {
               obj.collectionId !== "4" && obj.collectionId !== "5"
           ) || []),
         ]?.map(async (collection: Collection) => {
-          const json = await fetchIPFSJSON(
-            (collection.uri as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          );
+          const json = await fetchIPFSJSON(collection.uri as any);
           const type = await fetch(
             `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
             { method: "HEAD" }
@@ -705,12 +689,7 @@ const useProfileFeed = () => {
 
         const fullDrops = await Promise.all(
           allDrops.map(async (drop: Drop) => {
-            const dropjson = await fetchIPFSJSON(
-              (drop as any)?.dropURI
-                ?.split("ipfs://")[1]
-                ?.replace(/"/g, "")
-                ?.trim()
-            );
+            const dropjson = await fetchIPFSJSON((drop as any)?.dropURI);
 
             return {
               ...drop,
@@ -760,7 +739,7 @@ const useProfileFeed = () => {
     ) {
       getSingleProfile();
     }
-  }, [router.asPath, lensProfile, quickProfiles]);
+  }, [router.asPath, lensProfile?.id, quickProfiles]);
 
   return {
     hasMoreProfile,

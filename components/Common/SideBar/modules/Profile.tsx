@@ -2,14 +2,13 @@ import { FunctionComponent } from "react";
 import { ProfileProps } from "../types/sidebar.types";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import Image from "next/image";
-import { useRouter } from "next/router";
 
 const Profile: FunctionComponent<ProfileProps> = ({
   profile,
   mainPage,
+  router
 }): JSX.Element => {
   const picture = createProfilePicture(profile?.metadata?.picture);
-  const router = useRouter();
   return (
     <div
       className={`relative h-12 font-geom text-white flex flex-row px-2 cursor-pointer items-center justify-center ${

@@ -1,7 +1,5 @@
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { UseConnectResults } from "../types/sidebar.types";
-import { useAccount, useSignMessage } from "wagmi";
-import { useDispatch } from "react-redux";
+import { useSignMessage } from "wagmi";
 import { setLensProfile } from "@/redux/reducers/lensProfileSlice";
 import {
   getAddress,
@@ -19,22 +17,21 @@ import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { setNoHandle } from "@/redux/reducers/noHandleSlice";
 import { CHROMADIN_ACCESS_CONTROLS } from "@/lib/constants";
 import { setIsCreator } from "@/redux/reducers/isCreatorSlice";
-import { useRouter } from "next/router";
-import { createPublicClient, http } from "viem";
-import { polygon } from "viem/chains";
+import { NextRouter } from "next/router";
+import { PublicClient } from "viem";
 import { Profile } from "@/components/Home/types/generated";
 import { setConnectedRedux } from "@/redux/reducers/connectedSlice";
+import { Dispatch } from "redux";
 
-const useConnect = (): UseConnectResults => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
-  const {  connectModalOpen } = useConnectModal();
-  const dispatch = useDispatch();
-  const { address, isConnected } = useAccount();
+const useConnect = (
+  router: NextRouter,
+  address: `0x${string}` | undefined,
+  isConnected: boolean,
+  dispatch: Dispatch,
+  connectModalOpen: boolean,
+  publicClient: PublicClient
+): UseConnectResults => {
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
-  const router = useRouter();
 
   const getWriter = async () => {
     try {
@@ -169,7 +166,7 @@ const useConnect = (): UseConnectResults => {
         })
       );
     }
-  }, [connectModalOpen])
+  }, [connectModalOpen]);
 
   useEffect(() => {
     if (router && address) {

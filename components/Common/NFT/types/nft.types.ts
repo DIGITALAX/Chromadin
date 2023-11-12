@@ -1,5 +1,5 @@
 import { UploadedMedia } from "@/components/Home/types/home.types";
-import { Erc20, Profile } from "@/components/Home/types/generated";
+import { Comment, Erc20, Profile } from "@/components/Home/types/generated";
 import { NextRouter } from "next/router";
 import {
   ClipboardEvent,
@@ -15,10 +15,10 @@ export type NFTProps = {
   viewer: string;
   canComment: boolean;
   connected: boolean;
+  lensProfile: Profile | undefined;
   collectionsLoading: boolean;
   dispatch: Dispatch<AnyAction>;
   router: NextRouter;
-  profileId: string;
   commentVideo: () => Promise<void>;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
@@ -89,11 +89,11 @@ export type NFTProps = {
 
 export type UserCommentProps = {
   connected: boolean;
-  profileId: string;
+  lensProfile: Profile | undefined;
   canComment: boolean;
   commentVideo: () => Promise<void>;
   handleLensSignIn: () => Promise<void>;
-  openConnectModal:( () => void) | undefined;
+  openConnectModal: (() => void) | undefined;
   commentDescription: string;
   commentLoading: boolean;
   handleCommentDescription: (e: FormEvent) => Promise<void>;
@@ -223,6 +223,7 @@ export type OptionsProps = {
   videoLoading: boolean;
   imageLoading: boolean;
   commentLoading: boolean;
+  postImages: UploadedMedia[] | undefined;
   uploadImage: (
     e: FormEvent,
     canvas?: boolean,

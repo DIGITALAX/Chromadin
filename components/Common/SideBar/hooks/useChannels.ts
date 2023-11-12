@@ -1,50 +1,40 @@
 import { useEffect, useState } from "react";
 import { UseChannelsResults } from "../types/sidebar.types";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import {
   getPublications,
   getPublicationsAuth,
 } from "@/graphql/lens/queries/getVideos";
 import { FetchResult } from "@apollo/client";
-import { setMainVideo } from "@/redux/reducers/mainVideoSlice";
+import { MainVideoState, setMainVideo } from "@/redux/reducers/mainVideoSlice";
 import json from "./../../../../public/videos/local.json";
 import { setChannelsRedux } from "@/redux/reducers/channelsSlice";
 import lodash from "lodash";
 import { setReactId } from "@/redux/reducers/reactIdSlice";
-import { setVideoSync } from "@/redux/reducers/videoSyncSlice";
-import { setVideoCount } from "@/redux/reducers/videoCountSlice";
+import { VideoSyncState, setVideoSync } from "@/redux/reducers/videoSyncSlice";
+import {
+  VideoCountState,
+  setVideoCount,
+} from "@/redux/reducers/videoCountSlice";
 import { setHasMoreVideosRedux } from "@/redux/reducers/hasMoreVideosSlice";
 import {
   LimitType,
   Post,
+  Profile,
   PublicationType,
   PublicationsQuery,
 } from "@/components/Home/types/generated";
+import { AnyAction, Dispatch } from "redux";
 
-const useChannels = (): UseChannelsResults => {
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
-  );
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const channelsDispatched = useSelector(
-    (state: RootState) => state.app.channelsReducer.value
-  );
-  const indexer = useSelector(
-    (state: RootState) => state.app.indexModalReducer.message
-  );
-  const reactId = useSelector(
-    (state: RootState) => state.app.reactIdReducer.value
-  );
-  const videoSync = useSelector(
-    (state: RootState) => state.app.videoSyncReducer
-  );
-  const videoCount = useSelector(
-    (state: RootState) => state.app.videoCountReducer
-  );
-  const dispatch = useDispatch();
+const useChannels = (
+  dispatch: Dispatch<AnyAction>,
+  mainVideo: MainVideoState,
+  profile: Profile | undefined,
+  channelsDispatched: Post[],
+  indexer: string | undefined,
+  reactId: string | undefined,
+  videoSync: VideoSyncState,
+  videoCount: VideoCountState
+): UseChannelsResults => {
   const [tab, setTab] = useState<number>(0);
   const [paginated, setPaginated] = useState<any>();
   const [videosLoading, setVideosLoading] = useState<boolean>(false);
@@ -66,7 +56,7 @@ const useChannels = (): UseChannelsResults => {
     let data: FetchResult<PublicationsQuery>,
       sortedArr: Post[] = [];
     try {
-      if (lensProfile) {
+      if (profile?.id) {
         data = await getPublicationsAuth({
           limit: LimitType.Ten,
           where: {
@@ -138,7 +128,6 @@ const useChannels = (): UseChannelsResults => {
     );
   };
 
-  
   const fetchMoreVideos = async () => {
     let data: FetchResult<PublicationsQuery>,
       sortedArr: Post[] = [];
@@ -147,7 +136,7 @@ const useChannels = (): UseChannelsResults => {
       return;
     }
     try {
-      if (lensProfile) {
+      if (profile?.id) {
         data = await getPublicationsAuth({
           limit: LimitType.Ten,
           where: {
@@ -242,7 +231,7 @@ const useChannels = (): UseChannelsResults => {
   const refetchInteractions = async () => {
     let data: FetchResult<PublicationsQuery>;
     try {
-      if (lensProfile) {
+      if (profile?.id) {
         data = await getPublicationsAuth({
           limit: LimitType.Ten,
           where: {
@@ -326,7 +315,7 @@ const useChannels = (): UseChannelsResults => {
     if (!channelsDispatched || channelsDispatched?.length < 1) {
       getVideos();
     }
-  }, [lensProfile]);
+  }, [profile?.id]);
 
   useEffect(() => {
     if (window.innerWidth > 1024) {

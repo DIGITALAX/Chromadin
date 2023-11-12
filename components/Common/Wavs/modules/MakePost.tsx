@@ -7,7 +7,7 @@ import { setNoHandle } from "@/redux/reducers/noHandleSlice";
 
 const MakePost: FunctionComponent<MakePostProps> = ({
   dispatch,
-  profileId,
+  lensProfile,
   address,
 }): JSX.Element => {
   return (
@@ -15,7 +15,7 @@ const MakePost: FunctionComponent<MakePostProps> = ({
       <div
         className="relative w-4 h-4 flex cursor-pointer active:scale-95"
         onClick={() =>
-          profileId && address
+          lensProfile?.id && address
             ? dispatch(
                 setMakePost({
                   actionValue: true,

@@ -7,7 +7,7 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 const MoreDrops: FunctionComponent<MoreDropsProps> = ({
   otherDrops,
   autoProfile,
-  push,
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col items-start justify-start">
@@ -22,7 +22,7 @@ const MoreDrops: FunctionComponent<MoreDropsProps> = ({
                 key={index}
                 className="relative w-fit h-fit flex flex-col gap-1.5 cursor-pointer hover:opacity-70 border border-ama rounded-md"
                 onClick={() =>
-                  push(
+                  router?.push(
                     `/autograph/${
                       autoProfile?.handle?.suggestedFormatted?.localName?.split(
                         "@"

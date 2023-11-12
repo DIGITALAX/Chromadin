@@ -1,23 +1,15 @@
 import { joinSignature } from "@ethersproject/bytes";
 import { serialize } from "@ethersproject/transactions";
-import { AnyAction, Dispatch } from "redux";
 import { ethers } from "ethers";
-import { connectLit } from "./connectLit";
 
 export const litExecute = async (
   provider: ethers.providers.JsonRpcProvider,
-  dispatch: Dispatch<AnyAction>,
-  litClient: any,
+  client: any,
   tx: any,
   sigName: string,
   authSig: any,
   retryCount: number = 0
 ) => {
-  let client = litClient;
-  if (!client) {
-    client = await connectLit(dispatch);
-  }
-
   const maxRetries = 5;
 
   try {
@@ -66,8 +58,7 @@ export const litExecute = async (
       console.warn(`Retry attempt ${retryCount + 1} after timeout error.`);
       await litExecute(
         provider,
-        dispatch,
-        litClient,
+        client,
         tx,
         sigName,
         authSig,

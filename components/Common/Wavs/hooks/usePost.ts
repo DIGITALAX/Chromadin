@@ -7,11 +7,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useAccount } from "wagmi";
 import LensHubProxy from "../../../../abis/LensHubProxy.json";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
-import { RootState } from "@/redux/store";
 import broadcast from "@/graphql/lens/mutations/broadcast";
 import { omit } from "lodash";
 import uploadPostContent from "@/lib/helpers/uploadPostContent";
@@ -27,6 +24,7 @@ import {
   LimitType,
   Profile,
   RelaySuccess,
+  SimpleCollectOpenActionModuleInput,
 } from "@/components/Home/types/generated";
 import getCaretPos from "@/lib/helpers/getCaretPos";
 import { createPostTypedData } from "@/graphql/lens/mutations/post";
@@ -36,24 +34,30 @@ import { setCollectOpen } from "@/redux/reducers/collectOpenSlice";
 import { setPublicationImages } from "@/redux/reducers/publicationImageSlice";
 import { setMakePost } from "@/redux/reducers/makePostSlice";
 import { setPostSent } from "@/redux/reducers/postSentSlice";
-import useImageUpload from "./../../NFT/hooks/useImageUpload";
 import { setImageLoadingRedux } from "@/redux/reducers/imageLoadingSlice";
 import {
+  PublicClient,
   SignTypedDataParameters,
-  createPublicClient,
   createWalletClient,
   custom,
-  http,
 } from "viem";
 import { polygon } from "viem/chains";
 import { createQuoteTypedData } from "@/graphql/lens/mutations/quote";
+import { AnyAction, Dispatch } from "redux";
 
-const useMakePost = () => {
-  const { address } = useAccount();
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
+const useMakePost = (
+  address: `0x${string}` | undefined,
+  publicClient: PublicClient,
+  dispatch: Dispatch<AnyAction>,
+  collectOpen: boolean,
+  collectModuleType: SimpleCollectOpenActionModuleInput | undefined,
+  imagesUploaded: UploadedMedia[],
+  uploadImage: (
+    e: FormEvent<Element> | File[],
+    pasted?: boolean | undefined,
+    feed?: boolean | undefined
+  ) => Promise<void>
+) => {
   const [postLoading, setPostLoading] = useState<boolean>(false);
   const [postDescription, setPostDescription] = useState<string>("");
   const [caretCoord, setCaretCoord] = useState<{ x: number; y: number }>({
@@ -72,17 +76,6 @@ const useMakePost = () => {
   const [searchGif, setSearchGif] = useState<string>("");
   const [postHTML, setPostHTML] = useState<string>("");
   const [contentURI, setContentURI] = useState<string>();
-  const dispatch = useDispatch();
-  const { uploadImage } = useImageUpload();
-  const collectOpen = useSelector(
-    (state: RootState) => state.app.collectOpenReducer.value
-  );
-  const postImages = useSelector(
-    (state: RootState) => state?.app?.publicationImageReducer?.value
-  );
-  const collectModuleType = useSelector(
-    (state: RootState) => state?.app?.collectValueTypeReducer?.type
-  );
 
   const handleGif = (e: FormEvent): void => {
     setSearchGif((e.target as HTMLFormElement).value);
@@ -98,9 +91,9 @@ const useMakePost = () => {
   };
 
   const handleSetGif = (result: any): void => {
-    if ((postImages as any)?.length < 4) {
+    if ((imagesUploaded as any)?.length < 4) {
       setGifs([
-        ...(postImages as any),
+        ...(imagesUploaded as any),
         {
           cid: result,
           type: MediaType.Gif,
@@ -111,7 +104,7 @@ const useMakePost = () => {
         JSON.stringify({
           ...postStorage,
           images: [
-            ...(postImages as any),
+            ...(imagesUploaded as any),
             {
               cid: result,
               type: MediaType.Gif,
@@ -251,7 +244,7 @@ const useMakePost = () => {
       (!postDescription ||
         postDescription === "" ||
         postDescription.trim()?.length < 0) &&
-      (!postImages?.length || postImages?.length < 1)
+      (!imagesUploaded?.length || imagesUploaded?.length < 1)
     ) {
       return;
     }
@@ -273,7 +266,7 @@ const useMakePost = () => {
       id: string;
     try {
       const contentURIValue = await uploadPostContent(
-        postImages,
+        imagesUploaded,
         postDescription,
         setContentURI,
         contentURI,

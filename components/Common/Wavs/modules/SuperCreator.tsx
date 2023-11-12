@@ -6,7 +6,7 @@ import { setNoHandle } from "@/redux/reducers/noHandleSlice";
 const SuperCreator: FunctionComponent<SuperCreatorProps> = ({
   openConnectModal,
   address,
-  profileId,
+  lensProfile,
   dispatch,
 }): JSX.Element => {
   return (
@@ -17,7 +17,7 @@ const SuperCreator: FunctionComponent<SuperCreatorProps> = ({
           onClick={
             !address
               ? openConnectModal
-              : address && !profileId
+              : address && !lensProfile?.id
               ? () =>
                   dispatch(
                     setNoHandle({
@@ -31,7 +31,7 @@ const SuperCreator: FunctionComponent<SuperCreatorProps> = ({
           super creator
         </div>
         <div className="relative h-fit w-full justify-end flex text-ama font-dosis text-xxs text-right">
-          {!address || !profileId ? "sign in 2 follow" : " follow"}
+          {!address || !lensProfile?.id ? "sign in 2 follow" : " follow"}
         </div>
       </div>
     </div>

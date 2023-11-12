@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface DecryptProfilePaginatedState {
-  value: any;
+  value: string | undefined;
 }
 
 const initialDecryptProfilePaginatedState: DecryptProfilePaginatedState = {
-  value: {},
+  value: undefined,
 };
 
 export const decryptProfilePaginatedSlice = createSlice({

@@ -5,8 +5,6 @@ import { AiFillFastBackward } from "react-icons/ai";
 import { BiHomeHeart } from "react-icons/bi";
 import { IndividualProps } from "../types/wavs.types";
 import MakeComment from "./MakeComment";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { Post, Quote, TriStateValue } from "@/components/Home/types/generated";
 
 const Individual: FunctionComponent<IndividualProps> = ({
@@ -95,7 +93,6 @@ const Individual: FunctionComponent<IndividualProps> = ({
   openConnectModal,
   handleRemoveImage,
   videoLoading,
-  profileId,
   uploadImages,
   uploadVideo,
   imageLoading,
@@ -108,10 +105,9 @@ const Individual: FunctionComponent<IndividualProps> = ({
   preElement,
   handleImagePaste,
   clientRendered,
+  history,
+  lensProfile,
 }): JSX.Element => {
-  const history = useSelector(
-    (state: RootState) => state.app.historyURLReducer.value
-  );
   return (
     <div className="relative flex flex-col items-start justify-start gap-3 h-full w-full">
       <div className="sticky z-0 w-full h-fit flex flex-row items-start justify-start mr-0 gap-2">
@@ -189,7 +185,7 @@ const Individual: FunctionComponent<IndividualProps> = ({
               openConnectModal={openConnectModal}
               handleRemoveImage={handleRemoveImage}
               address={address}
-              profileId={profileId}
+              lensProfile={lensProfile}
               videoLoading={videoLoading}
               uploadImages={uploadImages}
               uploadVideo={uploadVideo}
@@ -294,7 +290,7 @@ const Individual: FunctionComponent<IndividualProps> = ({
         handleLensSignIn={handleLensSignIn}
         openConnectModal={openConnectModal}
         handleRemoveImage={handleRemoveImage}
-        profileId={profileId}
+        lensProfile={lensProfile}
         videoLoading={videoLoading}
         uploadImages={uploadImages}
         uploadVideo={uploadVideo}

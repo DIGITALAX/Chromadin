@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import addReaction from "@/graphql/lens/mutations/react";
-import { useAccount } from "wagmi";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import {
   getPublication,
@@ -12,33 +9,34 @@ import checkApproved from "@/lib/helpers/checkApproved";
 import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
 import { setFeedReactId } from "@/redux/reducers/feedReactIdSlice";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import {
   ApprovalAllowance,
+  Mirror,
   Post,
+  Profile,
   PublicationQuery,
   PublicationReactionType,
+  Quote,
 } from "@/components/Home/types/generated";
 import mirrorSig from "@/lib/helpers/mirrorSig";
 import actSig from "@/lib/helpers/actSig";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
+import { ApprovalArgs } from "../types/wavs.types";
+import { PurchaseState } from "@/redux/reducers/purchaseSlice";
+import { PublicClient } from "wagmi";
+import { AnyAction, Dispatch } from "redux";
 
-const useReactions = () => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
-  });
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const feedDispatch = useSelector(
-    (state: RootState) => state.app.feedReducer.value
-  );
-  const approvalArgs = useSelector(
-    (state: RootState) => state.app.approvalArgsReducer.args
-  );
-  const purchase = useSelector((state: RootState) => state.app.purchaseReducer);
+const useReactions = (
+  publicClient: PublicClient,
+  dispatch: Dispatch<AnyAction>,
+  address: `0x${string}` | undefined,
+  profile: Profile | undefined,
+  feedDispatch: (Post | Quote | Mirror)[],
+  approvalArgs: ApprovalArgs | undefined,
+  purchase: PurchaseState
+) => {
   const [approvalLoading, setApprovalLoading] = useState<boolean>(false);
   const [collectInfoLoading, setCollectInfoLoading] = useState<boolean>(false);
   const [mirrorFeedLoading, setMirrorFeedLoading] = useState<boolean[]>(
@@ -53,8 +51,6 @@ const useReactions = () => {
   const [openMirrorChoice, setOpenMirrorChoice] = useState<boolean[]>(
     Array.from({ length: feedDispatch.length }, () => false)
   );
-  const dispatch = useDispatch();
-  const { address } = useAccount();
 
   const reactPost = async (
     id: string,
@@ -62,7 +58,7 @@ const useReactions = () => {
     inputIndex?: number,
     mirrorId?: string
   ): Promise<void> => {
-    if (!profileId) {
+    if (!profile?.id) {
       return;
     }
     let index: number;
@@ -146,7 +142,7 @@ const useReactions = () => {
     inputIndex?: number,
     mirrorId?: string
   ): Promise<void> => {
-    if (!profileId) {
+    if (!profile?.id) {
       return;
     }
     let index: number;
@@ -228,7 +224,7 @@ const useReactions = () => {
     inputIndex?: number,
     mirrorId?: string
   ): Promise<void> => {
-    if (!profileId) {
+    if (!profile?.id) {
       return;
     }
     let index: number;
@@ -319,7 +315,7 @@ const useReactions = () => {
     setCollectInfoLoading(true);
     try {
       let pubData: PublicationQuery;
-      if (profileId) {
+      if (profile?.id) {
         const { data } = await getPublicationAuth({
           forId: purchase.id,
         });
@@ -346,7 +342,7 @@ const useReactions = () => {
         collectModule?.amount?.value,
         dispatch,
         address,
-        profileId
+        profile?.id
       );
       const isApproved = parseInt(approvalData?.allowance.value as string, 16);
 

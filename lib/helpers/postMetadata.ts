@@ -19,8 +19,8 @@ export const postMetadata = (
       ? publication.mirrorOn
       : (publication as Post);
 
-  return pub.isEncrypted &&
-    (pub as any).decrypted &&
+  return pub?.isEncrypted &&
+    (pub as any)?.decrypted &&
     ((pub as any)?.decrypted?.__typename === "VideoMetadataV3" ||
       (pub as any)?.__typename === "ImageMetadataV3" ||
       (pub as any)?.__typename === "AudioMetadataV3")

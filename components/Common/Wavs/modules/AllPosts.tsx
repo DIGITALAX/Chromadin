@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, MouseEvent } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import MakeComment from "./MakeComment";
 import FeedPublication from "./FeedPublication";
@@ -36,7 +36,6 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   commentOpen,
   commentDescription,
   textElement,
-  profileId,
   caretCoord,
   handleCommentDescription,
   openConnectModal,
@@ -116,6 +115,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   clientRendered,
   openMirrorChoice,
   setOpenMirrorChoice,
+  lensProfile,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col items-start justify-start gap-4 max-w-full">
@@ -129,7 +129,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
               dispatch={dispatch}
               openConnectModal={openConnectModal}
               address={address}
-              profileId={profileId}
+              lensProfile={lensProfile}
             />
             <Search
               searchProfiles={searchProfiles}
@@ -155,9 +155,9 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
           scrollableTarget={"scrollableDiv"}
           ref={filterDecrypt ? scrollRefDecrypt : scrollRef}
           onScroll={
-            filterDecrypt
+            (filterDecrypt
               ? (e: MouseEvent) => setScrollPosDecrypt(e)
-              : (e: MouseEvent) => setScrollPos(e)
+              : (e: MouseEvent) => setScrollPos(e)) as any
           }
           initialScrollY={
             feedType === "" ? (filterDecrypt ? decryptScrollPos : scrollPos) : 0
@@ -265,7 +265,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                         openConnectModal={openConnectModal}
                         handleRemoveImage={handleRemoveImage}
                         address={address}
-                        profileId={profileId}
+                        lensProfile={lensProfile}
                         videoLoading={videoLoading}
                         uploadImages={uploadImages}
                         uploadVideo={uploadVideo}

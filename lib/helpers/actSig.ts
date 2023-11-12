@@ -1,7 +1,9 @@
-import { RelaySuccess } from "@/components/Home/types/generated";
+import {
+  RelaySuccess,
+  ActOnOpenActionInput,
+} from "@/components/Home/types/generated";
 import broadcast from "@/graphql/lens/mutations/broadcast";
 import LensHubProxy from "./../../abis/LensHubProxy.json";
-import { ActOnOpenActionInput } from "@lens-protocol/client";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../constants";
 import { omit } from "lodash";
 import { AnyAction, Dispatch } from "redux";
@@ -77,9 +79,12 @@ const actSig = async (
       );
       const tx = await publicClient.waitForTransactionReceipt({ hash: res });
 
-      await handleIndexCheck({
-        forTxHash: tx.transactionHash,
-      }, dispatch);
+      await handleIndexCheck(
+        {
+          forTxHash: tx.transactionHash,
+        },
+        dispatch
+      );
     } else {
       dispatch(
         setIndexModal({

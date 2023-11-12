@@ -1,10 +1,11 @@
 import NotFound from "@/components/Common/Loading/NotFound";
 import Head from "next/head";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { FunctionComponent } from "react";
 
-const Custom404: FunctionComponent = (): JSX.Element => {
-  const router = useRouter();
+const Custom404: FunctionComponent<{ router: NextRouter }> = ({
+  router,
+}): JSX.Element => {
   return (
     <div className="relative w-full h-screen flex flex-col items-center justify-center overflow-x-hidden">
       <Head>

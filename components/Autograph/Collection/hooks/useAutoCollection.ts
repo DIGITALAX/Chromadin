@@ -1,4 +1,3 @@
-import useImageUpload from "@/components/Common/NFT/hooks/useImageUpload";
 import { Collection, Drop } from "@/components/Home/types/home.types";
 import { Profile, ProfileQuery } from "@/components/Home/types/generated";
 import {
@@ -18,26 +17,22 @@ import { setAutoCollection } from "@/redux/reducers/autoCollectionSlice";
 import { setImageLoadingRedux } from "@/redux/reducers/imageLoadingSlice";
 import { setMakePost } from "@/redux/reducers/makePostSlice";
 import { setNftScreen } from "@/redux/reducers/nftScreenSlice";
-import { RootState } from "@/redux/store";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormEvent, useState } from "react";
 import { FetchResult } from "@apollo/client";
+import { AnyAction, Dispatch } from "redux";
 
-const useAutoCollection = () => {
-  const dispatch = useDispatch();
-  const { uploadImage } = useImageUpload();
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const viewNFTScreen = useSelector(
-    (state: RootState) => state.app.nftScreenReducer.value
-  );
-  const actionCollection = useSelector(
-    (state: RootState) => state.app.autoCollectionReducer.collection
-  );
-  const allDrops = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
-  );
+const useAutoCollection = (
+  dispatch: Dispatch<AnyAction>,
+  profile: Profile | undefined,
+  viewNFTScreen: boolean,
+  actionCollection: Collection | undefined,
+  allDrops: Drop[],
+  uploadImage: (
+    e: File[] | FormEvent<Element>,
+    pasted?: boolean | undefined,
+    feed?: boolean | undefined
+  ) => Promise<void>
+) => {
   const [collectionLoading, setCollectionLoading] = useState<boolean>(false);
   const [imageIndex, setImageIndex] = useState<number>(0);
   const [otherCollectionsDrop, setOtherCollectionsDrop] = useState<
@@ -69,12 +64,7 @@ const useAutoCollection = () => {
             []),
           ...(colls?.data?.collectionMinteds || []),
         ].map(async (collection: Collection) => {
-          const json = await fetchIPFSJSON(
-            (collection.uri as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          );
+          const json = await fetchIPFSJSON(collection.uri as any);
 
           const type = await fetch(
             `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
@@ -187,12 +177,7 @@ const useAutoCollection = () => {
 
       const otherDrops = await Promise.all(
         filteredColls?.map(async (collection: Collection | null) => {
-          const json = await fetchIPFSJSON(
-            (collection?.uri as any)
-              ?.split("ipfs://")[1]
-              ?.replace(/"/g, "")
-              ?.trim()
-          );
+          const json = await fetchIPFSJSON(collection?.uri as any);
 
           const type = await fetch(
             `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
@@ -253,7 +238,7 @@ const useAutoCollection = () => {
   ): Promise<Profile | undefined> => {
     try {
       let prof: FetchResult<ProfileQuery>;
-      if (lensProfile) {
+      if (profile?.id) {
         prof = await getOneProfileAuth({
           forHandle: "lens/" + (autograph as string),
         });

@@ -11,7 +11,7 @@ export const getCoinOpCollection = async (
 
     if (coinOp?.data?.collectionCreateds?.[0]) {
       const uri = await fetchIPFSJSON(
-        (coinOp?.data?.collectionCreateds?.[0].uri as any)?.split("ipfs://")[1]
+        coinOp?.data?.collectionCreateds?.[0].uri as any
       );
 
       const modifiedObj = {

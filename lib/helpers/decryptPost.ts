@@ -25,20 +25,24 @@ export const decryptPostArray = async (
       sortedArr = await Promise.all(
         sortedArr.map(async (post) => {
           if (
-            post.__typename === "Mirror"
-              ? post.mirrorOn?.operations?.canDecrypt?.result
-              : (post as Post | Quote)?.operations?.canDecrypt?.result
+            (post.__typename === "Mirror"
+              ? post.mirrorOn
+              : (post as Post | Quote)
+            )?.operations?.canDecrypt?.result &&
+            (post.__typename !== "Mirror" ? (post as Post) : post.mirrorOn)
+              ?.isEncrypted
           ) {
             try {
-              const data = await fetchIPFSJSON(
-                (post.__typename === "Mirror"
+              const fetch = (
+                post.__typename === "Mirror"
                   ? post.mirrorOn?.metadata?.rawURI
                   : (post as Post | Quote)?.metadata?.rawURI
-                )
-                  ?.split("ipfs://")[1]
-                  ?.replace(/"/g, "")
-                  ?.trim()
-              );
+              )
+                ?.split("ipfs://")?.[1]
+                ?.replace(/"/g, "")
+                ?.trim();
+
+              const data = await fetchIPFSJSON(fetch);
               const { decrypted } = await sdk.gated.decryptMetadata(data);
               if (decrypted) {
                 return {
@@ -84,7 +88,9 @@ export const decryptPostArray = async (
           "This publication is gated"
         ) ||
         (post.__typename === "Mirror" &&
-          post.mirrorOn?.metadata?.content?.includes("This publication is gated"))
+          post.mirrorOn?.metadata?.content?.includes(
+            "This publication is gated"
+          ))
       ) {
         return {
           ...post,
@@ -115,17 +121,14 @@ export const decryptPostIndividual = async (
 
       if (
         (post.__typename !== "Mirror" ? (post as Post) : post.mirrorOn)
-          ?.operations.canDecrypt
+          ?.operations.canDecrypt &&
+        (post.__typename !== "Mirror" ? (post as Post) : post.mirrorOn)
+          ?.isEncrypted
       ) {
         try {
           const data = await fetchIPFSJSON(
-            (post.__typename !== "Mirror"
-              ? (post as Post)
-              : post.mirrorOn
-            )?.metadata.rawURI
-              ?.split("ipfs://")[1]
-              .replace(/"/g, "")
-              .trim()
+            (post.__typename !== "Mirror" ? (post as Post) : post.mirrorOn)
+              ?.metadata.rawURI
           );
           const { decrypted } = await sdk.gated.decryptMetadata(data);
           if (decrypted) {

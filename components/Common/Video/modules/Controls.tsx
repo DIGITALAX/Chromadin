@@ -22,7 +22,6 @@ const Controls: FunctionComponent<ControlsProps> = ({
   likeVideo,
   collectVideo,
   mirrorVideo,
-  profileId,
   likeLoading,
   mirrorLoading,
   collectLoading,
@@ -40,6 +39,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
   videosLoading,
   setVideosLoading,
   viewer,
+  lensProfile
 }): JSX.Element => {
   const currentIndex = lodash.findIndex(dispatchVideos, { id: mainVideo.id });
   return (
@@ -99,7 +99,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
               likeLoading && "animate-spin"
             }`}
             onClick={
-              profileId
+              lensProfile?.id
                 ? () => {
                     handleHeart();
                     likeVideo();
@@ -137,7 +137,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
         </div>
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
           <div
-            className={`${profileId && "cursor-pointer"} relative w-full ${
+            className={`${lensProfile?.id && "cursor-pointer"} relative w-full ${
               collectLoading && "animate-spin"
             }`}
             onClick={() => collectVideo()}
@@ -172,7 +172,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
         </div>
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
           <div
-            className={`${profileId && "cursor-pointer"} relative w-fit ${
+            className={`${lensProfile?.id && "cursor-pointer"} relative w-fit ${
               mirrorLoading && "animate-spin"
             }`}
             onClick={() => mirrorVideo()}

@@ -6,9 +6,31 @@ import useDrops from "../hooks/useDrops";
 import { useDispatch, useSelector } from "react-redux";
 import useDrop from "@/components/Home/hooks/useDrop";
 import { RootState } from "@/redux/store";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 
-const Frequency: FunctionComponent = (): JSX.Element => {
+const Frequency: FunctionComponent<{ router: NextRouter }> = ({
+  router,
+}): JSX.Element => {
+  const dispatch = useDispatch();
+  const dispatchCollections = useSelector(
+    (state: RootState) => state.app.collectionsReducer.value
+  );
+  const hasMoreCollections = useSelector(
+    (state: RootState) => state.app.hasMoreCollectionReducer.value
+  );
+  const allDrops = useSelector(
+    (state: RootState) => state.app.dropsReducer.value
+  );
+  const paginated = useSelector(
+    (state: RootState) => state.app.collectionPaginatedReducer
+  );
+  const feedDispatch = useSelector(
+    (state: RootState) => state.app.feedReducer.value
+  );
+  const decryptFeed = useSelector(
+    (state: RootState) => state.app.decryptFeedReducer.value
+  );
+
   const {
     moveBackward,
     moveForward,
@@ -16,19 +38,20 @@ const Frequency: FunctionComponent = (): JSX.Element => {
     moshArray,
     moshVideoRef,
     currentVideoIndex,
-  } = useDrops();
+  } = useDrops(dispatchCollections);
   const {
     collectionsLoading,
     handleGetMoreCollections,
     moreCollectionsLoading,
-  } = useDrop();
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const dispatchCollections = useSelector(
-    (state: RootState) => state.app.collectionsReducer.value
-  );
-  const hasMoreCollections = useSelector(
-    (state: RootState) => state.app.hasMoreCollectionReducer.value
+  } = useDrop(
+    router,
+    dispatch,
+    dispatchCollections,
+    paginated,
+    allDrops,
+    hasMoreCollections,
+    feedDispatch,
+    decryptFeed
   );
   return (
     <div className="relative w-full h-fit preG:h-60 flex flex-row items-center md:pt-0 pt-6">

@@ -160,10 +160,11 @@ const History: FunctionComponent<HistoryProps> = ({
                         {value?.profile?.handle?.suggestedFormatted?.localName
                           ?.length! > 15
                           ? value?.profile?.handle?.suggestedFormatted?.localName
-                              ?.split(".lens")[0]
-                              .slice(0, 13) + "..."
-                          : value?.profile?.handle?.suggestedFormatted
-                              ?.localName}
+                              ?.split("@")?.[1]
+                              ?.slice(0, 13) + "..."
+                          : value?.profile?.handle?.suggestedFormatted?.localName?.split(
+                              "@"
+                            )?.[1]}
                       </div>
                     </div>
                     <div className="relative text-moda font-arcade flex items-center justify-start text-sm w-fit h-fit">

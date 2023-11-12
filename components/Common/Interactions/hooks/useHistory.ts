@@ -3,51 +3,47 @@ import getBuyerHistory, {
   getBuyerHistorySpecificUpdated,
   getBuyerHistoryUpdated,
 } from "@/graphql/subgraph/queries/getBuyerHistory";
-import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { History, useHistoryResults } from "../types/interactions.types";
 import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { setHistoryRedux } from "@/redux/reducers/historySlice";
-import { useAccount } from "wagmi";
 import { setBuyerHistoryRedux } from "@/redux/reducers/buyerHistorySlice";
-import { setHistoryPaginated } from "@/redux/reducers/historyPaginationSlice";
+import {
+  HistoryPaginatedState,
+  setHistoryPaginated,
+} from "@/redux/reducers/historyPaginationSlice";
 import { setHasMoreHistorysRedux } from "@/redux/reducers/hasMoreHistoryReducer";
-import { setBuyerHistoryPaginated } from "@/redux/reducers/buyerHistoryPaginationSlice";
+import {
+  BuyerHistoryPaginatedState,
+  setBuyerHistoryPaginated,
+} from "@/redux/reducers/buyerHistoryPaginationSlice";
 import { setHasMoreBuyerHistorysRedux } from "@/redux/reducers/hasMoreBuyerHistorySlice";
 import { INFURA_GATEWAY } from "@/lib/constants";
+import { AnyAction, Dispatch } from "redux";
 
-const useHistory = (): useHistoryResults => {
-  const { address } = useAccount();
-  const dispatch = useDispatch();
-  const historyReducer = useSelector(
-    (state: RootState) => state.app.historyReducer.value
-  );
-  const buyerHistoryReducer = useSelector(
-    (state: RootState) => state.app.buyerHistoryReducer.value
-  );
+const useHistory = (
+  address: `0x${string}` | undefined,
+  dispatch: Dispatch<AnyAction>,
+  historyURL: string,
+  historyReducer: History[],
+  buyerHistoryReducer: History[],
+  options: string,
+  indexModal: string | undefined,
+  historyPagination: HistoryPaginatedState,
+  buyerPagination: BuyerHistoryPaginatedState,
+  hasMoreUserHistory: {
+    old: boolean;
+    new: boolean;
+  },
+  hasMoreBuyerHistory: {
+    old: boolean;
+    new: boolean;
+  }
+): useHistoryResults => {
   const [historySwitch, setHistorySwitch] = useState<boolean>(false);
   const [historyLoading, setHistoryLoading] = useState<boolean>(false);
   const [moreHistoryLoading, setMoreHistoryLoading] = useState<boolean>(false);
-  const options = useSelector(
-    (state: RootState) => state.app.optionsReducer.value
-  );
-  const indexModal = useSelector(
-    (state: RootState) => state.app.indexModalReducer.message
-  );
-  const historyPagination = useSelector(
-    (state: RootState) => state.app.historyPaginationReducer
-  );
-  const buyerPagination = useSelector(
-    (state: RootState) => state.app.buyerHistoryPaginationReducer
-  );
-  const hasMoreUserHistory = useSelector(
-    (state: RootState) => state.app.hasMoreHistoryReducer.value
-  );
-  const hasMoreBuyerHistory = useSelector(
-    (state: RootState) => state.app.hasMoreBuyerHistoryReducer.value
-  );
 
   const getUserHistory = async () => {
     setHistoryLoading(true);
@@ -75,12 +71,7 @@ const useHistory = (): useHistoryResults => {
       if (data.length > 0) {
         const history = await Promise.all(
           data.map(async (history: History) => {
-            const json = await fetchIPFSJSON(
-              (history.uri as any)
-                ?.split("ipfs://")[1]
-                ?.replace(/"/g, "")
-                ?.trim()
-            );
+            const json = await fetchIPFSJSON(history.uri as any);
 
             const type = await fetch(
               `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
@@ -143,12 +134,7 @@ const useHistory = (): useHistoryResults => {
       if (data.length > 0) {
         const history = await Promise.all(
           data.map(async (history: History) => {
-            const json = await fetchIPFSJSON(
-              (history.uri as any)
-                ?.split("ipfs://")[1]
-                ?.replace(/"/g, "")
-                ?.trim()
-            );
+            const json = await fetchIPFSJSON(history.uri as any);
 
             const type = await fetch(
               `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
@@ -243,12 +229,7 @@ const useHistory = (): useHistoryResults => {
       if (data.length > 0) {
         const history = await Promise.all(
           data.map(async (history: History) => {
-            const json = await fetchIPFSJSON(
-              (history.uri as any)
-                ?.split("ipfs://")[1]
-                ?.replace(/"/g, "")
-                ?.trim()
-            );
+            const json = await fetchIPFSJSON(history.uri as any);
 
             const type = await fetch(
               `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
@@ -353,12 +334,7 @@ const useHistory = (): useHistoryResults => {
       if (data.length > 0) {
         const history = await Promise.all(
           data.map(async (history: History) => {
-            const json = await fetchIPFSJSON(
-              (history.uri as any)
-                ?.split("ipfs://")[1]
-                ?.replace(/"/g, "")
-                ?.trim()
-            );
+            const json = await fetchIPFSJSON(history.uri as any);
 
             const type = await fetch(
               `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
@@ -409,7 +385,7 @@ const useHistory = (): useHistoryResults => {
         getUserHistory();
       }
     }
-  }, [options, indexModal, history, address, historySwitch]);
+  }, [options, indexModal, historyURL, address, historySwitch]);
 
   return {
     historyLoading,
