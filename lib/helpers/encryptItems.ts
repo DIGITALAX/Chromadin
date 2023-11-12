@@ -48,23 +48,25 @@ export const encryptItems = async (
         });
       });
 
+      const accessControlConditions = [
+        ...fulfillerEditions,
+        {
+          contractAddress: "",
+          standardContractType: "",
+          chain: "polygon",
+          method: "",
+          parameters: [":userAddress"],
+          returnValueTest: {
+            comparator: "=",
+            value: address?.toLowerCase() as string,
+          },
+        },
+      ];
+
       const { ciphertext, dataToEncryptHash } = await LitJsSdk.encryptString(
         {
-          accessControlConditions: [
-            ...fulfillerEditions,
-            {
-              contractAddress: "",
-              standardContractType: "",
-              chain: "polygon",
-              method: "",
-              parameters: [":userAddress"],
-              returnValueTest: {
-                comparator: "=",
-                value: address?.toLowerCase() as string,
-              },
-            },
-          ],
-          authSig: authSig,
+          accessControlConditions,
+          authSig,
           chain: "polygon",
           dataToEncrypt: JSON.stringify({
             ...fulfillmentDetails,
@@ -77,8 +79,9 @@ export const encryptItems = async (
       fulfillerDetails.push(
         JSON.stringify({
           fulfillerAddress,
-          ciphertext: ciphertext,
-          dataToEncryptHash: dataToEncryptHash,
+          ciphertext,
+          dataToEncryptHash,
+          accessControlConditions,
         })
       );
     }

@@ -9,21 +9,23 @@ export const encryptToken = async (
   try {
     let encryptedTokenId: string | undefined;
 
+    const accessControlConditions = [
+      {
+        contractAddress: "",
+        standardContractType: "",
+        chain: "polygon",
+        method: "",
+        parameters: [":userAddress"],
+        returnValueTest: {
+          comparator: "=",
+          value: address?.toLowerCase() as string,
+        },
+      },
+    ];
+
     const { ciphertext, dataToEncryptHash } = await LitJsSdk.encryptString(
       {
-        accessControlConditions: [
-          {
-            contractAddress: "",
-            standardContractType: "",
-            chain: "polygon",
-            method: "",
-            parameters: [":userAddress"],
-            returnValueTest: {
-              comparator: "=",
-              value: address?.toLowerCase() as string,
-            },
-          },
-        ],
+        accessControlConditions,
         authSig: authSig,
         chain: "polygon",
         dataToEncrypt: currentPKP,
@@ -32,8 +34,9 @@ export const encryptToken = async (
     );
 
     encryptedTokenId = JSON.stringify({
-      ciphertext: ciphertext,
-      dataToEncryptHash: dataToEncryptHash,
+      ciphertext,
+      dataToEncryptHash,
+      accessControlConditions,
     });
 
     return encryptedTokenId;
