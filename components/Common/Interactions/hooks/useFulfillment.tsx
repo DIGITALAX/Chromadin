@@ -433,7 +433,13 @@ const useFulfillment = (
         address!
       );
 
-      const { request, result } = await publicClient.simulateContract({
+      const response = await fetch("/api/ipfs", {
+        method: "POST",
+        body: JSON.stringify(returned?.fulfillerDetails),
+      });
+      let cid = await response.json();
+
+      const { request } = await publicClient.simulateContract({
         address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
         abi: CoinOpMarketABI,
         functionName: "buyTokens",
@@ -446,7 +452,7 @@ const useFulfillment = (
             customAmounts: [],
             customIndexes: [],
             customURIs: [],
-            fulfillmentDetails: JSON.stringify(returned?.fulfillerDetails),
+            fulfillmentDetails: "ipfs://" + cid?.cid,
             pkpTokenId: "",
             chosenTokenAddress: ACCEPTED_TOKENS.find(
               ([token]) => token === currency
