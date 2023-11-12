@@ -936,7 +936,23 @@ const useAllPosts = (
         getTimeline();
       }
     }
-  }, [postSent]);
+  }, [postSent, router?.asPath]);
+
+  useEffect(() => {
+    if (
+      !router.asPath.includes("&post=") &&
+      !router.asPath.includes("&profile=") &&
+      feedDispatch?.length < 1
+    ) {
+      dispatch(setPostSent(false));
+
+      if (filterDecrypt) {
+        getDecryptFeed();
+      } else {
+        getTimeline();
+      }
+    }
+  }, [router?.asPath]);
 
   useEffect(() => {
     if (decrypt.open) {
