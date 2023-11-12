@@ -936,7 +936,7 @@ const useAllPosts = (
         getTimeline();
       }
     }
-  }, [postSent, router?.asPath]);
+  }, [postSent]);
 
   useEffect(() => {
     if (
@@ -944,7 +944,6 @@ const useAllPosts = (
       !router.asPath.includes("&profile=") &&
       feedDispatch?.length < 1
     ) {
-      dispatch(setPostSent(false));
 
       if (filterDecrypt) {
         getDecryptFeed();

@@ -39,8 +39,7 @@ const useDrop = (
     new: boolean;
     old: boolean;
   },
-  feedDispatch: (Post | Quote | Mirror)[],
-  decryptFeed: Post[]
+  quickProfiles: QuickProfilesInterface[]
 ) => {
   const [collectionsLoading, setCollectionsLoading] = useState<boolean>(false);
   const [moreCollectionsLoading, setMoreCollectionsLoading] =
@@ -522,10 +521,7 @@ const useDrop = (
       router.asPath.includes("#collect") ||
       router.asPath.includes("autograph")
     ) {
-      if (
-        (!feedDispatch || feedDispatch.length < 1) &&
-        (decryptFeed.length < 1 || !decryptFeed)
-      ) {
+      if (quickProfiles?.length < 1) {
         getQuickProfiles();
       }
     }

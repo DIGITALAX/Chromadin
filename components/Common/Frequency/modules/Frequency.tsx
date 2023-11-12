@@ -15,6 +15,9 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
   const dispatchCollections = useSelector(
     (state: RootState) => state.app.collectionsReducer.value
   );
+  const quickProfiles = useSelector(
+    (state: RootState) => state.app.quickProfilesReducer.value
+  );
   const hasMoreCollections = useSelector(
     (state: RootState) => state.app.hasMoreCollectionReducer.value
   );
@@ -23,12 +26,6 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
   );
   const paginated = useSelector(
     (state: RootState) => state.app.collectionPaginatedReducer
-  );
-  const feedDispatch = useSelector(
-    (state: RootState) => state.app.feedReducer.value
-  );
-  const decryptFeed = useSelector(
-    (state: RootState) => state.app.decryptFeedReducer.value
   );
 
   const {
@@ -50,8 +47,7 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
     paginated,
     allDrops,
     hasMoreCollections,
-    feedDispatch,
-    decryptFeed
+    quickProfiles
   );
   return (
     <div className="relative w-full h-fit preG:h-60 flex flex-row items-center md:pt-0 pt-6">

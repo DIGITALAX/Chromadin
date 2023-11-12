@@ -368,8 +368,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     paginatedCollection,
     allDrops,
     hasMoreCollections,
-    feed,
-    decryptFeed
+    quickProfiles
   );
   const {
     commentPost: commentPostWavs,
