@@ -11,6 +11,7 @@ import { Profile } from "@/components/Home/types/generated";
 import followSig from "@/lib/helpers/followSig";
 import { AnyAction, Dispatch } from "redux";
 import { QuickProfilesInterface } from "../types/wavs.types";
+import { setRainRedux } from "@/redux/reducers/rainSlice";
 
 const useSuperCreator = (
   publicClient: PublicClient,
@@ -74,6 +75,7 @@ const useSuperCreator = (
           dispatch
         );
 
+        dispatch(setRainRedux(true))
         await refetchProfile();
       } catch (err: any) {
         if (err.message.includes("You do not have enough")) {
