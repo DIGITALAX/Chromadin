@@ -15,6 +15,7 @@ import { MakeCommentProps } from "../types/wavs.types";
 import OptionsComment from "./OptionsComment";
 import CollectButton from "../../Buttons/CollectButton";
 import CollectInput from "../../Buttons/CollectInput";
+import { Profile } from "@/components/Home/types/generated";
 
 const MakeComment: FunctionComponent<MakeCommentProps> = ({
   commentPost,
@@ -304,8 +305,10 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                     left: caretCoord.x,
                   }}
                 >
-                  {mentionProfiles?.map((user: any, index: number) => {
-                    const profileImage = createProfilePicture(user);
+                  {mentionProfiles?.map((user: Profile, index: number) => {
+                    const profileImage = createProfilePicture(
+                      user?.metadata?.picture
+                    );
                     return (
                       <div
                         key={index}
@@ -331,7 +334,7 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                             )}
                           </div>
                           <div className="relative col-start-2 items-center justify-center w-fit h-fit text-xs flex">
-                            {user?.handle}
+                            {user?.handle?.suggestedFormatted?.localName}
                           </div>
                         </div>
                       </div>

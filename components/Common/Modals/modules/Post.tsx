@@ -19,6 +19,7 @@ import { setModal } from "@/redux/reducers/modalSlice";
 import syncScroll from "@/lib/helpers/syncScroll";
 import { setCollectOpen } from "@/redux/reducers/collectOpenSlice";
 import Quote from "../../Wavs/modules/Quote";
+import { Profile } from "@/components/Home/types/generated";
 
 const Post: FunctionComponent<PostProps> = ({
   dispatch,
@@ -327,15 +328,17 @@ const Post: FunctionComponent<PostProps> = ({
                         </pre>
                         {mentionProfiles?.length > 0 && profilesOpen && (
                           <div
-                            className={`absolute w-44 max-h-28 h-fit flex flex-col overflow-y-auto items-start justify-start z-2 rounded-lg`}
+                            className={`absolute w-44 max-h-28 h-fit flex flex-col overflow-y-auto items-start justify-start z-30 rounded-lg`}
                             style={{
                               top: caretCoord.y + 30,
                               left: caretCoord.x,
                             }}
                           >
                             {mentionProfiles?.map(
-                              (user: any, index: number) => {
-                                const profileImage = createProfilePicture(user);
+                              (user: Profile, index: number) => {
+                                const profileImage = createProfilePicture(
+                                  user?.metadata?.picture
+                                );
                                 return (
                                   <div
                                     key={index}
@@ -344,7 +347,7 @@ const Post: FunctionComponent<PostProps> = ({
                                       handleMentionClick(user);
                                     }}
                                   >
-                                    <div className="relative flex flex-row w-full h-full text-black font-economicaB lowercase place-self-center gap-2">
+                                    <div className="relative flex flex-row w-full h-full text-black place-self-center gap-2">
                                       <div
                                         className={`relative rounded-full flex bg-white w-3 h-3 items-center justify-center col-start-1`}
                                         id="crt"
@@ -360,8 +363,11 @@ const Post: FunctionComponent<PostProps> = ({
                                           />
                                         )}
                                       </div>
-                                      <div className="relative col-start-2 items-center justify-center w-fit h-fit text-xs flex">
-                                        @{user?.handle?.[0]}
+                                      <div className="relative col-start-2 items-center justify-center w-fit h-fit text-xs font-economicaB flex">
+                                        {
+                                          user?.handle?.suggestedFormatted
+                                            ?.localName
+                                        }
                                       </div>
                                     </div>
                                   </div>
