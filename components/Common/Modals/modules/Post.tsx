@@ -328,7 +328,7 @@ const Post: FunctionComponent<PostProps> = ({
                         </pre>
                         {mentionProfiles?.length > 0 && profilesOpen && (
                           <div
-                            className={`absolute w-44 max-h-28 h-fit flex flex-col overflow-y-auto items-start justify-start z-30 rounded-lg`}
+                            className={`absolute w-44 max-h-28 h-fit flex flex-col overflow-y-auto items-start justify-start z-2 rounded-sm border-x border-white`}
                             style={{
                               top: caretCoord.y + 30,
                               left: caretCoord.x,
@@ -342,12 +342,12 @@ const Post: FunctionComponent<PostProps> = ({
                                 return (
                                   <div
                                     key={index}
-                                    className={`relative w-full h-fit px-3 py-2 bg-white flex flex-row gap-3 cursor-pointer items-center justify-center border-y border-black hover:bg-rosa/70 z-2`}
+                                    className={`relative w-full h-fit px-3 py-2 bg-black flex flex-row gap-3 cursor-pointer items-center justify-center border-b border-white hover:bg-ama/70 z-2`}
                                     onClick={() => {
                                       handleMentionClick(user);
                                     }}
                                   >
-                                    <div className="relative flex flex-row w-full h-full text-black place-self-center gap-2">
+                                    <div className="relative flex flex-row w-full h-full text-white font-mana lowercase place-self-center gap-2">
                                       <div
                                         className={`relative rounded-full flex bg-white w-3 h-3 items-center justify-center col-start-1`}
                                         id="crt"
@@ -363,7 +363,7 @@ const Post: FunctionComponent<PostProps> = ({
                                           />
                                         )}
                                       </div>
-                                      <div className="relative col-start-2 items-center justify-center w-fit h-fit text-xs font-economicaB flex">
+                                      <div className="relative col-start-2 items-center justify-center w-fit h-fit text-xs flex">
                                         {
                                           user?.handle?.suggestedFormatted
                                             ?.localName
