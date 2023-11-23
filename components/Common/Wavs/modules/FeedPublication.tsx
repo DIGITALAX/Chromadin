@@ -205,12 +205,24 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               : "row-start-2"
           }`}
         >
-          {metadata &&
+          {(!(
+            publication?.__typename === "Mirror"
+              ? publication?.mirrorOn
+              : (publication as Post)
+          )?.isEncrypted ||
+            ((publication?.__typename === "Mirror"
+              ? publication?.mirrorOn
+              : (publication as Post)
+            )?.isEncrypted &&
+              (
+                (publication?.__typename !== "Mirror"
+                  ? publication
+                  : publication.mirrorOn) as any
+              )?.decrypted?.content)) &&
+            metadata &&
             metadata !== null &&
             metadata?.map((item: PublicationMetadataMedia, index: number) => {
-              const media = metadataMedia(
-                item
-              );
+              const media = metadataMedia(item);
               return (
                 media?.url && (
                   <div
