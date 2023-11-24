@@ -50,13 +50,15 @@ const nextConfig = {
     return config;
   },
   async headers() {
-    return [
-      {
+    let headersConfig = [];
+
+    allowedOrigins.forEach((origin) => {
+      headersConfig.push({
         source: "/(.*)",
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: allowedOrigins.join(","),
+            value: origin,
           },
           {
             key: "Access-Control-Allow-Headers",
@@ -68,30 +70,10 @@ const nextConfig = {
             value: "GET, POST, PUT, DELETE, OPTIONS",
           },
         ],
-      },
-      {
-        source: "/fonts/:path*",
-        headers: [
-          {
-            key: "Access-Control-Allow-Credentials",
-            value: "true",
-          },
-          {
-            key: "Access-Control-Allow-Origin",
-            value: "https://www.chromadin.xyz",
-          },
-          {
-            key: "Access-Control-Allow-Methods",
-            value: "GET",
-          },
-          {
-            key: "Access-Control-Allow-Headers",
-            value:
-              "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-          },
-        ],
-      },
-    ];
+      });
+    });
+
+    return headersConfig;
   },
 };
 
