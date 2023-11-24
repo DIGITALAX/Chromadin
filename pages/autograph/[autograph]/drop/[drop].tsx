@@ -22,7 +22,9 @@ import { useAccount } from "wagmi";
 const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const publicClient = createPublicClient({
     chain: polygon,
-    transport: http(),
+    transport: http(
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+    ),
   });
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();

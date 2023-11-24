@@ -36,7 +36,9 @@ import { polygon } from "viem/chains";
 const Modals = ({ router }: { router: NextRouter }) => {
   const publicClient = createPublicClient({
     chain: polygon,
-    transport: http(),
+    transport: http(
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+    ),
   });
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
