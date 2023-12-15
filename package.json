@@ -45,6 +45,7 @@
     "textarea-caret": "^3.1.0",
     "typescript": "^5.2.2",
     "uuid": "^9.0.0",
+    "viem": "^1.20.0",
     "wavesurfer.js": "^7.0.3"
   },
   "devDependencies": {
