@@ -13,8 +13,6 @@ import { AnyAction, Dispatch } from "redux";
 import { NextRouter } from "next/router";
 import { createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
-import { decryptPostIndividual } from "@/lib/helpers/decryptPost";
-import { setDecrypt } from "@/redux/reducers/decryptSlice";
 
 const useAutoProfile = (
   router: NextRouter,
@@ -24,7 +22,6 @@ const useAutoProfile = (
   lensProfile: Profile | undefined
 ) => {
   const [hasMoreProfile, setHasMoreProfile] = useState<boolean>(true);
-  const [decryptLoading, setDecryptLoading] = useState<boolean>(false);
   const [followerOnlyProfile, setFollowerOnlyProfile] = useState<boolean[]>(
     Array.from({ length: 10 }, () => false)
   );
@@ -310,50 +307,6 @@ const useAutoProfile = (
     }
   };
 
-  const decryptPost = async (post: Post | Mirror) => {
-    setDecryptLoading(true);
-    try {
-      if (
-        address &&
-        (post.__typename === "Mirror" ? post.mirrorOn : (post as Post))
-          .operations.canDecrypt.result
-      ) {
-        const clientWallet = createWalletClient({
-          chain: polygon,
-          transport: custom((window as any).ethereum),
-        });
-
-        const newPost = (await decryptPostIndividual(
-          address,
-          post,
-          clientWallet
-        )) as Post | Quote | Mirror;
-
-        const newProfileFeed = [...profileFeed]?.map((item) =>
-          item?.id === post?.id ? newPost : item
-        );
-        setProfileFeed(newProfileFeed);
-      } else {
-        dispatch(
-          setDecrypt({
-            actionOpen: true,
-            actionCollections: (post?.__typename === "Mirror"
-              ? (post?.mirrorOn?.metadata as TextOnlyMetadataV3)?.content
-              : ((post as Post)?.metadata as TextOnlyMetadataV3)?.content
-            )
-              ?.split("gate.")[1]
-              ?.split("are ready to collect")[0]
-              .split(",")
-              .map((word: string) => word.trim()),
-            actionName: post?.by?.ownedBy?.address,
-          })
-        );
-      }
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setDecryptLoading(false);
-  };
 
   useEffect(() => {
     if (
@@ -381,8 +334,6 @@ const useAutoProfile = (
     profileFeedCount,
     openProfileMirrorChoice,
     setOpenProfileMirrorChoice,
-    decryptLoading,
-    decryptPost,
   };
 };
 

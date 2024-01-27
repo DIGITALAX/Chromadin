@@ -119,17 +119,13 @@ export type AutoProfileFeedProps = {
   profile: Profile | undefined;
   profileCollections?: Collection[];
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
-  decryptPost:
-    | ((post: Post | Mirror | Quote | Comment) => Promise<void>)
-    | ((post: Post | Mirror) => Promise<void>);
-  decryptLoading: boolean;
 };
 
 export type CollectionsProps = {
   autoCollections: Collection[] | undefined;
   router: NextRouter;
   autoProfile: Profile | undefined;
-  dispatch: Dispatch<AnyAction>;
+  dispatch: Dispatch<AnyAction>
   imageLoading: boolean;
   address: `0x${string}` | undefined;
   lensProfile: Profile | undefined;

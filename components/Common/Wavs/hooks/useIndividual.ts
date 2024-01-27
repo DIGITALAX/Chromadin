@@ -17,7 +17,6 @@ import {
   Comment,
 } from "@/components/Home/types/generated";
 import { getPublications } from "@/graphql/lens/queries/getVideos";
-import { decryptPostIndividual } from "@/lib/helpers/decryptPost";
 import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
 import { IndexModalState } from "@/redux/reducers/indexModalSlice";
@@ -230,21 +229,12 @@ const useIndividual = (
         lensProfile?.id
       );
 
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
+      const pubData = data?.publication;
 
-      const pubData = await decryptPostIndividual(
-        address,
-        data?.publication as Post | Comment | Quote | Mirror,
-        clientWallet
-      );
-
-      setMainPost(pubData);
+      setMainPost(pubData as Post);
       setFollowerOnly(
         (pubData?.__typename === "Mirror"
-          ? pubData?.mirrorOn
+          ? (pubData?.mirrorOn as Post)
           : (pubData as Post)
         )?.referenceModule?.type === "FollowerOnlyReferenceModule"
           ? true
@@ -280,7 +270,7 @@ const useIndividual = (
           actionHasCollected: (pubData?.__typename === "Mirror"
             ? pubData?.mirrorOn
             : (pubData as Post)
-          )?.operations?.hasActed?.isFinalisedOnchain,
+          )?.operations?.hasActed?.value,
         })
       );
     } catch (err: any) {

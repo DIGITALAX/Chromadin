@@ -1,11 +1,12 @@
 import { Collection } from "@/components/Home/types/home.types";
 import { Profile } from "@/components/Home/types/generated";
-import { getOneProfile } from "@/graphql/lens/queries/getProfile";
 import {
   getCollectionsDrop,
   getOneCollection,
 } from "@/graphql/subgraph/queries/getAllCollections";
 import { useEffect, useState } from "react";
+import { getPublication } from "@/graphql/lens/queries/getPublication";
+import toHexWithLeadingZero from "@/lib/helpers/leadingZero";
 
 const useAutoCollection = (
   profile: Profile | undefined,
@@ -22,15 +23,18 @@ const useAutoCollection = (
     setCollectionLoading(true);
 
     try {
-      const prof = await getProfile(autograph);
-      if (!prof) {
-        setCollectionLoading(false);
-        return;
-      }
-      const allColls = await getOneCollection(
-        collectionName,
-        prof?.ownedBy?.address
+      const allColls = await getOneCollection(collectionName);
+      const pub = await getPublication(
+        {
+          forId: `${toHexWithLeadingZero(
+            Number(allColls?.data?.collectionCreateds[0]?.profileId)
+          )}-${toHexWithLeadingZero(
+            Number(allColls?.data?.collectionCreateds[0]?.pubId)
+          )}`,
+        },
+        profile?.id
       );
+
       const relatedCollections = await getCollectionsDrop(
         allColls?.data?.collectionCreateds[0]?.dropId
       );
@@ -44,34 +48,14 @@ const useAutoCollection = (
       );
 
       setCollection({
-        ...allColls?.data?.collectionCreateds[0],
-        profile: prof,
+        ...allColls?.data?.collectionCreateds?.[0],
+        publication: pub?.data?.publication,
+        profile: pub?.data?.publication?.by,
       });
     } catch (err: any) {
       console.error(err.message);
     }
     setCollectionLoading(false);
-  };
-
-  const getProfile = async (
-    autograph: string
-  ): Promise<Profile | undefined> => {
-    try {
-      const prof = await getOneProfile(
-        {
-          forHandle: "lens/" + (autograph as string),
-        },
-        profile?.id
-      );
-
-      if (!prof?.data) {
-        return;
-      }
-
-      return prof?.data?.profile as Profile;
-    } catch (err: any) {
-      console.error(err.message);
-    }
   };
 
   useEffect(() => {

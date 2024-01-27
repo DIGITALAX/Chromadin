@@ -79,7 +79,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
   setReferral,
   collectNotif,
   audienceTypes,
-  
+
   feedDispatch,
   followerOnly,
   hasMore,
@@ -100,19 +100,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
   hasMoreSearch,
   setProfilesOpenSearch,
   setProfilesFound,
-  
   preElement,
-  filterDecrypt,
-  decryptFeed,
-  decryptFeedProfile,
-  decryptAmounts,
-  followerOnlyDecrypt,
-  hasMoreDecrypt,
-  fetchMoreDecrypt,
-  decryptProfileAmounts,
-  hasMoreDecryptProfile,
-  fetchMoreProfileDecrypt,
-  followerOnlyProfileDecrypt,
   handleImagePaste,
   clientRendered,
   setOpenProfileMirrorChoice,
@@ -120,7 +108,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
   setOpenMirrorChoice,
   openMirrorChoice,
   lensProfile,
-  history
+  history,
 }): JSX.Element => {
   let action: string;
 
@@ -136,7 +124,6 @@ const Switch: FunctionComponent<SwitchProps> = ({
       return (
         <ProfileFeed
           history={history}
-          
           hasMoreProfile={hasMoreProfile}
           fetchMoreProfile={fetchMoreProfile}
           profileDispatch={profileDispatch}
@@ -219,14 +206,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
           setMirrorProfileLoading={setMirrorProfileLoading}
           setReactProfileLoading={setReactProfileLoading}
           profile={profile}
-          
           preElement={preElement}
-          filterDecrypt={filterDecrypt}
-          decryptFeedProfile={decryptFeedProfile}
-          decryptProfileAmounts={decryptProfileAmounts}          
-          hasMoreDecryptProfile={hasMoreDecryptProfile}
-          fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
-          followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
           handleImagePaste={handleImagePaste}
           clientRendered={clientRendered}
         />
@@ -236,8 +216,6 @@ const Switch: FunctionComponent<SwitchProps> = ({
       return (
         <AllPosts
           router={router}
-          filterDecrypt={filterDecrypt}
-          
           dispatch={dispatch}
           feedDispatch={feedDispatch}
           followerOnly={followerOnly}
@@ -322,13 +300,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
           hasMoreSearch={hasMoreSearch}
           setProfilesOpenSearch={setProfilesOpenSearch}
           setProfilesFound={setProfilesFound}
-          
           preElement={preElement}
-          decryptFeed={decryptFeed}
-          decryptAmounts={decryptAmounts}
-          followerOnlyDecrypt={followerOnlyDecrypt}
-          hasMoreDecrypt={hasMoreDecrypt}
-          fetchMoreDecrypt={fetchMoreDecrypt}
           handleImagePaste={handleImagePaste}
           clientRendered={clientRendered}
         />

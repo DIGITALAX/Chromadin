@@ -29,7 +29,7 @@ const Drops: FunctionComponent<DropsProps> = ({
                       autoProfile?.handle?.suggestedFormatted?.localName?.split(
                         "@"
                       )[1]
-                    }/drop/${drop?.dropTitle
+                    }/drop/${drop?.dropDetails?.dropTitle
                       ?.replaceAll(" ", "_")
                       ?.toLowerCase()}`
                   )
@@ -39,11 +39,11 @@ const Drops: FunctionComponent<DropsProps> = ({
                   className="w-52 h-52 relative flex rounded-md border border-ama"
                   id="staticLoad"
                 >
-                  {drop?.dropCover && (
+                  {drop?.dropDetails?.dropCover && (
                     <Image
                       draggable={false}
                       src={`${INFURA_GATEWAY}/ipfs/${
-                        drop?.dropCover?.split("ipfs://")[1]
+                        drop?.dropDetails?.dropCover?.split("ipfs://")[1]
                       }`}
                       layout="fill"
                       objectFit="cover"
@@ -56,9 +56,9 @@ const Drops: FunctionComponent<DropsProps> = ({
                     <div
                       className={`relative w-fit h-fit text-white font-mana words-break flex text-xs p-1 bg-black border border-ama rounded-tl-md rounded-br-md`}
                     >
-                      {drop?.dropTitle?.length > 12
-                        ? drop?.dropTitle?.slice(0, 10) + "..."
-                        : drop?.dropTitle}
+                      {drop?.dropDetails?.dropTitle?.length > 12
+                        ? drop?.dropDetails?.dropTitle?.slice(0, 10) + "..."
+                        : drop?.dropDetails?.dropTitle}
                     </div>
                   </div>
                 </div>

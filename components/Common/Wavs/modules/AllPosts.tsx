@@ -17,7 +17,6 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   hasMore,
   fetchMore,
   feedDispatch,
-  
   dispatch,
   reactionAmounts,
   reactPost,
@@ -97,14 +96,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   hasMoreSearch,
   setProfilesFound,
   setProfilesOpenSearch,
-  
   preElement,
-  filterDecrypt,
-  decryptFeed,
-  decryptAmounts,
-  followerOnlyDecrypt,
-  hasMoreDecrypt,
-  fetchMoreDecrypt,
   handleImagePaste,
   clientRendered,
   openMirrorChoice,
@@ -140,16 +132,16 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
         <InfiniteScroll
           height={"40rem"}
           loader={""}
-          hasMore={filterDecrypt ? hasMoreDecrypt : hasMore}
-          next={filterDecrypt ? fetchMoreDecrypt : fetchMore}
-          dataLength={filterDecrypt ? decryptFeed.length : feedDispatch?.length}
+          hasMore={hasMore}
+          next={fetchMore}
+          dataLength={feedDispatch?.length}
           className={`relative row-start-1 w-full ml-auto h-full max-w-full overflow-y-scroll`}
           style={{ color: "#131313", fontFamily: "Digi Reg" }}
           scrollThreshold={0.9}
           scrollableTarget={"scrollableDiv"}
         >
           <div className="w-full h-full relative flex flex-col gap-4 pb-3">
-            {(filterDecrypt ? decryptFeed : feedDispatch)?.map(
+            {feedDispatch?.map(
               (publication: Post | Quote | Mirror, index: number) => {
                 return (
                   <div
@@ -159,26 +151,10 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                     <FeedPublication
                       dispatch={dispatch}
                       publication={publication}
-                      hasCollected={
-                        filterDecrypt
-                          ? decryptAmounts.hasCollected[index]
-                          : reactionAmounts.hasCollected[index]
-                      }
-                      hasMirrored={
-                        filterDecrypt
-                          ? decryptAmounts.hasMirrored[index]
-                          : reactionAmounts.hasMirrored[index]
-                      }
-                      hasReacted={
-                        filterDecrypt
-                          ? decryptAmounts.hasLiked[index]
-                          : reactionAmounts.hasLiked[index]
-                      }
-                      followerOnly={
-                        filterDecrypt
-                          ? followerOnlyDecrypt[index]
-                          : followerOnly[index]
-                      }
+                      hasCollected={reactionAmounts.hasCollected[index]}
+                      hasMirrored={reactionAmounts.hasMirrored[index]}
+                      hasReacted={reactionAmounts.hasLiked[index]}
+                      followerOnly={followerOnly[index]}
                       collectPost={collectPost}
                       mirrorPost={mirrorPost}
                       reactPost={reactPost}
@@ -186,45 +162,15 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                       index={index}
                       openMirrorChoice={openMirrorChoice}
                       setOpenMirrorChoice={setOpenMirrorChoice}
-                      mirrorLoading={
-                        filterDecrypt
-                          ? mirrorLoading[index]
-                          : mirrorLoading[index]
-                      }
-                      reactLoading={
-                        filterDecrypt
-                          ? reactLoading[index]
-                          : reactLoading[index]
-                      }
-                      collectLoading={
-                        filterDecrypt
-                          ? collectLoading[index]
-                          : collectLoading[index]
-                      }
-                      reactAmount={
-                        filterDecrypt
-                          ? decryptAmounts.like[index]
-                          : reactionAmounts.like[index]
-                      }
-                      mirrorAmount={
-                        filterDecrypt
-                          ? decryptAmounts.mirror[index]
-                          : reactionAmounts.mirror[index]
-                      }
-                      collectAmount={
-                        filterDecrypt
-                          ? decryptAmounts.collect[index]
-                          : reactionAmounts.collect[index]
-                      }
-                      commentAmount={
-                        filterDecrypt
-                          ? decryptAmounts.comment[index]
-                          : reactionAmounts.comment[index]
-                      }
+                      mirrorLoading={mirrorLoading[index]}
+                      reactLoading={reactLoading[index]}
+                      collectLoading={collectLoading[index]}
+                      reactAmount={reactionAmounts.like[index]}
+                      mirrorAmount={reactionAmounts.mirror[index]}
+                      collectAmount={reactionAmounts.collect[index]}
+                      commentAmount={reactionAmounts.comment[index]}
                       openComment={commentOpen}
-                      
                       router={router}
-                      
                     />
                     {(publication?.__typename === "Mirror"
                       ? publication?.mirrorOn?.id

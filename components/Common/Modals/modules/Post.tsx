@@ -455,21 +455,6 @@ const Post: FunctionComponent<PostProps> = ({
                   id="fadedQuote"
                 >
                   <div className="relative w-full h-fit p-2 flex items-center justify-start flex-col from-gray-400 via-gray-600 to-gray-800 bg-gradient-to-r rounded-md gap-5">
-                    <div className="relative w-full h-fit flex items-end justify-end">
-                      <div
-                        className={`relative w-fit h-fit row-start-1 justify-self-end self-center grid grid-flow-col auto-cols-auto gap-2`}
-                      >
-                        <div
-                          className={`relative w-fit h-fit col-start-1 place-self-center text-xs font-dosis text-offWhite`}
-                        >
-                          Quote on{" "}
-                          {quote?.metadata?.content?.slice(0, 10) + "..."}
-                        </div>
-                        <div className="relative w-fit h-fit col-start-2 place-self-center">
-                          <AiOutlineRetweet color={"white"} size={15} />
-                        </div>
-                      </div>
-                    </div>
                     <div className="relative w-full h-fit flex cursor-pointer">
                       <Quote publication={quote} />
                     </div>

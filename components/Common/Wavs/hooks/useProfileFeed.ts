@@ -3,7 +3,6 @@ import {
   Mirror,
   Post,
   Profile,
-  ProfileQuery,
   PublicationType,
   Quote,
 } from "@/components/Home/types/generated";
@@ -16,39 +15,23 @@ import {
 import { setProfileFeedRedux } from "@/redux/reducers/profileFeedSlice";
 import { setProfilePaginated } from "@/redux/reducers/profilePaginatedSlice";
 import { setProfile } from "@/redux/reducers/profileSlice";
-import { MouseEvent, useEffect, useRef, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { useEffect, useState } from "react";
 import { setPostSent } from "@/redux/reducers/postSentSlice";
-import { setDecryptProfilePaginated } from "@/redux/reducers/decryptProfilePaginatedSlice";
-import { setDecryptProfileFeedRedux } from "@/redux/reducers/decryptProfileFeedSlice";
-import {
-  DecryptProfileFeedCountState,
-  setDecryptProfileFeedCount,
-} from "@/redux/reducers/decryptProfileCountSlice";
 import { Collection } from "@/components/Home/types/home.types";
 import { getCollectionsProfile } from "@/graphql/subgraph/queries/getAllCollections";
-import { decryptPostArray } from "@/lib/helpers/decryptPost";
-import { FetchResult } from "@apollo/client";
 import { AnyAction, Dispatch } from "redux";
 import { NextRouter } from "next/router";
-import { createWalletClient, custom } from "viem";
-import { polygon } from "viem/chains";
 
 const useProfileFeed = (
   router: NextRouter,
-  address: `0x${string}` | undefined,
   dispatch: Dispatch<AnyAction>,
   profileDispatch: (Post | Quote | Mirror)[],
-  filterDecrypt: boolean,
   postSent: boolean,
   quickProfiles: Profile[],
   lensProfile: Profile | undefined,
   feedProfile: Profile | undefined,
   profilePageData: string | undefined,
-  profileFeedCount: ProfileFeedCountState,
-  decryptProfilePageData: string | undefined,
-  decryptProfileFeedCount: DecryptProfileFeedCountState,
-  decryptProfileFeed: Post[]
+  profileFeedCount: ProfileFeedCountState
 ) => {
   const [hasMoreProfile, setHasMoreProfile] = useState<boolean>(true);
   const [openProfileMirrorChoice, setOpenProfileMirrorChoice] = useState<
@@ -57,11 +40,6 @@ const useProfileFeed = (
   const [followerOnlyProfile, setFollowerOnlyProfile] = useState<boolean[]>(
     Array.from({ length: 10 }, () => false)
   );
-  const [hasMoreDecryptProfile, setHasMoreDecryptProfile] =
-    useState<boolean>(true);
-  const [followerOnlyProfileDecrypt, setFollowerOnlyProfileDecrypt] = useState<
-    boolean[]
-  >(Array.from({ length: 10 }, () => false));
   const [collectProfileLoading, setCollectProfileLoading] = useState<boolean[]>(
     Array.from({ length: 10 }, () => false)
   );
@@ -72,8 +50,6 @@ const useProfileFeed = (
     Array.from({ length: 10 }, () => false)
   );
   const [profileLoading, setProfileLoading] = useState<boolean>(false);
-  const [decryptProfileLoading, setDecryptProfileLoading] =
-    useState<boolean>(false);
   const [profileCollections, setProfileCollections] = useState<Collection[]>(
     []
   );
@@ -104,20 +80,9 @@ const useProfileFeed = (
         return;
       }
 
-      const arr: (Post | Mirror | Quote)[] = [
+      const sortedArr: (Post | Mirror | Quote)[] = [
         ...data?.data?.publications?.items,
       ] as (Post | Mirror | Quote)[];
-      let sortedArr = arr.sort(
-        (a: Post | Mirror | Quote, b: Post | Mirror | Quote) =>
-          Date.parse(b.createdAt) - Date.parse(a.createdAt)
-      );
-
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      sortedArr = await decryptPostArray(address, sortedArr, clientWallet);
 
       if (!sortedArr || sortedArr?.length < 10) {
         setHasMoreProfile(false);
@@ -210,20 +175,9 @@ const useProfileFeed = (
         lensProfile?.id
       );
 
-      const arr: (Post | Mirror | Quote)[] = [
+      const sortedArr: (Post | Mirror | Quote)[] = [
         ...(data?.data?.publications?.items || []),
       ] as (Post | Mirror | Quote)[];
-      let sortedArr = arr.sort(
-        (a: Post | Mirror | Quote, b: Post | Mirror | Quote) =>
-          Date.parse(b.createdAt) - Date.parse(a.createdAt)
-      );
-
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      sortedArr = await decryptPostArray(address, sortedArr, clientWallet);
 
       if (sortedArr?.length < 10) {
         setHasMoreProfile(false);
@@ -313,206 +267,20 @@ const useProfileFeed = (
     }
   };
 
-  const getProfileDecrypt = async () => {
-    setDecryptProfileLoading(true);
-
-    try {
-      const data = await getPublications(
-        {
-          where: {
-            from: [feedProfile?.id],
-            publicationTypes: [PublicationType.Post],
-            metadata: {
-              tags: {
-                all: ["encrypted", "chromadin", "labyrinth"],
-              },
-            },
-          },
-          limit: LimitType.Ten,
-        },
-        lensProfile?.id
-      );
-
-      if (!data || !data?.data || !data?.data?.publications) {
-        setDecryptProfileLoading(false);
-        return;
-      }
-
-      const arr: Post[] = [...data?.data?.publications?.items] as Post[];
-      let sortedArr = arr.sort(
-        (a: Post, b: Post) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
-      );
-
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      sortedArr = (await decryptPostArray(
-        address,
-        sortedArr,
-        clientWallet
-      )) as Post[];
-
-      if (!sortedArr || sortedArr?.length < 10) {
-        setHasMoreDecryptProfile(false);
-      } else {
-        setHasMoreDecryptProfile(true);
-      }
-
-      setFollowerOnlyProfileDecrypt(
-        sortedArr.map((obj: Post) =>
-          obj.referenceModule?.type === "FollowerOnlyReferenceModule"
-            ? true
-            : false
-        )
-      );
-      dispatch(
-        setDecryptProfilePaginated(data?.data?.publications?.pageInfo?.next)
-      );
-      dispatch(setDecryptProfileFeedRedux(sortedArr));
-      dispatch(
-        setDecryptProfileFeedCount({
-          actionLike: sortedArr.map((obj: Post) => obj.stats?.reactions),
-          actionMirror: sortedArr.map((obj: Post) => obj.stats?.mirrors),
-          actionCollect: sortedArr.map(
-            (obj: Post) => obj.stats?.countOpenActions
-          ),
-          actionComment: sortedArr.map((obj: Post) => obj.stats?.comments),
-          actionHasLiked: sortedArr.map(
-            (obj: Post) => obj.operations?.hasReacted
-          ),
-          actionHasMirrored: sortedArr.map(
-            (obj: Post) => obj.operations?.hasMirrored
-          ),
-          actionHasCollected: sortedArr.map(
-            (obj: Post) => obj.operations?.hasActed?.isFinalisedOnchain
-          ),
-        })
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setDecryptProfileLoading(false);
-  };
-
-  const fetchMoreProfileDecrypt = async () => {
-    try {
-      if (!decryptProfilePageData) {
-        setHasMoreDecryptProfile(false);
-        return;
-      }
-
-      const data = await getPublications(
-        {
-          where: {
-            from: [feedProfile?.id],
-            publicationTypes: [PublicationType.Post],
-            metadata: {
-              tags: {
-                all: ["encrypted", "chromadin", "labyrinth"],
-              },
-            },
-          },
-          limit: LimitType.Ten,
-          cursor: decryptProfilePageData,
-        },
-        lensProfile?.id
-      );
-
-      const arr: Post[] = [
-        ...(data?.data?.publications?.items || []),
-      ] as Post[];
-      let sortedArr = arr.sort(
-        (a: Post, b: Post) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
-      );
-
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      sortedArr = (await decryptPostArray(
-        address,
-        sortedArr,
-        clientWallet
-      )) as Post[];
-
-      if (sortedArr?.length < 10) {
-        setHasMoreDecryptProfile(false);
-      }
-
-      dispatch(
-        setDecryptProfileFeedCount({
-          actionLike: [
-            ...decryptProfileFeedCount.like,
-            ...sortedArr.map((obj: Post) => obj.stats.reactions),
-          ],
-          actionMirror: [
-            ...decryptProfileFeedCount.mirror,
-            ...sortedArr.map((obj: Post) => obj.stats.mirrors),
-          ],
-          actionCollect: [
-            ...decryptProfileFeedCount.collect,
-            ...sortedArr.map((obj: Post) => obj.stats.countOpenActions),
-          ],
-          actionComment: [
-            ...decryptProfileFeedCount.comment,
-            ...sortedArr.map((obj: Post) => obj.stats.comments),
-          ],
-          actionHasLiked: [
-            ...decryptProfileFeedCount.hasLiked,
-            ...sortedArr.map((obj: Post) => obj.operations.hasReacted),
-          ],
-          actionHasMirrored: [
-            ...decryptProfileFeedCount.hasMirrored,
-            ...sortedArr.map((obj: Post) => obj.operations.hasMirrored),
-          ],
-          actionHasCollected: [
-            ...decryptProfileFeedCount.hasCollected,
-            ...sortedArr.map(
-              (obj: Post) => obj.operations.hasActed?.isFinalisedOnchain
-            ),
-          ],
-        })
-      );
-      setFollowerOnlyProfileDecrypt([
-        ...followerOnlyProfileDecrypt,
-        ...sortedArr.map((obj: Post) =>
-          obj.referenceModule?.type === "FollowerOnlyReferenceModule"
-            ? true
-            : false
-        ),
-      ]);
-      dispatch(
-        setDecryptProfilePaginated(data?.data?.publications?.pageInfo?.next)
-      );
-      dispatch(
-        setDecryptProfileFeedRedux([...decryptProfileFeed, ...sortedArr])
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
   useEffect(() => {
     if (
       router.asPath.includes("#chat") &&
       router.asPath.includes("&profile=") &&
       feedProfile?.id
     ) {
-      if (filterDecrypt) {
-        getProfileDecrypt();
-      } else {
-        getProfile();
-      }
+      getProfile();
     } else if (
       router.asPath.includes("#chat") &&
       !router.asPath.includes("&profile=")
     ) {
       dispatch(setProfile(undefined));
     }
-  }, [feedProfile?.id, router.asPath, filterDecrypt]);
+  }, [feedProfile?.id, router.asPath]);
 
   useEffect(() => {
     if (
@@ -535,9 +303,11 @@ const useProfileFeed = (
       );
 
       if (
-        quickProfiles
-          .map((profile) => profile.handle?.suggestedFormatted?.localName)
-          .includes(router?.asPath?.split("profile=")[1])
+        quickProfiles.some((profile) =>
+          profile.handle?.suggestedFormatted?.localName?.includes(
+            router?.asPath?.split("profile=")[1]
+          )
+        )
       ) {
         await getProfileCollections(prof?.data?.profile as Profile);
       } else {
@@ -560,7 +330,6 @@ const useProfileFeed = (
         setProfileCollections([]);
         return;
       }
-
       setProfileCollections(colls?.data?.collectionCreateds);
     } catch (err: any) {
       console.error(err.message);
@@ -589,10 +358,6 @@ const useProfileFeed = (
     collectProfileLoading,
     reactProfileLoading,
     setReactProfileLoading,
-    hasMoreDecryptProfile,
-    followerOnlyProfileDecrypt,
-    fetchMoreProfileDecrypt,
-    decryptProfileLoading,
     profileCollectionsLoading,
     profileCollections,
     openProfileMirrorChoice,

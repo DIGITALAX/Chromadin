@@ -53,8 +53,7 @@ const Reactions: FunctionComponent<ReactionProps> = ({
   setReactLoader,
   setMirrorLoader,
   openComment,
-  
-  
+  feedType,
   router,
   openMirrorChoice,
   setOpenMirrorChoice,

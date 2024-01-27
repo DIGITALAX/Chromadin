@@ -8,33 +8,22 @@ const Wavs: FunctionComponent<WavsProps> = ({
   address,
   feedDispatch,
   reactionAmounts,
-  
   commentAmounts,
   commentOpen,
   collectOpen,
   postImagesDispatched,
   commentors,
-  filterDecrypt,
   openConnectModal,
   individualAmounts,
   profileAmounts,
   profileDispatch,
   quickProfiles,
-  
-  decryptFeed,
-  decryptAmounts,
-  decryptFeedProfile,
   imageLoading,
-  decryptProfileAmounts,
   handleLensSignIn,
   followerOnly,
   postsLoading,
   hasMore,
   fetchMore,
-  followerOnlyDecrypt,
-  hasMoreDecrypt,
-  decryptLoading,
-  fetchMoreDecrypt,
   reactPost,
   collectPost,
   mirrorPost,
@@ -130,10 +119,6 @@ const Wavs: FunctionComponent<WavsProps> = ({
   collectProfileLoading,
   reactProfileLoading,
   setReactProfileLoading,
-  hasMoreDecryptProfile,
-  followerOnlyProfileDecrypt,
-  fetchMoreProfileDecrypt,
-  decryptProfileLoading,
   profileCollections,
   profileCollectionsLoading,
   openProfileMirrorChoice,
@@ -151,10 +136,12 @@ const Wavs: FunctionComponent<WavsProps> = ({
   lensProfile,
   history,
   profile,
+  feedType,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full mid:h-[50.2rem] xl:h-[47.8rem] gap-3 flex items-start justify-center pt-10 overflow-y-scroll">
       <Feed
+        feedType={feedType}
         history={history}
         lensProfile={lensProfile}
         dispatch={dispatch}
@@ -250,7 +237,6 @@ const Wavs: FunctionComponent<WavsProps> = ({
         collectOpen={collectOpen}
         mappedFeaturedFiles={mappedFeaturedFiles}
         postImagesDispatched={postImagesDispatched}
-        
         individualAmounts={individualAmounts}
         router={router}
         setCollectibleDropDown={setCollectibleDropDown}
@@ -277,21 +263,7 @@ const Wavs: FunctionComponent<WavsProps> = ({
         hasMoreSearch={hasMoreSearch}
         setProfilesOpenSearch={setProfilesOpenSearch}
         setProfilesFound={setProfilesFound}
-        
-        preElement={preElement}
-        filterDecrypt={filterDecrypt}
-        decryptFeed={decryptFeed}
-        decryptAmounts={decryptAmounts}
-        decryptLoading={decryptLoading}
-        hasMoreDecrypt={hasMoreDecrypt}
-        fetchMoreDecrypt={fetchMoreDecrypt}
-        followerOnlyDecrypt={followerOnlyDecrypt}
-        decryptFeedProfile={decryptFeedProfile}
-        decryptProfileAmounts={decryptProfileAmounts}
-        decryptProfileLoading={decryptProfileLoading}
-        fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
-        followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
-        hasMoreDecryptProfile={hasMoreDecryptProfile}
+        preElement={preElement}        
         handleImagePaste={handleImagePaste}
         profileCollectionsLoading={profileCollectionsLoading}
         clientRendered={clientRendered}

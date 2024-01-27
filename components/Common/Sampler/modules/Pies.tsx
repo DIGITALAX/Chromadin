@@ -28,7 +28,7 @@ const Pies: FunctionComponent<PiesProps> = ({
               key={index}
               onClick={() =>
                 window.open(
-                  `https://www.chromadin.xyz/#chat?option=history&profile=${piesRedux[index]?.handle}`
+                  `https://www.chromadin.xyz/#chat?option=history&profile=${piesRedux[index]?.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`
                 )
               }
             >
@@ -66,7 +66,7 @@ const Pies: FunctionComponent<PiesProps> = ({
                       : topAccountsFollowed)[index]?.handle.slice(0, 11) + "..."
                   : (topAccountsFollowed.length < 1
                       ? piesRedux
-                      : topAccountsFollowed)[index]?.handle}
+                      : topAccountsFollowed)[index]?.handle?.suggestedFormatted?.localName?.split("@")?.[1]}
               </div>
             </div>
           );

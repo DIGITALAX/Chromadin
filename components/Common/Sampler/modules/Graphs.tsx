@@ -124,14 +124,14 @@ const Graphs: FunctionComponent<GraphsProps> = ({
                             ? `#${item.label
                                 .replace(/_{2,}/g, " ")
                                 .replace(/_/g, " ")}`
-                            : `@${item.label.handle}`}
+                            : `@${item.label.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`}
                         </div>
                         <div
                           onClick={
                             canvas !== "interests" && canvas !== "hashtags"
                               ? () =>
                                   window.open(
-                                    `https://www.chromadin.xyz/#chat?option=history&profile=${item?.label?.handle}`
+                                    `https://www.chromadin.xyz/#chat?option=history&profile=${item?.label?.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`
                                   )
                               : () => {}
                           }
@@ -169,7 +169,7 @@ const Graphs: FunctionComponent<GraphsProps> = ({
                                 ? `#${item.label
                                     .replace(/_{2,}/g, " ")
                                     .replace(/_/g, " ")}`
-                                : `@${item.label.handle}`;
+                                : `@${item.label.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`;
                             label.style.marginLeft = "4px";
                             tooltip.appendChild(label);
 

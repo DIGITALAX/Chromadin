@@ -82,9 +82,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const mainVideo = useSelector(
     (state: RootState) => state.app.mainVideoReducer
   );
-  const decryptPaginated = useSelector(
-    (state: RootState) => state.app.decryptPaginatedReducer.value
-  );
   const commentId = useSelector(
     (state: RootState) => state.app.secondaryCommentReducer.value
   );
@@ -93,12 +90,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   );
   const imageLoading = useSelector(
     (state: RootState) => state.app.imageLoadingReducer.value
-  );
-  const decryptProfileFeedCount = useSelector(
-    (state: RootState) => state.app.decryptProfileFeedCountReducer
-  );
-  const decryptProfileFeed = useSelector(
-    (state: RootState) => state.app.decryptProfileFeedReducer.value
   );
   const profileFeedCount = useSelector(
     (state: RootState) => state.app.profileFeedCountReducer
@@ -124,6 +115,9 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const priceFilter = useSelector(
     (state: RootState) => state.app.priceFilterReducer
   );
+  const profileDispatch = useSelector(
+    (state: RootState) => state.app.profileFeedReducer.value
+  );
   const commentsDispatch = useSelector(
     (state: RootState) => state.app.commentReducer.value
   );
@@ -142,28 +136,15 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const seek = useSelector(
     (state: RootState) => state.app.seekSecondReducer.seek
   );
-  const decryptFeed = useSelector(
-    (state: RootState) => state.app.decryptFeedReducer.value
-  );
   const videoCount = useSelector(
     (state: RootState) => state.app.videoCountReducer
-  )
+  );
   const collections = useSelector(
     (state: RootState) => state.app.collectionsReducer.value
-  );
-  const decrypt = useSelector((state: RootState) => state.app.decryptReducer);
-  const profileDispatch = useSelector(
-    (state: RootState) => state.app.profileFeedReducer.value
-  );
-  const filterDecrypt = useSelector(
-    (state: RootState) => state.app.filterDecryptReducer.value
   );
   const feed = useSelector((state: RootState) => state.app.feedReducer.value);
   const dispatchProfile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
-  );
-  const decryptProfilePageData = useSelector(
-    (state: RootState) => state.app.decryptProfilePaginatedReducer.value
   );
   const profilePageData = useSelector(
     (state: RootState) => state.app.profilePaginatedReducer.value
@@ -185,9 +166,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   );
   const paginated = useSelector(
     (state: RootState) => state.app.paginatedReducer.value
-  );
-  const decryptFeedCount = useSelector(
-    (state: RootState) => state.app.decryptFeedCountReducer
   );
   const collectOpen = useSelector(
     (state: RootState) => state.app.collectOpenReducer.value
@@ -458,34 +436,23 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     postsLoading,
     hasMore: hasMoreAllPosts,
     fetchMore,
-    followerOnlyDecrypt,
-    hasMoreDecrypt,
-    decryptLoading,
-    fetchMoreDecrypt,
   } = useAllPosts(
-    address,
     dispatch,
     router,
     lensProfile,
     dispatchProfile,
     feed,
     profileDispatch,
-    decryptFeed,
-    filterDecrypt,
-    decryptFeedCount,
     indexModal,
-    decrypt,
     feedId,
     reactionFeedCount,
     postSent,
-
     commentAmounts,
     comments,
     paginated,
-    decryptPaginated,
     individualCount,
-    decryptProfileFeedCount,
-    profileFeedCount
+    profileFeedCount,
+    feedType
   );
   const {
     reactPost,
@@ -550,29 +517,20 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     collectProfileLoading,
     reactProfileLoading,
     setReactProfileLoading,
-    hasMoreDecryptProfile,
-    followerOnlyProfileDecrypt,
-    fetchMoreProfileDecrypt,
-    decryptProfileLoading,
     profileCollections,
     profileCollectionsLoading,
     openProfileMirrorChoice,
     setOpenProfileMirrorChoice,
   } = useProfileFeed(
     router,
-    address,
     dispatch,
     profileDispatch,
-    filterDecrypt,
     postSent,
     quickProfiles,
     lensProfile,
     dispatchProfile,
     profilePageData,
-    profileFeedCount,
-    decryptProfilePageData,
-    decryptProfileFeedCount,
-    decryptProfileFeed
+    profileFeedCount
   );
   const {
     searchProfiles,
@@ -665,12 +623,12 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
             </div>
             <div className="relative w-full h-full flex flex-col gap-5 items-center justify-center">
               <View
+                feedType={feedType}
                 commentsDispatch={commentsDispatch}
                 reactionAmounts={reactionFeedCount}
                 individualCount={individualCount}
                 quickProfiles={quickProfiles}
                 history={historyURL}
-                decryptFeed={decryptFeed}
                 mainVideo={mainVideo}
                 viewer={viewer}
                 statsTitles={statsTitles}
@@ -739,7 +697,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 setProfilesFound={setProfilesFound}
                 hasMoreProfile={hasMoreProfile}
                 fetchMoreProfile={fetchMoreProfile}
-                decryptProfileFeedCount={decryptProfileFeedCount}
                 followerOnlyProfile={followerOnlyProfile}
                 setCollectProfileLoading={setCollectProfileLoading}
                 setMirrorProfileLoading={setMirrorProfileLoading}
@@ -748,10 +705,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 collectProfileLoading={collectProfileLoading}
                 reactProfileLoading={reactProfileLoading}
                 setReactProfileLoading={setReactProfileLoading}
-                hasMoreDecryptProfile={hasMoreDecryptProfile}
-                followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
-                fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
-                decryptProfileLoading={decryptProfileLoading}
                 profileCollections={profileCollections}
                 profileCollectionsLoading={profileCollectionsLoading}
                 openProfileMirrorChoice={openProfileMirrorChoice}
@@ -793,13 +746,8 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 setOpenMirrorChoice={setOpenMirrorChoice}
                 openMirrorChoice={openMirrorChoice}
                 followerOnly={followerOnly}
-                decryptFeedCount={decryptFeedCount}
                 postsLoading={postsLoading}
                 fetchMore={fetchMore}
-                followerOnlyDecrypt={followerOnlyDecrypt}
-                hasMoreDecrypt={hasMoreDecrypt}
-                decryptLoading={decryptLoading}
-                fetchMoreDecrypt={fetchMoreDecrypt}
                 commentPost={commentPostWavs}
                 commentDescription={commentDescriptionWavs}
                 textElement={textElementWavs}
@@ -823,7 +771,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 postImagesDispatched={postImagesDispatched}
                 mappedFeaturedFiles={mappedFeaturedFiles}
                 collectOpen={collectOpen}
-                decryptProfileFeed={decryptProfileFeed}
                 uploadImages={uploadImage}
                 uploadVideo={uploadVideo}
                 videoLoading={videoLoading}
@@ -864,7 +811,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 setEnabledCurrency={setEnabledCurrency}
                 value={value}
                 setValue={setValue}
-                filterDecrypt={filterDecrypt}
               />
               {viewer !== "sampler" && viewer !== "chat" && (
                 <NFT

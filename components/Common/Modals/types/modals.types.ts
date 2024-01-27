@@ -1,9 +1,9 @@
 import {
   Erc20,
-  Post,
   Profile,
   ProfileWhoReactedResult,
   Quote,
+  Post,
   Comment,
 } from "@/components/Home/types/generated";
 import { FollowerOnlyState } from "@/redux/reducers/followerOnlySlice";
@@ -20,7 +20,6 @@ import {
 } from "react";
 import ReactPlayer from "react-player";
 import { AnyAction, Dispatch } from "redux";
-import { Post } from "../../Wavs/types/wavs.types";
 import { Collection, UploadedMedia } from "@/components/Home/types/home.types";
 
 export type IndexingModalProps = {
@@ -212,11 +211,6 @@ export type ClaimProps = {
   address: `0x${string}` | undefined;
   openConnectModal: (() => void) | undefined;
   lensProfile: Profile | undefined;
-};
-
-export type DecryptProps = {
-  dispatch: Dispatch<AnyAction>;
-  collections: Collection[];
 };
 
 export type LoginProps = {

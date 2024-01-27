@@ -76,6 +76,7 @@ const View: FunctionComponent<ViewProps> = ({
   setReactPostLoading,
   setReactProfileLoading,
   pies,
+  feedType,
   postsLoading,
   profileCollections,
   profileCollectionsLoading,
@@ -97,19 +98,13 @@ const View: FunctionComponent<ViewProps> = ({
   collectProfileLoading,
   commentsLoadingIndividual,
   fetchMore,
-  fetchMoreDecrypt,
   fetchMoreProfile,
-  fetchMoreProfileDecrypt,
   fetchMoreSearch,
   followerOnly,
   followerOnlyComments,
-  followerOnlyDecrypt,
   followerOnlyMain,
   followerOnlyProfile,
-  followerOnlyProfileDecrypt,
   hasMoreCommentsIndividual,
-  hasMoreDecrypt,
-  hasMoreDecryptProfile,
   hasMoreProfile,
   hasMoreSearch,
   mainPost,
@@ -123,8 +118,6 @@ const View: FunctionComponent<ViewProps> = ({
   openMirrorChoice,
   openPostMirrorChoice,
   openProfileMirrorChoice,
-  decryptLoading,
-  decryptProfileLoading,
   caretCoord,
   commentDescription,
   commentLoading,
@@ -145,9 +138,7 @@ const View: FunctionComponent<ViewProps> = ({
   quickProfiles,
   textElement,
   mentionProfiles,
-  
   dispatchProfile,
-  decryptFeedCount,
   profileFeedCount,
   profileDispatch,
   preElement,
@@ -197,10 +188,6 @@ const View: FunctionComponent<ViewProps> = ({
   setEnabledCurrency,
   value,
   setValue,
-  filterDecrypt,
-  decryptFeed,
-  decryptProfileFeedCount,
-  decryptProfileFeed,
   reactionAmounts,
   hasMoreAllPosts,
 }): JSX.Element => {
@@ -254,6 +241,7 @@ const View: FunctionComponent<ViewProps> = ({
         error={error}
         moreCollectionsLoading={moreCollectionsLoading}
         priceFilter={priceFilter}
+        feedType={feedType}
         rates={rates}
         stats={stats}
         pies={pies}
@@ -343,11 +331,6 @@ const View: FunctionComponent<ViewProps> = ({
         individualAmounts={individualCount}
         setCollectibleDropDown={setCollectibleDropDown}
         setTimeLimitDropDown={setTimeLimitDropDown}
-        filterDecrypt={filterDecrypt}
-        decryptFeed={decryptFeed}
-        decryptAmounts={decryptFeedCount}
-        decryptFeedProfile={decryptProfileFeed}
-        decryptProfileAmounts={decryptProfileFeedCount}
         collectNotif={collectNotif}
         referral={referral}
         setCollectible={setCollectible}
@@ -390,15 +373,6 @@ const View: FunctionComponent<ViewProps> = ({
         collectOpen={collectOpen}
         mappedFeaturedFiles={mappedFeaturedFiles}
         postImagesDispatched={postImagesDispatched}
-        
-        decryptLoading={decryptLoading}
-        hasMoreDecrypt={hasMoreDecrypt}
-        fetchMoreDecrypt={fetchMoreDecrypt}
-        followerOnlyDecrypt={followerOnlyDecrypt}
-        decryptProfileLoading={decryptProfileLoading}
-        fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
-        followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
-        hasMoreDecryptProfile={hasMoreDecryptProfile}
         handleImagePaste={handleImagePaste}
         profileCollectionsLoading={profileCollectionsLoading}
         clientRendered={clientRendered}

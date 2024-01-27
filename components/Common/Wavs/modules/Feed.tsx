@@ -3,8 +3,6 @@ import { FeedProps } from "../types/wavs.types";
 import Individual from "./Individual";
 import Switch from "./Switch";
 import MakePost from "./MakePost";
-import { BiLock } from "react-icons/bi";
-import { setFilterDecrypt } from "@/redux/reducers/filterDecryptSlice";
 
 const Feed: FunctionComponent<FeedProps> = ({
   dispatch,
@@ -102,7 +100,7 @@ const Feed: FunctionComponent<FeedProps> = ({
   collectOpen,
   mappedFeaturedFiles,
   postImagesDispatched,
-  
+  feedType,
   individualAmounts,
   router,
   profile,
@@ -127,21 +125,7 @@ const Feed: FunctionComponent<FeedProps> = ({
   hasMoreSearch,
   setProfilesFound,
   setProfilesOpenSearch,
-  
   preElement,
-  filterDecrypt,
-  decryptFeed,
-  decryptFeedProfile,
-  followerOnlyDecrypt,
-  decryptAmounts,
-  decryptLoading,
-  fetchMoreDecrypt,
-  hasMoreDecrypt,
-  fetchMoreProfileDecrypt,
-  followerOnlyProfileDecrypt,
-  decryptProfileAmounts,
-  decryptProfileLoading,
-  hasMoreDecryptProfile,
   handleImagePaste,
   profileCollectionsLoading,
   clientRendered,
@@ -159,19 +143,11 @@ const Feed: FunctionComponent<FeedProps> = ({
   return (
     <div className="relative w-3/4 h-fit flex flex-col items-start justify-start gap-4">
       <div className="relative w-full h-full flex flex-col items-start justify-center gap-3">
-        <div className="relative w-full h-fit flex flex-row">
-          <BiLock
-            size={18}
-            color="white"
-            className="relative justify-start flex cursor-pointer active:scale-95"
-            onClick={() => dispatch(setFilterDecrypt(!filterDecrypt))}
-          />
-          <MakePost
-            dispatch={dispatch}
-            lensProfile={lensProfile}
-            address={address}
-          />
-        </div>
+        <MakePost
+          dispatch={dispatch}
+          lensProfile={lensProfile}
+          address={address}
+        />
         {feedType !== "" ? (
           <Individual
             history={history}
@@ -268,17 +244,12 @@ const Feed: FunctionComponent<FeedProps> = ({
             collectibleDropDown={collectibleDropDown}
             currencyDropDown={currencyDropDown}
             postImagesDispatched={postImagesDispatched}
-            
             individualAmounts={individualAmounts}
             router={router}
-            
             handleImagePaste={handleImagePaste}
             clientRendered={clientRendered}
           />
-        ) : postsLoading ||
-          profileLoading ||
-          decryptLoading ||
-          decryptProfileLoading ? (
+        ) : postsLoading || profileLoading ? (
           <div className="relative w-full h-full flex flex-col gap-4 overflow-y-scroll">
             {Array.from({ length: 3 }).map((_, index: number) => {
               return (
@@ -366,7 +337,6 @@ const Feed: FunctionComponent<FeedProps> = ({
             collectOpen={collectOpen}
             mappedFeaturedFiles={mappedFeaturedFiles}
             postImagesDispatched={postImagesDispatched}
-            
             router={router}
             profile={profile}
             setTimeLimitDropDown={setTimeLimitDropDown}
@@ -382,8 +352,6 @@ const Feed: FunctionComponent<FeedProps> = ({
             mirrorProfileLoading={mirrorProfileLoading}
             reactProfileLoading={reactProfileLoading}
             collectProfileLoading={collectProfileLoading}
-            
-            
             quickProfiles={quickProfiles}
             profileCollections={profileCollections}
             searchProfiles={searchProfiles}
@@ -393,18 +361,6 @@ const Feed: FunctionComponent<FeedProps> = ({
             hasMoreSearch={hasMoreSearch}
             setProfilesOpenSearch={setProfilesOpenSearch}
             setProfilesFound={setProfilesFound}
-            
-            filterDecrypt={filterDecrypt}
-            decryptFeed={decryptFeed}
-            decryptAmounts={decryptAmounts}
-            followerOnlyDecrypt={followerOnlyDecrypt}
-            fetchMoreDecrypt={fetchMoreDecrypt}
-            hasMoreDecrypt={hasMoreDecrypt}
-            decryptFeedProfile={decryptFeedProfile}
-            decryptProfileAmounts={decryptProfileAmounts}
-            fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
-            followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
-            hasMoreDecryptProfile={hasMoreDecryptProfile}
             handleImagePaste={handleImagePaste}
             profileCollectionsLoading={profileCollectionsLoading}
             clientRendered={clientRendered}

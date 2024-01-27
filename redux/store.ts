@@ -56,14 +56,6 @@ import rainReducer from "./reducers/rainSlice";
 import makePostReducer from "./reducers/makePostSlice";
 import publicationImageReducer from "./reducers/publicationImageSlice";
 import postSentReducer from "./reducers/postSentSlice";
-import decryptReducer from "./reducers/decryptSlice";
-import filterDecryptReducer from "./reducers/filterDecryptSlice";
-import decryptFeedCountReducer from "./reducers/decryptFeedCountSlice";
-import decryptFeedReducer from "./reducers/decryptFeedSlice";
-import decryptPaginatedReducer from "./reducers/decryptPaginatedSlice";
-import decryptProfileFeedCountReducer from "./reducers/decryptProfileCountSlice";
-import decryptProfileFeedReducer from "./reducers/decryptProfileFeedSlice";
-import decryptProfilePaginatedReducer from "./reducers/decryptProfilePaginatedSlice";
 import collectionPaginatedReducer from "./reducers/collectionPaginatedSlice";
 import IPFSReducer from "./reducers/IPFSSlice";
 import hasMoreVideosReducer from "./reducers/hasMoreVideosSlice";
@@ -128,14 +120,6 @@ const reducer = combineReducers({
   makePostReducer,
   publicationImageReducer,
   postSentReducer,
-  decryptReducer,
-  filterDecryptReducer,
-  decryptFeedCountReducer,
-  decryptFeedReducer,
-  decryptPaginatedReducer,
-  decryptProfileFeedCountReducer,
-  decryptProfileFeedReducer,
-  decryptProfilePaginatedReducer,
   collectionPaginatedReducer,
   IPFSReducer,
   hasMoreVideosReducer,

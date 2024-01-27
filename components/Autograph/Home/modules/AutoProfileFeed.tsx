@@ -90,11 +90,8 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
   setCollectProfileLoading,
   setMirrorProfileLoading,
   setReactProfileLoading,
-  
   preElement,
   handleImagePaste,
-  decryptPost,
-  decryptLoading,
   clientRendered,
   lensProfile,
 }) => {
@@ -139,14 +136,10 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
                     collectAmount={profileAmounts.collect[index]}
                     commentAmount={profileAmounts.comment[index]}
                     openComment={commentOpen}
-                    
                     router={router}
                     setCollectLoader={setCollectProfileLoading}
                     setMirrorLoader={setMirrorProfileLoading}
                     setReactLoader={setReactProfileLoading}
-                    
-                    decryptPost={decryptPost}
-                    decryptLoading={decryptLoading}
                     openMirrorChoice={openMirrorChoice}
                     setOpenMirrorChoice={setOpenMirrorChoice}
                   />

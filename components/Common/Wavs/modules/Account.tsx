@@ -240,7 +240,10 @@ const Account: FunctionComponent<AccountProps> = ({
                     objectFit="cover"
                     objectPosition={"center"}
                     src={`${INFURA_GATEWAY}/ipfs/${
-                      coll?.collectionMetadata?.images?.[0]?.split("ipfs://")[1]
+                      (coll?.collectionMetadata?.video
+                        ? coll?.collectionMetadata?.mediaCover
+                        : coll?.collectionMetadata?.images?.[0]
+                      )?.split("ipfs://")[1]
                     }`}
                     draggable={false}
                   />

@@ -8,8 +8,6 @@ import {
   Comment,
 } from "@/components/Home/types/generated";
 import { CommentFeedCountState } from "@/redux/reducers/commentFeedCountSlice";
-import { DecryptFeedCountState } from "@/redux/reducers/decryptFeedCountSlice";
-import { DecryptProfileFeedCountState } from "@/redux/reducers/decryptProfileCountSlice";
 import { IndividualFeedCountState } from "@/redux/reducers/individualFeedCountReducer";
 import { ProfileFeedCountState } from "@/redux/reducers/profileFeedCountSlice";
 import { ReactionFeedCountState } from "@/redux/reducers/reactionFeedCountSlice";
@@ -77,16 +75,10 @@ export type FeedPublicationProps = {
   collectAmount: number;
   mirrorAmount: number;
   commentAmount: number;
-  
   setCollectLoader?: (e: boolean[]) => void;
   setReactLoader?: (e: boolean[]) => void;
   setMirrorLoader?: (e: boolean[]) => void;
   openComment: string;
-
-  decryptPost?:
-    | ((post: Post | Mirror | Quote | Comment) => Promise<void>)
-    | ((post: Post) => Promise<void>);
-  decryptLoading?: boolean;
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
 };
@@ -131,7 +123,7 @@ export type ProfileSideBarProps = {
   setReactLoader?: (e: boolean[]) => void;
   setMirrorLoader?: (e: boolean[]) => void;
   openComment: string;
-  
+
   router: NextRouter;
 };
 
@@ -179,8 +171,7 @@ export type ReactionProps = {
   setReactLoader?: (e: boolean[]) => void;
   setMirrorLoader?: (e: boolean[]) => void;
   openComment: string;
-  
-
+  feedType: string;
   router: NextRouter;
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
@@ -279,6 +270,7 @@ export type FeedProps = {
   handleRemoveImage: (e: UploadedMedia) => void;
   postImagesDispatched?: UploadedMedia[];
   mappedFeaturedFiles: UploadedMedia[];
+  feedType: string;
   collectOpen: boolean;
   enabledCurrencies: Erc20[];
   audienceTypes: string[];
@@ -315,7 +307,7 @@ export type FeedProps = {
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  
+
   individualAmounts: IndividualFeedCountState;
   fetchMoreProfile: () => Promise<void>;
   hasMoreProfile: boolean;
@@ -338,19 +330,6 @@ export type FeedProps = {
   fetchMoreSearch: () => Promise<void>;
   setProfilesOpenSearch: (e: boolean) => void;
   setProfilesFound: (e: Profile[]) => void;
-  filterDecrypt: boolean;
-  decryptFeed: (Post | Mirror | Quote)[];
-  decryptAmounts: DecryptFeedCountState;
-  followerOnlyDecrypt: boolean[];
-  decryptLoading: boolean;
-  fetchMoreDecrypt: () => Promise<void>;
-  hasMoreDecrypt: boolean;
-  decryptFeedProfile: (Post | Mirror | Quote)[];
-  decryptProfileAmounts: DecryptProfileFeedCountState;
-  decryptProfileLoading: boolean;
-  fetchMoreProfileDecrypt: () => Promise<void>;
-  followerOnlyProfileDecrypt: boolean[];
-  hasMoreDecryptProfile: boolean;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
   profileCollectionsLoading: boolean;
 };
@@ -410,7 +389,7 @@ export type IndividualProps = {
   router: NextRouter;
   dispatch: Dispatch<AnyAction>;
   mainPost: Post | Mirror | Quote | Comment;
-  
+
   history: string;
 
   lensProfile: Profile | undefined;
@@ -538,7 +517,7 @@ export type CommentsProps = {
   mirrorLoading: boolean[];
   reactLoading: boolean[];
   collectLoading: boolean[];
-  
+
   dispatch: Dispatch<AnyAction>;
   address: `0x${string}` | undefined;
   followerOnly: boolean[];
@@ -892,21 +871,13 @@ export type ProfileFeedProps = {
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  
   profile: Profile | undefined;
   profileCollections?: Collection[];
-  filterDecrypt: boolean;
-  decryptFeedProfile: (Post | Mirror | Quote)[];
-  decryptProfileAmounts: DecryptProfileFeedCountState;
-  fetchMoreProfileDecrypt: () => Promise<void>;
-  followerOnlyProfileDecrypt: boolean[];
-  hasMoreDecryptProfile: boolean;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
 };
 
 export type SwitchProps = {
   router: NextRouter;
-  filterDecrypt: boolean;
   history: string;
   clientRendered: boolean;
   lensProfile: Profile | undefined;
@@ -918,7 +889,6 @@ export type SwitchProps = {
   followerOnly: boolean[];
   feedDispatch: (Post | Mirror | Quote)[];
   hasMore: boolean;
-
   fetchMore: () => Promise<void>;
   address: `0x${string}` | undefined;
   collectPost: (
@@ -1007,7 +977,7 @@ export type SwitchProps = {
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  
+
   profile: Profile | undefined;
   hasMoreProfile: boolean;
   fetchMoreProfile: () => Promise<void>;
@@ -1028,24 +998,13 @@ export type SwitchProps = {
   fetchMoreSearch: () => Promise<void>;
   hasMoreSearch: boolean;
   setProfilesOpenSearch: (e: boolean) => void;
-  setProfilesFound: (e: Profile[]) => void;
-  decryptFeed: (Post | Mirror | Quote)[];
-  decryptAmounts: DecryptFeedCountState;
-  followerOnlyDecrypt: boolean[];
-  fetchMoreDecrypt: () => Promise<void>;
-  hasMoreDecrypt: boolean;
-  decryptFeedProfile: (Post | Mirror | Quote)[];
-  decryptProfileAmounts: DecryptProfileFeedCountState;
-  fetchMoreProfileDecrypt: () => Promise<void>;
-  followerOnlyProfileDecrypt: boolean[];
-  hasMoreDecryptProfile: boolean;
+  setProfilesFound: (e: Profile[]) => void
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
   profileCollectionsLoading: boolean;
 };
 
 export type AllPostsProps = {
   router: NextRouter;
-  filterDecrypt: boolean;
   clientRendered: boolean;
   dispatch: Dispatch<AnyAction>;
   followerOnly: boolean[];
@@ -1142,7 +1101,7 @@ export type AllPostsProps = {
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  
+
   quickProfiles: Profile[];
   searchProfiles: (e: FormEvent) => Promise<void>;
   profilesFound: Profile[];
@@ -1151,12 +1110,6 @@ export type AllPostsProps = {
   fetchMoreSearch: () => Promise<void>;
   setProfilesOpenSearch: (e: boolean) => void;
   setProfilesFound: (e: Profile[]) => void;
-
-  decryptFeed: (Post | Mirror | Quote)[];
-  decryptAmounts: DecryptFeedCountState;
-  followerOnlyDecrypt: boolean[];
-  fetchMoreDecrypt: () => Promise<void>;
-  hasMoreDecrypt: boolean;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
 };
 

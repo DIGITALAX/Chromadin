@@ -3,6 +3,7 @@ import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { CollectionCaseProps } from "../types/autograph.types";
+import { setMakePost } from "@/redux/reducers/makePostSlice";
 
 const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
   router,
@@ -136,7 +137,13 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
                   ? () => handleLensSignIn()
                   : imageLoading
                   ? () => {}
-                  : () => dispatch(setQuote(collection!))
+                  : () =>
+                      dispatch(
+                        setMakePost({
+                          actionValue: true,
+                          actionQuote: collection?.publication,
+                        })
+                      )
               }
             >
               <div className="relative w-6 h-4 flex items-center justify-center preG:items-center preG:justify-center">

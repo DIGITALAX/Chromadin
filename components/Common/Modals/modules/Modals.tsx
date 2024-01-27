@@ -25,7 +25,6 @@ import Post from "./Post";
 import useCollectOptions from "../../NFT/hooks/useCollectOptions";
 import useImageUpload from "../../NFT/hooks/useImageUpload";
 import useMakePost from "../../Wavs/hooks/usePost";
-import Decrypt from "./Decrypt";
 import IPFS from "./IPFS";
 import useChannels from "../../SideBar/hooks/useChannels";
 import useAllPosts from "../../Wavs/hooks/useAllPosts";
@@ -71,50 +70,11 @@ const Modals = ({ router }: { router: NextRouter }) => {
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
-  const dispatchProfile = useSelector(
-    (state: RootState) => state.app.profileReducer.profile
-  );
-  const feedId = useSelector(
-    (state: RootState) => state.app.feedReactIdReducer
-  );
-  const profileFeedCount = useSelector(
-    (state: RootState) => state.app.profileFeedCountReducer
-  );
-  const reactionFeedCount = useSelector(
-    (state: RootState) => state.app.reactionFeedCountReducer
-  );
-  const postSent = useSelector(
-    (state: RootState) => state.app.postSentReducer.value
-  );
-  const feedType = useSelector(
-    (state: RootState) => state.app.feedTypeReducer.value
-  );
-  const commentFeed = useSelector(
-    (state: RootState) => state.app.commentFeedCountReducer
-  );
-  const comments = useSelector(
-    (state: RootState) => state.app.commentReducer.value
-  );
-  const paginated = useSelector(
-    (state: RootState) => state.app.paginatedReducer.value
-  );
-  const individual = useSelector(
-    (state: RootState) => state.app.individualFeedCountReducer
-  );
   const postImages = useSelector(
     (state: RootState) => state.app.postImageReducer.value
   );
   const publicationImages = useSelector(
     (state: RootState) => state.app.publicationImageReducer.value
-  );
-  const decryptFeed = useSelector(
-    (state: RootState) => state.app.decryptFeedReducer.value
-  );
-  const filterDecrypt = useSelector(
-    (state: RootState) => state.app.filterDecryptReducer.value
-  );
-  const decryptFeedCount = useSelector(
-    (state: RootState) => state.app.decryptFeedCountReducer
   );
   const collectModuleValues = useSelector(
     (state: RootState) => state.app.postCollectReducer
@@ -125,15 +85,11 @@ const Modals = ({ router }: { router: NextRouter }) => {
   const followersModal = useSelector(
     (state: RootState) => state.app.followerOnlyReducer
   );
-  const decrypt = useSelector((state: RootState) => state.app.decryptReducer);
   const collectOpen = useSelector(
     (state: RootState) => state.app.collectOpenReducer.value
   );
   const claimModal = useSelector(
     (state: RootState) => state.app.noHandleReducer
-  );
-  const decryptPaginated = useSelector(
-    (state: RootState) => state.app.decryptPaginatedReducer.value
   );
   const feedDispatch = useSelector(
     (state: RootState) => state.app.feedReducer.value
@@ -143,9 +99,6 @@ const Modals = ({ router }: { router: NextRouter }) => {
   );
   const seek = useSelector(
     (state: RootState) => state.app.seekSecondReducer.seek
-  );
-  const decryptProfileFeedCount = useSelector(
-    (state: RootState) => state.app.decryptProfileFeedCountReducer
   );
   const reactId = useSelector(
     (state: RootState) => state.app.reactIdReducer.value
@@ -167,9 +120,6 @@ const Modals = ({ router }: { router: NextRouter }) => {
   );
   const reactions = useSelector(
     (state: RootState) => state.app.videoCountReducer
-  );
-  const profileDispatch = useSelector(
-    (state: RootState) => state.app.profileFeedReducer.value
   );
   const makePost = useSelector((state: RootState) => state.app.makePostReducer);
   const dispatchVideos = useSelector(
@@ -357,31 +307,6 @@ const Modals = ({ router }: { router: NextRouter }) => {
     reactId,
     videoSync,
     reactions
-  );
-  const { decryptCollections } = useAllPosts(
-    address,
-    dispatch,
-    router,
-    lensProfile,
-    dispatchProfile,
-    feedDispatch,
-    profileDispatch,
-    decryptFeed,
-    filterDecrypt,
-    decryptFeedCount,
-    indexingModal,
-    decrypt,
-    feedId,
-    reactionFeedCount,
-    postSent,
-    
-    commentFeed,
-    comments,
-    paginated,
-    decryptPaginated,
-    individual,
-    decryptProfileFeedCount,
-    profileFeedCount
   );
 
   return (
@@ -573,9 +498,6 @@ const Modals = ({ router }: { router: NextRouter }) => {
           preElement={preElement}
           handleImagePaste={handleImagePaste}
         />
-      )}
-      {decrypt.open && (
-        <Decrypt dispatch={dispatch} collections={decryptCollections} />
       )}
       {errorModal.value && <Error />}
       {ipfsModal.value && <IPFS />}

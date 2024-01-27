@@ -127,7 +127,6 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   collectOpen,
   mappedFeaturedFiles,
   postImagesDispatched,
-  
   individualAmounts,
   setCollectibleDropDown,
   setTimeLimitDropDown,
@@ -152,21 +151,8 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   hasMoreSearch,
   setProfilesOpenSearch,
   setProfilesFound,
-  
+  feedType,
   preElement,
-  filterDecrypt,
-  decryptFeed,
-  decryptAmounts,
-  decryptLoading,
-  hasMoreDecrypt,
-  fetchMoreDecrypt,
-  followerOnlyDecrypt,
-  decryptFeedProfile,
-  decryptProfileAmounts,
-  decryptProfileLoading,
-  fetchMoreProfileDecrypt,
-  followerOnlyProfileDecrypt,
-  hasMoreDecryptProfile,
   handleImagePaste,
   profileCollectionsLoading,
   clientRendered,
@@ -226,6 +212,7 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
     case "chat":
       return (
         <Wavs
+          feedType={feedType}
           history={history}
           dispatch={dispatch}
           followerOnly={followerOnly}
@@ -322,7 +309,6 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
           collectOpen={collectOpen}
           mappedFeaturedFiles={mappedFeaturedFiles}
           postImagesDispatched={postImagesDispatched}
-          
           individualAmounts={individualAmounts}
           router={router}
           setCollectibleDropDown={setCollectibleDropDown}
@@ -348,21 +334,7 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
           hasMoreSearch={hasMoreSearch}
           setProfilesOpenSearch={setProfilesOpenSearch}
           setProfilesFound={setProfilesFound}
-          
           preElement={preElement}
-          filterDecrypt={filterDecrypt}
-          decryptFeed={decryptFeed}
-          decryptAmounts={decryptAmounts}
-          decryptLoading={decryptLoading}
-          hasMoreDecrypt={hasMoreDecrypt}
-          fetchMoreDecrypt={fetchMoreDecrypt}
-          followerOnlyDecrypt={followerOnlyDecrypt}
-          decryptFeedProfile={decryptFeedProfile}
-          decryptProfileAmounts={decryptProfileAmounts}
-          decryptProfileLoading={decryptProfileLoading}
-          fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
-          followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
-          hasMoreDecryptProfile={hasMoreDecryptProfile}
           handleImagePaste={handleImagePaste}
           profileCollectionsLoading={profileCollectionsLoading}
           clientRendered={clientRendered}

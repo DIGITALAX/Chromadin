@@ -1,6 +1,6 @@
 import Profile from "./Profile";
 import Image from "next/legacy/image";
-import { AiFillEye, AiOutlineLoading, AiOutlineRetweet } from "react-icons/ai";
+import { AiFillEye,  AiOutlineRetweet } from "react-icons/ai";
 import { FunctionComponent } from "react";
 import { FeedPublicationProps } from "../types/wavs.types";
 import { setImageFeedViewer } from "@/redux/reducers/imageFeedViewerSlice";
@@ -14,8 +14,6 @@ import {
 } from "@/components/Home/types/generated";
 import { metadataMedia, postMetadata } from "@/lib/helpers/postMetadata";
 import Quote from "./Quote";
-import { setDecrypt } from "@/redux/reducers/decryptSlice";
-import { BiLock } from "react-icons/bi";
 
 const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
   publication,
@@ -39,8 +37,6 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
   setMirrorLoader,
   openComment,
   router,
-  decryptPost,
-  decryptLoading,
   hasCollected,
   hasMirrored,
   hasReacted,
@@ -164,27 +160,7 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
             <div
               dangerouslySetInnerHTML={{
                 __html: descriptionRegex(
-                  (publication?.__typename === "Mirror"
-                    ? publication?.mirrorOn
-                    : (publication as Post)
-                  )?.isEncrypted
-                    ? (
-                        (publication?.__typename !== "Mirror"
-                          ? publication
-                          : publication.mirrorOn) as any
-                      )?.decrypted?.content
-                      ? (
-                          (publication?.__typename !== "Mirror"
-                            ? publication
-                            : publication.mirrorOn) as any
-                        )?.decrypted?.content
-                      : (
-                          (publication?.__typename === "Mirror"
-                            ? publication?.mirrorOn
-                            : (publication as Post)
-                          )?.metadata as any
-                        )?.title
-                    : publication?.__typename !== "Mirror"
+                  publication?.__typename !== "Mirror"
                     ? (publication as Post)?.metadata?.content
                     : publication?.mirrorOn?.metadata?.content
                 ),
@@ -201,20 +177,11 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               : "row-start-2"
           }`}
         >
-          {(!(
+          {!(
             publication?.__typename === "Mirror"
               ? publication?.mirrorOn
               : (publication as Post)
-          )?.isEncrypted ||
-            ((publication?.__typename === "Mirror"
-              ? publication?.mirrorOn
-              : (publication as Post)
-            )?.isEncrypted &&
-              (
-                (publication?.__typename !== "Mirror"
-                  ? publication
-                  : publication.mirrorOn) as any
-              )?.decrypted?.content)) &&
+          )?.isEncrypted &&
             metadata &&
             metadata !== null &&
             metadata?.map((item: PublicationMetadataMedia, index: number) => {
@@ -302,44 +269,13 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               : "row-start-3"
           } grid grid-flow-col auto-cols-auto justify-end items-end`}
         >
-          {((publication?.__typename !== "Mirror"
+          {(publication?.__typename !== "Mirror"
             ? publication?.id
-            : publication?.mirrorOn.id) ||
-            (publication?.__typename === "Mirror"
-              ? publication?.mirrorOn
-              : (publication as Post)
-            )?.isEncrypted) && (
+            : publication?.mirrorOn.id) && (
             <div
               className={`relative w-fit h-full col-start-1 row-start-1 sm:col-start-2 sm:pt-0 pt-3  grid grid-flow-col auto-cols-auto font-digi gap-1 cursor-pointer justify-self-end self-end hover:opacity-70 active:scale-95 text-white`}
               onClick={() =>
-                (publication as any)?.gated ||
-                (publication?.__typename === "Mirror"
-                  ? publication?.mirrorOn
-                  : (publication as Post)
-                )?.isEncrypted
-                  ? decryptPost &&
-                    (publication?.__typename === "Mirror"
-                      ? publication?.mirrorOn
-                      : (publication as Post)
-                    )?.operations?.canDecrypt
-                    ? decryptPost!(publication as Post)
-                    : dispatch(
-                        setDecrypt({
-                          actionOpen: true,
-                          actionCollections: (publication?.__typename ===
-                          "Mirror"
-                            ? publication?.mirrorOn
-                            : (publication as Post)
-                          )?.metadata?.content
-
-                            ?.split("gate.")[1]
-                            ?.split("are ready to collect")[0]
-                            .split(",")
-                            .map((word: string) => word.trim()),
-                          actionName: publication?.by?.ownedBy?.address,
-                        })
-                      )
-                  : !router.asPath.includes("/autograph/")
+                !router.asPath.includes("/autograph/")
                   ? router.push(
                       router.asPath.includes("&post=")
                         ? router.asPath.includes("?option=")
@@ -393,34 +329,12 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               }
             >
               <div className="relative w-fit h-fit flex  self-center  text-sm">
-                {(publication as any)?.gated ||
-                (publication?.__typename === "Mirror"
-                  ? publication?.mirrorOn
-                  : (publication as Post)
-                )?.isEncrypted
-                  ? "Decrypt"
-                  : publication?.__typename !== "Comment"
+                {publication?.__typename !== "Comment"
                   ? "View Post"
                   : "View Comment"}
               </div>
-              <div
-                className={`relative w-fit h-fit self-center flex ${
-                  decryptLoading && "animate-spin"
-                }`}
-              >
-                {(publication as any)?.gated ||
-                (publication?.__typename === "Mirror"
-                  ? publication?.mirrorOn
-                  : (publication as Post)
-                )?.isEncrypted ? (
-                  decryptLoading ? (
-                    <AiOutlineLoading size={12} />
-                  ) : (
-                    <BiLock color={"white"} size={15} />
-                  )
-                ) : (
-                  <AiFillEye color={"white"} size={20} />
-                )}
+              <div className={`relative w-fit h-fit self-center flex`}>
+                <AiFillEye color={"white"} size={20} />
               </div>
             </div>
           )}

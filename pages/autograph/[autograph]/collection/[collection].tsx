@@ -25,6 +25,7 @@ import { polygon } from "viem/chains";
 import useChannels from "@/components/Common/SideBar/hooks/useChannels";
 import useControls from "@/components/Common/Video/hooks/useControls";
 import useFulfillment from "@/components/Common/Interactions/hooks/useFulfillment";
+import { setMakePost } from "@/redux/reducers/makePostSlice";
 
 const Collection: NextPage<{ router: NextRouter }> = ({
   router,
@@ -86,7 +87,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
   const seek = useSelector(
     (state: RootState) => state.app.seekSecondReducer.seek
   );
- 
+
   const {
     collectionLoading,
     otherCollectionsDrop,
@@ -448,7 +449,13 @@ const Collection: NextPage<{ router: NextRouter }> = ({
                       ? () => handleLensSignIn()
                       : imageLoading
                       ? () => {}
-                      : () => dispatch(setQuote(autoCollection))
+                      : () =>
+                          dispatch(
+                            setMakePost({
+                              actionValue: true,
+                              actionQuote: autoCollection?.publication,
+                            })
+                          )
                   }
                 >
                   <div className="relative w-6 h-4 flex items-center justify-center">

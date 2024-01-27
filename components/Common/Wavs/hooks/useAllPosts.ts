@@ -7,7 +7,7 @@ import {
   Quote,
   Comment,
 } from "@/components/Home/types/generated";
-import { INFURA_GATEWAY, LENS_CREATORS } from "@/lib/constants";
+import { LENS_CREATORS } from "@/lib/constants";
 import {
   CommentFeedCountState,
   setCommentFeedCount,
@@ -28,62 +28,36 @@ import {
 } from "@/redux/reducers/reactionFeedCountSlice";
 import { useEffect, useState } from "react";
 import { setPostSent } from "@/redux/reducers/postSentSlice";
-import { setDecryptFeedRedux } from "@/redux/reducers/decryptFeedSlice";
-import {
-  DecryptFeedCountState,
-  setDecryptFeedCount,
-} from "@/redux/reducers/decryptFeedCountSlice";
-import { setDecryptPaginated } from "@/redux/reducers/decryptPaginatedSlice";
-import {
-  DecryptProfileFeedCountState,
-  setDecryptProfileFeedCount,
-} from "@/redux/reducers/decryptProfileCountSlice";
 import { Collection } from "@/components/Home/types/home.types";
 import { getPublications } from "@/graphql/lens/queries/getVideos";
-import { decryptPostArray } from "@/lib/helpers/decryptPost";
 import { AnyAction, Dispatch } from "redux";
 import { NextRouter } from "next/router";
 import { FeedReactIdState } from "@/redux/reducers/feedReactIdSlice";
-import { DecryptState } from "@/redux/reducers/decryptSlice";
 import { IndexModalState } from "@/redux/reducers/indexModalSlice";
 
 const useAllPosts = (
-  address: `0x${string}` | undefined,
   dispatch: Dispatch<AnyAction>,
   router: NextRouter,
   lensProfile: Profile | undefined,
   profile: Profile | undefined,
   feedDispatch: (Post | Mirror | Quote)[],
   profileDispatch: (Post | Quote | Mirror)[],
-  decryptFeed: Post[],
-  filterDecrypt: boolean,
-  decryptFeedCount: DecryptFeedCountState,
   indexer: IndexModalState,
-  decrypt: DecryptState,
   feedId: FeedReactIdState,
   reactionFeedCount: ReactionFeedCountState,
   postSent: boolean,
   commentFeed: CommentFeedCountState,
   comments: Comment[],
   paginated: string | undefined,
-  decryptPaginated: string | undefined,
   individual: IndividualFeedCountState,
-  decryptProfileFeedCount: DecryptProfileFeedCountState,
-  profileFeedCount: ProfileFeedCountState
+  profileFeedCount: ProfileFeedCountState,
+  feedType: string
 ) => {
   const [followerOnly, setFollowerOnly] = useState<boolean[]>(
     Array.from({ length: feedDispatch?.length }, () => false)
   );
   const [postsLoading, setPostsLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const [followerOnlyDecrypt, setFollowerOnlyDecrypt] = useState<boolean[]>(
-    Array.from({ length: feedDispatch?.length }, () => false)
-  );
-  const [decryptLoading, setDecryptLoading] = useState<boolean>(false);
-  const [hasMoreDecrypt, setHasMoreDecrypt] = useState<boolean>(true);
-  const [decryptCollections, setDecryptCollections] = useState<Collection[]>(
-    []
-  );
 
   const getTimeline = async () => {
     setPostsLoading(true);
@@ -107,17 +81,8 @@ const useAllPosts = (
         setPostsLoading(false);
         return;
       }
-      const arr = [...data?.data?.publications.items] as (
-        | Post
-        | Mirror
-        | Quote
-      )[];
-      let sortedArr = arr.sort(
-        (a: Post | Mirror | Quote, b: Post | Mirror | Quote) =>
-          Date.parse(b.createdAt) - Date.parse(a.createdAt)
-      );
 
-      sortedArr = await decryptPostArray(address, sortedArr);
+      const sortedArr = data?.data?.publications.items as Post[];
 
       if (sortedArr?.length < 10) {
         setHasMore(false);
@@ -217,8 +182,6 @@ const useAllPosts = (
           Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
 
-      sortedArr = await decryptPostArray(address, sortedArr);
-
       if (sortedArr?.length < 10) {
         setHasMore(false);
       } else {
@@ -305,164 +268,6 @@ const useAllPosts = (
       console.error(err.message);
     }
   };
-
-  const getDecryptFeed = async () => {
-    setDecryptLoading(true);
-    try {
-      const data = await getPublications(
-        {
-          where: {
-            metadata: {
-              tags: {
-                all: ["encrypted", "chromadin", "labyrinth"],
-              },
-            },
-            publicationTypes: [PublicationType.Post],
-          },
-          limit: LimitType.Ten,
-        },
-        lensProfile?.id
-      );
-
-      if (!data || !data?.data || !data?.data?.publications) {
-        setDecryptLoading(false);
-        return;
-      }
-      const arr: Post[] = [...data?.data.publications?.items] as Post[];
-      let sortedArr = arr.sort(
-        (a: Post, b: Post) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
-      );
-
-      sortedArr = (await decryptPostArray(address, sortedArr)) as Post[];
-
-      if (sortedArr?.length < 10) {
-        setHasMoreDecrypt(false);
-      } else {
-        setHasMoreDecrypt(true);
-      }
-      dispatch(setDecryptPaginated(data?.data?.publications?.pageInfo?.next));
-
-      setFollowerOnlyDecrypt(
-        sortedArr.map((obj: Post) =>
-          obj.referenceModule?.type === "FollowerOnlyReferenceModule"
-            ? true
-            : false
-        )
-      );
-      dispatch(setDecryptFeedRedux(sortedArr));
-      dispatch(
-        setDecryptFeedCount({
-          actionLike: sortedArr.map((obj: Post) => obj.stats.reactions),
-          actionMirror: sortedArr.map((obj: Post) => obj.stats.mirrors),
-          actionCollect: sortedArr.map(
-            (obj: Post) => obj.stats.countOpenActions
-          ),
-          actionComment: sortedArr.map((obj: Post) => obj.stats.comments),
-          actionHasLiked: sortedArr.map(
-            (obj: Post) => obj.operations.hasReacted
-          ),
-          actionHasMirrored: sortedArr.map(
-            (obj: Post) => obj.operations.hasMirrored
-          ),
-          actionHasCollected: sortedArr.map(
-            (obj: Post) => obj.operations.hasActed?.isFinalisedOnchain
-          ),
-        })
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setDecryptLoading(false);
-  };
-
-  const fetchMoreDecrypt = async () => {
-    try {
-      if (!decryptPaginated) {
-        // fix apollo duplications on null next
-        setHasMoreDecrypt(false);
-        return;
-      }
-
-      const data = await getPublications(
-        {
-          where: {
-            metadata: {
-              tags: {
-                all: ["encrypted", "chromadin", "labyrinth"],
-              },
-            },
-            publicationTypes: [PublicationType.Post],
-          },
-          limit: LimitType.Ten,
-          cursor: decryptPaginated,
-        },
-        lensProfile?.id
-      );
-
-      const arr: Post[] = [
-        ...(data?.data?.publications?.items || []),
-      ] as Post[];
-      let sortedArr = arr.sort(
-        (a: Post, b: Post) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
-      );
-
-      sortedArr = (await decryptPostArray(address, sortedArr)) as Post[];
-
-      if (sortedArr?.length < 10) {
-        setHasMoreDecrypt(false);
-      } else {
-        setHasMoreDecrypt(true);
-      }
-      dispatch(setDecryptFeedRedux([...decryptFeed, ...sortedArr]));
-      dispatch(setDecryptPaginated(data?.data?.publications?.pageInfo?.next));
-      setFollowerOnlyDecrypt([
-        ...followerOnlyDecrypt,
-        ...sortedArr.map((obj: Post) =>
-          obj.referenceModule?.type === "FollowerOnlyReferenceModule"
-            ? true
-            : false
-        ),
-      ]);
-
-      dispatch(
-        setDecryptFeedCount({
-          actionLike: [
-            ...decryptFeedCount.like,
-            ...sortedArr.map((obj: Post) => obj.stats?.reactions),
-          ],
-          actionMirror: [
-            ...decryptFeedCount.mirror,
-            ...sortedArr.map((obj: Post) => obj.stats?.mirrors),
-          ],
-          actionCollect: [
-            ...decryptFeedCount.collect,
-            ...sortedArr.map((obj: Post) => obj.stats?.countOpenActions),
-          ],
-          actionComment: [
-            ...decryptFeedCount.comment,
-            ...sortedArr.map((obj: Post) => obj.stats?.comments),
-          ],
-          actionHasLiked: [
-            ...decryptFeedCount.hasLiked,
-            ...sortedArr.map((obj: Post) => obj.operations?.hasReacted),
-          ],
-          actionHasMirrored: [
-            ...decryptFeedCount.hasMirrored,
-            ...sortedArr.map((obj: Post) => obj.operations?.hasMirrored),
-          ],
-          actionHasCollected: [
-            ...decryptFeedCount.hasCollected,
-            ...sortedArr.map(
-              (obj: Post) => obj.operations?.hasActed?.isFinalisedOnchain
-            ),
-          ],
-        })
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
   const refetchInteractions = () => {
     try {
       const index = (
@@ -489,223 +294,110 @@ const useAllPosts = (
           })
         );
         if (profile?.id === "" || !profile?.id) {
-          if (filterDecrypt) {
-            dispatch(
-              setDecryptFeedCount({
-                actionLike:
-                  feedId.type === 0
-                    ? decryptFeedCount.like.map((obj: number, number: number) =>
+          dispatch(
+            setReactionFeedCount({
+              actionLike:
+                feedId.type === 0
+                  ? reactionFeedCount.like.map((obj: number, number: number) =>
+                      number === index ? obj + 1 : obj
+                    )
+                  : reactionFeedCount.like,
+              actionMirror:
+                feedId.type === 1
+                  ? reactionFeedCount.mirror.map(
+                      (obj: number, number: number) =>
                         number === index ? obj + 1 : obj
-                      )
-                    : decryptFeedCount.like,
-                actionMirror:
-                  feedId.type === 1
-                    ? decryptFeedCount.mirror.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : decryptFeedCount.mirror,
-                actionCollect:
-                  feedId.type === 2
-                    ? decryptFeedCount.collect.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : decryptFeedCount.collect,
-                actionComment:
-                  feedId.type === 3
-                    ? decryptFeedCount.comment.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : decryptFeedCount.comment,
-                actionHasLiked:
-                  feedId.type === 0
-                    ? decryptFeedCount.hasLiked.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : decryptFeedCount.hasLiked,
-                actionHasMirrored:
-                  feedId.type === 1
-                    ? decryptFeedCount.hasMirrored.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : decryptFeedCount.mirror,
-                actionHasCollected:
-                  feedId.type === 2
-                    ? decryptFeedCount.hasCollected.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : decryptFeedCount.collect,
-              })
-            );
-          } else {
-            dispatch(
-              setReactionFeedCount({
-                actionLike:
-                  feedId.type === 0
-                    ? reactionFeedCount.like.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : reactionFeedCount.like,
-                actionMirror:
-                  feedId.type === 1
-                    ? reactionFeedCount.mirror.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : reactionFeedCount.mirror,
-                actionCollect:
-                  feedId.type === 2
-                    ? reactionFeedCount.collect.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : reactionFeedCount.collect,
-                actionComment:
-                  feedId.type === 3
-                    ? reactionFeedCount.comment.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : reactionFeedCount.comment,
-                actionHasLiked:
-                  feedId.type === 0
-                    ? reactionFeedCount.hasLiked.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : reactionFeedCount.hasLiked,
-                actionHasMirrored:
-                  feedId.type === 1
-                    ? reactionFeedCount.hasMirrored.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : reactionFeedCount.mirror,
-                actionHasCollected:
-                  feedId.type === 2
-                    ? reactionFeedCount.hasCollected.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : reactionFeedCount.collect,
-              })
-            );
-          }
+                    )
+                  : reactionFeedCount.mirror,
+              actionCollect:
+                feedId.type === 2
+                  ? reactionFeedCount.collect.map(
+                      (obj: number, number: number) =>
+                        number === index ? obj + 1 : obj
+                    )
+                  : reactionFeedCount.collect,
+              actionComment:
+                feedId.type === 3
+                  ? reactionFeedCount.comment.map(
+                      (obj: number, number: number) =>
+                        number === index ? obj + 1 : obj
+                    )
+                  : reactionFeedCount.comment,
+              actionHasLiked:
+                feedId.type === 0
+                  ? reactionFeedCount.hasLiked.map(
+                      (obj: boolean, number: number) =>
+                        number === index ? true : obj
+                    )
+                  : reactionFeedCount.hasLiked,
+              actionHasMirrored:
+                feedId.type === 1
+                  ? reactionFeedCount.hasMirrored.map(
+                      (obj: boolean, number: number) =>
+                        number === index ? true : obj
+                    )
+                  : reactionFeedCount.mirror,
+              actionHasCollected:
+                feedId.type === 2
+                  ? reactionFeedCount.hasCollected.map(
+                      (obj: boolean, number: number) =>
+                        number === index ? true : obj
+                    )
+                  : reactionFeedCount.collect,
+            })
+          );
         } else {
-          if (filterDecrypt) {
-            dispatch(
-              setDecryptProfileFeedCount({
-                actionLike:
-                  feedId.type === 0
-                    ? decryptProfileFeedCount.like.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : decryptProfileFeedCount.like,
-                actionMirror:
-                  feedId.type === 1
-                    ? decryptProfileFeedCount.mirror.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : decryptProfileFeedCount.mirror,
-                actionCollect:
-                  feedId.type === 2
-                    ? decryptProfileFeedCount.collect.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : decryptProfileFeedCount.collect,
-                actionComment:
-                  feedId.type === 3
-                    ? decryptProfileFeedCount.comment.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : decryptProfileFeedCount.comment,
-                actionHasLiked:
-                  feedId.type === 0
-                    ? decryptProfileFeedCount.hasLiked.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : decryptProfileFeedCount.hasLiked,
-                actionHasMirrored:
-                  feedId.type === 1
-                    ? decryptProfileFeedCount.hasMirrored.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : decryptProfileFeedCount.mirror,
-                actionHasCollected:
-                  feedId.type === 2
-                    ? decryptProfileFeedCount.hasCollected.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : decryptProfileFeedCount.collect,
-              })
-            );
-          } else {
-            dispatch(
-              setProfileFeedCount({
-                actionLike:
-                  feedId.type === 0
-                    ? profileFeedCount.like.map((obj: number, number: number) =>
+          dispatch(
+            setProfileFeedCount({
+              actionLike:
+                feedId.type === 0
+                  ? profileFeedCount.like.map((obj: number, number: number) =>
+                      number === index ? obj + 1 : obj
+                    )
+                  : profileFeedCount.like,
+              actionMirror:
+                feedId.type === 1
+                  ? profileFeedCount.mirror.map((obj: number, number: number) =>
+                      number === index ? obj + 1 : obj
+                    )
+                  : profileFeedCount.mirror,
+              actionCollect:
+                feedId.type === 2
+                  ? profileFeedCount.collect.map(
+                      (obj: number, number: number) =>
                         number === index ? obj + 1 : obj
-                      )
-                    : profileFeedCount.like,
-                actionMirror:
-                  feedId.type === 1
-                    ? profileFeedCount.mirror.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : profileFeedCount.mirror,
-                actionCollect:
-                  feedId.type === 2
-                    ? profileFeedCount.collect.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : profileFeedCount.collect,
-                actionComment:
-                  feedId.type === 3
-                    ? profileFeedCount.comment.map(
-                        (obj: number, number: number) =>
-                          number === index ? obj + 1 : obj
-                      )
-                    : profileFeedCount.comment,
-                actionHasLiked:
-                  feedId.type === 0
-                    ? profileFeedCount.hasLiked.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : profileFeedCount.hasLiked,
-                actionHasMirrored:
-                  feedId.type === 1
-                    ? profileFeedCount.hasMirrored.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : profileFeedCount.mirror,
-                actionHasCollected:
-                  feedId.type === 2
-                    ? profileFeedCount.hasCollected.map(
-                        (obj: boolean, number: number) =>
-                          number === index ? true : obj
-                      )
-                    : profileFeedCount.collect,
-              })
-            );
-          }
+                    )
+                  : profileFeedCount.collect,
+              actionComment:
+                feedId.type === 3
+                  ? profileFeedCount.comment.map(
+                      (obj: number, number: number) =>
+                        number === index ? obj + 1 : obj
+                    )
+                  : profileFeedCount.comment,
+              actionHasLiked:
+                feedId.type === 0
+                  ? profileFeedCount.hasLiked.map(
+                      (obj: boolean, number: number) =>
+                        number === index ? true : obj
+                    )
+                  : profileFeedCount.hasLiked,
+              actionHasMirrored:
+                feedId.type === 1
+                  ? profileFeedCount.hasMirrored.map(
+                      (obj: boolean, number: number) =>
+                        number === index ? true : obj
+                    )
+                  : profileFeedCount.mirror,
+              actionHasCollected:
+                feedId.type === 2
+                  ? profileFeedCount.hasCollected.map(
+                      (obj: boolean, number: number) =>
+                        number === index ? true : obj
+                    )
+                  : profileFeedCount.collect,
+            })
+          );
         }
       }
     } catch (err: any) {
@@ -766,25 +458,6 @@ const useAllPosts = (
     }
   };
 
-  const getDecryptCollections = async (): Promise<void> => {
-    try {
-      let collections: Collection[] = [];
-
-      for (let name = 0; name <= decrypt?.collections?.length - 1; name++) {
-        const collection = await getCollectionsDecrypt(
-          decrypt.collections[name],
-          decrypt.owner as string
-        );
-
-        collections.push(collection);
-      }
-
-      setDecryptCollections(collections);
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
   useEffect(() => {
     if (router.asPath?.includes("#chat")) {
       if (indexer.message === "Successfully Indexed") {
@@ -798,32 +471,13 @@ const useAllPosts = (
   }, [indexer.message]);
 
   useEffect(() => {
-    if (router.asPath.includes("#chat")) {
-      if (filterDecrypt) {
-        if (decryptFeed?.length < 1 || !decryptFeed) {
-          getDecryptFeed();
-        }
-      } else {
-        if (!feedDispatch || feedDispatch?.length < 1) {
-          getTimeline();
-        }
-      }
-    }
-  }, [filterDecrypt]);
-
-  useEffect(() => {
     if (
       postSent &&
       !router.asPath.includes("&post=") &&
       !router.asPath.includes("&profile=")
     ) {
       dispatch(setPostSent(false));
-
-      if (filterDecrypt) {
-        getDecryptFeed();
-      } else {
-        getTimeline();
-      }
+      getTimeline();
     }
   }, [postSent]);
 
@@ -833,30 +487,15 @@ const useAllPosts = (
       !router.asPath.includes("&profile=") &&
       feedDispatch?.length < 1
     ) {
-      if (filterDecrypt) {
-        getDecryptFeed();
-      } else {
-        getTimeline();
-      }
+      getTimeline();
     }
   }, [router?.asPath]);
-
-  useEffect(() => {
-    if (decrypt.open) {
-      getDecryptCollections();
-    }
-  }, [decrypt.open]);
 
   return {
     followerOnly,
     postsLoading,
     fetchMore,
     hasMore,
-    fetchMoreDecrypt,
-    decryptLoading,
-    hasMoreDecrypt,
-    followerOnlyDecrypt,
-    decryptCollections,
   };
 };
 

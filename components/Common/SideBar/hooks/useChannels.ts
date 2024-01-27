@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { UseChannelsResults } from "../types/sidebar.types";
-import {
-  getPublications,
-  getPublicationsAuth,
-} from "@/graphql/lens/queries/getVideos";
-import { FetchResult } from "@apollo/client";
+import { getPublications } from "@/graphql/lens/queries/getVideos";
 import { MainVideoState, setMainVideo } from "@/redux/reducers/mainVideoSlice";
 import json from "./../../../../public/videos/local.json";
 import { setChannelsRedux } from "@/redux/reducers/channelsSlice";
@@ -21,7 +17,6 @@ import {
   Post,
   Profile,
   PublicationType,
-  PublicationsQuery,
 } from "@/components/Home/types/generated";
 import { AnyAction, Dispatch } from "redux";
 
@@ -53,26 +48,19 @@ const useChannels = (
         actionVideosLoading: true,
       })
     );
-    let data: FetchResult<PublicationsQuery>,
-      sortedArr: Post[] = [];
+    let sortedArr: Post[] = [];
     try {
-      if (profile?.id) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
             from: ["0x01c6a9"],
           },
-        });
-      } else {
-        data = await getPublications({
-          limit: LimitType.Ten,
-          where: {
-            publicationTypes: [PublicationType.Post],
-            from: ["0x01c6a9"],
-          },
-        });
-      }
+        },
+        profile?.id
+      );
+
       if (!data || !data?.data || data?.data.publications?.items?.length < 1) {
         return;
       }
@@ -129,32 +117,24 @@ const useChannels = (
   };
 
   const fetchMoreVideos = async () => {
-    let data: FetchResult<PublicationsQuery>,
-      sortedArr: Post[] = [];
+    let sortedArr: Post[] = [];
     if (!paginated?.next) {
       dispatch(setHasMoreVideosRedux(false));
       return;
     }
     try {
-      if (profile?.id) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
             from: ["0x01c6a9"],
           },
           cursor: paginated?.next,
-        });
-      } else {
-        data = await getPublications({
-          limit: LimitType.Ten,
-          where: {
-            publicationTypes: [PublicationType.Post],
-            from: ["0x01c6a9"],
-          },
-          cursor: paginated?.next,
-        });
-      }
+        },
+        profile?.id
+      );
+
       const arr: Post[] = [
         ...(data?.data?.publications?.items || []),
       ] as Post[];
@@ -229,25 +209,18 @@ const useChannels = (
   };
 
   const refetchInteractions = async () => {
-    let data: FetchResult<PublicationsQuery>;
     try {
-      if (profile?.id) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           limit: LimitType.Ten,
           where: {
             publicationTypes: [PublicationType.Post],
             from: ["0x01c6a9"],
           },
-        });
-      } else {
-        data = await getPublications({
-          limit: LimitType.Ten,
-          where: {
-            publicationTypes: [PublicationType.Post],
-            from: ["0x01c6a9"],
-          },
-        });
-      }
+        },
+        profile?.id
+      );
+
       const arr: Post[] = [
         ...(data?.data?.publications?.items || []),
       ] as Post[];

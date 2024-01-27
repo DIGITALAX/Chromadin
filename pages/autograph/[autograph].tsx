@@ -226,8 +226,6 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     profileFeedCount,
     setOpenProfileMirrorChoice,
     openProfileMirrorChoice,
-    decryptLoading,
-    decryptPost,
   } = useAutoProfile(
     router,
     dispatch,
@@ -493,8 +491,6 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                       </div>
                     ) : (
                       <AutoProfileFeed
-                        decryptLoading={decryptLoading}
-                        decryptPost={decryptPost}
                         followerOnly={followerOnlyProfile}
                         clientRendered={clientRendered}
                         hasMoreProfile={hasMoreProfile}

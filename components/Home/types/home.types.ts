@@ -11,8 +11,6 @@ import {
   RefObject,
 } from "react";
 import { CommentFeedCountState } from "@/redux/reducers/commentFeedCountSlice";
-import { DecryptFeedCountState } from "@/redux/reducers/decryptFeedCountSlice";
-import { DecryptProfileFeedCountState } from "@/redux/reducers/decryptProfileCountSlice";
 import { IndividualFeedCountState } from "@/redux/reducers/individualFeedCountReducer";
 import { ProfileFeedCountState } from "@/redux/reducers/profileFeedCountSlice";
 import { PriceFilterState } from "@/redux/reducers/priceFilterSlice";
@@ -114,7 +112,6 @@ export type ViewProps = {
   setProfilesFound: (e: Profile[]) => void;
   hasMoreProfile: boolean;
   fetchMoreProfile: () => Promise<void>;
-
   followerOnlyProfile: boolean[];
   setCollectProfileLoading: (e: boolean[]) => void;
   setMirrorProfileLoading: (e: boolean[]) => void;
@@ -123,11 +120,6 @@ export type ViewProps = {
   collectProfileLoading: boolean[];
   reactProfileLoading: boolean[];
   setReactProfileLoading: (e: boolean[]) => void;
-  decryptProfileFeedCount: DecryptProfileFeedCountState;
-  hasMoreDecryptProfile: boolean;
-  followerOnlyProfileDecrypt: boolean[];
-  fetchMoreProfileDecrypt: () => Promise<void>;
-  decryptProfileLoading: boolean;
   profileCollections: Collection[];
   profileCollectionsLoading: boolean;
   openProfileMirrorChoice: boolean[];
@@ -183,12 +175,7 @@ export type ViewProps = {
   followerOnly: boolean[];
   postsLoading: boolean;
   fetchMore: () => Promise<void>;
-
-  followerOnlyDecrypt: boolean[];
-  hasMoreDecrypt: boolean;
-  decryptFeedCount: DecryptFeedCountState;
-  decryptLoading: boolean;
-  fetchMoreDecrypt: () => Promise<void>;
+  feedType: string;
   commentPost: (id: string) => Promise<void>;
   commentDescription: string;
   textElement: RefObject<HTMLTextAreaElement>;
@@ -198,8 +185,6 @@ export type ViewProps = {
     x: number;
     y: number;
   };
-  decryptFeed: Post[];
-  filterDecrypt: boolean;
   mentionProfiles: Profile[];
   profilesOpen: boolean;
   handleMentionClick: (user: Profile) => void;
@@ -213,7 +198,6 @@ export type ViewProps = {
   preElement: RefObject<HTMLPreElement>;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => Promise<void>;
   commentOpen: string;
-  decryptProfileFeed: Post[];
   reactionAmounts: ReactionFeedCountState;
   uploadImages: (
     e: FormEvent<Element> | File[],
@@ -273,8 +257,8 @@ export type VendingProps = {
   setDropDownDateSort: (e: boolean) => void;
   handleSearch: (e: FormEvent) => Promise<void>;
   searchOpen: boolean;
-  searchResults: (Collection | Drop | Post)[];
-  handleSearchChoose: (chosen: Post | Drop | Collection) => Promise<void>;
+  searchResults: (Collection | Drop | Profile)[];
+  handleSearchChoose: (chosen: Profile | Drop | Collection) => Promise<void>;
   collectionsLoading: boolean;
   error: boolean;
   moreCollectionsLoading: boolean;
@@ -465,6 +449,7 @@ export type WavsProps = {
   postImagesDispatched?: UploadedMedia[];
   mappedFeaturedFiles: UploadedMedia[];
   collectOpen: boolean;
+  feedType: string;
   enabledCurrencies: Erc20[];
   audienceTypes: string[];
   setAudienceType: (e: string) => void;
@@ -523,19 +508,6 @@ export type WavsProps = {
   fetchMoreSearch: () => Promise<void>;
   setProfilesOpenSearch: (e: boolean) => void;
   setProfilesFound: (e: Profile[]) => void;
-  filterDecrypt: boolean;
-  decryptFeed: (Post | Mirror | Quote)[];
-  decryptAmounts: DecryptFeedCountState;
-  followerOnlyDecrypt: boolean[];
-  decryptLoading: boolean;
-  fetchMoreDecrypt: () => Promise<void>;
-  hasMoreDecrypt: boolean;
-  decryptFeedProfile: (Post | Mirror | Quote)[];
-  decryptProfileAmounts: DecryptProfileFeedCountState;
-  decryptProfileLoading: boolean;
-  fetchMoreProfileDecrypt: () => Promise<void>;
-  followerOnlyProfileDecrypt: boolean[];
-  hasMoreDecryptProfile: boolean;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
   profileCollectionsLoading: boolean;
 };
@@ -544,6 +516,7 @@ export type SwitchViewProps = {
   router: NextRouter;
   dispatch: Dispatch<AnyAction>;
   viewer: string;
+  feedType: string;
   history: string;
   lensProfile: Profile | undefined;
   mirrorFeedLoading: boolean[];
@@ -693,19 +666,6 @@ export type SwitchViewProps = {
   fetchMoreSearch: () => Promise<void>;
   setProfilesOpenSearch: (e: boolean) => void;
   setProfilesFound: (e: Profile[]) => void;
-  filterDecrypt: boolean;
-  decryptFeed: (Post | Mirror | Quote)[];
-  decryptAmounts: DecryptFeedCountState;
-  followerOnlyDecrypt: boolean[];
-  decryptLoading: boolean;
-  fetchMoreDecrypt: () => Promise<void>;
-  hasMoreDecrypt: boolean;
-  decryptFeedProfile: (Post | Mirror | Quote)[];
-  decryptProfileAmounts: DecryptProfileFeedCountState;
-  decryptProfileLoading: boolean;
-  fetchMoreProfileDecrypt: () => Promise<void>;
-  followerOnlyProfileDecrypt: boolean[];
-  hasMoreDecryptProfile: boolean;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
   profileCollectionsLoading: boolean;
   rates: any[];
@@ -728,8 +688,8 @@ export type SwitchViewProps = {
   setDropDownDateSort: (e: boolean) => void;
   handleSearch: (e: FormEvent) => Promise<void>;
   searchOpen: boolean;
-  searchResults: (Collection | Drop | Post)[];
-  handleSearchChoose: (chosen: Post | Drop | Collection) => Promise<void>;
+  searchResults: (Collection | Drop | Profile)[];
+  handleSearchChoose: (chosen: Profile | Drop | Collection) => Promise<void>;
   collectionsLoading: boolean;
   error: boolean;
   moreCollectionsLoading: boolean;

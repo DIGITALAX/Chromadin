@@ -127,7 +127,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                         className="relative w-fit h-full flex items-start justify-start cursor-pointer"
                         onClick={() => {
                           router.push(
-                            `https://www.chromadin.xyz/#chat?option=history&profile=${comment?.by?.handle}`
+                            `https://www.chromadin.xyz/#chat?option=history&profile=${comment?.by?.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`
                           );
                         }}
                       >

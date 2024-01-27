@@ -48,7 +48,11 @@ const Stats: FunctionComponent<StatsProps> = ({
                               window.open(
                                 indexOne === 4 || indexOne === 5
                                   ? `https://www.chromadin.xyz/#chat?option=history&post=${value?.publication_id}`
-                                  : `https://www.chromadin.xyz/#chat?option=history&profile=${value?.handle}`
+                                  : `https://www.chromadin.xyz/#chat?option=history&profile=${
+                                      value?.handle?.suggestedFormatted?.localName?.split(
+                                        "@"
+                                      )?.[1]
+                                    }`
                               )
                             }
                           >

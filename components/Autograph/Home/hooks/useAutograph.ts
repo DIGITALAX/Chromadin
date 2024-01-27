@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { getOneProfile } from "@/graphql/lens/queries/getProfile";
 import { getCollectionsProfile } from "@/graphql/subgraph/queries/getAllCollections";
 import { Profile } from "@/components/Home/types/generated";
+import { getPublication } from "@/graphql/lens/queries/getPublication";
+import toHexWithLeadingZero from "@/lib/helpers/leadingZero";
 
 const useAutograph = (autograph: string, lensProfile: Profile | undefined) => {
   const [autographLoading, setAutographLoading] = useState<boolean>(false);
@@ -35,8 +37,28 @@ const useAutograph = (autograph: string, lensProfile: Profile | undefined) => {
         prof?.data?.profile?.ownedBy?.address
       );
 
+      const collectionPromises = await Promise.all(
+        collections?.data?.collectionCreateds?.map(
+          async (item: { profileId: string; pubId: string }) => {
+            const pub = await getPublication(
+              {
+                forId: `${toHexWithLeadingZero(
+                  Number(item?.profileId)
+                )}-${toHexWithLeadingZero(Number(item?.pubId))}`,
+              },
+              lensProfile?.id
+            );
+
+            return {
+              ...item,
+              publication: pub?.data?.publication,
+            };
+          }
+        )
+      );
+
       setAutographData({
-        drops: collections?.data?.collectionCreateds?.reduce(
+        drops: collectionPromises?.reduce(
           (
             accumulator: {
               seenDropIds: Set<string>;
@@ -55,7 +77,7 @@ const useAutograph = (autograph: string, lensProfile: Profile | undefined) => {
           },
           { seenDropIds: new Set(), uniqueMetadata: [] }
         ).uniqueMetadata,
-        collections: collections?.data?.collectionCreateds,
+        collections: collectionPromises,
         profile: prof?.data?.profile as Profile,
       });
     } catch (err: any) {

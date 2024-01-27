@@ -2,12 +2,13 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { CollectionCaseProps } from "../types/autograph.types";
+import { setMakePost } from "@/redux/reducers/makePostSlice";
 
 const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
   router,
   collection,
   autoProfile,
-  
+  dispatch,
   imageLoading,
   address,
   lensProfile,
@@ -84,7 +85,13 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
               ? () => handleLensSignIn()
               : imageLoading
               ? () => {}
-              : () => handleShareCollection(collection!)
+              : () =>
+                  dispatch(
+                    setMakePost({
+                      actionValue: true,
+                      actionQuote: collection?.publication,
+                    })
+                  )
           }
         >
           <div className="relative w-6 h-4 flex items-center justify-center">

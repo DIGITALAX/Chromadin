@@ -313,8 +313,8 @@ const COLLECTION_ID = `query($collectionId: String) {
   }
 }`;
 
-const COLLECTION_ONE = `query($title: String, $owner: String) {
-  collectionCreateds(where: {collectionMetadata_: {title_ends_with_nocase: $title, title_starts_with_nocase: $title}, origin: "1", owner: $owner}, orderDirection: desc, orderBy: blockTimestamp, first: 1) {
+const COLLECTION_ONE = `query($title: String) {
+  collectionCreateds(where: {collectionMetadata_: {title_ends_with_nocase: $title, title_starts_with_nocase: $title}, origin: "1"}, orderDirection: desc, orderBy: blockTimestamp, first: 1) {
     amount
     dropMetadata {
       dropCover
@@ -486,14 +486,12 @@ export const getCollectionsDrop = async (dropId: string): Promise<any> => {
 };
 
 export const getOneCollection = async (
-  title: string,
-  owner: string
+  title: string
 ): Promise<any> => {
   const queryPromise = graphClient.query({
     query: gql(COLLECTION_ONE),
     variables: {
       title,
-      owner,
     },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
