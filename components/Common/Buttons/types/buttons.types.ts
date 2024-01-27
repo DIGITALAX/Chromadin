@@ -2,7 +2,7 @@ import { Collection, Drop } from "@/components/Home/types/home.types";
 import { Erc20 } from "@/components/Home/types/generated";
 import { FormEvent } from "react";
 import { AnyAction, Dispatch } from "redux";
-import { QuickProfilesInterface } from "../../Wavs/types/wavs.types";
+import { Post } from "../../Wavs/types/wavs.types";
 
 export type CollectButtonProps = {
   values?: string[] | Erc20[];
@@ -41,7 +41,7 @@ export type FilterVendingProps = {
 export type SearchVendingProps = {
   handleSearch: (e: FormEvent<Element>) => Promise<void>;
   searchOpen: boolean;
-  searchResults: (Collection | Drop | QuickProfilesInterface)[];
-  handleSearchChoose: (chosen: QuickProfilesInterface | Drop | Collection) => Promise<void>;
+  searchResults: (Collection | Drop | Post)[];
+  handleSearchChoose: (chosen: Post | Drop | Collection) => Promise<void>;
   mainPage?: boolean;
 };

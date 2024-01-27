@@ -20,7 +20,7 @@ const Account: FunctionComponent<AccountProps> = ({
           draggable={false}
         />
       </div>
-      {profile ? (
+      {profile?.id ? (
         <div
           className={`relative w-full ${
             isCreator ? "h-fit" : "h-full"
@@ -46,7 +46,7 @@ const Account: FunctionComponent<AccountProps> = ({
             <input
               disabled
               className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-br-lg rounded-tl-lg border border-white/30 px-2 text-sm"
-              value={`@${profile?.handle}`}
+              value={`@${profile?.handle?.fullHandle}`}
             />
             <input
               disabled
@@ -57,7 +57,9 @@ const Account: FunctionComponent<AccountProps> = ({
           <input
             disabled
             className="relative bg-offBlack font-arcade text-white/50 w-full h-8 rounded-br-lg rounded-tl-lg border border-white/30 px-2 text-sm"
-            value={`${profile?.handle?.suggestedFormatted?.localName}`}
+            value={`${
+              profile?.handle?.suggestedFormatted?.localName?.split("@")?.[1]
+            }`}
           />
           <textarea
             disabled
@@ -80,7 +82,7 @@ const Account: FunctionComponent<AccountProps> = ({
       {isCreator && (
         <div className="relative w-full h-fit flex flex-col items-center justify-center p-3">
           <Link
-            className="relative w-fit h-fit py-2 px-3 rounded-br-lg  rounded-tl-lg bg-offBlack border-white border font-earl text-white text-sm word-break cursor-pointer flex items-center justify-center active:scale-95 hover:opacity-70"
+            className="relative w-fit h-fit py-2 px-3 rounded-br-lg  rounded-tl-lg bg-offBlack border-white border font-earl text-white text-xs word-break cursor-pointer flex items-center justify-center active:scale-95 hover:opacity-70"
             target="_blank"
             rel="noreferrer"
             href={`https://cypher.digitalax.xyz/autograph/${

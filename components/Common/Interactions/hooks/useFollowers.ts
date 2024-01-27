@@ -1,14 +1,10 @@
 import {
   Profile,
-  ProfileQuery,
   RelaySuccess,
   ApprovalAllowance,
 } from "@/components/Home/types/generated";
 import broadcast from "@/graphql/lens/mutations/broadcast";
-import {
-  getOneProfileAuth,
-  getOneProfile,
-} from "@/graphql/lens/queries/getProfile";
+import { getOneProfile } from "@/graphql/lens/queries/getProfile";
 import checkApproved from "@/lib/helpers/checkApproved";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
@@ -46,16 +42,12 @@ const useFollowers = (
 
   const getProfile = async (): Promise<void> => {
     try {
-      let prof: FetchResult<ProfileQuery>;
-      if (profile?.id) {
-        prof = await getOneProfileAuth({
+      const prof = await getOneProfile(
+        {
           forProfileId: followerId?.followerId,
-        });
-      } else {
-        prof = await getOneProfile({
-          forProfileId: followerId?.followerId,
-        });
-      }
+        },
+        profile?.id
+      );
 
       setProfile(prof?.data?.profile as Profile);
     } catch (err: any) {

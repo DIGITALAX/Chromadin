@@ -1,11 +1,8 @@
-import { QuickProfilesInterface } from "@/components/Common/Wavs/types/wavs.types";
 import { Collection, Drop } from "@/components/Home/types/home.types";
 import { Post, Profile } from "@/components/Home/types/generated";
 import { NextRouter } from "next/dist/shared/lib/router/router";
 import { FormEvent, MouseEvent, Ref } from "react";
 import { AnyAction, Dispatch } from "redux";
-import { AutoCollectionState } from "@/redux/reducers/autoCollectionSlice";
-import { Details } from "@/redux/reducers/fulfillmentDetailsSlice";
 import { VideoCountState } from "@/redux/reducers/videoCountSlice";
 import ReactPlayer from "react-player";
 import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
@@ -26,9 +23,9 @@ export type BarProps = {
   lensProfile: Profile | undefined;
   handleSearch: (e: FormEvent<Element>) => Promise<void>;
   searchOpen: boolean;
-  searchResults: (Collection | Drop | QuickProfilesInterface)[];
+  searchResults: (Collection | Drop | Profile)[];
   handleSearchChoose: (
-    chosen: QuickProfilesInterface | Drop | Collection
+    chosen: Profile | Drop | Collection
   ) => Promise<void>;
   isLargeScreen: boolean;
   videoSync: VideoSyncState;
@@ -64,16 +61,8 @@ export type BarProps = {
 };
 
 export type CheckoutProps = {
-  dispatch: Dispatch<AnyAction>;
-  address: `0x${string}` | undefined;
   router: NextRouter;
-  openChainModal: (() => void) | undefined;
-  openConnectModal: (() => void) | undefined;
-  viewScreenNFT: boolean;
-  autoDispatch: AutoCollectionState;
-  encryptedInformation: string[] | undefined;
-  fulfillmentDetails: Details;
-  chain: any;
+  collection: Collection;
   currency: string;
   setCurrency: (e: string) => void;
   totalAmount: number;
@@ -81,7 +70,4 @@ export type CheckoutProps = {
   buyNFT: () => Promise<void>;
   approveSpend: () => Promise<void>;
   purchaseLoading: boolean;
-  oracleValue: number;
-  cryptoCheckoutLoading: boolean;
-  handleCheckoutCrypto: () => Promise<void>;
 };

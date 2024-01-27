@@ -7,47 +7,32 @@ import {
   PublicationType,
   Quote,
 } from "@/components/Home/types/generated";
-import {
-  getOneProfileAuth,
-  getOneProfile,
-} from "@/graphql/lens/queries/getProfile";
-import {
-  getPublications,
-  getPublicationsAuth,
-} from "@/graphql/lens/queries/getVideos";
+import { getOneProfile } from "@/graphql/lens/queries/getProfile";
+import { getPublications } from "@/graphql/lens/queries/getVideos";
 import {
   ProfileFeedCountState,
   setProfileFeedCount,
 } from "@/redux/reducers/profileFeedCountSlice";
 import { setProfileFeedRedux } from "@/redux/reducers/profileFeedSlice";
 import { setProfilePaginated } from "@/redux/reducers/profilePaginatedSlice";
-import { setProfileScrollPosRedux } from "@/redux/reducers/profileScrollPosSlice";
 import { setProfile } from "@/redux/reducers/profileSlice";
 import { MouseEvent, useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { setPostSent } from "@/redux/reducers/postSentSlice";
-import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
-import { setDecryptProfileScrollPosRedux } from "@/redux/reducers/decryptProfileScrollPosSlice";
 import { setDecryptProfilePaginated } from "@/redux/reducers/decryptProfilePaginatedSlice";
 import { setDecryptProfileFeedRedux } from "@/redux/reducers/decryptProfileFeedSlice";
 import {
   DecryptProfileFeedCountState,
   setDecryptProfileFeedCount,
 } from "@/redux/reducers/decryptProfileCountSlice";
-import { Collection, Drop } from "@/components/Home/types/home.types";
-import {
-  getCollectionsProfile,
-  getCollectionsProfileUpdated,
-} from "@/graphql/subgraph/queries/getAllCollections";
-import { INFURA_GATEWAY } from "@/lib/constants";
-import getAllDrops, {
-  getAllDropsUpdated,
-} from "@/graphql/subgraph/queries/getAllDrops";
+import { Collection } from "@/components/Home/types/home.types";
+import { getCollectionsProfile } from "@/graphql/subgraph/queries/getAllCollections";
 import { decryptPostArray } from "@/lib/helpers/decryptPost";
 import { FetchResult } from "@apollo/client";
 import { AnyAction, Dispatch } from "redux";
-import { QuickProfilesInterface } from "../types/wavs.types";
 import { NextRouter } from "next/router";
+import { createWalletClient, custom } from "viem";
+import { polygon } from "viem/chains";
 
 const useProfileFeed = (
   router: NextRouter,
@@ -56,7 +41,7 @@ const useProfileFeed = (
   profileDispatch: (Post | Quote | Mirror)[],
   filterDecrypt: boolean,
   postSent: boolean,
-  quickProfiles: QuickProfilesInterface[],
+  quickProfiles: Profile[],
   lensProfile: Profile | undefined,
   feedProfile: Profile | undefined,
   profilePageData: string | undefined,
@@ -65,8 +50,6 @@ const useProfileFeed = (
   decryptProfileFeedCount: DecryptProfileFeedCountState,
   decryptProfileFeed: Post[]
 ) => {
-  const profileRef = useRef<InfiniteScroll>(null);
-  const scrollRefDecryptProfile = useRef<InfiniteScroll>(null);
   const [hasMoreProfile, setHasMoreProfile] = useState<boolean>(true);
   const [openProfileMirrorChoice, setOpenProfileMirrorChoice] = useState<
     boolean[]
@@ -99,10 +82,10 @@ const useProfileFeed = (
 
   const getProfile = async () => {
     setProfileLoading(true);
-    let data;
+
     try {
-      if (!lensProfile?.id) {
-        data = await getPublications({
+      const data = await getPublications(
+        {
           where: {
             from: [feedProfile?.id],
             publicationTypes: [
@@ -112,20 +95,9 @@ const useProfileFeed = (
             ],
           },
           limit: LimitType.Ten,
-        });
-      } else {
-        data = await getPublicationsAuth({
-          where: {
-            from: [feedProfile?.id],
-            publicationTypes: [
-              PublicationType.Post,
-              PublicationType.Mirror,
-              PublicationType.Quote,
-            ],
-          },
-          limit: LimitType.Ten,
-        });
-      }
+        },
+        lensProfile?.id
+      );
 
       if (!data || !data?.data || !data?.data?.publications) {
         setProfileLoading(false);
@@ -140,7 +112,12 @@ const useProfileFeed = (
           Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
 
-      sortedArr = await decryptPostArray(address, sortedArr);
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      sortedArr = await decryptPostArray(address, sortedArr, clientWallet);
 
       if (!sortedArr || sortedArr?.length < 10) {
         setHasMoreProfile(false);
@@ -211,15 +188,14 @@ const useProfileFeed = (
   };
 
   const fetchMoreProfile = async () => {
-    let data;
     try {
       if (!profilePageData) {
         setHasMoreProfile(false);
         return;
       }
 
-      if (!lensProfile?.id) {
-        data = await getPublications({
+      const data = await getPublications(
+        {
           where: {
             from: [feedProfile?.id],
             publicationTypes: [
@@ -230,21 +206,10 @@ const useProfileFeed = (
           },
           limit: LimitType.Ten,
           cursor: profilePageData,
-        });
-      } else {
-        data = await getPublicationsAuth({
-          where: {
-            from: [feedProfile?.id],
-            publicationTypes: [
-              PublicationType.Post,
-              PublicationType.Mirror,
-              PublicationType.Quote,
-            ],
-          },
-          limit: LimitType.Ten,
-          cursor: profilePageData,
-        });
-      }
+        },
+        lensProfile?.id
+      );
+
       const arr: (Post | Mirror | Quote)[] = [
         ...(data?.data?.publications?.items || []),
       ] as (Post | Mirror | Quote)[];
@@ -253,7 +218,12 @@ const useProfileFeed = (
           Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
 
-      sortedArr = await decryptPostArray(address, sortedArr);
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      sortedArr = await decryptPostArray(address, sortedArr, clientWallet);
 
       if (sortedArr?.length < 10) {
         setHasMoreProfile(false);
@@ -345,10 +315,10 @@ const useProfileFeed = (
 
   const getProfileDecrypt = async () => {
     setDecryptProfileLoading(true);
-    let data;
+
     try {
-      if (!lensProfile?.id) {
-        data = await getPublications({
+      const data = await getPublications(
+        {
           where: {
             from: [feedProfile?.id],
             publicationTypes: [PublicationType.Post],
@@ -359,21 +329,9 @@ const useProfileFeed = (
             },
           },
           limit: LimitType.Ten,
-        });
-      } else {
-        data = await getPublicationsAuth({
-          where: {
-            from: [feedProfile?.id],
-            publicationTypes: [PublicationType.Post],
-            metadata: {
-              tags: {
-                all: ["encrypted", "chromadin", "labyrinth"],
-              },
-            },
-          },
-          limit: LimitType.Ten,
-        });
-      }
+        },
+        lensProfile?.id
+      );
 
       if (!data || !data?.data || !data?.data?.publications) {
         setDecryptProfileLoading(false);
@@ -385,7 +343,16 @@ const useProfileFeed = (
         (a: Post, b: Post) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
 
-      sortedArr = (await decryptPostArray(address, sortedArr)) as Post[];
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      sortedArr = (await decryptPostArray(
+        address,
+        sortedArr,
+        clientWallet
+      )) as Post[];
 
       if (!sortedArr || sortedArr?.length < 10) {
         setHasMoreDecryptProfile(false);
@@ -430,15 +397,14 @@ const useProfileFeed = (
   };
 
   const fetchMoreProfileDecrypt = async () => {
-    let data;
     try {
       if (!decryptProfilePageData) {
         setHasMoreDecryptProfile(false);
         return;
       }
 
-      if (!lensProfile?.id) {
-        data = await getPublications({
+      const data = await getPublications(
+        {
           where: {
             from: [feedProfile?.id],
             publicationTypes: [PublicationType.Post],
@@ -450,22 +416,10 @@ const useProfileFeed = (
           },
           limit: LimitType.Ten,
           cursor: decryptProfilePageData,
-        });
-      } else {
-        data = await getPublicationsAuth({
-          where: {
-            from: [feedProfile?.id],
-            publicationTypes: [PublicationType.Post],
-            metadata: {
-              tags: {
-                all: ["encrypted", "chromadin", "labyrinth"],
-              },
-            },
-          },
-          limit: LimitType.Ten,
-          cursor: decryptProfilePageData,
-        });
-      }
+        },
+        lensProfile?.id
+      );
+
       const arr: Post[] = [
         ...(data?.data?.publications?.items || []),
       ] as Post[];
@@ -473,7 +427,16 @@ const useProfileFeed = (
         (a: Post, b: Post) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
 
-      sortedArr = (await decryptPostArray(address, sortedArr)) as Post[];
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      sortedArr = (await decryptPostArray(
+        address,
+        sortedArr,
+        clientWallet
+      )) as Post[];
 
       if (sortedArr?.length < 10) {
         setHasMoreDecryptProfile(false);
@@ -563,21 +526,17 @@ const useProfileFeed = (
   }, [postSent]);
 
   const getSingleProfile = async () => {
-    let prof: FetchResult<ProfileQuery>;
     try {
-      if (lensProfile?.id) {
-        prof = await getOneProfileAuth({
+      const prof = await getOneProfile(
+        {
           forHandle: "lens/" + router.asPath.split("&profile=")[1],
-        });
-      } else {
-        prof = await getOneProfile({
-          forHandle: "lens/" + router.asPath.split("&profile=")[1],
-        });
-      }
+        },
+        lensProfile?.id
+      );
 
       if (
         quickProfiles
-          .map((profile) => profile.handle)
+          .map((profile) => profile.handle?.suggestedFormatted?.localName)
           .includes(router?.asPath?.split("profile=")[1])
       ) {
         await getProfileCollections(prof?.data?.profile as Profile);
@@ -591,140 +550,18 @@ const useProfileFeed = (
     }
   };
 
-  const setProfileScroll = (e: MouseEvent) => {
-    dispatch(setProfileScrollPosRedux((e.target as HTMLDivElement)?.scrollTop));
-  };
-
-  const setScrollPosDecryptProfile = (e: MouseEvent) => {
-    dispatch(
-      setDecryptProfileScrollPosRedux((e.target as HTMLDivElement)?.scrollTop)
-    );
-  };
-
   const getProfileCollections = async (prof: Profile) => {
     setProfileCollectionsLoading(true);
     try {
       const colls = await getCollectionsProfile(prof.ownedBy?.address);
-      const collsUpdated = await getCollectionsProfileUpdated(
-        prof.ownedBy?.address
-      );
 
-      if (
-        [
-          ...(colls?.data?.collectionMinteds || []),
-          ...(collsUpdated?.data?.updatedChromadinCollectionCollectionMinteds ||
-            []),
-        ]?.length < 1 ||
-        !colls?.data
-      ) {
+      if ((colls?.data?.collectionCreateds || [])?.length < 1 || !colls?.data) {
         setProfileCollectionsLoading(false);
         setProfileCollections([]);
         return;
       }
 
-      const collections = await Promise.all(
-        [
-          ...((colls?.data?.collectionMinteds || []).filter(
-            (obj: Collection) =>
-              obj.collectionId !== "104" && obj.collectionId !== "99"
-          ) || []),
-          ...((
-            collsUpdated?.data?.updatedChromadinCollectionCollectionMinteds ||
-            []
-          ).filter(
-            (obj: Collection) =>
-              obj.collectionId !== "4" && obj.collectionId !== "5"
-          ) || []),
-        ]?.map(async (collection: Collection) => {
-          const json = await fetchIPFSJSON(collection.uri as any);
-          const type = await fetch(
-            `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
-            { method: "HEAD" }
-          ).then((response) => {
-            if (response.ok) {
-              return response.headers.get("Content-Type");
-            }
-          });
-          return {
-            ...collection,
-            uri: { ...json, type },
-          };
-        })
-      );
-
-      const drops = await getAllDrops();
-      const dataUpdated = await getAllDropsUpdated();
-
-      if (
-        [
-          ...(drops?.data?.dropCreateds || []),
-          ...(dataUpdated?.data?.updatedChromadinDropDropCreateds || []),
-        ]?.length > 0
-      ) {
-        let dataUpdatedDrops = (
-          dataUpdated?.data?.updatedChromadinDropDropCreateds || []
-        )
-          .map((drop: Drop) => {
-            return {
-              ...drop,
-              collectionIds: drop.collectionIds.filter(
-                (id: string) => !["4", "5"].includes(id)
-              ),
-            };
-          })
-          .filter((drop: Drop) => drop.collectionIds.length > 0);
-
-        let dataDrops = (drops?.data?.dropCreateds || [])
-          .map((drop: Drop) => {
-            return {
-              ...drop,
-              collectionIds: drop.collectionIds.filter(
-                (id: string) => !["104", "99"].includes(id)
-              ),
-            };
-          })
-          .filter((drop: Drop) => drop.collectionIds.length > 0);
-
-        let allDrops = [...dataDrops, ...dataUpdatedDrops];
-
-        const fullDrops = await Promise.all(
-          allDrops.map(async (drop: Drop) => {
-            const dropjson = await fetchIPFSJSON((drop as any)?.dropURI);
-
-            return {
-              ...drop,
-              uri: {
-                name: dropjson.name,
-                image: dropjson.image,
-              },
-            };
-          })
-        );
-
-        const validCollections = collections?.filter(
-          (collection: Collection) => {
-            const collectionDrops = [...fullDrops]?.filter((drop: any) => {
-              if (Number(collection?.blockNumber) < 45189643) {
-                return (
-                  drop.collectionIds?.includes(collection?.collectionId) &&
-                  Number(drop.blockNumber) < 45189643
-                );
-              } else {
-                return (
-                  drop.collectionIds?.includes(collection?.collectionId) &&
-                  Number(drop.blockNumber) >= 45189643
-                );
-              }
-            });
-
-            return collectionDrops.length > 0;
-          }
-        );
-
-        setProfileCollections(validCollections);
-      } else {
-        setProfileCollections([]);
-      }
+      setProfileCollections(colls?.data?.collectionCreateds);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -744,7 +581,6 @@ const useProfileFeed = (
   return {
     hasMoreProfile,
     fetchMoreProfile,
-    profileRef,
     followerOnlyProfile,
     setCollectProfileLoading,
     setMirrorProfileLoading,
@@ -753,10 +589,7 @@ const useProfileFeed = (
     collectProfileLoading,
     reactProfileLoading,
     setReactProfileLoading,
-    setProfileScroll,
     hasMoreDecryptProfile,
-    setScrollPosDecryptProfile,
-    scrollRefDecryptProfile,
     followerOnlyProfileDecrypt,
     fetchMoreProfileDecrypt,
     decryptProfileLoading,

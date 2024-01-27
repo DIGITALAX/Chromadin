@@ -1,17 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface HasMoreCollectionsState {
-  value: {
-    new: boolean;
-    old: boolean;
-  };
+  value: boolean;
 }
 
 const initialHasMoreCollectionsState: HasMoreCollectionsState = {
-  value: {
-    new: true,
-    old: true,
-  },
+  value: true,
 };
 
 export const hasMoreCollectionsSlice = createSlice({
@@ -20,10 +14,7 @@ export const hasMoreCollectionsSlice = createSlice({
   reducers: {
     setHasMoreCollectionsRedux: (
       state: HasMoreCollectionsState,
-      action: PayloadAction<{
-        new: boolean;
-        old: boolean;
-      }>
+      action: PayloadAction<boolean>
     ) => {
       state.value = action.payload;
     },

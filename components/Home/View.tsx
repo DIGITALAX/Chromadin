@@ -59,9 +59,6 @@ const View: FunctionComponent<ViewProps> = ({
   rates,
   stats,
   statsTitles,
-  scrollRef,
-  scrollRefDecrypt,
-  scrollRefDecryptProfile,
   searchProfiles,
   setCollectCommentLoading,
   setCollectPostLoading,
@@ -73,21 +70,16 @@ const View: FunctionComponent<ViewProps> = ({
   setOpenMirrorChoice,
   setOpenPostMirrorChoice,
   setOpenProfileMirrorChoice,
-  setProfileScroll,
   setProfilesFound,
   setProfilesOpenSearch,
   setReactCommentLoading,
   setReactPostLoading,
   setReactProfileLoading,
-  setScrollPos,
-  setScrollPosDecrypt,
-  setScrollPosDecryptProfile,
   pies,
   postsLoading,
   profileCollections,
   profileCollectionsLoading,
   profileLoading,
-  profileRef,
   profilesFound,
   profilesOpenSearch,
   reactCommentLoading,
@@ -153,13 +145,12 @@ const View: FunctionComponent<ViewProps> = ({
   quickProfiles,
   textElement,
   mentionProfiles,
-  feedType,
+  
   dispatchProfile,
   decryptFeedCount,
   profileFeedCount,
   profileDispatch,
   preElement,
-  scrollPos,
   individualCount,
   postImagesDispatched,
   collectOpen,
@@ -196,7 +187,6 @@ const View: FunctionComponent<ViewProps> = ({
   setLimitedDropDown,
   setReferral,
   setLimit,
-  profileScroll,
   setChargeCollect,
   setCurrencyDropDown,
   chargeCollectDropDown,
@@ -209,8 +199,6 @@ const View: FunctionComponent<ViewProps> = ({
   setValue,
   filterDecrypt,
   decryptFeed,
-  decryptScrollPos,
-  decryptProfileScroll,
   decryptProfileFeedCount,
   decryptProfileFeed,
   reactionAmounts,
@@ -326,9 +314,6 @@ const View: FunctionComponent<ViewProps> = ({
         gifOpen={gifOpen}
         setGifOpen={setGifOpen}
         handleKeyDownDelete={handleKeyDownDelete}
-        scrollRef={scrollRef}
-        setScrollPos={setScrollPos}
-        profileRef={profileRef}
         hasMoreProfile={hasMoreProfile}
         fetchMoreProfile={fetchMoreProfile}
         followerOnlyProfile={followerOnlyProfile}
@@ -339,7 +324,6 @@ const View: FunctionComponent<ViewProps> = ({
         mirrorProfileLoading={mirrorProfileLoading}
         collectProfileLoading={collectProfileLoading}
         reactProfileLoading={reactProfileLoading}
-        setProfileScroll={setProfileScroll}
         quickProfiles={quickProfiles}
         profileCollections={profileCollections}
         searchProfiles={searchProfiles}
@@ -355,19 +339,15 @@ const View: FunctionComponent<ViewProps> = ({
         profileAmounts={profileFeedCount}
         profileDispatch={profileDispatch}
         preElement={preElement}
-        scrollPos={scrollPos}
         mentionProfiles={mentionProfiles}
         individualAmounts={individualCount}
         setCollectibleDropDown={setCollectibleDropDown}
         setTimeLimitDropDown={setTimeLimitDropDown}
         filterDecrypt={filterDecrypt}
         decryptFeed={decryptFeed}
-        profileScroll={profileScroll}
         decryptAmounts={decryptFeedCount}
         decryptFeedProfile={decryptProfileFeed}
         decryptProfileAmounts={decryptProfileFeedCount}
-        decryptScrollPos={decryptScrollPos}
-        decryptProfileScrollPos={decryptProfileScroll}
         collectNotif={collectNotif}
         referral={referral}
         setCollectible={setCollectible}
@@ -410,18 +390,14 @@ const View: FunctionComponent<ViewProps> = ({
         collectOpen={collectOpen}
         mappedFeaturedFiles={mappedFeaturedFiles}
         postImagesDispatched={postImagesDispatched}
-        feedType={feedType}
+        
         decryptLoading={decryptLoading}
         hasMoreDecrypt={hasMoreDecrypt}
         fetchMoreDecrypt={fetchMoreDecrypt}
         followerOnlyDecrypt={followerOnlyDecrypt}
-        setScrollPosDecrypt={setScrollPosDecrypt}
-        scrollRefDecrypt={scrollRefDecrypt}
         decryptProfileLoading={decryptProfileLoading}
         fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
         followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
-        scrollRefDecryptProfile={scrollRefDecryptProfile}
-        setScrollPosDecryptProfile={setScrollPosDecryptProfile}
         hasMoreDecryptProfile={hasMoreDecryptProfile}
         handleImagePaste={handleImagePaste}
         profileCollectionsLoading={profileCollectionsLoading}

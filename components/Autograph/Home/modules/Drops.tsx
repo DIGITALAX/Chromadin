@@ -12,7 +12,9 @@ const Drops: FunctionComponent<DropsProps> = ({
   return (
     <div className="relative w-full h-fit flex flex-col items-start justify-start gap-2">
       <div className="relative w-fit h-fit items-start justify-start font-earl text-white break-words text-2xl">
-        {`All Drops by ${autoProfile?.handle?.suggestedFormatted?.localName?.split("@")[1]?.toLowerCase()}`}
+        {`All Drops by ${autoProfile?.handle?.suggestedFormatted?.localName
+          ?.split("@")[1]
+          ?.toLowerCase()}`}
       </div>
       <div className="relative w-full md:w-2/3 h-fit overflow-x-scroll flex items-start justify-start">
         <div className="flex flex-row gap-2 w-fit h-fit">
@@ -24,8 +26,10 @@ const Drops: FunctionComponent<DropsProps> = ({
                 onClick={() =>
                   router.push(
                     `/autograph/${
-                      autoProfile?.handle?.suggestedFormatted?.localName?.split("@")[1]
-                    }/drop/${drop?.uri?.name
+                      autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                        "@"
+                      )[1]
+                    }/drop/${drop?.dropTitle
                       ?.replaceAll(" ", "_")
                       ?.toLowerCase()}`
                   )
@@ -35,11 +39,11 @@ const Drops: FunctionComponent<DropsProps> = ({
                   className="w-52 h-52 relative flex rounded-md border border-ama"
                   id="staticLoad"
                 >
-                  {drop?.uri?.image && (
+                  {drop?.dropCover && (
                     <Image
                       draggable={false}
                       src={`${INFURA_GATEWAY}/ipfs/${
-                        drop?.uri?.image?.split("ipfs://")[1]
+                        drop?.dropCover?.split("ipfs://")[1]
                       }`}
                       layout="fill"
                       objectFit="cover"
@@ -52,9 +56,9 @@ const Drops: FunctionComponent<DropsProps> = ({
                     <div
                       className={`relative w-fit h-fit text-white font-mana words-break flex text-xs p-1 bg-black border border-ama rounded-tl-md rounded-br-md`}
                     >
-                      {drop?.uri?.name?.length > 12
-                        ? drop?.uri?.name?.slice(0, 10) + "..."
-                        : drop?.uri?.name}
+                      {drop?.dropTitle?.length > 12
+                        ? drop?.dropTitle?.slice(0, 10) + "..."
+                        : drop?.dropTitle}
                     </div>
                   </div>
                 </div>

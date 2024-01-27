@@ -7,7 +7,7 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
   router,
   collection,
   autoProfile,
-  handleShareCollection,
+  
   imageLoading,
   address,
   lensProfile,
@@ -16,92 +16,64 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
 }): JSX.Element => {
   return (
     <div className={`relative flex rounded-md w-40 h-40`} id="staticLoad">
-      {collection?.uri?.image && (
-        <div className="relative w-full h-full border border-ama rounded-md">
-          {collection?.uri?.image?.split("ipfs://")[1] &&
-            (!collection?.uri?.type?.includes("video") ? (
-              <Image
-                src={`${INFURA_GATEWAY}/ipfs/${
-                  collection?.uri?.image?.split("ipfs://")[1]
-                }`}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-md cursor-pointer hover:opacity-80"
-                draggable={false}
-                onClick={() =>
-                  router.push(
-                    `/autograph/${
-                      autoProfile?.handle?.suggestedFormatted?.localName?.split(
-                        "@"
-                      )[1]
-                    }/collection/${collection?.uri?.name
-                      ?.replaceAll(" ", "_")
-                      ?.toLowerCase()}`
-                  )
-                }
-              />
-            ) : (
-              <video
-                muted
-                autoPlay
-                playsInline
-                className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80"
-                onClick={() =>
-                  router.push(
-                    `/autograph/${
-                      autoProfile?.handle?.suggestedFormatted?.localName?.split(
-                        "@"
-                      )[1]
-                    }/collection/${collection?.uri?.name
-                      ?.replaceAll(" ", "_")
-                      ?.toLowerCase()}`
-                  )
-                }
-              >
-                <source
-                  src={`${INFURA_GATEWAY}/ipfs/${
-                    collection?.uri?.image?.split("ipfs://")[1]
-                  }`}
-                  type="video/mp4"
-                />
-              </video>
-            ))}
-        </div>
-      )}
-      {collection?.coinOp && (
-        <div
-          className="absolute flex top-2 left-2 w-5 h-5 rounded-full p-px"
-          id="raincode"
-          title="irl fulfillment"
-        >
-          <div className="relative w-full h-full bg-black rounded-full">
-            <Image
-              layout="fill"
-              src={`${INFURA_GATEWAY}/ipfs/QmcK1EJdp5HFuqPUds3WjgoSPmoomiWfiroRFa3bQUh5Xj`}
-              objectFit="cover"
-              className="rounded-full"
-              draggable={false}
+      <div className="relative w-full h-full border border-ama rounded-md">
+        {!collection?.collectionMetadata?.mediaTypes?.[0]?.includes("video") ? (
+          <Image
+            src={`${INFURA_GATEWAY}/ipfs/${
+              collection?.collectionMetadata?.images[0]?.split("ipfs://")[1]
+            }`}
+            layout="fill"
+            objectFit="cover"
+            className="rounded-md cursor-pointer hover:opacity-80"
+            draggable={false}
+            onClick={() =>
+              router.push(
+                `/autograph/${
+                  autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                    "@"
+                  )[1]
+                }/collection/${collection?.collectionMetadata?.title
+                  ?.replaceAll(" ", "_")
+                  ?.toLowerCase()}`
+              )
+            }
+          />
+        ) : (
+          <video
+            muted
+            autoPlay
+            playsInline
+            className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80"
+            onClick={() =>
+              router.push(
+                `/autograph/${
+                  autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                    "@"
+                  )[1]
+                }/collection/${collection?.collectionMetadata?.title
+                  ?.replaceAll(" ", "_")
+                  ?.toLowerCase()}`
+              )
+            }
+          >
+            <source
+              src={`${INFURA_GATEWAY}/ipfs/${
+                collection?.collectionMetadata?.video?.split("ipfs://")[1]
+              }`}
+              type="video/mp4"
             />
-          </div>
-        </div>
-      )}
+          </video>
+        )}
+      </div>
+
       <div className="absolute w-fit h-fit flex flex-col gap-2 justify-end ml-auto items-end right-0 top-4">
         <div
           className={`relative flex w-fit p-1 rounded-l-md h-fit text-ama font-mana items-end justify-end whitespace-nowrap text-xs bg-black right-0 border border-ama`}
         >
-          {Number(collection?.tokenIds?.length) -
-            (collection?.soldTokens?.length
-              ? collection?.soldTokens?.length
-              : 0) ===
-          0
+          {Number(collection?.soldTokens) === Number(collection?.amount)
             ? "SOLD OUT"
-            : `${
-                Number(collection?.tokenIds?.length) -
-                (collection?.soldTokens?.length
-                  ? collection?.soldTokens?.length
-                  : 0)
-              } /
-                  ${Number(collection?.tokenIds?.length)}`}
+            : `${Number(collection?.soldTokens)} /
+                  ${Number(collection?.amount)}`}
         </div>
         <div
           className={`relative text-ama items-center flex cursor-pointer bg-black border border-ama rounded-l-md p-1 hover:opacity-70 active:scale-95 flex-row gap-1`}
@@ -139,9 +111,9 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
         <div
           className={`relative w-fit h-fit text-white font-mana words-break flex text-xs p-1 bg-black border border-ama rounded-tl-md rounded-br-md`}
         >
-          {collection?.uri?.name?.length! > 12
-            ? collection?.uri?.name?.slice(0, 12) + "..."
-            : collection?.uri?.name}
+          {collection?.collectionMetadata?.title?.length! > 12
+            ? collection?.collectionMetadata?.title?.slice(0, 12) + "..."
+            : collection?.collectionMetadata?.title}
         </div>
       </div>
     </div>

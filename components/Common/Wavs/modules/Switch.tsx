@@ -5,13 +5,10 @@ import { SwitchProps } from "../types/wavs.types";
 
 const Switch: FunctionComponent<SwitchProps> = ({
   profile,
-  profileRef,
   dispatch,
   hasMoreProfile,
   fetchMoreProfile,
   profileDispatch,
-  setScrollPos,
-  scrollPos,
   profileAmounts,
   collectPost,
   mirrorPost,
@@ -82,8 +79,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
   setReferral,
   collectNotif,
   audienceTypes,
-  scrollRef,
-  feedType,
+  
   feedDispatch,
   followerOnly,
   hasMore,
@@ -95,8 +91,6 @@ const Switch: FunctionComponent<SwitchProps> = ({
   collectProfileLoading,
   mirrorProfileLoading,
   reactProfileLoading,
-  profileScroll,
-  setProfileScroll,
   quickProfiles,
   profileCollections,
   searchProfiles,
@@ -106,7 +100,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
   hasMoreSearch,
   setProfilesOpenSearch,
   setProfilesFound,
-  profileType,
+  
   preElement,
   filterDecrypt,
   decryptFeed,
@@ -115,16 +109,10 @@ const Switch: FunctionComponent<SwitchProps> = ({
   followerOnlyDecrypt,
   hasMoreDecrypt,
   fetchMoreDecrypt,
-  decryptScrollPos,
-  setScrollPosDecrypt,
-  scrollRefDecrypt,
   decryptProfileAmounts,
-  decryptProfileScrollPos,
   hasMoreDecryptProfile,
   fetchMoreProfileDecrypt,
   followerOnlyProfileDecrypt,
-  scrollRefDecryptProfile,
-  setScrollPosDecryptProfile,
   handleImagePaste,
   clientRendered,
   setOpenProfileMirrorChoice,
@@ -148,12 +136,10 @@ const Switch: FunctionComponent<SwitchProps> = ({
       return (
         <ProfileFeed
           history={history}
-          feedType={feedType}
+          
           hasMoreProfile={hasMoreProfile}
           fetchMoreProfile={fetchMoreProfile}
           profileDispatch={profileDispatch}
-          setScrollPos={setProfileScroll}
-          scrollPos={profileScroll}
           profileAmounts={profileAmounts}
           collectPost={collectPost}
           mirrorPost={mirrorPost}
@@ -228,20 +214,16 @@ const Switch: FunctionComponent<SwitchProps> = ({
           collectibleDropDown={collectibleDropDown}
           currencyDropDown={currencyDropDown}
           postImagesDispatched={postImagesDispatched}
-          profileRef={profileRef}
           profileCollections={profileCollections}
           setCollectProfileLoading={setCollectProfileLoading}
           setMirrorProfileLoading={setMirrorProfileLoading}
           setReactProfileLoading={setReactProfileLoading}
           profile={profile}
-          profileType={profileType}
+          
           preElement={preElement}
           filterDecrypt={filterDecrypt}
           decryptFeedProfile={decryptFeedProfile}
-          decryptProfileAmounts={decryptProfileAmounts}
-          decryptProfileScrollPos={decryptProfileScrollPos}
-          scrollRefDecryptProfile={scrollRefDecryptProfile}
-          setScrollPosDecryptProfile={setScrollPosDecryptProfile}
+          decryptProfileAmounts={decryptProfileAmounts}          
           hasMoreDecryptProfile={hasMoreDecryptProfile}
           fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
           followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
@@ -255,7 +237,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
         <AllPosts
           router={router}
           filterDecrypt={filterDecrypt}
-          feedType={feedType}
+          
           dispatch={dispatch}
           feedDispatch={feedDispatch}
           followerOnly={followerOnly}
@@ -332,9 +314,6 @@ const Switch: FunctionComponent<SwitchProps> = ({
           collectibleDropDown={collectibleDropDown}
           currencyDropDown={currencyDropDown}
           postImagesDispatched={postImagesDispatched}
-          scrollRef={scrollRef}
-          setScrollPos={setScrollPos}
-          scrollPos={scrollPos}
           quickProfiles={quickProfiles}
           searchProfiles={searchProfiles}
           profilesFound={profilesFound}
@@ -343,16 +322,13 @@ const Switch: FunctionComponent<SwitchProps> = ({
           hasMoreSearch={hasMoreSearch}
           setProfilesOpenSearch={setProfilesOpenSearch}
           setProfilesFound={setProfilesFound}
-          profileType={profileType}
+          
           preElement={preElement}
           decryptFeed={decryptFeed}
           decryptAmounts={decryptAmounts}
           followerOnlyDecrypt={followerOnlyDecrypt}
           hasMoreDecrypt={hasMoreDecrypt}
           fetchMoreDecrypt={fetchMoreDecrypt}
-          decryptScrollPos={decryptScrollPos}
-          setScrollPosDecrypt={setScrollPosDecrypt}
-          scrollRefDecrypt={scrollRefDecrypt}
           handleImagePaste={handleImagePaste}
           clientRendered={clientRendered}
         />

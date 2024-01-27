@@ -1,18 +1,8 @@
-import {
-  CommentRankingFilterType,
-  LimitType,
-  Comment,
-  Profile,
-  PublicationsQuery,
-} from "@/components/Home/types/generated";
-import {
-  getPublications,
-  getPublicationsAuth,
-} from "@/graphql/lens/queries/getVideos";
+import { LimitType, Comment, Profile } from "@/components/Home/types/generated";
+import { getPublications } from "@/graphql/lens/queries/getVideos";
 import { whoActed } from "@/graphql/lens/queries/whoActed";
 import { IndexModalState } from "@/redux/reducers/indexModalSlice";
 import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
-import { FetchResult } from "@apollo/client";
 import { NextRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -35,33 +25,17 @@ const useInteractions = (
   const getPostComments = async (): Promise<void> => {
     setCommentsLoading(true);
     try {
-      let comments: FetchResult<PublicationsQuery>;
-
-      if (profile?.id) {
-        comments = await getPublicationsAuth({
+      const comments = await getPublications(
+        {
           where: {
             commentOn: {
               id: commentId !== "" ? commentId : mainVideo.id,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
             },
           },
           limit: LimitType.TwentyFive,
-        });
-      } else {
-        comments = await getPublications({
-          where: {
-            commentOn: {
-              id: commentId !== "" ? commentId : mainVideo.id,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-          limit: LimitType.TwentyFive,
-        });
-      }
+        },
+        profile?.id
+      );
 
       if (!comments || !comments?.data || !comments?.data?.publications) {
         setCommentsLoading(false);
@@ -90,34 +64,20 @@ const useInteractions = (
         setHasMoreComments(false);
         return;
       }
-      let comments: FetchResult<PublicationsQuery>;
-      if (profile?.id) {
-        comments = await getPublicationsAuth({
+
+      const comments = await getPublications(
+        {
           where: {
             commentOn: {
               id: commentId !== "" ? commentId : mainVideo.id,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
             },
           },
           limit: LimitType.TwentyFive,
           cursor: paginated?.next,
-        });
-      } else {
-        comments = await getPublications({
-          where: {
-            commentOn: {
-              id: commentId !== "" ? commentId : mainVideo.id,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-          limit: LimitType.TwentyFive,
-          cursor: paginated?.next,
-        });
-      }
+        },
+        profile?.id
+      );
+
       if (
         !comments ||
         !comments?.data ||

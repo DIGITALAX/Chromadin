@@ -31,43 +31,23 @@ const Interactions: FunctionComponent<InteractionProps> = ({
   dispatchVideos,
   mainVideo,
   address,
-  openConnectModal,
-  chain,
-  openChainModal,
   currency,
   setCurrency,
-  baseColor,
-  setBaseColor,
-  selectSize,
-  setSelectSize,
   totalAmount,
   approved,
   buyNFT,
   approveSpend,
   purchaseLoading,
-  viewScreenNFT,
-  setViewScreenNFT,
-  handleCheckoutCrypto,
-  oracleValue,
-  cryptoCheckoutLoading,
-  imageIndex,
-  setImageIndex,
   historyLoading,
   historySwitch,
   setHistorySwitch,
   getMoreBuyerHistory,
   getMoreUserHistory,
-  moreHistoryLoading,
   action,
-  encryptedInformation,
   mainNFT,
-  historyReducer,
   collections,
   isCreator,
-  buyerHistoryReducer,
-  fulfillmentDetails,
-  hasMoreHistory,
-  hasMoreHistorySpecific,
+historyData
 }): JSX.Element => {
   return (
     <div className="relative w-full lg:w-80 lg:shrink-0 xl:h-full flex-col border border-white h-100 lg:h-128 xl:min-h-[55rem] flex overflow-y-scroll">
@@ -122,11 +102,7 @@ const Interactions: FunctionComponent<InteractionProps> = ({
           <Switch
             currency={currency}
             setCurrency={setCurrency}
-            setBaseColor={setBaseColor}
-            selectSize={selectSize}
             profile={lensProfile}
-            baseColor={baseColor}
-            setSelectSize={setSelectSize}
             totalAmount={totalAmount}
             approved={approved}
             mainNFT={mainNFT}
@@ -136,32 +112,15 @@ const Interactions: FunctionComponent<InteractionProps> = ({
             collections={collections}
             dispatch={dispatch}
             router={router}
-            viewScreenNFT={viewScreenNFT}
-            setViewScreenNFT={setViewScreenNFT}
-            handleCheckoutCrypto={handleCheckoutCrypto}
             address={address}
-            cryptoCheckoutLoading={cryptoCheckoutLoading}
-            oracleValue={oracleValue}
-            openChainModal={openChainModal}
-            openConnectModal={openConnectModal}
-            encryptedInformation={encryptedInformation}
-            fulfillmentDetails={fulfillmentDetails}
-            chain={chain as any}
-            imageIndex={imageIndex}
-            setImageIndex={setImageIndex}
-            historyReducer={historyReducer}
+            historyData={historyData}
             historyLoading={historyLoading}
-            buyerHistoryReducer={buyerHistoryReducer}
             historySwitch={historySwitch}
             setHistorySwitch={setHistorySwitch}
             getMoreBuyerHistory={getMoreBuyerHistory}
             getMoreUserHistory={getMoreUserHistory}
-            moreHistoryLoading={moreHistoryLoading}
-            hasMoreHistory={hasMoreHistory}
-            hasMoreHistorySpecific={hasMoreHistorySpecific}
             isCreator={isCreator}
             action={action}
-    
           />
         )}
       </div>

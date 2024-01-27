@@ -2,7 +2,6 @@ import useBar from "@/components/Autograph/Common/hooks/useBar";
 import Bar from "@/components/Autograph/Common/modules/Bar";
 import useAutoDrop from "@/components/Autograph/Drop/hooks/useAutoDrop";
 import AllDrops from "@/components/Autograph/Drop/modules/AllDrops";
-import MoreDrops from "@/components/Autograph/Drop/modules/MoreDrops";
 import RouterChange from "@/components/Common/Loading/RouterChange";
 import useChannels from "@/components/Common/SideBar/hooks/useChannels";
 import useConnect from "@/components/Common/SideBar/hooks/useConnect";
@@ -29,9 +28,6 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();
   const { openConnectModal, connectModalOpen } = useConnectModal();
-  const allDrops = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
-  );
   const commentId = useSelector(
     (state: RootState) => state.app.secondaryCommentReducer.value
   );
@@ -50,9 +46,6 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   );
   const dispatchVideos = useSelector(
     (state: RootState) => state.app.channelsReducer.value
-  );
-  const autoDispatch = useSelector(
-    (state: RootState) => state.app.autoDropReducer
   );
   const connected = useSelector(
     (state: RootState) => state.app.connectedReducer?.value
@@ -76,22 +69,26 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const mainVideo = useSelector(
     (state: RootState) => state.app.mainVideoReducer
   );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
   const { autograph, drop } = router.query;
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
-    useViewer(router, dispatch, quickProfiles, allDrops);
+    useViewer(router, dispatch, quickProfiles, lensProfile);
   const { handleLensSignIn } = useConnect(
     router,
     address,
     isConnected,
     dispatch,
     connectModalOpen,
-    publicClient
+    publicClient,
+    oracleData
   );
   const { isLargeScreen } = useBar();
-  const { dropLoading, getDrop, otherDrops } = useAutoDrop(
-    dispatch,
-    lensProfile,
-    allDrops
+  const { dropLoading, dropData } = useAutoDrop(
+    autograph as string,
+    drop as string,
+    lensProfile
   );
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
@@ -136,13 +133,6 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     router
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!dropLoading && autograph && drop && allDrops.length > 0) {
-      getDrop(autograph as string, drop as string);
-    }
-  }, [autograph, drop, allDrops]);
-
   useEffect(() => {
     setTimeout(() => {
       if (!dropLoading) {
@@ -159,29 +149,33 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
       >
         <Head>
           <title>
-            Chromadin | {autoDispatch.drop?.uri?.name?.toUpperCase()}
+            Chromadin |{" "}
+            {dropData?.collections?.[0]?.dropMetadata?.dropTitle?.toUpperCase()}
           </title>
           <meta
             name="og:url"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+              dropData?.profile?.handle?.suggestedFormatted?.localName?.split(
                 "@"
               )[1]
-            }/drop/${autoDispatch.drop?.uri?.name
+            }/drop/${dropData?.collections?.[0]?.dropMetadata?.dropTitle
               ?.replaceAll(" ", "_")
               ?.toLowerCase()}`}
           />
           <meta
             name="og:title"
-            content={autoDispatch.drop?.uri?.name?.toUpperCase()}
+            content={dropData?.collections?.[0]?.dropMetadata?.dropTitle?.toUpperCase()}
           />
-          <meta name="og:description" content={autoDispatch.drop?.uri?.name} />
+          <meta
+            name="og:description"
+            content={dropData?.collections?.[0]?.dropMetadata?.dropTitle}
+          />
           <meta
             name="og:image"
             content={
-              !autoDispatch.drop?.uri?.image
+              !dropData?.collections?.[0]?.dropMetadata?.dropCover
                 ? "https://www.chromadin.xyz/card.png/"
-                : `https://chromadin.infura-ipfs.io/ipfs/${autoDispatch.drop?.uri?.image?.split(
+                : `https://chromadin.infura-ipfs.io/ipfs/${dropData?.collections?.[0]?.dropMetadata?.dropCover?.split(
                     "ipfs://"
                   )}`
             }
@@ -193,20 +187,20 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           <meta
             name="twitter:image"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+              dropData?.profile?.handle?.suggestedFormatted?.localName?.split(
                 "@"
               )[1]
-            }/drop/${autoDispatch.drop?.uri?.name
+            }/drop/${dropData?.collections?.[0]?.dropMetadata?.dropTitle
               ?.replaceAll(" ", "_")
               ?.toLowerCase()}`}
           />
           <meta
             name="twitter:url"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+              dropData?.profile?.handle?.suggestedFormatted?.localName?.split(
                 "@"
               )[1]
-            }/drop/${autoDispatch.drop?.uri?.name
+            }/drop/${dropData?.collections?.[0]?.dropMetadata?.dropTitle
               ?.replaceAll(" ", "_")
               ?.toLowerCase()}`}
           />
@@ -214,9 +208,9 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           <link
             rel="canonical"
             href={
-              !autoDispatch.drop?.uri?.image
+              !dropData?.collections?.[0]?.dropMetadata?.dropCover
                 ? "https://www.chromadin.xyz/card.png/"
-                : `https://chromadin.infura-ipfs.io/ipfs/${autoDispatch.drop?.uri?.image?.split(
+                : `https://chromadin.infura-ipfs.io/ipfs/${dropData?.collections?.[0]?.dropMetadata?.dropCover?.split(
                     "ipfs://"
                   )}`
             }
@@ -327,21 +321,13 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           dispatch={dispatch}
           dispatchVideos={dispatchVideos}
         />
-        {autoDispatch && (
+        {dropData?.collections?.length > 0 && (
           <div className="relative flex flex-col w-full h-fit gap-10 px-8 sm:px-20 py-10">
             <AllDrops
-              autoDrop={autoDispatch.drop}
-              autoCollections={autoDispatch.collection}
-              autoProfile={autoDispatch.profile}
+              collections={dropData?.collections}
+              autoProfile={dropData?.profile}
               router={router}
             />
-            {otherDrops?.length > 0 && (
-              <MoreDrops
-                otherDrops={otherDrops}
-                autoProfile={autoDispatch.profile}
-                router={router}
-              />
-            )}
           </div>
         )}
       </div>

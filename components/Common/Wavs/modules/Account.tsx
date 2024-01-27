@@ -228,7 +228,7 @@ const Account: FunctionComponent<AccountProps> = ({
                         profile?.handle?.suggestedFormatted?.localName?.split(
                           "@"
                         )[1]
-                      }/collection/${coll?.name
+                      }/collection/${coll?.collectionMetadata?.title
                         ?.replace(/\s/g, "_")
                         .toLowerCase()}`
                     )
@@ -240,7 +240,7 @@ const Account: FunctionComponent<AccountProps> = ({
                     objectFit="cover"
                     objectPosition={"center"}
                     src={`${INFURA_GATEWAY}/ipfs/${
-                      coll.uri.image?.split("ipfs://")[1]
+                      coll?.collectionMetadata?.images?.[0]?.split("ipfs://")[1]
                     }`}
                     draggable={false}
                   />

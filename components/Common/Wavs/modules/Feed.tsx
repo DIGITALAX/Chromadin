@@ -102,10 +102,7 @@ const Feed: FunctionComponent<FeedProps> = ({
   collectOpen,
   mappedFeaturedFiles,
   postImagesDispatched,
-  feedType,
-  scrollRef,
-  setScrollPos,
-  scrollPos,
+  
   individualAmounts,
   router,
   profile,
@@ -114,7 +111,6 @@ const Feed: FunctionComponent<FeedProps> = ({
   hasMoreProfile,
   profileAmounts,
   profileDispatch,
-  profileRef,
   setCollectProfileLoading,
   setMirrorProfileLoading,
   setReactProfileLoading,
@@ -122,8 +118,6 @@ const Feed: FunctionComponent<FeedProps> = ({
   collectProfileLoading,
   reactProfileLoading,
   profileLoading,
-  setProfileScroll,
-  profileScroll,
   quickProfiles,
   profileCollections,
   searchProfiles,
@@ -133,7 +127,7 @@ const Feed: FunctionComponent<FeedProps> = ({
   hasMoreSearch,
   setProfilesFound,
   setProfilesOpenSearch,
-  profileType,
+  
   preElement,
   filterDecrypt,
   decryptFeed,
@@ -143,17 +137,11 @@ const Feed: FunctionComponent<FeedProps> = ({
   decryptLoading,
   fetchMoreDecrypt,
   hasMoreDecrypt,
-  decryptScrollPos,
-  setScrollPosDecrypt,
-  scrollRefDecrypt,
   fetchMoreProfileDecrypt,
   followerOnlyProfileDecrypt,
   decryptProfileAmounts,
-  decryptProfileScrollPos,
   decryptProfileLoading,
   hasMoreDecryptProfile,
-  scrollRefDecryptProfile,
-  setScrollPosDecryptProfile,
   handleImagePaste,
   profileCollectionsLoading,
   clientRendered,
@@ -280,10 +268,10 @@ const Feed: FunctionComponent<FeedProps> = ({
             collectibleDropDown={collectibleDropDown}
             currencyDropDown={currencyDropDown}
             postImagesDispatched={postImagesDispatched}
-            feedType={feedType}
+            
             individualAmounts={individualAmounts}
             router={router}
-            profileType={profileType}
+            
             handleImagePaste={handleImagePaste}
             clientRendered={clientRendered}
           />
@@ -378,10 +366,7 @@ const Feed: FunctionComponent<FeedProps> = ({
             collectOpen={collectOpen}
             mappedFeaturedFiles={mappedFeaturedFiles}
             postImagesDispatched={postImagesDispatched}
-            feedType={feedType}
-            scrollRef={scrollRef}
-            setScrollPos={setScrollPos}
-            scrollPos={scrollPos}
+            
             router={router}
             profile={profile}
             setTimeLimitDropDown={setTimeLimitDropDown}
@@ -389,7 +374,6 @@ const Feed: FunctionComponent<FeedProps> = ({
             fetchMoreProfile={fetchMoreProfile}
             hasMoreProfile={hasMoreProfile}
             followerOnlyProfile={followerOnlyProfile}
-            profileRef={profileRef}
             profileDispatch={profileDispatch}
             profileAmounts={profileAmounts}
             setReactProfileLoading={setReactProfileLoading}
@@ -398,8 +382,8 @@ const Feed: FunctionComponent<FeedProps> = ({
             mirrorProfileLoading={mirrorProfileLoading}
             reactProfileLoading={reactProfileLoading}
             collectProfileLoading={collectProfileLoading}
-            setProfileScroll={setProfileScroll}
-            profileScroll={profileScroll}
+            
+            
             quickProfiles={quickProfiles}
             profileCollections={profileCollections}
             searchProfiles={searchProfiles}
@@ -409,24 +393,18 @@ const Feed: FunctionComponent<FeedProps> = ({
             hasMoreSearch={hasMoreSearch}
             setProfilesOpenSearch={setProfilesOpenSearch}
             setProfilesFound={setProfilesFound}
-            profileType={profileType}
+            
             filterDecrypt={filterDecrypt}
             decryptFeed={decryptFeed}
             decryptAmounts={decryptAmounts}
             followerOnlyDecrypt={followerOnlyDecrypt}
             fetchMoreDecrypt={fetchMoreDecrypt}
             hasMoreDecrypt={hasMoreDecrypt}
-            decryptScrollPos={decryptScrollPos}
-            setScrollPosDecrypt={setScrollPosDecrypt}
-            scrollRefDecrypt={scrollRefDecrypt}
             decryptFeedProfile={decryptFeedProfile}
             decryptProfileAmounts={decryptProfileAmounts}
             fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
             followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
-            scrollRefDecryptProfile={scrollRefDecryptProfile}
-            setScrollPosDecryptProfile={setScrollPosDecryptProfile}
             hasMoreDecryptProfile={hasMoreDecryptProfile}
-            decryptProfileScrollPos={decryptProfileScrollPos}
             handleImagePaste={handleImagePaste}
             profileCollectionsLoading={profileCollectionsLoading}
             clientRendered={clientRendered}

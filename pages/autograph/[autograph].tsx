@@ -3,10 +3,8 @@ import Bar from "@/components/Autograph/Common/modules/Bar";
 import useAutoProfile from "@/components/Autograph/Home/hooks/useAutoProfile";
 import useAutograph from "@/components/Autograph/Home/hooks/useAutograph";
 import AutoProfileFeed from "@/components/Autograph/Home/modules/AutoProfileFeed";
-import CoinOp from "@/components/Autograph/Home/modules/CoinOp";
 import Collections from "@/components/Autograph/Home/modules/Collections";
 import Drops from "@/components/Autograph/Home/modules/Drops";
-import Encrypted from "@/components/Autograph/Home/modules/Encrypted";
 import NotFound from "@/components/Common/Loading/NotFound";
 import RouterChange from "@/components/Common/Loading/RouterChange";
 import useCollectOptions from "@/components/Common/NFT/hooks/useCollectOptions";
@@ -42,9 +40,6 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();
   const { openConnectModal, connectModalOpen } = useConnectModal();
-  const autoDispatch = useSelector(
-    (state: RootState) => state.app.autographReducer
-  );
   const approvalArgs = useSelector(
     (state: RootState) => state.app.approvalArgsReducer.args
   );
@@ -52,14 +47,8 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   const videoSync = useSelector(
     (state: RootState) => state.app.videoSyncReducer
   );
-  const allDrops = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
-  );
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
-  );
-  const profileType = useSelector(
-    (state: RootState) => state.app.profileReducer.profile?.id
   );
   const index = useSelector((state: RootState) => state.app.indexModalReducer);
   const collectModuleType = useSelector(
@@ -112,13 +101,15 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   const reactions = useSelector(
     (state: RootState) => state.app.videoCountReducer
   );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
   const connected = useSelector(
     (state: RootState) => state.app.connectedReducer.value
   );
-  const [notFound, setNotFound] = useState<boolean>(false);
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
-    useViewer(router, dispatch, quickProfiles, allDrops);
+    useViewer(router, dispatch, quickProfiles, lensProfile);
   const {
     videoLoading,
     uploadVideo,
@@ -139,10 +130,13 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     isConnected,
     dispatch,
     connectModalOpen,
-    publicClient
+    publicClient,
+    oracleData
   );
-  const { autographLoading, getAllCollections, handleShareCollection } =
-    useAutograph(dispatch, uploadImage, lensProfile, allDrops);
+  const { autographLoading, autographData } = useAutograph(
+    autograph as string,
+    lensProfile
+  );
   const { isLargeScreen } = useBar();
   const { reactPost, collectPost, mirrorPost } = useReactions(
     publicClient,
@@ -228,19 +222,19 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     collectProfileLoading,
     reactProfileLoading,
     setReactProfileLoading,
-    hasMoreDecryptProfile,
-    followerOnlyProfileDecrypt,
-    fetchMoreProfileDecrypt,
-    decryptProfileLoading,
     profileFeed,
-    decryptProfileFeed,
     profileFeedCount,
-    decryptProfileFeedCount,
-    decryptPost,
-    decryptLoading,
     setOpenProfileMirrorChoice,
     openProfileMirrorChoice,
-  } = useAutoProfile(router, dispatch, address, autoDispatch, lensProfile);
+    decryptLoading,
+    decryptPost,
+  } = useAutoProfile(
+    router,
+    dispatch,
+    address,
+    autographData?.profile,
+    lensProfile
+  );
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
     mainVideo,
@@ -285,41 +279,14 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   );
 
   useEffect(() => {
-    if (
-      !autographLoading &&
-      autograph &&
-      allDrops.length > 0 &&
-      !profileLoading &&
-      !decryptProfileLoading &&
-      quickProfiles?.length > 0
-    ) {
-      if (
-        quickProfiles?.some(
-          (prof) =>
-            prof.handle?.toLowerCase() === (autograph as string).toLowerCase()
-        )
-      ) {
-        getAllCollections(autograph as string);
-      } else {
-        setNotFound(true);
-      }
-    }
-  }, [autograph, allDrops, quickProfiles]);
-
-  useEffect(() => {
     setTimeout(() => {
-      if (!autographLoading && !profileLoading && !decryptProfileLoading) {
+      if (!autographLoading && !profileLoading) {
         setGlobalLoading(false);
       }
     }, 1000);
-  }, [autographLoading, profileLoading, decryptProfileLoading]);
+  }, [autographLoading, profileLoading]);
 
-  if (
-    !autographLoading &&
-    !profileLoading &&
-    !decryptProfileLoading &&
-    !globalLoading
-  ) {
+  if (!autographLoading && !profileLoading && !globalLoading) {
     return (
       <div
         className="relative w-full flex flex-col bg-black items-center justify-start h-full gap-6 z-0"
@@ -327,32 +294,33 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
       >
         <Head>
           <title>
-            Chromadin | {autoDispatch.profile?.handle?.localName?.toUpperCase()}
+            Chromadin |{" "}
+            {autographData?.profile?.handle?.localName?.toUpperCase()}
           </title>
           <meta
             name="og:url"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+              autographData?.profile?.handle?.suggestedFormatted?.localName?.split(
                 "@"
               )[1]
             }`}
           />
           <meta
             name="og:title"
-            content={autoDispatch.profile?.handle?.suggestedFormatted?.localName
+            content={autographData?.profile?.handle?.suggestedFormatted?.localName
               ?.split("@")[1]
               ?.toUpperCase()}
           />
           <meta
             name="og:description"
-            content={autoDispatch.profile?.metadata?.bio}
+            content={autographData?.profile?.metadata?.bio}
           />
           <meta
             name="og:image"
             content={
-              !autoDispatch?.collections?.[0]?.uri?.image
+              !autographData?.collections?.[0]?.collectionMetadata?.images?.[0]
                 ? "https://www.chromadin.xyz/card.png/"
-                : `https://chromadin.infura-ipfs.io/ipfs/${autoDispatch?.collections?.[0]?.uri?.image?.split(
+                : `https://chromadin.infura-ipfs.io/ipfs/${autographData?.collections?.[0]?.collectionMetadata?.images?.[0]?.split(
                     "ipfs://"
                   )}`
             }
@@ -364,7 +332,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
           <meta
             name="twitter:image"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+              autographData?.profile?.handle?.suggestedFormatted?.localName?.split(
                 "@"
               )[1]
             }`}
@@ -372,7 +340,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
           <meta
             name="twitter:url"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+              autographData?.profile?.handle?.suggestedFormatted?.localName?.split(
                 "@"
               )[1]
             }`}
@@ -381,9 +349,9 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
           <link
             rel="canonical"
             href={
-              !autoDispatch?.collections?.[0]?.uri?.image
+              !autographData?.collections?.[0]?.collectionMetadata?.images?.[0]
                 ? "https://www.chromadin.xyz/card.png/"
-                : `https://www.chromadin.infura-ipfs.io/ipfs/${autoDispatch?.collections?.[0]?.uri?.image?.split(
+                : `https://www.chromadin.infura-ipfs.io/ipfs/${autographData?.collections?.[0]?.collectionMetadata?.images?.[0]?.split(
                     "ipfs://"
                   )}`
             }
@@ -495,23 +463,23 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
           dispatchVideos={dispatchVideos}
         />
         {quickProfiles &&
-        allDrops &&
-        notFound &&
+        !globalLoading &&
         !quickProfiles?.some(
           (prof) =>
-            prof.handle?.toLowerCase() ===
-            (autograph as string).toLowerCase()
+            prof.handle?.suggestedFormatted?.localName
+              ?.split("@")?.[1]
+              ?.toLowerCase() === (autograph as string).toLowerCase()
         ) ? (
           <NotFound router={router} />
         ) : (
-          autoDispatch.profile &&
+          autographData?.profile &&
           profileFeed && (
-            <div className="relative flex flex-col w-full h-fit gap-3 justify-start px-6 preG:px-8 sm:px-20 py-10">
-              <Account dispatch={dispatch} profile={autoDispatch.profile} />
+            <div className="relative flex flex-col w-full h-fit gap-20 justify-start px-6 preG:px-8 sm:px-20 py-10">
+              <Account dispatch={dispatch} profile={autographData?.profile} />
               <div className="relative flex flex-col tablet:flex-row gap-10 tablet:gap-3 items-start justify-center w-full h-full">
                 <div className="relative w-full h-fit flex flex-col items-start justify-start gap-4 order-2 tablet:order-1">
                   <div className="relative w-full h-full flex flex-col items-start justify-center gap-3">
-                    {profileLoading || decryptProfileLoading ? (
+                    {profileLoading ? (
                       <div className="relative w-full h-full flex flex-col gap-4 overflow-y-scroll">
                         {Array.from({ length: 3 }).map((_, index: number) => {
                           return (
@@ -525,8 +493,10 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                       </div>
                     ) : (
                       <AutoProfileFeed
+                        decryptLoading={decryptLoading}
+                        decryptPost={decryptPost}
+                        followerOnly={followerOnlyProfile}
                         clientRendered={clientRendered}
-                        feedType={lensProfile?.id}
                         hasMoreProfile={hasMoreProfile}
                         fetchMoreProfile={fetchMoreProfile}
                         profileFeed={profileFeed}
@@ -538,7 +508,6 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                         commentOpen={commentOpen}
                         lensProfile={lensProfile}
                         address={address}
-                        followerOnly={followerOnlyProfileDecrypt}
                         mirrorLoading={mirrorProfileLoading}
                         reactLoading={reactProfileLoading}
                         collectLoading={collectProfileLoading}
@@ -606,23 +575,20 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                         setCollectProfileLoading={setCollectProfileLoading}
                         setMirrorProfileLoading={setMirrorProfileLoading}
                         setReactProfileLoading={setReactProfileLoading}
-                        profile={autoDispatch.profile}
-                        profileType={profileType}
+                        profile={autographData?.profile}
                         preElement={preElement}
                         handleImagePaste={handleImagePaste}
                         router={router}
-                        decryptPost={decryptPost}
-                        decryptLoading={decryptLoading}
                       />
                     )}
                   </div>
                 </div>
                 <div className="relative w-full h-fit flex flex-col gap-2 px-4 order-1 tablet:order-2">
                   <Collections
-                    autoCollections={autoDispatch.collections}
+                    dispatch={dispatch}
+                    autoCollections={autographData?.collections}
                     router={router}
-                    handleShareCollection={handleShareCollection}
-                    autoProfile={autoDispatch.profile}
+                    autoProfile={autographData?.profile}
                     imageLoading={imageLoading}
                     address={address}
                     lensProfile={lensProfile}
@@ -631,125 +597,11 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                   />
                 </div>
               </div>
-              <div className="relative w-full h-fit flex flex-col gap-10 md:gap-5 pt-10">
-                {decryptProfileFeed?.length > 0 && (
-                  <div className="relative w-full h-fit flex flex-col items-start justify-start gap-2">
-                    <div className="relative w-fit h-fit items-start justify-start font-earl text-white break-words text-2xl">
-                      Encrypted Posts
-                    </div>
-                    <Encrypted
-                      clientRendered={clientRendered}
-                      feedType={lensProfile?.id}
-                      hasMoreProfile={hasMoreDecryptProfile}
-                      fetchMoreProfile={fetchMoreProfileDecrypt}
-                      profileFeed={decryptProfileFeed}
-                      profileAmounts={decryptProfileFeedCount}
-                      collectPost={collectPost}
-                      mirrorPost={mirrorPost}
-                      reactPost={reactPost}
-                      commentPost={commentPost}
-                      commentOpen={commentOpen}
-                      address={address}
-                      followerOnly={followerOnlyProfile}
-                      mirrorLoading={mirrorProfileLoading}
-                      reactLoading={reactProfileLoading}
-                      setOpenMirrorChoice={setOpenProfileMirrorChoice}
-                      openMirrorChoice={openProfileMirrorChoice}
-                      collectLoading={collectProfileLoading}
-                      dispatch={dispatch}
-                      commentDescription={commentDescription}
-                      textElement={textElement}
-                      handleCommentDescription={handleCommentDescription}
-                      commentLoading={commentLoading}
-                      caretCoord={caretCoord}
-                      mentionProfiles={mentionProfiles}
-                      profilesOpen={profilesOpen}
-                      handleMentionClick={handleMentionClick}
-                      handleGifSubmit={handleGifSubmit}
-                      handleGif={handleGif}
-                      results={results}
-                      handleSetGif={handleSetGif}
-                      gifOpen={gifOpen}
-                      setGifOpen={setGifOpen}
-                      handleKeyDownDelete={handleKeyDownDelete}
-                      handleLensSignIn={handleLensSignIn}
-                      openConnectModal={openConnectModal}
-                      handleRemoveImage={handleRemoveImage}
-                      videoLoading={videoLoading}
-                      uploadImages={uploadImage}
-                      uploadVideo={uploadVideo}
-                      imageLoading={imageLoading}
-                      mappedFeaturedFiles={mappedFeaturedFiles}
-                      collectOpen={collectOpen}
-                      enabledCurrencies={enabledCurrencies}
-                      audienceDropDown={audienceDropDown}
-                      audienceType={audienceType}
-                      setAudienceDropDown={setAudienceDropDown}
-                      setAudienceType={setAudienceType}
-                      value={value}
-                      setChargeCollect={setChargeCollect}
-                      setChargeCollectDropDown={setChargeCollectDropDown}
-                      setCollectible={setCollectible}
-                      setCollectibleDropDown={setCollectibleDropDown}
-                      setCurrencyDropDown={setCurrencyDropDown}
-                      setEnabledCurrency={setEnabledCurrency}
-                      setLimit={setLimit}
-                      setLimitedDropDown={setLimitedDropDown}
-                      setLimitedEdition={setLimitedEdition}
-                      setReferral={setReferral}
-                      setTimeLimit={setTimeLimit}
-                      setTimeLimitDropDown={setTimeLimitDropDown}
-                      setValue={setValue}
-                      enabledCurrency={enabledCurrency}
-                      chargeCollect={chargeCollect}
-                      chargeCollectDropDown={chargeCollectDropDown}
-                      limit={limit}
-                      limitedDropDown={limitedDropDown}
-                      limitedEdition={limitedEdition}
-                      timeLimit={timeLimit}
-                      timeLimitDropDown={timeLimitDropDown}
-                      audienceTypes={audienceTypes}
-                      referral={referral}
-                      collectNotif={collectNotif}
-                      collectible={collectible}
-                      collectibleDropDown={collectibleDropDown}
-                      currencyDropDown={currencyDropDown}
-                      postImagesDispatched={postImagesDispatched}
-                      setCollectProfileLoading={setCollectProfileLoading}
-                      setMirrorProfileLoading={setMirrorProfileLoading}
-                      setReactProfileLoading={setReactProfileLoading}
-                      profile={autoDispatch.profile}
-                      profileType={profileType}
-                      preElement={preElement}
-                      handleImagePaste={handleImagePaste}
-                      router={router}
-                      decryptPost={decryptPost}
-                      decryptLoading={decryptLoading}
-                      lensProfile={lensProfile}
-                    />
-                  </div>
-                )}
-                {autoDispatch?.collections &&
-                  autoDispatch?.collections
-                    ?.map((item) => item.coinOp)
-                    ?.filter((coinOp) => coinOp !== undefined)?.length > 0 && (
-                    <CoinOp
-                      coinOpItems={
-                        autoDispatch.collections
-                          ?.map((item) => item.coinOp)
-                          .filter((coinOp) => coinOp !== undefined)!
-                      }
-                      autoProfile={autoDispatch.profile}
-                      router={router}
-                      dispatch={dispatch}
-                    />
-                  )}
-                <Drops
-                  allDrops={autoDispatch.drops}
-                  autoProfile={autoDispatch.profile}
-                  router={router}
-                />
-              </div>
+              <Drops
+                allDrops={autographData?.drops}
+                autoProfile={autographData?.profile}
+                router={router}
+              />
             </div>
           )
         )}

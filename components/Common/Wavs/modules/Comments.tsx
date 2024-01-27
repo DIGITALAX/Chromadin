@@ -11,7 +11,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
   mirrorLoading,
   reactLoading,
   collectLoading,
-  feedType,
+  
   dispatch,
   address,
   followerOnly,
@@ -86,7 +86,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
   commentId,
   openComment,
   router,
-  profileType,
+  
   preElement,
   handleImagePaste,
   clientRendered,
@@ -148,13 +148,13 @@ const Comments: FunctionComponent<CommentsProps> = ({
                     mirrorAmount={commentAmounts?.mirror?.[index]}
                     collectAmount={commentAmounts?.collect?.[index]}
                     commentAmount={commentAmounts?.comment?.[index]}
-                    feedType={feedType}
+                    
                     setCollectLoader={setCollectLoader}
                     setMirrorLoader={setMirrorLoader}
                     setReactLoader={setReactLoader}
                     openComment={openComment}
                     router={router}
-                    profileType={profileType}
+                    
                   />
                   {comment?.id === commentId && (
                     <MakeComment

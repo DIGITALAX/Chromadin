@@ -24,14 +24,13 @@ import useCollectOptions from "@/components/Common/NFT/hooks/useCollectOptions";
 import useImageUpload from "@/components/Common/NFT/hooks/useImageUpload";
 import RouterChange from "@/components/Common/Loading/RouterChange";
 import { TriStateValue } from "@/components/Home/types/generated";
-import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 import useFulfillment from "@/components/Common/Interactions/hooks/useFulfillment";
 import useHistory from "@/components/Common/Interactions/hooks/useHistory";
 import useStats from "@/components/Common/Sampler/hooks/useStats";
-import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import useViewer from "@/components/Home/hooks/useViewer";
 import useSearch from "@/components/Common/Wavs/hooks/useSearch";
 import useProfileFeed from "@/components/Common/Wavs/hooks/useProfileFeed";
@@ -39,10 +38,7 @@ import useIndividual from "@/components/Common/Wavs/hooks/useIndividual";
 import useAllPosts from "@/components/Common/Wavs/hooks/useAllPosts";
 import useReactions from "@/components/Common/Wavs/hooks/useReactions";
 
-const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
-  router,
-  client,
-}): JSX.Element => {
+const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -50,15 +46,10 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     ),
   });
   const { address, isConnected } = useAccount();
-  const { chain } = useNetwork();
-  const { openChainModal } = useChainModal();
   const { connectModalOpen } = useConnectModal();
   const viewer = useSelector((state: RootState) => state.app.viewReducer.value);
   const mainNFT = useSelector(
     (state: RootState) => state.app.mainNFTReducer.value
-  );
-  const decryptScrollPos = useSelector(
-    (state: RootState) => state.app.decryptScrollPosReducer.value
   );
   const commentAmounts = useSelector(
     (state: RootState) => state.app.commentFeedCountReducer
@@ -73,7 +64,6 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
-  const success = useSelector((state: RootState) => state.app.successReducer);
   const dispatchVideos = useSelector(
     (state: RootState) => state.app.channelsReducer.value
   );
@@ -113,7 +103,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   const profileFeedCount = useSelector(
     (state: RootState) => state.app.profileFeedCountReducer
   );
-  const history = useSelector(
+  const historyURL = useSelector(
     (state: RootState) => state.app.historyURLReducer.value
   );
   const quickProfiles = useSelector(
@@ -124,9 +114,6 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   );
   const postSent = useSelector(
     (state: RootState) => state.app.postSentReducer.value
-  );
-  const encryptedInformation = useSelector(
-    (state: RootState) => state.app.encryptedInformationReducer.information
   );
   const reactionFeedCount = useSelector(
     (state: RootState) => state.app.reactionFeedCountReducer
@@ -160,10 +147,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   );
   const videoCount = useSelector(
     (state: RootState) => state.app.videoCountReducer
-  );
-  const historyReducer = useSelector(
-    (state: RootState) => state.app.historyReducer.value
-  );
+  )
   const collections = useSelector(
     (state: RootState) => state.app.collectionsReducer.value
   );
@@ -171,16 +155,10 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   const profileDispatch = useSelector(
     (state: RootState) => state.app.profileFeedReducer.value
   );
-  const historyPagination = useSelector(
-    (state: RootState) => state.app.historyPaginationReducer
-  );
   const filterDecrypt = useSelector(
     (state: RootState) => state.app.filterDecryptReducer.value
   );
   const feed = useSelector((state: RootState) => state.app.feedReducer.value);
-  const buyerPagination = useSelector(
-    (state: RootState) => state.app.buyerHistoryPaginationReducer
-  );
   const dispatchProfile = useSelector(
     (state: RootState) => state.app.profileReducer.profile
   );
@@ -190,41 +168,17 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   const profilePageData = useSelector(
     (state: RootState) => state.app.profilePaginatedReducer.value
   );
-  const hasMoreUserHistory = useSelector(
-    (state: RootState) => state.app.hasMoreHistoryReducer.value
-  );
   const collectModuleType = useSelector(
     (state: RootState) => state?.app?.collectValueTypeReducer?.type
-  );
-  const hasMoreBuyerHistory = useSelector(
-    (state: RootState) => state.app.hasMoreBuyerHistoryReducer.value
-  );
-  const allDrops = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
   );
   const isCreator = useSelector(
     (state: RootState) => state.app.isCreatorReducer.value
   );
-  const buyerHistoryReducer = useSelector(
-    (state: RootState) => state.app.buyerHistoryReducer.value
-  );
-  const fulfillmentDetails = useSelector(
-    (state: RootState) => state.app.fulfillmentDetailsReducer.value
-  );
-  const hasMoreHistory = useSelector(
-    (state: RootState) => state.app.hasMoreHistoryReducer.value
-  );
-  const hasMoreHistorySpecific = useSelector(
-    (state: RootState) => state.app.hasMoreBuyerHistoryReducer.value
+  const historyData = useSelector(
+    (state: RootState) => state.app.historyDataReducer
   );
   const hasMoreCollections = useSelector(
     (state: RootState) => state.app.hasMoreCollectionReducer.value
-  );
-  const decryptProfileScroll = useSelector(
-    (state: RootState) => state.app.decryptProfileScrollPosReducer.value
-  );
-  const profileScroll = useSelector(
-    (state: RootState) => state.app.profileScrollPosReducer.value
   );
   const paginatedCollection = useSelector(
     (state: RootState) => state.app.collectionPaginatedReducer
@@ -247,11 +201,11 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   const purchaseModal = useSelector(
     (state: RootState) => state.app.purchaseReducer
   );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
   const postImagesDispatched = useSelector(
     (state: RootState) => state.app.postImageReducer.value
-  );
-  const scrollPos = useSelector(
-    (state: RootState) => state.app.scrollPosReducer.value
   );
   const commentOpen = useSelector(
     (state: RootState) => state.app.openCommentReducer.value
@@ -269,7 +223,8 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     isConnected,
     dispatch,
     connectModalOpen,
-    publicClient
+    publicClient,
+    oracleData
   );
   const { openConnectModal } = useConnectModal();
   const {
@@ -312,7 +267,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     searchOpen,
     searchResults,
     handleSearchChoose,
-  } = useViewer(router, dispatch, quickProfiles, allDrops);
+  } = useViewer(router, dispatch, quickProfiles, lensProfile);
   const {
     commentors,
     getMorePostComments,
@@ -368,9 +323,9 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     dispatch,
     collections,
     paginatedCollection,
-    allDrops,
     hasMoreCollections,
-    quickProfiles
+    quickProfiles,
+    dispatchProfile
   );
   const {
     commentPost: commentPostWavs,
@@ -469,50 +424,25 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   const {
     currency,
     setCurrency,
-    baseColor,
-    setBaseColor,
-    selectSize,
-    setSelectSize,
     totalAmount,
     approved,
     buyNFT,
     approveSpend,
     purchaseLoading,
-    viewScreenNFT,
-    setViewScreenNFT,
-    handleCheckoutCrypto,
-    oracleValue,
-    cryptoCheckoutLoading,
-    imageIndex,
-    setImageIndex,
-  } = useFulfillment(
-    publicClient,
-    dispatch,
-    address,
-    client,
-    mainNFT,
-    success,
-    fulfillmentDetails
-  );
+  } = useFulfillment(publicClient, dispatch, address, mainNFT, oracleData);
   const {
     historyLoading,
     historySwitch,
     setHistorySwitch,
     getMoreBuyerHistory,
     getMoreUserHistory,
-    moreHistoryLoading,
   } = useHistory(
     address,
     dispatch,
-    history,
-    historyReducer,
-    buyerHistoryReducer,
+    historyURL,
     options,
     indexModal?.message,
-    historyPagination,
-    buyerPagination,
-    hasMoreUserHistory,
-    hasMoreBuyerHistory
+    historyData
   );
   const {
     statsTitles,
@@ -528,14 +458,10 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     postsLoading,
     hasMore: hasMoreAllPosts,
     fetchMore,
-    scrollRef,
-    setScrollPos,
     followerOnlyDecrypt,
     hasMoreDecrypt,
     decryptLoading,
     fetchMoreDecrypt,
-    scrollRefDecrypt,
-    setScrollPosDecrypt,
   } = useAllPosts(
     address,
     dispatch,
@@ -552,7 +478,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     feedId,
     reactionFeedCount,
     postSent,
-    feedType,
+
     commentAmounts,
     comments,
     paginated,
@@ -608,15 +534,14 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     dispatch,
     address,
     lensProfile,
-    feedType,
     commentAmounts,
     indexModal,
-    commentsDispatch
+    commentsDispatch,
+    feedType
   );
   const {
     hasMoreProfile,
     fetchMoreProfile,
-    profileRef,
     followerOnlyProfile,
     setCollectProfileLoading,
     setMirrorProfileLoading,
@@ -625,10 +550,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     collectProfileLoading,
     reactProfileLoading,
     setReactProfileLoading,
-    setProfileScroll,
     hasMoreDecryptProfile,
-    setScrollPosDecryptProfile,
-    scrollRefDecryptProfile,
     followerOnlyProfileDecrypt,
     fetchMoreProfileDecrypt,
     decryptProfileLoading,
@@ -723,10 +645,6 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 mainVideo={mainVideo}
                 currency={currency}
                 setCurrency={setCurrency}
-                setBaseColor={setBaseColor}
-                selectSize={selectSize}
-                baseColor={baseColor}
-                setSelectSize={setSelectSize}
                 totalAmount={totalAmount}
                 approved={approved}
                 mainNFT={mainNFT}
@@ -734,28 +652,13 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 approveSpend={approveSpend}
                 purchaseLoading={purchaseLoading}
                 collections={collections}
-                viewScreenNFT={viewScreenNFT}
-                setViewScreenNFT={setViewScreenNFT}
-                handleCheckoutCrypto={handleCheckoutCrypto}
                 address={address}
-                cryptoCheckoutLoading={cryptoCheckoutLoading}
-                oracleValue={oracleValue}
-                openChainModal={openChainModal}
-                encryptedInformation={encryptedInformation}
-                fulfillmentDetails={fulfillmentDetails}
-                chain={chain}
-                imageIndex={imageIndex}
-                setImageIndex={setImageIndex}
-                historyReducer={historyReducer}
+                historyData={historyData}
                 historyLoading={historyLoading}
-                buyerHistoryReducer={buyerHistoryReducer}
                 historySwitch={historySwitch}
                 setHistorySwitch={setHistorySwitch}
                 getMoreBuyerHistory={getMoreBuyerHistory}
                 getMoreUserHistory={getMoreUserHistory}
-                moreHistoryLoading={moreHistoryLoading}
-                hasMoreHistory={hasMoreHistory}
-                hasMoreHistorySpecific={hasMoreHistorySpecific}
                 isCreator={isCreator}
                 action={action}
               />
@@ -766,9 +669,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 reactionAmounts={reactionFeedCount}
                 individualCount={individualCount}
                 quickProfiles={quickProfiles}
-                feedType={feedType}
-                history={history}
-                decryptScrollPos={decryptScrollPos}
+                history={historyURL}
                 decryptFeed={decryptFeed}
                 mainVideo={mainVideo}
                 viewer={viewer}
@@ -838,7 +739,6 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 setProfilesFound={setProfilesFound}
                 hasMoreProfile={hasMoreProfile}
                 fetchMoreProfile={fetchMoreProfile}
-                profileRef={profileRef}
                 decryptProfileFeedCount={decryptProfileFeedCount}
                 followerOnlyProfile={followerOnlyProfile}
                 setCollectProfileLoading={setCollectProfileLoading}
@@ -848,10 +748,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 collectProfileLoading={collectProfileLoading}
                 reactProfileLoading={reactProfileLoading}
                 setReactProfileLoading={setReactProfileLoading}
-                setProfileScroll={setProfileScroll}
                 hasMoreDecryptProfile={hasMoreDecryptProfile}
-                setScrollPosDecryptProfile={setScrollPosDecryptProfile}
-                scrollRefDecryptProfile={scrollRefDecryptProfile}
                 followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
                 fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
                 decryptProfileLoading={decryptProfileLoading}
@@ -899,14 +796,10 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 decryptFeedCount={decryptFeedCount}
                 postsLoading={postsLoading}
                 fetchMore={fetchMore}
-                scrollRef={scrollRef}
-                setScrollPos={setScrollPos}
                 followerOnlyDecrypt={followerOnlyDecrypt}
                 hasMoreDecrypt={hasMoreDecrypt}
                 decryptLoading={decryptLoading}
                 fetchMoreDecrypt={fetchMoreDecrypt}
-                scrollRefDecrypt={scrollRefDecrypt}
-                setScrollPosDecrypt={setScrollPosDecrypt}
                 commentPost={commentPostWavs}
                 commentDescription={commentDescriptionWavs}
                 textElement={textElementWavs}
@@ -921,7 +814,6 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 results={resultsWavs}
                 handleSetGif={handleSetGifWavs}
                 gifOpen={gifOpenWavs}
-                scrollPos={scrollPos}
                 setGifOpen={setGifOpenWavs}
                 handleKeyDownDelete={handleKeyDownDeleteWavs}
                 preElement={preElementWavs}
@@ -973,8 +865,6 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 value={value}
                 setValue={setValue}
                 filterDecrypt={filterDecrypt}
-                decryptProfileScroll={decryptProfileScroll}
-                profileScroll={profileScroll}
               />
               {viewer !== "sampler" && viewer !== "chat" && (
                 <NFT
@@ -1082,6 +972,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
             ) : (
               <Interactions
                 viewer={viewer}
+                historyData={historyData}
                 commentors={commentors}
                 getMorePostComments={getMorePostComments}
                 commentsLoading={commentsCollectLoading}
@@ -1104,10 +995,6 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 mainVideo={mainVideo}
                 currency={currency}
                 setCurrency={setCurrency}
-                setBaseColor={setBaseColor}
-                selectSize={selectSize}
-                baseColor={baseColor}
-                setSelectSize={setSelectSize}
                 totalAmount={totalAmount}
                 approved={approved}
                 mainNFT={mainNFT}
@@ -1115,29 +1002,12 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 approveSpend={approveSpend}
                 purchaseLoading={purchaseLoading}
                 collections={collections}
-                viewScreenNFT={viewScreenNFT}
-                setViewScreenNFT={setViewScreenNFT}
-                handleCheckoutCrypto={handleCheckoutCrypto}
                 address={address}
-                cryptoCheckoutLoading={cryptoCheckoutLoading}
-                oracleValue={oracleValue}
-                openChainModal={openChainModal}
-                openConnectModal={openConnectModal}
-                encryptedInformation={encryptedInformation}
-                fulfillmentDetails={fulfillmentDetails}
-                chain={chain}
-                imageIndex={imageIndex}
-                setImageIndex={setImageIndex}
-                historyReducer={historyReducer}
                 historyLoading={historyLoading}
-                buyerHistoryReducer={buyerHistoryReducer}
                 historySwitch={historySwitch}
                 setHistorySwitch={setHistorySwitch}
                 getMoreBuyerHistory={getMoreBuyerHistory}
                 getMoreUserHistory={getMoreUserHistory}
-                moreHistoryLoading={moreHistoryLoading}
-                hasMoreHistory={hasMoreHistory}
-                hasMoreHistorySpecific={hasMoreHistorySpecific}
                 isCreator={isCreator}
                 action={action}
               />
@@ -1147,6 +1017,7 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
             <div className="w-fit h-full hidden xl:flex">
               <Interactions
                 viewer={viewer}
+                historyData={historyData}
                 commentors={commentors}
                 getMorePostComments={getMorePostComments}
                 commentsLoading={commentsCollectLoading}
@@ -1169,10 +1040,6 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 mainVideo={mainVideo}
                 currency={currency}
                 setCurrency={setCurrency}
-                setBaseColor={setBaseColor}
-                selectSize={selectSize}
-                baseColor={baseColor}
-                setSelectSize={setSelectSize}
                 totalAmount={totalAmount}
                 approved={approved}
                 mainNFT={mainNFT}
@@ -1180,29 +1047,12 @@ const Home: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 approveSpend={approveSpend}
                 purchaseLoading={purchaseLoading}
                 collections={collections}
-                viewScreenNFT={viewScreenNFT}
-                setViewScreenNFT={setViewScreenNFT}
-                handleCheckoutCrypto={handleCheckoutCrypto}
                 address={address}
-                cryptoCheckoutLoading={cryptoCheckoutLoading}
-                oracleValue={oracleValue}
-                openChainModal={openChainModal}
-                openConnectModal={openConnectModal}
-                encryptedInformation={encryptedInformation}
-                fulfillmentDetails={fulfillmentDetails}
-                chain={chain}
-                imageIndex={imageIndex}
-                setImageIndex={setImageIndex}
-                historyReducer={historyReducer}
                 historyLoading={historyLoading}
-                buyerHistoryReducer={buyerHistoryReducer}
                 historySwitch={historySwitch}
                 setHistorySwitch={setHistorySwitch}
                 getMoreBuyerHistory={getMoreBuyerHistory}
                 getMoreUserHistory={getMoreUserHistory}
-                moreHistoryLoading={moreHistoryLoading}
-                hasMoreHistory={hasMoreHistory}
-                hasMoreHistorySpecific={hasMoreHistorySpecific}
                 isCreator={isCreator}
                 action={action}
               />

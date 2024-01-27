@@ -1,4 +1,4 @@
-import { FunctionComponent, MouseEvent } from "react";
+import { FunctionComponent } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import MakeComment from "./MakeComment";
 import FeedPublication from "./FeedPublication";
@@ -17,10 +17,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   hasMore,
   fetchMore,
   feedDispatch,
-  setScrollPos,
-  scrollRef,
-  feedType,
-  scrollPos,
+  
   dispatch,
   reactionAmounts,
   reactPost,
@@ -100,7 +97,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   hasMoreSearch,
   setProfilesFound,
   setProfilesOpenSearch,
-  profileType,
+  
   preElement,
   filterDecrypt,
   decryptFeed,
@@ -108,9 +105,6 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   followerOnlyDecrypt,
   hasMoreDecrypt,
   fetchMoreDecrypt,
-  scrollRefDecrypt,
-  decryptScrollPos,
-  setScrollPosDecrypt,
   handleImagePaste,
   clientRendered,
   openMirrorChoice,
@@ -153,15 +147,6 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
           style={{ color: "#131313", fontFamily: "Digi Reg" }}
           scrollThreshold={0.9}
           scrollableTarget={"scrollableDiv"}
-          ref={filterDecrypt ? scrollRefDecrypt : scrollRef}
-          onScroll={
-            (filterDecrypt
-              ? (e: MouseEvent) => setScrollPosDecrypt(e)
-              : (e: MouseEvent) => setScrollPos(e)) as any
-          }
-          initialScrollY={
-            feedType === "" ? (filterDecrypt ? decryptScrollPos : scrollPos) : 0
-          }
         >
           <div className="w-full h-full relative flex flex-col gap-4 pb-3">
             {(filterDecrypt ? decryptFeed : feedDispatch)?.map(
@@ -237,9 +222,9 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                           : reactionAmounts.comment[index]
                       }
                       openComment={commentOpen}
-                      feedType={feedType}
+                      
                       router={router}
-                      profileType={profileType}
+                      
                     />
                     {(publication?.__typename === "Mirror"
                       ? publication?.mirrorOn?.id

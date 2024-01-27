@@ -9,7 +9,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
   autoCollections,
   router,
   autoProfile,
-  handleShareCollection,
+  dispatch,
   imageLoading,
   address,
   lensProfile,
@@ -24,7 +24,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
             router={router}
             collection={autoCollections?.[0]}
             autoProfile={autoProfile}
-            handleShareCollection={handleShareCollection}
+            dispatch={dispatch}
             imageLoading={imageLoading}
             address={address}
             lensProfile={lensProfile}
@@ -38,7 +38,8 @@ const Collections: FunctionComponent<CollectionsProps> = ({
               {autoCollections
                 ?.filter((collection, index) => {
                   if (
-                    collection?.drop?.name === autoCollections[0]?.drop?.name &&
+                    collection?.dropMetadata?.dropTitle ===
+                      autoCollections[0]?.dropMetadata?.dropTitle &&
                     index !== 0
                   ) {
                     return true;
@@ -49,9 +50,9 @@ const Collections: FunctionComponent<CollectionsProps> = ({
                     <CollectionCaseSmall
                       router={router}
                       key={index}
+                      dispatch={dispatch}
                       collection={collection}
                       autoProfile={autoProfile}
-                      handleShareCollection={handleShareCollection}
                       imageLoading={imageLoading}
                       address={address}
                       lensProfile={lensProfile}
@@ -68,7 +69,10 @@ const Collections: FunctionComponent<CollectionsProps> = ({
         <div className="relative w-fit h-fit gap-6 tablet:gap-12 flex inline-flex flex-wrap overflow-y-scroll justify-end">
           {autoCollections
             ?.filter((collection) => {
-              if (collection?.drop?.name !== autoCollections[0]?.drop?.name) {
+              if (
+                collection?.dropMetadata?.dropTitle !==
+                autoCollections[0]?.dropMetadata?.dropTitle
+              ) {
                 return true;
               }
             })
@@ -76,10 +80,10 @@ const Collections: FunctionComponent<CollectionsProps> = ({
               return (
                 <CollectionCaseMedium
                   router={router}
+                  dispatch={dispatch}
                   key={index}
                   collection={collection}
                   autoProfile={autoProfile}
-                  handleShareCollection={handleShareCollection}
                   imageLoading={imageLoading}
                   address={address}
                   lensProfile={lensProfile}

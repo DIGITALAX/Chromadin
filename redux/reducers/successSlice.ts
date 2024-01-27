@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface SuccessState {
   open: boolean;
   media: string;
-  coinOp: boolean;
   name: string;
 }
 
@@ -11,7 +10,6 @@ const initialSuccessState: SuccessState = {
   open: false,
   media: "",
   name: "",
-  coinOp: false,
 };
 
 export const successSlice = createSlice({
@@ -20,12 +18,11 @@ export const successSlice = createSlice({
   reducers: {
     setSuccess: (
       state: SuccessState,
-      { payload: { actionOpen, actionMedia, actionName, actionCoinOp } }
+      { payload: { actionOpen, actionMedia, actionName } }
     ) => {
       state.open = actionOpen;
       state.media = actionMedia;
       state.name = actionName;
-      state.coinOp = actionCoinOp;
     },
   },
 });

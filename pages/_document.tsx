@@ -28,63 +28,63 @@ export default function Document() {
         />
         <link
           rel="preload"
-          href="/fonts/ArcadeClassic.ttf"
+          href="https://www.chromadin.xyz/fonts/ArcadeClassic.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/DSDigi.ttf"
+          href="https://www.chromadin.xyz/fonts/DSDigi.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/EarlsRevenge.ttf"
+          href="https://www.chromadin.xyz/fonts/EarlsRevenge.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/Geometria.ttf"
+          href="https://www.chromadin.xyz/fonts/Geometria.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/DosisRegular.ttf"
+          href="https://www.chromadin.xyz/fonts/DosisRegular.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/ClashDisplay.ttf"
+          href="https://www.chromadin.xyz/fonts/ClashDisplay.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/EconomicaBold.ttf"
+          href="https://www.chromadin.xyz/fonts/EconomicaBold.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/EconomicaRegular.ttf"
+          href="https://www.chromadin.xyz/fonts/EconomicaRegular.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"
         />
         <link
           rel="preload"
-          href="/fonts/Manaspc.ttf"
+          href="https://www.chromadin.xyz/fonts/Manaspc.ttf"
           as="font"
           crossOrigin="anonymous"
           type="font/ttf"

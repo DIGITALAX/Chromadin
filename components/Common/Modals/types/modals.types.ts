@@ -20,7 +20,7 @@ import {
 } from "react";
 import ReactPlayer from "react-player";
 import { AnyAction, Dispatch } from "redux";
-import { QuickProfilesInterface } from "../../Wavs/types/wavs.types";
+import { Post } from "../../Wavs/types/wavs.types";
 import { Collection, UploadedMedia } from "@/components/Home/types/home.types";
 
 export type IndexingModalProps = {
@@ -86,7 +86,6 @@ export type ImageLargeProps = {
 export type SuccessProps = {
   media: string;
   dispatch: Dispatch<AnyAction>;
-  coinOp: boolean;
 };
 
 export type ImageViewerProps = {
@@ -126,7 +125,7 @@ export type FullScreenVideoProps = {
 export type SuperFollowProps = {
   dispatch: Dispatch<AnyAction>;
   followSuper: () => Promise<void>;
-  quickProfiles: QuickProfilesInterface[];
+  quickProfiles: Profile[];
   router: NextRouter;
   superCreatorLoading: boolean;
   rain: boolean;

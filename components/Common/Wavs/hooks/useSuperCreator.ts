@@ -10,7 +10,6 @@ import { polygon } from "viem/chains";
 import { Profile } from "@/components/Home/types/generated";
 import followSig from "@/lib/helpers/followSig";
 import { AnyAction, Dispatch } from "redux";
-import { QuickProfilesInterface } from "../types/wavs.types";
 import { setRainRedux } from "@/redux/reducers/rainSlice";
 
 const useSuperCreator = (
@@ -18,7 +17,7 @@ const useSuperCreator = (
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
   rain: boolean,
-  quickProfiles: QuickProfilesInterface[]
+  quickProfiles: Profile[]
 ) => {
   const [superCreatorLoading, setSuperCreatorLoading] =
     useState<boolean>(false);

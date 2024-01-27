@@ -10,7 +10,7 @@ import { Post, Quote, TriStateValue } from "@/components/Home/types/generated";
 const Individual: FunctionComponent<IndividualProps> = ({
   dispatch,
   mainPost,
-  feedType,
+  
   address,
   followerOnlyMain,
   collectPost,
@@ -101,7 +101,7 @@ const Individual: FunctionComponent<IndividualProps> = ({
   postImagesDispatched,
   individualAmounts,
   router,
-  profileType,
+  
   preElement,
   handleImagePaste,
   clientRendered,
@@ -152,13 +152,13 @@ const Individual: FunctionComponent<IndividualProps> = ({
             mirrorAmount={individualAmounts?.mirror}
             collectAmount={individualAmounts?.collect}
             commentAmount={individualAmounts?.comment}
-            feedType={feedType}
+            
             setCollectLoader={setCollectPostLoading}
             setMirrorLoader={setMirrorPostLoading}
             setReactLoader={setReactPostLoading}
             openComment={commentOpen}
             router={router}
-            profileType={profileType}
+            
           />
           {(mainPost?.__typename === "Mirror"
             ? mainPost?.mirrorOn?.id
@@ -263,7 +263,7 @@ const Individual: FunctionComponent<IndividualProps> = ({
         mirrorLoading={mirrorCommentLoading}
         reactLoading={reactCommentLoading}
         collectLoading={collectCommentLoading}
-        feedType={feedType}
+        
         followerOnly={followerOnlyComments}
         fetchMoreComments={fetchMoreComments}
         hasMoreComments={hasMoreComments}
@@ -334,7 +334,7 @@ const Individual: FunctionComponent<IndividualProps> = ({
         openComment={commentOpen}
         postImagesDispatched={postImagesDispatched}
         router={router}
-        profileType={profileType}
+        
         preElement={preElement}
         handleImagePaste={handleImagePaste}
         clientRendered={clientRendered}

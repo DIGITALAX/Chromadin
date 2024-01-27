@@ -15,13 +15,16 @@ import { useEffect, useState } from "react";
 import generateChallenge from "@/graphql/lens/queries/generateChallenge";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { setNoHandle } from "@/redux/reducers/noHandleSlice";
-import { CHROMADIN_ACCESS_CONTROLS } from "@/lib/constants";
 import { setIsCreator } from "@/redux/reducers/isCreatorSlice";
 import { NextRouter } from "next/router";
 import { PublicClient } from "viem";
 import { Profile } from "@/components/Home/types/generated";
 import { setConnectedRedux } from "@/redux/reducers/connectedSlice";
 import { Dispatch } from "redux";
+import { PRINT_ACCESS_CONTROL } from "@/lib/constants";
+import { OracleData } from "../../Wavs/types/wavs.types";
+import { setOracleData } from "@/redux/reducers/oracleDataSlice";
+import { getOracleData } from "@/graphql/subgraph/queries/getOracleData";
 
 const useConnect = (
   router: NextRouter,
@@ -29,24 +32,25 @@ const useConnect = (
   isConnected: boolean,
   dispatch: Dispatch,
   connectModalOpen: boolean,
-  publicClient: PublicClient
+  publicClient: PublicClient,
+  oracleData: OracleData[]
 ): UseConnectResults => {
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
 
   const getWriter = async () => {
     try {
       const data = await publicClient.readContract({
-        address: CHROMADIN_ACCESS_CONTROLS,
+        address: PRINT_ACCESS_CONTROL,
         abi: [
           {
             inputs: [
               {
                 internalType: "address",
-                name: "_writer",
+                name: "_address",
                 type: "address",
               },
             ],
-            name: "isWriter",
+            name: "isDesigner",
             outputs: [
               {
                 internalType: "bool",
@@ -58,11 +62,21 @@ const useConnect = (
             type: "function",
           },
         ],
-        functionName: "isWriter",
+        functionName: "isDesigner",
         args: [address as `0x${string}`],
       });
 
       dispatch(setIsCreator(data as boolean));
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  const handleOracles = async (): Promise<void> => {
+    try {
+      const data = await getOracleData();
+
+      dispatch(setOracleData(data?.data?.currencyAddeds));
     } catch (err: any) {
       console.error(err.message);
     }
@@ -171,6 +185,10 @@ const useConnect = (
   useEffect(() => {
     if (router && address) {
       getWriter();
+    }
+
+    if (!oracleData || oracleData?.length < 1) {
+      handleOracles();
     }
   }, [address, isConnected]);
 

@@ -1,102 +1,60 @@
 import getBuyerHistory, {
   getBuyerHistorySpecific,
-  getBuyerHistorySpecificUpdated,
-  getBuyerHistoryUpdated,
 } from "@/graphql/subgraph/queries/getBuyerHistory";
 import { useEffect, useState } from "react";
 import { History, useHistoryResults } from "../types/interactions.types";
-import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
-import { setHistoryRedux } from "@/redux/reducers/historySlice";
-import { setBuyerHistoryRedux } from "@/redux/reducers/buyerHistorySlice";
-import {
-  HistoryPaginatedState,
-  setHistoryPaginated,
-} from "@/redux/reducers/historyPaginationSlice";
-import { setHasMoreHistorysRedux } from "@/redux/reducers/hasMoreHistoryReducer";
-import {
-  BuyerHistoryPaginatedState,
-  setBuyerHistoryPaginated,
-} from "@/redux/reducers/buyerHistoryPaginationSlice";
-import { setHasMoreBuyerHistorysRedux } from "@/redux/reducers/hasMoreBuyerHistorySlice";
-import { INFURA_GATEWAY } from "@/lib/constants";
 import { AnyAction, Dispatch } from "redux";
+import { getOneCollectionById } from "@/graphql/subgraph/queries/getAllCollections";
+import {
+  HistoryDataState,
+  setHistoryDataRedux,
+} from "@/redux/reducers/hasMoreHistoryReducer";
 
 const useHistory = (
   address: `0x${string}` | undefined,
   dispatch: Dispatch<AnyAction>,
   historyURL: string,
-  historyReducer: History[],
-  buyerHistoryReducer: History[],
   options: string,
   indexModal: string | undefined,
-  historyPagination: HistoryPaginatedState,
-  buyerPagination: BuyerHistoryPaginatedState,
-  hasMoreUserHistory: {
-    old: boolean;
-    new: boolean;
-  },
-  hasMoreBuyerHistory: {
-    old: boolean;
-    new: boolean;
-  }
+  historyData: HistoryDataState
 ): useHistoryResults => {
   const [historySwitch, setHistorySwitch] = useState<boolean>(false);
   const [historyLoading, setHistoryLoading] = useState<boolean>(false);
-  const [moreHistoryLoading, setMoreHistoryLoading] = useState<boolean>(false);
 
   const getUserHistory = async () => {
     setHistoryLoading(true);
     try {
-      const res = await getBuyerHistoryUpdated(12, 0);
-      let data = res.data.updatedChromadinMarketTokensBoughts;
-      if (data?.length < 12) {
-        const res = await getBuyerHistory(12, 0);
-        data = [...data, ...(res.data.tokensBoughts || [])];
-        dispatch(
-          setHasMoreHistorysRedux({
-            old: true,
-            new: false,
-          })
-        );
-      } else {
-        dispatch(
-          setHasMoreHistorysRedux({
-            old: true,
-            new: true,
-          })
-        );
-      }
+      const res = await getBuyerHistory(12, 0);
+      const data = res.data.tokensBoughts || [];
 
       if (data.length > 0) {
         const history = await Promise.all(
           data.map(async (history: History) => {
-            const json = await fetchIPFSJSON(history.uri as any);
-
-            const type = await fetch(
-              `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
-              { method: "HEAD" }
-            ).then((response) => {
-              if (response.ok) {
-                return response.headers.get("Content-Type");
-              }
-            });
-
             const defaultProfile = await getDefaultProfile({
-              for: history.creator,
+              for: history.buyer,
             });
+            const collection = await getOneCollectionById(
+              history?.subOrderCollectionIds?.[0]
+            );
             return {
               ...history,
-              uri: {
-                ...json,
-                type,
-              },
+              collection: collection?.data?.collectionCreateds?.[0],
               profile: defaultProfile?.data?.defaultProfile,
             };
           })
         );
 
-        dispatch(setHistoryRedux(history));
+        dispatch(
+          setHistoryDataRedux({
+            actionBuyerHistory: history,
+            actionAllHistory: historyData.allHistory,
+            actionHasMoreBuyerHistory: history?.length == 12 ? true : false,
+            actionHasMoreHistory: historyData.hasMoreAllHistory,
+            actionAllSkip: historyData.allSkip,
+            actionBuyerSkip: history?.length == 12 ? 12 : 0,
+          })
+        );
       }
     } catch (err: any) {
       console.error(err.message);
@@ -108,58 +66,36 @@ const useHistory = (
     if (!address) return;
     setHistoryLoading(true);
     try {
-      const res = await getBuyerHistorySpecificUpdated(
-        address as string,
-        12,
-        0
-      );
-      let data = res.data.updatedChromadinMarketTokensBoughts;
-      if (data.length < 12) {
-        const res = await getBuyerHistorySpecific(address as string, 12, 0);
-        data = [...data, ...(res.data.tokensBoughts || [])];
-        dispatch(
-          setHasMoreBuyerHistorysRedux({
-            old: true,
-            new: false,
-          })
-        );
-      } else {
-        dispatch(
-          setHasMoreBuyerHistorysRedux({
-            old: true,
-            new: true,
-          })
-        );
-      }
+      const res = await getBuyerHistorySpecific(address as string, 12, 0);
+      const data = res.data.tokensBoughts || [];
+
       if (data.length > 0) {
         const history = await Promise.all(
           data.map(async (history: History) => {
-            const json = await fetchIPFSJSON(history.uri as any);
-
-            const type = await fetch(
-              `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
-              { method: "HEAD" }
-            ).then((response) => {
-              if (response.ok) {
-                return response.headers.get("Content-Type");
-              }
-            });
-
             const defaultProfile = await getDefaultProfile({
-              for: history.creator,
+              for: history.buyer,
             });
+            const collection = await getOneCollectionById(
+              history?.subOrderCollectionIds?.[0]
+            );
             return {
               ...history,
-              uri: {
-                ...json,
-                type,
-              },
+              collection: collection?.data?.collectionCreateds?.[0],
               profile: defaultProfile?.data?.defaultProfile,
             };
           })
         );
 
-        dispatch(setBuyerHistoryRedux(history));
+        dispatch(
+          setHistoryDataRedux({
+            actionAllHistory: history,
+            actionBuyerHistory: historyData.buyerHistory,
+            actionHasMoreHistory: history?.length == 12 ? true : false,
+            actionHasMoreBuyerHistory: historyData.hasMoreBuyerHistory,
+            actionBuyerSkip: historyData.buyerSkip,
+            actionAllSkip: history?.length == 12 ? 12 : 0,
+          })
+        );
       }
     } catch (err: any) {
       console.error(err.message);
@@ -168,216 +104,100 @@ const useHistory = (
   };
 
   const getMoreUserHistory = async () => {
-    if (
-      moreHistoryLoading ||
-      (!hasMoreUserHistory.old && !hasMoreUserHistory.new)
-    ) {
+    if (!historyData?.hasMoreAllHistory) {
       return;
     }
-    setMoreHistoryLoading(true);
     let data;
     try {
-      if (hasMoreUserHistory.new) {
-        const res = await getBuyerHistoryUpdated(
-          historyPagination.first,
-          historyPagination.skip
-        );
-        data = res.data.updatedChromadinMarketTokensBoughts;
-        if (data?.length < 12) {
-          const res = await getBuyerHistory(
-            historyPagination.first,
-            historyPagination.skip
-          );
-          data = [...data, ...(res?.data?.tokensBoughts || [])];
-          dispatch(
-            setHasMoreHistorysRedux({
-              old: true,
-              new: false,
-            })
-          );
-        } else {
-          dispatch(
-            setHasMoreHistorysRedux({
-              old: true,
-              new: true,
-            })
-          );
-        }
-      } else {
-        const res = await getBuyerHistory(
-          historyPagination.first,
-          historyPagination.skip
-        );
-        data = res?.data?.tokensBoughts;
-        if (data?.length < 12) {
-          dispatch(
-            setHasMoreHistorysRedux({
-              old: false,
-              new: false,
-            })
-          );
-        } else {
-          dispatch(
-            setHasMoreHistorysRedux({
-              old: true,
-              new: false,
-            })
-          );
-        }
-      }
+      const res = await getBuyerHistory(12, historyData.allSkip);
+      data = res?.data?.tokensBoughts;
 
       if (data.length > 0) {
         const history = await Promise.all(
           data.map(async (history: History) => {
-            const json = await fetchIPFSJSON(history.uri as any);
-
-            const type = await fetch(
-              `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
-              { method: "HEAD" }
-            ).then((response) => {
-              if (response.ok) {
-                return response.headers.get("Content-Type");
-              }
-            });
-
             const defaultProfile = await getDefaultProfile({
-              for: history.creator,
+              for: history.buyer,
             });
+            const collection = await getOneCollectionById(
+              history?.subOrderCollectionIds?.[0]
+            );
             return {
               ...history,
-              uri: {
-                ...json,
-                type,
-              },
+              collection: collection?.data?.collectionCreateds?.[0],
               profile: defaultProfile?.data?.defaultProfile,
             };
           })
         );
 
-        dispatch(setHistoryRedux([...historyReducer, ...history]));
         dispatch(
-          setHistoryPaginated({
-            actionFirst: historyPagination.first,
-            actionSkip: historyPagination.skip + 12,
+          setHistoryDataRedux({
+            actionAllHistory: [...historyData?.allHistory, ...history],
+            actionBuyerHistory: historyData.buyerHistory,
+            actionHasMoreHistory: history?.length == 12 ? true : false,
+            actionHasMoreBuyerHistory: historyData.hasMoreBuyerHistory,
+            actionBuyerSkip: historyData.buyerSkip,
+            actionAllSkip:
+              history?.length == 12 ? historyData?.allSkip + 12 : 0,
           })
         );
       }
     } catch (err: any) {
       console.error(err.message);
     }
-    setMoreHistoryLoading(false);
   };
 
   const getMoreBuyerHistory = async () => {
-    if (
-      moreHistoryLoading ||
-      (!hasMoreBuyerHistory.new && !hasMoreBuyerHistory.old)
-    ) {
+    if (!historyData?.hasMoreBuyerHistory) {
       return;
     }
-    setMoreHistoryLoading(true);
-    try {
-      let data;
-      if (hasMoreBuyerHistory.new) {
-        const res = await getBuyerHistorySpecificUpdated(
-          address as string,
-          buyerPagination.first,
-          buyerPagination.skip
-        );
-        data = res?.data?.updatedChromadinMarketTokensBoughts;
-        if (data?.length < 12) {
-          const res = await getBuyerHistorySpecific(
-            address as string,
-            buyerPagination.first,
-            buyerPagination.skip
-          );
-          data = [...data, ...(res?.data?.tokensBoughts || [])];
-          dispatch(
-            setHasMoreBuyerHistorysRedux({
-              old: true,
-              new: false,
-            })
-          );
-        } else {
-          dispatch(
-            setHasMoreBuyerHistorysRedux({
-              old: true,
-              new: true,
-            })
-          );
-        }
-      } else {
-        const res = await getBuyerHistorySpecific(
-          address as string,
-          buyerPagination.first,
-          buyerPagination.skip
-        );
-        data = res?.data?.tokensBoughts;
 
-        if (data?.length < 12) {
-          dispatch(
-            setHasMoreBuyerHistorysRedux({
-              old: false,
-              new: false,
-            })
-          );
-        } else {
-          dispatch(
-            setHasMoreBuyerHistorysRedux({
-              old: true,
-              new: false,
-            })
-          );
-        }
-      }
+    try {
+      const res = await getBuyerHistorySpecific(
+        address as string,
+        12,
+        historyData?.buyerSkip
+      );
+      const data = res?.data?.tokensBoughts;
 
       if (data.length > 0) {
         const history = await Promise.all(
           data.map(async (history: History) => {
-            const json = await fetchIPFSJSON(history.uri as any);
-
-            const type = await fetch(
-              `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
-              { method: "HEAD" }
-            ).then((response) => {
-              if (response.ok) {
-                return response.headers.get("Content-Type");
-              }
-            });
-
             const defaultProfile = await getDefaultProfile({
-              for: history.creator,
+              for: history.buyer,
             });
+            const collection = await getOneCollectionById(
+              history?.subOrderCollectionIds?.[0]
+            );
             return {
               ...history,
-              uri: {
-                ...json,
-                type,
-              },
+              collection: collection?.data?.collectionCreateds?.[0],
               profile: defaultProfile?.data?.defaultProfile,
             };
           })
         );
-        dispatch(setBuyerHistoryRedux(history));
         dispatch(
-          setBuyerHistoryPaginated({
-            actionFirst: buyerPagination.first,
-            actionSkip: buyerPagination.skip + 12,
+          setHistoryDataRedux({
+            actionBuyerHistory: [...historyData?.buyerHistory, ...history],
+            actionAllHistory: historyData.allHistory,
+            actionHasMoreBuyerHistory: history?.length == 12 ? true : false,
+            actionHasMoreHistory: historyData.hasMoreAllHistory,
+            actionAllSkip: historyData.allSkip,
+            actionBuyerSkip:
+              history?.length == 12 ? historyData?.buyerSkip + 12 : 0,
           })
         );
       }
     } catch (err: any) {
       console.error(err.message);
     }
-    setMoreHistoryLoading(false);
   };
 
   useEffect(() => {
     if (
       options === "history" &&
-      ((!historySwitch && historyReducer.length < 1) ||
+      ((!historySwitch && historyData?.allHistory?.length < 1) ||
         indexModal === "Purchase Successful" ||
-        (historySwitch && buyerHistoryReducer.length < 1))
+        (historySwitch && historyData?.buyerHistory?.length < 1))
     ) {
       if (historySwitch) {
         getHistorySpecific();
@@ -393,7 +213,6 @@ const useHistory = (
     setHistorySwitch,
     getMoreUserHistory,
     getMoreBuyerHistory,
-    moreHistoryLoading,
   };
 };
 

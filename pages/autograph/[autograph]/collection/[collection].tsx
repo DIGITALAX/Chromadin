@@ -15,23 +15,19 @@ import Link from "next/link";
 import { NextRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 import useBar from "@/components/Autograph/Common/hooks/useBar";
 import WaveformComponent from "@/components/Home/modules/Waveform";
 import Checkout from "@/components/Autograph/Collection/modules/Checkout";
-import { setNftScreen } from "@/redux/reducers/nftScreenSlice";
-import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
-import useImageUpload from "@/components/Common/NFT/hooks/useImageUpload";
-import usePurchase from "@/components/Autograph/Collection/hooks/usePurchase";
-import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import useChannels from "@/components/Common/SideBar/hooks/useChannels";
 import useControls from "@/components/Common/Video/hooks/useControls";
+import useFulfillment from "@/components/Common/Interactions/hooks/useFulfillment";
 
-const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
+const Collection: NextPage<{ router: NextRouter }> = ({
   router,
-  client,
 }): JSX.Element => {
   const publicClient = createPublicClient({
     chain: polygon,
@@ -43,23 +39,15 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   const { address, isConnected } = useAccount();
   const { autograph, collection } = router.query;
   const { openConnectModal, connectModalOpen } = useConnectModal();
-  const { chain } = useNetwork();
-  const { openChainModal } = useChainModal();
-  const allDrops = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
-  );
-  const autoDispatch = useSelector(
-    (state: RootState) => state.app.autoCollectionReducer
-  );
   const purchase = useSelector((state: RootState) => state.app.purchaseReducer);
   const fullScreenVideo = useSelector(
     (state: RootState) => state.app.fullScreenVideoReducer
   );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
   const imageLoading = useSelector(
     (state: RootState) => state.app.imageLoadingReducer.value
-  );
-  const viewScreenNFT = useSelector(
-    (state: RootState) => state.app.nftScreenReducer.value
   );
   const commentId = useSelector(
     (state: RootState) => state.app.secondaryCommentReducer.value
@@ -67,23 +55,16 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   const connected = useSelector(
     (state: RootState) => state.app.connectedReducer?.value
   );
-  const success = useSelector((state: RootState) => state.app.successReducer);
   const quickProfiles = useSelector(
     (state: RootState) => state.app.quickProfilesReducer.value
   );
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
-  const fulfillmentDetails = useSelector(
-    (state: RootState) => state.app.fulfillmentDetailsReducer.value
-  );
   const mainVideo = useSelector(
     (state: RootState) => state.app.mainVideoReducer
   );
   const index = useSelector((state: RootState) => state.app.indexModalReducer);
-  const postOpen = useSelector(
-    (state: RootState) => state.app.makePostReducer.value
-  );
   const dispatchVideos = useSelector(
     (state: RootState) => state.app.channelsReducer.value
   );
@@ -102,26 +83,15 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
   const hasMore = useSelector(
     (state: RootState) => state.app.hasMoreVideosReducer.value
   );
-  const page = useSelector((state: RootState) => state.app.viewReducer.value);
-  const postImages = useSelector(
-    (state: RootState) => state.app.postImageReducer.value
-  );
-  const publicationImages = useSelector(
-    (state: RootState) => state.app.publicationImageReducer.value
-  );
   const seek = useSelector(
     (state: RootState) => state.app.seekSecondReducer.seek
   );
-  const encryptedInformation = useSelector(
-    (state: RootState) => state.app.encryptedInformationReducer.information
-  );
-  const { uploadImage } = useImageUpload(
-    dispatch,
-    page,
-    postOpen,
-    postImages,
-    publicationImages
-  );
+ 
+  const {
+    collectionLoading,
+    otherCollectionsDrop,
+    collection: autoCollection,
+  } = useAutoCollection(lensProfile, autograph as string, collection as string);
   const {
     purchaseLoading,
     buyNFT,
@@ -130,34 +100,14 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     approveSpend,
     currency,
     setCurrency,
-    handleCheckoutCrypto,
-    oracleValue,
-    cryptoCheckoutLoading,
-  } = usePurchase(
+  } = useFulfillment(
     publicClient,
     dispatch,
     address,
-    autoDispatch,
-    fulfillmentDetails,
-    viewScreenNFT,
-    success,
-    client
+    autoCollection,
+    oracleData
   );
-  const {
-    collectionLoading,
-    getCollection,
-    otherCollectionsDrop,
-    handleShareCollection,
-    setImageIndex,
-    imageIndex,
-  } = useAutoCollection(
-    dispatch,
-    lensProfile,
-    viewScreenNFT,
-    autoDispatch.collection,
-    allDrops,
-    uploadImage
-  );
+
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
     mainVideo,
@@ -201,24 +151,19 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
     router
   );
   const { isLargeScreen } = useBar();
-  const pfp = createProfilePicture(autoDispatch.profile?.metadata?.picture);
+  const pfp = createProfilePicture(autoCollection?.profile?.metadata?.picture);
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
-    useViewer(router, dispatch, quickProfiles, allDrops);
+    useViewer(router, dispatch, quickProfiles, lensProfile);
   const { handleLensSignIn } = useConnect(
     router,
     address,
     isConnected,
     dispatch,
     connectModalOpen,
-    publicClient
+    publicClient,
+    oracleData
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!collectionLoading && autograph && collection && allDrops.length > 0) {
-      getCollection(autograph as string, collection as string);
-    }
-  }, [autograph, collection, allDrops]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -236,32 +181,33 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
       >
         <Head>
           <title>
-            Chromadin | {autoDispatch.collection?.name?.toUpperCase()}
+            Chromadin |{" "}
+            {autoCollection?.collectionMetadata?.title?.toUpperCase()}
           </title>
           <meta
             name="og:url"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+              autoCollection?.profile?.handle?.suggestedFormatted?.localName?.split(
                 "@"
               )[1]
-            }/collection/${autoDispatch.collection?.name
+            }/collection/${autoCollection?.collectionMetadata?.title
               ?.replaceAll(" ", "_")
               ?.toLowerCase()}`}
           />
           <meta
             name="og:title"
-            content={autoDispatch.collection?.name?.toUpperCase()}
+            content={autoCollection?.collectionMetadata?.title?.toUpperCase()}
           />
           <meta
             name="og:description"
-            content={autoDispatch.collection?.uri?.description}
+            content={autoCollection?.collectionMetadata?.description}
           />
           <meta
             name="og:image"
             content={
-              !autoDispatch.collection?.uri?.image
+              !autoCollection?.collectionMetadata?.images?.[0]
                 ? "https://www.chromadin.xyz/card.png/"
-                : `https://chromadin.infura-ipfs.io/ipfs/${autoDispatch.collection?.uri?.image?.split(
+                : `https://chromadin.infura-ipfs.io/ipfs/${autoCollection?.collectionMetadata?.images?.[0]?.split(
                     "ipfs://"
                   )}`
             }
@@ -273,20 +219,20 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
           <meta
             name="twitter:image"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+              autoCollection?.profile?.handle?.suggestedFormatted?.localName?.split(
                 "@"
               )[1]
-            }/collection/${autoDispatch.collection?.name
+            }/collection/${autoCollection?.collectionMetadata?.title
               ?.replaceAll(" ", "_")
               ?.toLowerCase()}`}
           />
           <meta
             name="twitter:url"
             content={`https://www.chromadin.xyz/autograph/${
-              autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+              autoCollection?.profile?.handle?.suggestedFormatted?.localName?.split(
                 "@"
               )[1]
-            }/collection/${autoDispatch.collection?.name
+            }/collection/${autoCollection?.collectionMetadata?.title
               ?.replaceAll(" ", "_")
               ?.toLowerCase()}`}
           />
@@ -294,9 +240,9 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
           <link
             rel="canonical"
             href={
-              !autoDispatch.collection?.uri?.image
+              !autoCollection?.collectionMetadata?.images?.[0]
                 ? "https://www.chromadin.xyz/card.png/"
-                : `https://chromadin.infura-ipfs.io/ipfs/${autoDispatch.collection?.uri?.image?.split(
+                : `https://chromadin.infura-ipfs.io/ipfs/${autoCollection?.collectionMetadata?.images?.[0]?.split(
                     "ipfs://"
                   )}`
             }
@@ -407,7 +353,7 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
           dispatch={dispatch}
           dispatchVideos={dispatchVideos}
         />
-        {autoDispatch.collection && autoDispatch.profile && (
+        {autoCollection && autoCollection?.profile && (
           <div
             className={`relative w-full h-full flex flex-col lg:flex-row bg-black items-center lg:items-start justify-center gap-12 lg:gap-8 lg:pl-20 pt-10`}
           >
@@ -416,87 +362,51 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
             >
               <div className="relative flex flex-col w-full h-full bg-offBlack/50 p-2 items-center justify-center">
                 <div className="relative w-full h-full flex">
-                  {autoDispatch.collection?.uri?.image &&
-                    (autoDispatch.collection.uri.type === "video/mp4" ? (
-                      <video
-                        playsInline
-                        muted
-                        loop
-                        className="flex flex-col w-full h-full object-contain"
-                        controls={
-                          autoDispatch.collection.hasAudio ? false : true
-                        }
-                        id={autoDispatch.collection?.uri?.image}
-                        key={autoDispatch.collection?.uri?.image}
-                      >
-                        <source
-                          src={`${INFURA_GATEWAY}/ipfs/${
-                            autoDispatch.collection?.uri?.image?.split(
-                              "ipfs://"
-                            )[1]
-                          }`}
-                          type="video/mp4"
-                          draggable={false}
-                        />
-                      </video>
-                    ) : (
-                      <Image
+                  {autoCollection?.collectionMetadata?.mediaTypes?.[0] ==
+                  "video" ? (
+                    <video
+                      playsInline
+                      muted
+                      loop
+                      className="flex flex-col w-full h-full object-contain"
+                      id={autoCollection?.collectionMetadata?.video}
+                      key={autoCollection?.collectionMetadata?.video}
+                    >
+                      <source
                         src={`${INFURA_GATEWAY}/ipfs/${
-                          viewScreenNFT
-                            ? autoDispatch.collection?.uri?.image?.split(
-                                "ipfs://"
-                              )[1]
-                            : autoDispatch.collection?.coinOp?.uri?.image[
-                                imageIndex
-                              ]?.split("ipfs://")[1]
+                          autoCollection?.collectionMetadata?.video?.split(
+                            "ipfs://"
+                          )[1]
                         }`}
-                        layout="fill"
-                        objectFit="contain"
-                        className="flex flex-col w-full h-full"
+                        type="video/mp4"
                         draggable={false}
                       />
-                    ))}
-                  {!viewScreenNFT && (
-                    <div
-                      className={`absolute bottom-2 right-2 w-fit h-fit flex flex-row gap-1.5`}
-                    >
-                      <div
-                        className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setImageIndex(imageIndex < 1 ? imageIndex + 1 : 0);
-                        }}
-                      >
-                        <Image
-                          src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
-                          layout="fill"
-                          draggable={false}
-                        />
-                      </div>
-                      <div
-                        className={`relative w-5 h-5 flex items-center justify-center cursor-pointer active:scale-95`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setImageIndex(imageIndex > 0 ? imageIndex - 1 : 1);
-                        }}
-                      >
-                        <Image
-                          src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
-                          layout="fill"
-                          draggable={false}
-                        />
-                      </div>
-                    </div>
+                    </video>
+                  ) : (
+                    <Image
+                      src={`${INFURA_GATEWAY}/ipfs/${
+                        autoCollection?.collectionMetadata?.images?.[0]?.split(
+                          "ipfs://"
+                        )[1] ||
+                        autoCollection?.collectionMetadata?.mediaCover?.split(
+                          "ipfs://"
+                        )[1]
+                      }`}
+                      layout="fill"
+                      objectFit="contain"
+                      className="flex flex-col w-full h-full"
+                      draggable={false}
+                    />
                   )}
-                  {(autoDispatch.collection.uri.audio ||
-                    autoDispatch.collection.hasAudio) && (
+
+                  {autoCollection?.collectionMetadata?.video && (
                     <div
                       className="absolute w-full h-fit flex bottom-0 cursor-default"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <WaveformComponent
-                        audio={autoDispatch.collection.uri?.audio}
-                        image={autoDispatch.collection.uri?.image}
+                        audio={autoCollection?.collectionMetadata?.video}
+                        image={autoCollection?.collectionMetadata?.mediaCover}
                       />
                     </div>
                   )}
@@ -509,14 +419,14 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                     dispatch(
                       setImageViewer({
                         actionValue: true,
-                        actionImage: viewScreenNFT
-                          ? autoDispatch.collection?.uri?.image?.split(
-                              "ipfs://"
-                            )[1]
-                          : autoDispatch.collection?.coinOp?.uri?.image[
-                              imageIndex
-                            ]?.split("ipfs://")[1],
-                        actionType: autoDispatch.collection?.uri?.type,
+                        actionImage:
+                          autoCollection?.collectionMetadata?.images?.[0]?.split(
+                            "ipfs://"
+                          )[1] ||
+                          autoCollection?.collectionMetadata?.mediaCover?.split(
+                            "ipfs://"
+                          )[1],
+                        actionType: "image/png",
                       })
                     )
                   }
@@ -538,7 +448,7 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                       ? () => handleLensSignIn()
                       : imageLoading
                       ? () => {}
-                      : () => handleShareCollection()
+                      : () => dispatch(setQuote(autoCollection))
                   }
                 >
                   <div className="relative w-6 h-4 flex items-center justify-center">
@@ -560,75 +470,31 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 </div>
               </div>
             </div>
-            <div className="relative w-full h-fit flex flex-col items-center lg:justify-start justify-center px-6 sm:px-10 pb-8 lg:overflow-y-scroll">
+            <div className="relative w-full h-fit flex flex-col lg:items-end items-center lg:justify-start justify-center px-6 sm:px-10 pb-8 lg:overflow-y-scroll">
               <div className="relative flex flex-col gap-3 text-center lg:text-right items-center lg:items-end lg:justify-end w-full h-fit">
                 <div className="relative flex flex-col gap-0.5 items-center lg:items-end w-fit h-fit text-center lg:text-right">
                   <div className="relative w-fit h-fit text-white font-earl text-4xl">
-                    {autoDispatch.collection?.name}
+                    {autoCollection?.collectionMetadata?.title}
                   </div>
                   <div className="relative w-fit h-fit font-digi text-lg text-verde">
-                    {autoDispatch.collection?.drop?.name}
+                    {autoCollection?.dropMetadata?.dropTitle}
                   </div>
                 </div>
-                {autoDispatch.collection?.coinOp && (
-                  <div className="relative w-fit h-fit flex flex-col gap-px items-center lg:items-end">
-                    <div className="text-center lg:text-right items-center lg:items-end lg:justify-end w-full h-fit font-earl text-moda text-sm flex flex-row">
-                      Select mode: NFT or IRL fulfillment
-                    </div>
-                    <div
-                      className="flex relative flex flex-row text-center lg:text-right items-center lg:justify-end w-fit h-full gap-1.5 cursor-pointer"
-                      onClick={() => dispatch(setNftScreen(!viewScreenNFT))}
-                    >
-                      <div className="relative w-7 h-7 flex items-center justify-center">
-                        <Image
-                          layout="fill"
-                          src={`${INFURA_GATEWAY}/ipfs/QmcK1EJdp5HFuqPUds3WjgoSPmoomiWfiroRFa3bQUh5Xj`}
-                          objectFit="cover"
-                          draggable={false}
-                        />
-                      </div>
-                      <div className="relative w-fit h-full items-center justify-center flex text-white">
-                        <div className="relative flex items-center justify-center w-4 h-3">
-                          <Image
-                            layout="fill"
-                            src={`${INFURA_GATEWAY}/ipfs/QmYzbyMb3okS1RKhxogJZWT56kCFjVcXZWk1aJiA8Ch2xi`}
-                            draggable={false}
-                          />
-                        </div>
-                      </div>
-                      <div className="relative w-7 h-7 flex items-center justify-center">
-                        <Image
-                          layout="fill"
-                          src={`${INFURA_GATEWAY}/ipfs/QmbjKczJYHKu6FkZMoBRBg2ZuszkJ5CA74x8YF2rYzmA7b`}
-                          objectFit="cover"
-                          draggable={false}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {autoDispatch.collection && (
+
+                {autoCollection && (
                   <div className="relative w-fit h-fit text-white font-earl text-2xl">
-                    {Number(autoDispatch.collection?.tokenIds?.length) -
-                      (autoDispatch.collection?.soldTokens?.length
-                        ? autoDispatch.collection?.soldTokens?.length
-                        : 0) ===
-                    0
+                    {Number(autoCollection?.soldTokens) ===
+                    Number(autoCollection?.amount)
                       ? "SOLD OUT"
-                      : `${
-                          Number(autoDispatch.collection?.tokenIds?.length) -
-                          (autoDispatch.collection?.soldTokens?.length
-                            ? autoDispatch.collection?.soldTokens?.length
-                            : 0)
-                        } /
-                  ${Number(autoDispatch.collection?.tokenIds?.length)}`}
+                      : `${Number(autoCollection?.soldTokens)} /
+                  ${Number(autoCollection?.amount)}`}
                   </div>
                 )}
-                {autoDispatch.profile && autoDispatch.collection && (
+                {autoCollection?.profile && autoCollection && (
                   <Link
                     className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3 cursor-pointer"
                     href={`/autograph/${
-                      autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+                      autoCollection?.profile?.handle?.suggestedFormatted?.localName?.split(
                         "@"
                       )[1]
                     }`}
@@ -649,7 +515,7 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                     </div>
                     <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
                       {
-                        autoDispatch.profile?.handle?.suggestedFormatted?.localName?.split(
+                        autoCollection?.profile?.handle?.suggestedFormatted?.localName?.split(
                           "@"
                         )[1]
                       }
@@ -657,20 +523,12 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                   </Link>
                 )}
                 <div className="relative w-5/6 break-words h-fit max-h-80 text-white font-earl text-base overflow-y-scroll">
-                  {autoDispatch.collection?.uri?.description}
+                  {autoCollection?.collectionMetadata?.description}
                 </div>
               </div>
               <Checkout
-                dispatch={dispatch}
-                address={address}
-                viewScreenNFT={viewScreenNFT}
                 router={router}
-                autoDispatch={autoDispatch}
-                encryptedInformation={encryptedInformation}
-                fulfillmentDetails={fulfillmentDetails}
-                openChainModal={openChainModal}
-                openConnectModal={openConnectModal}
-                chain={chain}
+                collection={autoCollection}
                 purchaseLoading={purchaseLoading}
                 buyNFT={buyNFT}
                 totalAmount={totalAmount}
@@ -678,16 +536,13 @@ const Collection: NextPage<{ router: NextRouter; client: LitNodeClient }> = ({
                 approveSpend={approveSpend}
                 currency={currency}
                 setCurrency={setCurrency}
-                handleCheckoutCrypto={handleCheckoutCrypto}
-                oracleValue={oracleValue}
-                cryptoCheckoutLoading={cryptoCheckoutLoading}
               />
               {otherCollectionsDrop?.length > 0 && (
                 <InDrop
-                  autoCollection={autoDispatch.collection}
+                  autoCollection={autoCollection}
                   otherCollectionsDrop={otherCollectionsDrop}
                   router={router}
-                  autoProfile={autoDispatch.profile}
+                  autoProfile={autoCollection?.profile}
                 />
               )}
             </div>

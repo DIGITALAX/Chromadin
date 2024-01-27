@@ -26,9 +26,9 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
   setMirrorLoader,
   setCollectLoader,
   setReactLoader,
-  feedType,
+  
   router,
-  profileType,
+  
   hasMirrored,
   hasReacted,
   hasCollected,
@@ -227,8 +227,8 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
             setReactLoader={setReactLoader}
             setMirrorLoader={setMirrorLoader}
             setCollectLoader={setCollectLoader}
-            feedType={feedType}
-            profileType={profileType}
+            
+            
             router={router}
             openMirrorChoice={openMirrorChoice}
             setOpenMirrorChoice={setOpenMirrorChoice}

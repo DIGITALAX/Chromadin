@@ -8,26 +8,22 @@ const Wavs: FunctionComponent<WavsProps> = ({
   address,
   feedDispatch,
   reactionAmounts,
-  feedType,
+  
   commentAmounts,
   commentOpen,
   collectOpen,
   postImagesDispatched,
   commentors,
   filterDecrypt,
-  scrollPos,
   openConnectModal,
-  decryptScrollPos,
-  profileScroll,
   individualAmounts,
   profileAmounts,
   profileDispatch,
   quickProfiles,
-  profileType,
+  
   decryptFeed,
   decryptAmounts,
   decryptFeedProfile,
-  decryptProfileScroll,
   imageLoading,
   decryptProfileAmounts,
   handleLensSignIn,
@@ -35,14 +31,10 @@ const Wavs: FunctionComponent<WavsProps> = ({
   postsLoading,
   hasMore,
   fetchMore,
-  scrollRef,
-  setScrollPos,
   followerOnlyDecrypt,
   hasMoreDecrypt,
   decryptLoading,
   fetchMoreDecrypt,
-  scrollRefDecrypt,
-  setScrollPosDecrypt,
   reactPost,
   collectPost,
   mirrorPost,
@@ -130,7 +122,6 @@ const Wavs: FunctionComponent<WavsProps> = ({
   clientRendered,
   hasMoreProfile,
   fetchMoreProfile,
-  profileRef,
   followerOnlyProfile,
   setCollectProfileLoading,
   setMirrorProfileLoading,
@@ -139,10 +130,7 @@ const Wavs: FunctionComponent<WavsProps> = ({
   collectProfileLoading,
   reactProfileLoading,
   setReactProfileLoading,
-  setProfileScroll,
   hasMoreDecryptProfile,
-  setScrollPosDecryptProfile,
-  scrollRefDecryptProfile,
   followerOnlyProfileDecrypt,
   fetchMoreProfileDecrypt,
   decryptProfileLoading,
@@ -262,16 +250,12 @@ const Wavs: FunctionComponent<WavsProps> = ({
         collectOpen={collectOpen}
         mappedFeaturedFiles={mappedFeaturedFiles}
         postImagesDispatched={postImagesDispatched}
-        feedType={feedType}
-        scrollRef={scrollRef}
-        setScrollPos={setScrollPos}
-        scrollPos={scrollPos}
+        
         individualAmounts={individualAmounts}
         router={router}
         setCollectibleDropDown={setCollectibleDropDown}
         profile={profile}
         setTimeLimitDropDown={setTimeLimitDropDown}
-        profileRef={profileRef}
         hasMoreProfile={hasMoreProfile}
         profileAmounts={profileAmounts}
         profileDispatch={profileDispatch}
@@ -284,8 +268,6 @@ const Wavs: FunctionComponent<WavsProps> = ({
         mirrorProfileLoading={mirrorProfileLoading}
         collectProfileLoading={collectProfileLoading}
         reactProfileLoading={reactProfileLoading}
-        setProfileScroll={setProfileScroll}
-        profileScroll={profileScroll}
         quickProfiles={quickProfiles}
         profileCollections={profileCollections}
         searchProfiles={searchProfiles}
@@ -295,7 +277,7 @@ const Wavs: FunctionComponent<WavsProps> = ({
         hasMoreSearch={hasMoreSearch}
         setProfilesOpenSearch={setProfilesOpenSearch}
         setProfilesFound={setProfilesFound}
-        profileType={profileType}
+        
         preElement={preElement}
         filterDecrypt={filterDecrypt}
         decryptFeed={decryptFeed}
@@ -304,18 +286,12 @@ const Wavs: FunctionComponent<WavsProps> = ({
         hasMoreDecrypt={hasMoreDecrypt}
         fetchMoreDecrypt={fetchMoreDecrypt}
         followerOnlyDecrypt={followerOnlyDecrypt}
-        decryptScrollPos={decryptScrollPos}
-        setScrollPosDecrypt={setScrollPosDecrypt}
-        scrollRefDecrypt={scrollRefDecrypt}
         decryptFeedProfile={decryptFeedProfile}
         decryptProfileAmounts={decryptProfileAmounts}
         decryptProfileLoading={decryptProfileLoading}
         fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
         followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
-        scrollRefDecryptProfile={scrollRefDecryptProfile}
-        setScrollPosDecryptProfile={setScrollPosDecryptProfile}
         hasMoreDecryptProfile={hasMoreDecryptProfile}
-        decryptProfileScrollPos={decryptProfileScroll}
         handleImagePaste={handleImagePaste}
         profileCollectionsLoading={profileCollectionsLoading}
         clientRendered={clientRendered}

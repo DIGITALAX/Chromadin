@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 const httpLink = new HttpLink({
-  uri: "https://api.thegraph.com/subgraphs/name/digitalax/chromadin",
+  uri: "https://api.thegraph.com/subgraphs/name/digitalax/print-library",
 });
 
 export const graphClient = new ApolloClient({
@@ -15,14 +15,5 @@ const httpLinkDash = new HttpLink({
 
 export const graphClientDash = new ApolloClient({
   link: httpLinkDash,
-  cache: new InMemoryCache(),
-});
-
-const httpLinkCoinOp = new HttpLink({
-  uri: "https://api.thegraph.com/subgraphs/name/digitalax/coin-op",
-});
-
-export const graphClientCoinOp = new ApolloClient({
-  link: httpLinkCoinOp,
   cache: new InMemoryCache(),
 });

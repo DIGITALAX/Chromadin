@@ -3,207 +3,364 @@ import { graphClient } from "@/lib/subgraph/client";
 
 const COLLECTIONS = `
   query {
-    collectionMinteds {
-      basePrices
-      uri
-      collectionId
+    collectionCreateds(where: {origin: "1"}, first: 1000) {
       amount
+      dropMetadata {
+        dropCover
+        dropTitle
+      }
+      collectionMetadata {
+        access
+        visibility
+        video
+        title
+        onChromadin
+        sex
+        style
+        tags
+        prompt
+        profileHandle
+        sizes
+        microbrand
+        mediaTypes
+        mediaCover
+        id
+        description
+        audio
+        colors
+        communities
+        images
+        microbrandCover
+      }
+      pubId
+      profileId
       acceptedTokens
-      name
+      uri
+      printType
+      prices
       owner
-      blockTimestamp
-      tokenIds
       soldTokens
-      blockNumber
+      fulfillerPercent
+      fulfillerBase
+      fulfiller
+      designerPercent
+      dropId
+      dropCollectionIds
+      collectionId
+      unlimited
+      origin
+      blockTimestamp
     }
   }
 `;
 
 const COLLECTIONS_PAGINATION = `
 query($first: Int, $skip: Int) {
-  collectionMinteds(first: $first, skip: $skip, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
-    uri
-    collectionId
+  collectionCreateds(first: $first, skip: $skip, orderDirection: desc, orderBy: blockTimestamp, where: {origin: "1"}) {
     amount
+    dropMetadata {
+      dropCover
+      dropTitle
+    }
+    collectionMetadata {
+      access
+      visibility
+      video
+      title
+      onChromadin
+      sex
+      style
+      tags
+      prompt
+      profileHandle
+      sizes
+      microbrand
+      mediaTypes
+      mediaCover
+      id
+      description
+      audio
+      colors
+      communities
+      images
+      microbrandCover
+    }
+    pubId
+    profileId
     acceptedTokens
-    name
+    uri
+    printType
+    prices
     owner
-    blockTimestamp
-    tokenIds
     soldTokens
-    blockNumber
+    fulfillerPercent
+    fulfillerBase
+    fulfiller
+    designerPercent
+    dropId
+    dropCollectionIds
+    collectionId
+    unlimited
+    origin
+    blockTimestamp
   }
 }`;
 
 const COLLECTIONS_OWNER = `
 query($owner: String) {
-  collectionMinteds(where: {owner: $owner}, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
-    uri
-    collectionId
+  collectionCreateds(where: {owner: $owner, origin: "1"}, orderDirection: desc, orderBy: blockTimestamp, first: 1000) {
     amount
+    dropMetadata {
+      dropCover
+      dropTitle
+    }
+    collectionMetadata {
+      access
+      visibility
+      video
+      title
+      onChromadin
+      sex
+      style
+      tags
+      prompt
+      profileHandle
+      sizes
+      microbrand
+      mediaTypes
+      mediaCover
+      id
+      description
+      audio
+      colors
+      communities
+      images
+      microbrandCover
+    }
+    pubId
+    profileId
     acceptedTokens
-    name
+    uri
+    printType
+    prices
     owner
-    blockTimestamp
-    tokenIds
     soldTokens
-    blockNumber
+    fulfillerPercent
+    fulfillerBase
+    fulfiller
+    designerPercent
+    dropId
+    dropCollectionIds
+    collectionId
+    unlimited
+    origin
+    blockTimestamp
   }
 }`;
 
 const COLLECTIONS_SEARCH = `
-query($name: String) {
-  collectionMinteds(where: {name_contains_nocase: $name}, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
-    uri
-    collectionId
+query($title: String) {
+  collectionCreateds(where: {and: [{or: [{collectionMetadata_: {title_contains_nocase: $title}}, {collectionMetadata_: {description_contains_nocase: $title}}, {dropMetadata_: {dropTitle: $title}}]}, {origin: "1"}]}, first: 20) {
     amount
+    dropMetadata {
+      dropCover
+      dropTitle
+    }
+    collectionMetadata {
+      access
+      visibility
+      video
+      title
+      onChromadin
+      sex
+      style
+      tags
+      prompt
+      profileHandle
+      sizes
+      microbrand
+      mediaTypes
+      mediaCover
+      id
+      description
+      audio
+      colors
+      communities
+      images
+      microbrandCover
+    }
+    pubId
+    profileId
     acceptedTokens
-    name
-    owner
-    blockTimestamp
-    tokenIds
-    soldTokens
-    blockNumber
-  }
-}`;
-
-const COLLECTIONS_DECRYPT = `
-query($name: String, $owner: String) {
-  collectionMinteds(where: {name_contains_nocase: $name, owner: $owner}, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
     uri
-    collectionId
-    amount
-    acceptedTokens
-    name
+    printType
+    prices
     owner
-    blockTimestamp
-    tokenIds
     soldTokens
-    blockNumber
+    fulfillerPercent
+    fulfillerBase
+    fulfiller
+    designerPercent
+    dropId
+    dropCollectionIds
+    collectionId
+    unlimited
+    origin
+    blockTimestamp
   }
 }`;
 
 const COLLECTIONS_DROP = `
-query($collectionId: String) {
-  collectionMinteds(where: {collectionId: $collectionId}, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
-    uri
-    collectionId
+query($dropId: String) {
+  collectionCreateds(where: {dropId: $dropId, origin: "1"}, orderDirection: desc, orderBy: blockTimestamp, first: 1000) {
     amount
-    acceptedTokens
-    name
-    owner
-    blockTimestamp
-    tokenIds
-    soldTokens
-    blockNumber
-  }
-}`;
-
-const COLLECTIONS_UPDATED = `
-  query {
-    updatedChromadinCollectionCollectionMinteds {
-      basePrices
-      uri
-      collectionId
-      amount
-      acceptedTokens
-      name
-      owner
-      blockTimestamp
-      tokenIds
-      soldTokens
-      blockNumber
+    dropMetadata {
+      dropCover
+      dropTitle
     }
-  }
-`;
-
-const COLLECTIONS_PAGINATION_UPDATED = `
-query($first: Int, $skip: Int) {
-  updatedChromadinCollectionCollectionMinteds(first: $first, skip: $skip, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
-    uri
-    collectionId
-    amount
+    collectionMetadata {
+      access
+      visibility
+      video
+      title
+      onChromadin
+      sex
+      style
+      tags
+      prompt
+      profileHandle
+      sizes
+      microbrand
+      mediaTypes
+      mediaCover
+      id
+      description
+      audio
+      colors
+      communities
+      images
+      microbrandCover
+    }
+    pubId
+    profileId
     acceptedTokens
-    name
-    owner
-    blockTimestamp
-    tokenIds
-    soldTokens
-    blockNumber
-  }
-}`;
-
-const COLLECTIONS_OWNER_UPDATED = `
-query($owner: String) {
-  updatedChromadinCollectionCollectionMinteds(where: {owner: $owner}, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
     uri
-    collectionId
-    amount
-    acceptedTokens
-    name
+    printType
+    prices
     owner
-    blockTimestamp
-    tokenIds
     soldTokens
-    blockNumber
-  }
-}`;
-
-const COLLECTIONS_SEARCH_UPDATED = `
-query($name: String) {
-  updatedChromadinCollectionCollectionMinteds(where: {name_contains_nocase: $name}, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
-    uri
+    fulfillerPercent
+    fulfillerBase
+    fulfiller
+    designerPercent
+    dropId
+    dropCollectionIds
     collectionId
-    amount
-    acceptedTokens
-    name
-    owner
+    unlimited
+    origin
     blockTimestamp
-    tokenIds
-    soldTokens
-    blockNumber
   }
 }`;
 
-const COLLECTIONS_DECRYPT_UPDATED = `
-query($name: String, $owner: String) {
-  updatedChromadinCollectionCollectionMinteds(where: {name_contains_nocase: $name, owner: $owner}, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
-    uri
-    collectionId
+const COLLECTION_ID = `query($collectionId: String) {
+  collectionCreateds(where: {collectionId: $collectionId}, orderDirection: desc, orderBy: blockTimestamp, first: 1) {
     amount
+    dropMetadata {
+      dropCover
+      dropTitle
+    }
+    collectionMetadata {
+      access
+      visibility
+      video
+      title
+      onChromadin
+      sex
+      style
+      tags
+      prompt
+      profileHandle
+      sizes
+      microbrand
+      mediaTypes
+      mediaCover
+      id
+      description
+      audio
+      colors
+      communities
+      images
+      microbrandCover
+    }
+    pubId
+    profileId
     acceptedTokens
-    name
+    uri
+    printType
+    prices
     owner
-    blockTimestamp
-    tokenIds
     soldTokens
-    blockNumber
+    fulfillerPercent
+    fulfillerBase
+    fulfiller
+    designerPercent
+    dropId
+    dropCollectionIds
+    collectionId
+    unlimited
+    origin
+    blockTimestamp
   }
 }`;
 
-const COLLECTIONS_DROP_UPDATED = `
-query($collectionId: String) {
-  updatedChromadinCollectionCollectionMinteds(where: {collectionId: $collectionId}, orderDirection: desc, orderBy: blockTimestamp) {
-    basePrices
-    uri
-    collectionId
+const COLLECTION_ONE = `query($title: String, $owner: String) {
+  collectionCreateds(where: {collectionMetadata_: {title_ends_with_nocase: $title, title_starts_with_nocase: $title}, origin: "1", owner: $owner}, orderDirection: desc, orderBy: blockTimestamp, first: 1) {
     amount
+    dropMetadata {
+      dropCover
+      dropTitle
+    }
+    collectionMetadata {
+      access
+      visibility
+      video
+      title
+      onChromadin
+      sex
+      style
+      tags
+      prompt
+      profileHandle
+      sizes
+      microbrand
+      mediaTypes
+      mediaCover
+      id
+      description
+      audio
+      colors
+      communities
+      images
+      microbrandCover
+    }
+    pubId
+    profileId
     acceptedTokens
-    name
+    uri
+    printType
+    prices
     owner
-    blockTimestamp
-    tokenIds
     soldTokens
-    blockNumber
+    fulfillerPercent
+    fulfillerBase
+    fulfiller
+    designerPercent
+    dropId
+    dropCollectionIds
+    collectionId
+    unlimited
+    origin
+    blockTimestamp
   }
 }`;
 
@@ -280,11 +437,11 @@ export const getCollectionsProfile = async (owner: string): Promise<any> => {
   }
 };
 
-export const getCollectionsSearch = async (name: string): Promise<any> => {
+export const getCollectionsSearch = async (title: string): Promise<any> => {
   const queryPromise = graphClient.query({
     query: gql(COLLECTIONS_SEARCH),
     variables: {
-      name,
+      title,
     },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
@@ -304,41 +461,11 @@ export const getCollectionsSearch = async (name: string): Promise<any> => {
   }
 };
 
-export const getCollectionsDecrypt = async (
-  name: string,
-  owner: string
-): Promise<any> => {
-  const queryPromise = graphClient.query({
-    query: gql(COLLECTIONS_DECRYPT),
-    variables: {
-      name,
-      owner,
-    },
-    fetchPolicy: "no-cache",
-    errorPolicy: "all",
-  });
-
-  const timeoutPromise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ timedOut: true });
-    }, 60000); // 1 minute timeout
-  });
-
-  const result: any = await Promise.race([queryPromise, timeoutPromise]);
-  if (result.timedOut) {
-    return;
-  } else {
-    return result;
-  }
-};
-
-export const getCollectionsDrop = async (
-  collectionId: string
-): Promise<any> => {
+export const getCollectionsDrop = async (dropId: string): Promise<any> => {
   const queryPromise = graphClient.query({
     query: gql(COLLECTIONS_DROP),
     variables: {
-      collectionId,
+      dropId,
     },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
@@ -358,61 +485,14 @@ export const getCollectionsDrop = async (
   }
 };
 
-export const getAllCollectionsUpdated = async (): Promise<any> => {
-  const queryPromise = graphClient.query({
-    query: gql(COLLECTIONS_UPDATED),
-    fetchPolicy: "no-cache",
-    errorPolicy: "all",
-  });
-
-  const timeoutPromise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ timedOut: true });
-    }, 60000); // 1 minute timeout
-  });
-
-  const result: any = await Promise.race([queryPromise, timeoutPromise]);
-  if (result.timedOut) {
-    return;
-  } else {
-    return result;
-  }
-};
-
-export const getAllCollectionsPaginatedUpdated = async (
-  first: number,
-  skip: number
-): Promise<any> => {
-  const queryPromise = graphClient.query({
-    query: gql(COLLECTIONS_PAGINATION_UPDATED),
-    variables: {
-      first,
-      skip,
-    },
-    fetchPolicy: "no-cache",
-    errorPolicy: "all",
-  });
-
-  const timeoutPromise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ timedOut: true });
-    }, 60000); // 1 minute timeout
-  });
-
-  const result: any = await Promise.race([queryPromise, timeoutPromise]);
-  if (result.timedOut) {
-    return;
-  } else {
-    return result;
-  }
-};
-
-export const getCollectionsProfileUpdated = async (
+export const getOneCollection = async (
+  title: string,
   owner: string
 ): Promise<any> => {
   const queryPromise = graphClient.query({
-    query: gql(COLLECTIONS_OWNER_UPDATED),
+    query: gql(COLLECTION_ONE),
     variables: {
+      title,
       owner,
     },
     fetchPolicy: "no-cache",
@@ -433,65 +513,11 @@ export const getCollectionsProfileUpdated = async (
   }
 };
 
-export const getCollectionsSearchUpdated = async (
-  name: string
-): Promise<any> => {
-  const queryPromise = graphClient.query({
-    query: gql(COLLECTIONS_SEARCH_UPDATED),
-    variables: {
-      name,
-    },
-    fetchPolicy: "no-cache",
-    errorPolicy: "all",
-  });
-
-  const timeoutPromise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ timedOut: true });
-    }, 60000); // 1 minute timeout
-  });
-
-  const result: any = await Promise.race([queryPromise, timeoutPromise]);
-  if (result.timedOut) {
-    return;
-  } else {
-    return result;
-  }
-};
-
-export const getCollectionsDecryptUpdated = async (
-  name: string,
-  owner: string
-): Promise<any> => {
-  const queryPromise = graphClient.query({
-    query: gql(COLLECTIONS_DECRYPT_UPDATED),
-    variables: {
-      name,
-      owner,
-    },
-    fetchPolicy: "no-cache",
-    errorPolicy: "all",
-  });
-
-  const timeoutPromise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ timedOut: true });
-    }, 60000); // 1 minute timeout
-  });
-
-  const result: any = await Promise.race([queryPromise, timeoutPromise]);
-  if (result.timedOut) {
-    return;
-  } else {
-    return result;
-  }
-};
-
-export const getCollectionsDropUpdated = async (
+export const getOneCollectionById = async (
   collectionId: string
 ): Promise<any> => {
   const queryPromise = graphClient.query({
-    query: gql(COLLECTIONS_DROP_UPDATED),
+    query: gql(COLLECTION_ID),
     variables: {
       collectionId,
     },

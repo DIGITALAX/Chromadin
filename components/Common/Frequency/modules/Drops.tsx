@@ -4,7 +4,6 @@ import { setMainNFT } from "@/redux/reducers/mainNFTSlice";
 import { Collection } from "@/components/Home/types/home.types";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "@/lib/constants";
-import createProfilePicture from "@/lib/helpers/createProfilePicture";
 
 const Drops: FunctionComponent<DropsProps> = ({
   collections,
@@ -40,9 +39,6 @@ const Drops: FunctionComponent<DropsProps> = ({
             );
           })
         : collections?.map((collection: Collection, index: number) => {
-            const profileImage = createProfilePicture(
-              collection?.profile?.metadata?.picture
-            );
             return (
               <div
                 className="relative w-60 h-40 flex flex-col items-center shrink-0 cursor-pointer"
@@ -50,37 +46,40 @@ const Drops: FunctionComponent<DropsProps> = ({
                 onClick={() => {
                   dispatch(
                     setMainNFT({
-                      name: collection?.name,
-                      media: collection?.uri?.image?.split("ipfs://")[1],
+                      title: collection?.collectionMetadata?.title,
+                      image:
+                        collection?.collectionMetadata?.images?.[0]?.split(
+                          "ipfs://"
+                        )[1],
                       audio:
-                        collection?.uri?.audio?.split("ipfs://")[1] ||
-                        undefined,
-                      description: collection?.uri?.description,
-                      type: collection?.uri?.type,
-                      drop: collection?.drop,
-                      creator: {
-                        media: profileImage!,
-                        name: collection?.profile?.handle?.localName?.split(
-                          "@"
-                        )[1]!,
-                      },
-                      price: collection?.basePrices,
+                        collection?.collectionMetadata?.audio?.split(
+                          "ipfs://"
+                        )[1],
+                      video:
+                        collection?.collectionMetadata?.video?.split(
+                          "ipfs://"
+                        )[1],
+                      description: collection?.collectionMetadata?.description,
+                      mediaCover:
+                        collection?.collectionMetadata?.mediaCover?.split(
+                          "ipfs://"
+                        )[1],
+                      type: collection?.collectionMetadata?.mediaTypes?.[0],
+                      drop: collection?.dropMetadata,
+                      prices: collection?.prices,
                       acceptedTokens: collection?.acceptedTokens,
                       amount: collection?.amount,
-                      tokenIds: collection?.tokenIds,
-                      tokensSold: collection?.soldTokens,
-                      blockNumber: collection?.blockNumber,
-                      hasAudio: collection?.hasAudio,
-                      coinOp: collection?.coinOp,
+                      soldTokens: collection?.soldTokens,
+                      publication: collection?.publication,
                     })
                   );
                   if (router.asPath.includes("/autograph")) {
                     router?.replace(
                       `/autograph/${
-                        collection?.profile?.handle?.suggestedFormatted?.localName?.split(
+                        collection?.publication?.by?.handle?.suggestedFormatted?.localName?.split(
                           "@"
                         )[1]
-                      }/collection/${collection?.name
+                      }/collection/${collection?.collectionMetadata?.title
                         ?.replaceAll(" ", "_")
                         ?.toLowerCase()}`
                     );
@@ -155,52 +154,56 @@ const Drops: FunctionComponent<DropsProps> = ({
                   className="relative w-full h-full border-white border"
                   id="staticLoad"
                 >
-                  {collection?.uri?.image &&
-                    (collection.uri.type === "video/mp4" ? (
-                      <video
-                        playsInline
-                        autoPlay
-                        className={`w-full h-36 object-cover`}
-                        muted
-                        loop
-                        key={collection?.uri?.image}
-                      >
-                        <source
-                          src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
-                            .split("ipfs://")[1]
-                            .replace(/"/g, "")
-                            .trim()}`}
-                          type="video/mp4"
-                          draggable={false}
-                        />
-                      </video>
-                    ) : (
-                      <Image
-                        src={`${INFURA_GATEWAY}/ipfs/${
-                          collection.uri.image.split("ipfs://")[1]
-                        }`}
-                        layout="fill"
-                        objectFit="cover"
-                        objectPosition="top"
-                        className="w-full h-full"
+                  {collection?.collectionMetadata?.mediaTypes?.[0] ===
+                  "video" ? (
+                    <video
+                      playsInline
+                      autoPlay
+                      className={`w-full h-36 object-cover`}
+                      muted
+                      loop
+                      key={collection?.collectionMetadata?.video}
+                    >
+                      <source
+                        src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.images?.[0]
+                          .split("ipfs://")[1]
+                          .replace(/"/g, "")
+                          .trim()}`}
+                        type="video/mp4"
                         draggable={false}
-                        key={collection?.uri?.image}
                       />
-                    ))}
+                    </video>
+                  ) : (
+                    <Image
+                      src={`${INFURA_GATEWAY}/ipfs/${
+                        collection?.collectionMetadata?.images?.[0]?.split(
+                          "ipfs://"
+                        )[1]
+                      }`}
+                      layout="fill"
+                      objectFit="cover"
+                      objectPosition="top"
+                      className="w-full h-full"
+                      draggable={false}
+                      key={collection?.collectionMetadata?.images?.[0]}
+                    />
+                  )}
                 </div>
                 <div className="relative w-full h-fit flex flex-row items-center gap-2">
                   <div className="rounded-full bg-verde h-2 w-2"></div>
                   <div className="relative w-fit h-fit font-geom text-xs text-verde whitespace-nowrap">
-                    {collection?.drop?.name?.length > 15
-                      ? collection?.drop?.name.slice(0, 15) + "..."
-                      : collection?.drop?.name}
+                    {collection?.dropMetadata?.dropTitle?.length > 15
+                      ? collection?.dropMetadata?.dropTitle?.slice(0, 15) +
+                        "..."
+                      : collection?.dropMetadata?.dropTitle}
                   </div>
                   <div className="relative w-fit h-fit font-geom text-xs text-white whitespace-nowrap">
                     {" "}
                     —{" "}
-                    {collection?.name?.length > 7
-                      ? collection?.name.slice(0, 7) + "..."
-                      : collection?.name}
+                    {collection?.collectionMetadata?.title?.length > 7
+                      ? collection?.collectionMetadata?.title.slice(0, 7) +
+                        "..."
+                      : collection?.collectionMetadata?.title}
                   </div>
                 </div>
               </div>

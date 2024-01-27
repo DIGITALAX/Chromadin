@@ -1,7 +1,6 @@
 import { AnyAction, Dispatch } from "redux";
-import { Erc20, Mirror, Post, Profile, Quote, Comment } from "./generated";
+import { Erc20, Mirror, Profile, Quote, Comment, Post } from "./generated";
 import { NextRouter } from "next/router";
-import { MainNFT, PreRoll } from "@/components/Common/NFT/types/nft.types";
 import { ReactionFeedCountState } from "@/redux/reducers/reactionFeedCountSlice";
 import {
   ClipboardEvent,
@@ -12,17 +11,14 @@ import {
   RefObject,
 } from "react";
 import { CommentFeedCountState } from "@/redux/reducers/commentFeedCountSlice";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { DecryptFeedCountState } from "@/redux/reducers/decryptFeedCountSlice";
 import { DecryptProfileFeedCountState } from "@/redux/reducers/decryptProfileCountSlice";
 import { IndividualFeedCountState } from "@/redux/reducers/individualFeedCountReducer";
 import { ProfileFeedCountState } from "@/redux/reducers/profileFeedCountSlice";
-import { QuickProfilesInterface } from "@/components/Common/Wavs/types/wavs.types";
 import { PriceFilterState } from "@/redux/reducers/priceFilterSlice";
 import { DateFilterState } from "@/redux/reducers/dateFilterSlice";
 import { VideoCountState } from "@/redux/reducers/videoCountSlice";
 import ReactPlayer from "react-player";
-import { MainNFTState } from "@/redux/reducers/mainNFTSlice";
 import { VideoSyncState } from "@/redux/reducers/videoSyncSlice";
 import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
 
@@ -31,9 +27,9 @@ export type ViewProps = {
   commentsDispatch: Comment[];
   lensProfile: Profile | undefined;
   mainVideo: MainVideoState;
-  feedType: string;
+
   history: string;
-  quickProfiles: QuickProfilesInterface[];
+  quickProfiles: Profile[];
   collectionsLoading: boolean;
   error: boolean;
   moreCollectionsLoading: boolean;
@@ -61,7 +57,6 @@ export type ViewProps = {
   collectLoading: boolean;
   likeLoading: boolean;
   hasMoreAllPosts: boolean;
-  scrollPos: number;
   individualCount: IndividualFeedCountState;
   profileFeedCount: ProfileFeedCountState;
   reactions: VideoCountState;
@@ -101,17 +96,12 @@ export type ViewProps = {
   setDropDownDateSort: (e: boolean) => void;
   handleSearch: (e: FormEvent<Element>) => Promise<void>;
   searchOpen: boolean;
-  searchResults: (Collection | Drop | QuickProfilesInterface)[];
-  handleSearchChoose: (
-    chosen: Collection | Drop | QuickProfilesInterface
-  ) => Promise<void>;
+  searchResults: (Collection | Drop | Profile)[];
+  handleSearchChoose: (chosen: Collection | Drop | Profile) => Promise<void>;
   dateFilter: DateFilterState;
   priceFilter: PriceFilterState;
   collections: Collection[];
-  hasMoreCollections: {
-    new: boolean;
-    old: boolean;
-  };
+  hasMoreCollections: boolean;
   feed: (Post | Quote | Mirror)[];
   handleGetMoreCollections: () => Promise<void>;
   address: `0x${string}` | undefined;
@@ -124,7 +114,7 @@ export type ViewProps = {
   setProfilesFound: (e: Profile[]) => void;
   hasMoreProfile: boolean;
   fetchMoreProfile: () => Promise<void>;
-  profileRef: RefObject<InfiniteScroll>;
+
   followerOnlyProfile: boolean[];
   setCollectProfileLoading: (e: boolean[]) => void;
   setMirrorProfileLoading: (e: boolean[]) => void;
@@ -133,11 +123,8 @@ export type ViewProps = {
   collectProfileLoading: boolean[];
   reactProfileLoading: boolean[];
   setReactProfileLoading: (e: boolean[]) => void;
-  setProfileScroll: (e: MouseEvent) => void;
   decryptProfileFeedCount: DecryptProfileFeedCountState;
   hasMoreDecryptProfile: boolean;
-  setScrollPosDecryptProfile: (e: MouseEvent) => void;
-  scrollRefDecryptProfile: RefObject<InfiniteScroll>;
   followerOnlyProfileDecrypt: boolean[];
   fetchMoreProfileDecrypt: () => Promise<void>;
   decryptProfileLoading: boolean;
@@ -196,15 +183,12 @@ export type ViewProps = {
   followerOnly: boolean[];
   postsLoading: boolean;
   fetchMore: () => Promise<void>;
-  scrollRef: RefObject<InfiniteScroll>;
-  setScrollPos: (e: MouseEvent) => void;
+
   followerOnlyDecrypt: boolean[];
   hasMoreDecrypt: boolean;
   decryptFeedCount: DecryptFeedCountState;
   decryptLoading: boolean;
   fetchMoreDecrypt: () => Promise<void>;
-  scrollRefDecrypt: RefObject<InfiniteScroll>;
-  setScrollPosDecrypt: (e: MouseEvent) => void;
   commentPost: (id: string) => Promise<void>;
   commentDescription: string;
   textElement: RefObject<HTMLTextAreaElement>;
@@ -214,11 +198,8 @@ export type ViewProps = {
     x: number;
     y: number;
   };
-  profileScroll: number;
-  decryptScrollPos: number;
   decryptFeed: Post[];
   filterDecrypt: boolean;
-  decryptProfileScroll: number;
   mentionProfiles: Profile[];
   profilesOpen: boolean;
   handleMentionClick: (user: Profile) => void;
@@ -292,10 +273,8 @@ export type VendingProps = {
   setDropDownDateSort: (e: boolean) => void;
   handleSearch: (e: FormEvent) => Promise<void>;
   searchOpen: boolean;
-  searchResults: (Collection | Drop | QuickProfilesInterface)[];
-  handleSearchChoose: (
-    chosen: QuickProfilesInterface | Drop | Collection
-  ) => Promise<void>;
+  searchResults: (Collection | Drop | Post)[];
+  handleSearchChoose: (chosen: Post | Drop | Collection) => Promise<void>;
   collectionsLoading: boolean;
   error: boolean;
   moreCollectionsLoading: boolean;
@@ -303,52 +282,66 @@ export type VendingProps = {
   dateFilter: DateFilterState;
   priceFilter: PriceFilterState;
   dispatchCollections: Collection[];
-  hasMoreCollections: {
-    new: boolean;
-    old: boolean;
-  };
+  hasMoreCollections: boolean;
 };
 
 export interface Collection {
   amount: string;
-  blockTimestamp: string;
-  collectionId: string;
-  name: string;
-  owner: string;
-  coinOp?: PreRoll;
-  drop: {
-    name: string;
-    image: string;
-  };
-  uri: {
-    description: string;
-    external_url: string;
-    image: string;
-    name: string;
-    type: string;
-    audio?: string;
-  };
-  profile: Profile | undefined;
-  basePrices: string[];
+  pubId: string;
+  uri: string;
+  profileId: string;
+  printType: string;
+  prices: string[];
   acceptedTokens: string[];
-  timeStamp?: string;
-  tokenIds: string[];
-  soldTokens: string[] | null;
-  id: string;
-  blockNumber: string;
-  hasAudio: boolean;
+  owner: string;
+  soldTokens: string;
+  fulfillerPercent: string;
+  fulfillerBase: string;
+  fulfiller: string;
+  designerPercent: string;
+  dropId: string;
+  dropCollectionIds: string[];
+  collectionId: string;
+  unlimited: boolean;
+  origin: string;
+  publication: Post;
+  blockTimestamp: string;
+  dropMetadata: {
+    dropTitle: string;
+    dropCover: string;
+  };
+  collectionMetadata: {
+    access: string[];
+    visibility: string;
+    colors: string[];
+    sizes: string[];
+    mediaCover: string;
+    description: string;
+    communities: string[];
+    title: string;
+    tags: string[];
+    prompt: string;
+    mediaTypes: string[];
+    profileHandle: string;
+    microbrandCover: string;
+    microbrand: string;
+    images: string[];
+    video: string;
+    audio: string;
+    onChromadin: string;
+    sex: string;
+    style: string;
+  };
+  profile: Profile;
 }
 
 export interface Drop {
   dropId: string;
-  creator: string;
-  collectionIds: string[];
-  blockTimestamp: string;
-  uri: {
-    name: string;
-    image: string;
+  dropDetails: {
+    dropTitle: string;
+    dropCover: string;
   };
-  blockNumber: string;
+  publication: Profile;
 }
 
 export enum MediaType {
@@ -382,7 +375,6 @@ export type WavsProps = {
   lensProfile: Profile | undefined;
   history: string;
   router: NextRouter;
-  decryptProfileScroll: number;
   dispatch: Dispatch<AnyAction>;
   openPostMirrorChoice: boolean[];
   setOpenPostMirrorChoice: (e: boolean[]) => void;
@@ -420,7 +412,7 @@ export type WavsProps = {
   mirrorLoading: boolean[];
   reactLoading: boolean[];
   collectLoading: boolean[];
-  profileType: string;
+
   reactionAmounts: ReactionFeedCountState;
   mainPost: Post | Mirror | Quote | Comment;
   followerOnlyMain: boolean;
@@ -508,15 +500,11 @@ export type WavsProps = {
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  feedType: string;
-  scrollRef: Ref<InfiniteScroll>;
-  setScrollPos: (e: MouseEvent) => void;
-  scrollPos: number;
+
   individualAmounts: IndividualFeedCountState;
   fetchMoreProfile: () => Promise<void>;
   hasMoreProfile: boolean;
   followerOnlyProfile: boolean[];
-  profileRef: Ref<InfiniteScroll>;
   profileDispatch: (Post | Mirror | Quote)[];
   profileAmounts: ProfileFeedCountState;
   profileLoading: boolean;
@@ -526,9 +514,7 @@ export type WavsProps = {
   collectProfileLoading: boolean[];
   mirrorProfileLoading: boolean[];
   reactProfileLoading: boolean[];
-  setProfileScroll: (e: MouseEvent) => void;
-  profileScroll: number;
-  quickProfiles: QuickProfilesInterface[];
+  quickProfiles: Profile[];
   profileCollections: Collection[];
   searchProfiles: (e: FormEvent) => Promise<void>;
   profilesFound: Profile[];
@@ -544,16 +530,11 @@ export type WavsProps = {
   decryptLoading: boolean;
   fetchMoreDecrypt: () => Promise<void>;
   hasMoreDecrypt: boolean;
-  decryptScrollPos: number;
-  setScrollPosDecrypt: (e: MouseEvent) => void;
-  scrollRefDecrypt: Ref<InfiniteScroll>;
   decryptFeedProfile: (Post | Mirror | Quote)[];
   decryptProfileAmounts: DecryptProfileFeedCountState;
   decryptProfileLoading: boolean;
   fetchMoreProfileDecrypt: () => Promise<void>;
   followerOnlyProfileDecrypt: boolean[];
-  scrollRefDecryptProfile: Ref<InfiniteScroll>;
-  setScrollPosDecryptProfile: (e: MouseEvent) => void;
   hasMoreDecryptProfile: boolean;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
   profileCollectionsLoading: boolean;
@@ -601,7 +582,7 @@ export type SwitchViewProps = {
     inputIndex?: number,
     mirrorId?: string
   ) => Promise<void>;
-  profileType: string;
+
   reactionAmounts: ReactionFeedCountState;
   mainPost: Post | Mirror | Quote | Comment | undefined;
   followerOnlyMain: boolean;
@@ -689,15 +670,11 @@ export type SwitchViewProps = {
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  feedType: string;
-  scrollRef: Ref<InfiniteScroll>;
-  setScrollPos: (e: MouseEvent) => void;
-  scrollPos: number;
+
   individualAmounts: IndividualFeedCountState;
   fetchMoreProfile: () => Promise<void>;
   hasMoreProfile: boolean;
   followerOnlyProfile: boolean[];
-  profileRef: Ref<InfiniteScroll>;
   profileDispatch: (Post | Mirror | Quote)[];
   profileAmounts: ProfileFeedCountState;
   profileLoading: boolean;
@@ -707,9 +684,7 @@ export type SwitchViewProps = {
   collectProfileLoading: boolean[];
   mirrorProfileLoading: boolean[];
   reactProfileLoading: boolean[];
-  setProfileScroll: (e: MouseEvent) => void;
-  profileScroll: number;
-  quickProfiles: QuickProfilesInterface[];
+  quickProfiles: Profile[];
   profileCollections: Collection[];
   searchProfiles: (e: FormEvent) => Promise<void>;
   profilesFound: Profile[];
@@ -725,18 +700,12 @@ export type SwitchViewProps = {
   decryptLoading: boolean;
   fetchMoreDecrypt: () => Promise<void>;
   hasMoreDecrypt: boolean;
-  decryptScrollPos: number;
-  setScrollPosDecrypt: (e: MouseEvent) => void;
-  scrollRefDecrypt: Ref<InfiniteScroll>;
   decryptFeedProfile: (Post | Mirror | Quote)[];
   decryptProfileAmounts: DecryptProfileFeedCountState;
   decryptProfileLoading: boolean;
   fetchMoreProfileDecrypt: () => Promise<void>;
   followerOnlyProfileDecrypt: boolean[];
-  scrollRefDecryptProfile: Ref<InfiniteScroll>;
-  setScrollPosDecryptProfile: (e: MouseEvent) => void;
   hasMoreDecryptProfile: boolean;
-  decryptProfileScrollPos: number;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
   profileCollectionsLoading: boolean;
   rates: any[];
@@ -759,10 +728,8 @@ export type SwitchViewProps = {
   setDropDownDateSort: (e: boolean) => void;
   handleSearch: (e: FormEvent) => Promise<void>;
   searchOpen: boolean;
-  searchResults: (Collection | Drop | QuickProfilesInterface)[];
-  handleSearchChoose: (
-    chosen: QuickProfilesInterface | Drop | Collection
-  ) => Promise<void>;
+  searchResults: (Collection | Drop | Post)[];
+  handleSearchChoose: (chosen: Post | Drop | Collection) => Promise<void>;
   collectionsLoading: boolean;
   error: boolean;
   moreCollectionsLoading: boolean;
@@ -770,10 +737,7 @@ export type SwitchViewProps = {
   dateFilter: DateFilterState;
   priceFilter: PriceFilterState;
   dispatchCollections: Collection[];
-  hasMoreCollections: {
-    new: boolean;
-    old: boolean;
-  };
+  hasMoreCollections: boolean;
 };
 
 export type SamplerProps = {

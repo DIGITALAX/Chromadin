@@ -88,14 +88,6 @@ const Vending: FunctionComponent<VendingProps> = ({
                 dispatch={dispatch}
               />
             </div>
-            {/* <div className="relative w-fit h-full flex items-center justify-center flex-col">
-              <div
-                className="relative w-fit h-fit items-center justify-center flex cursor-pointer active:scale-95"
-                onClick={() => handleShuffle()}
-              >
-                <CiShuffle color="white" size={15} />
-              </div>
-            </div> */}
             <SearchVending
               handleSearch={handleSearch}
               searchOpen={searchOpen}
@@ -104,11 +96,7 @@ const Vending: FunctionComponent<VendingProps> = ({
             />
           </div>
           <InfiniteScroll
-            hasMore={
-              hasMoreCollections.new
-                ? hasMoreCollections.new
-                : hasMoreCollections.old
-            }
+            hasMore={hasMoreCollections}
             height={"40rem"}
             loader={""}
             dataLength={dispatchCollections?.length}
@@ -135,7 +123,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                       );
                     }
                   })
-                  .map((collection: any) => {
+                  .map((collection: Collection) => {
                     if (priceFilter.selected === "ALL") {
                       return collection;
                     } else {
@@ -151,7 +139,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                         matchingAddress!
                       );
                       const matchingPrice = parseFloat(
-                        collection.basePrices[matchingIndex]
+                        collection.prices[matchingIndex]
                       );
                       return { ...collection, matchingPrice };
                     }
@@ -172,17 +160,19 @@ const Vending: FunctionComponent<VendingProps> = ({
                   })
                   .sortBy((collection: any) => {
                     if (priceFilter.selected === "ALL") {
-                      if (dateFilter.selected === "earliest") {
-                        return collection.blockTimestamp;
-                      } else if (dateFilter.selected === "latest") {
-                        return -collection.blockTimestamp;
+                      if (dateFilter.selected !== "random") {
+                        if (dateFilter.selected === "earliest") {
+                          return collection.blockTimestamp;
+                        } else if (dateFilter.selected === "latest") {
+                          return -collection.blockTimestamp;
+                        }
                       }
                     }
                   })
                   .value()
                   ?.map((collection: Collection, index: number) => {
                     const profilePicture = createProfilePicture(
-                      collection?.profile?.metadata?.picture
+                      collection?.publication?.by?.metadata?.picture
                     );
 
                     return (
@@ -196,30 +186,35 @@ const Vending: FunctionComponent<VendingProps> = ({
                           onClick={() => {
                             dispatch(
                               setMainNFT({
-                                name: collection?.name,
-                                media: collection?.uri?.image
+                                title: collection?.collectionMetadata?.title,
+                                image:
+                                  collection?.collectionMetadata?.images?.[0]
+                                    ?.split("ipfs://")[1]
+                                    ?.replace(/"/g, "")
+                                    ?.trim(),
+                                audio: collection?.collectionMetadata?.audio
                                   ?.split("ipfs://")[1]
                                   ?.replace(/"/g, "")
                                   ?.trim(),
-                                audio: collection?.uri?.audio
+                                video: collection?.collectionMetadata?.video
                                   ?.split("ipfs://")[1]
                                   ?.replace(/"/g, "")
                                   ?.trim(),
-                                description: collection?.uri?.description,
-                                type: collection?.uri?.type,
-                                drop: collection?.drop,
-                                creator: {
-                                  media: profilePicture!,
-                                  name: collection?.profile?.handle?.localName!,
-                                },
-                                price: collection?.basePrices,
+                                mediaCover:
+                                  collection?.collectionMetadata?.mediaCover
+                                    ?.split("ipfs://")[1]
+                                    ?.replace(/"/g, "")
+                                    ?.trim(),
+                                description:
+                                  collection?.collectionMetadata?.description,
+                                type: collection?.collectionMetadata
+                                  ?.mediaTypes?.[0],
+                                drop: collection?.dropMetadata,
+                                prices: collection?.prices,
                                 acceptedTokens: collection?.acceptedTokens,
                                 amount: collection?.amount,
-                                tokenIds: collection?.tokenIds,
-                                tokensSold: collection?.soldTokens,
-                                blockNumber: collection?.blockNumber,
-                                hasAudio: collection?.hasAudio,
-                                coinOp: collection?.coinOp,
+                                soldTokens: collection?.soldTokens,
+                                publication: collection?.publication,
                               })
                             );
                             router.asPath.includes("&profile=")
@@ -256,18 +251,23 @@ const Vending: FunctionComponent<VendingProps> = ({
                                 );
                           }}
                         >
-                          {collection?.uri?.image.split("ipfs://")[1] &&
-                            (collection.uri.type === "video/mp4" ? (
+                          {collection?.collectionMetadata?.images?.[0]?.split(
+                            "ipfs://"
+                          )[1] &&
+                            (collection.collectionMetadata.mediaTypes?.[0] ===
+                            "video" ? (
                               <video
                                 playsInline
                                 className={`rounded-tr-2xl object-cover h-[12.5rem] w-full`}
                                 muted
                                 loop
-                                id={collection?.uri?.image}
-                                key={collection?.uri?.image}
+                                id={collection?.collectionMetadata?.images?.[0]}
+                                key={
+                                  collection?.collectionMetadata?.images?.[0]
+                                }
                               >
                                 <source
-                                  src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
+                                  src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.images?.[0]
                                     .split("ipfs://")[1]
                                     .replace(/"/g, "")
                                     .trim()}`}
@@ -277,7 +277,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                               </video>
                             ) : (
                               <Image
-                                src={`${INFURA_GATEWAY}/ipfs/${collection?.uri?.image
+                                src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.images?.[0]
                                   .split("ipfs://")[1]
                                   .replace(/"/g, "")
                                   .trim()}`}
@@ -288,39 +288,29 @@ const Vending: FunctionComponent<VendingProps> = ({
                                 draggable={false}
                               />
                             ))}
-                          {collection?.coinOp && (
-                            <div
-                              className="absolute flex top-2 right-2 w-5 h-5 rounded-full p-px"
-                              id="raincode"
-                              title="irl fulfillment"
-                            >
-                              <div className="relative w-full h-full bg-black rounded-full">
-                                <Image
-                                  layout="fill"
-                                  src={`${INFURA_GATEWAY}/ipfs/QmcK1EJdp5HFuqPUds3WjgoSPmoomiWfiroRFa3bQUh5Xj`}
-                                  objectFit="cover"
-                                  className="rounded-full"
-                                  draggable={false}
-                                />
-                              </div>
-                            </div>
-                          )}
-                          {(collection.uri?.audio || collection?.hasAudio) && (
+                          {(collection.collectionMetadata?.audio ||
+                            collection?.collectionMetadata?.video) && (
                             <WaveformComponent
-                              audio={collection?.uri?.audio}
-                              image={collection?.uri?.image}
+                              audio={
+                                collection?.collectionMetadata?.audio ||
+                                collection?.collectionMetadata?.video
+                              }
+                              image={collection?.collectionMetadata?.mediaCover}
                             />
                           )}
                         </div>
                         <div className="relative flex flex-row w-full h-fit gap-2  text-sm font-arcade">
                           <div className="relative uppercase text-white w-fit h-fit cursor-pointer whitespace-nowrap">
-                            {collection?.name.length > 20
-                              ? collection?.name.slice(0, 18) + "..."
-                              : collection?.name}
+                            {collection?.collectionMetadata?.title.length > 20
+                              ? collection?.collectionMetadata?.title.slice(
+                                  0,
+                                  18
+                                ) + "..."
+                              : collection?.collectionMetadata?.title}
                           </div>
                           <div className="flex flex-row relative w-full h-fit gap-1.5 justify-end">
                             <div className="relative w-fit h-fit text-ama justify-end flex">
-                              {Number(collection?.tokenIds?.length) -
+                              {Number(collection?.amount) -
                                 (collection?.soldTokens?.length
                                   ? collection?.soldTokens?.length
                                   : 0)}
@@ -330,10 +320,10 @@ const Vending: FunctionComponent<VendingProps> = ({
                               onClick={() =>
                                 router.push(
                                   `/autograph/${
-                                    collection?.profile?.handle?.suggestedFormatted?.localName?.split(
+                                    collection?.publication?.by?.handle?.suggestedFormatted?.localName?.split(
                                       "@"
                                     )[1]
-                                  }/collection/${collection?.name
+                                  }/collection/${collection?.collectionMetadata?.title
                                     ?.replace(/\s/g, "_")
                                     .toLowerCase()}`
                                 )
@@ -350,7 +340,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                         <Link
                           className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3 cursor-pointer"
                           href={`/autograph/${
-                            collection.profile?.handle?.suggestedFormatted?.localName?.split(
+                            collection?.publication?.by?.handle?.suggestedFormatted?.localName?.split(
                               "@"
                             )[1]
                           }`}
@@ -371,8 +361,8 @@ const Vending: FunctionComponent<VendingProps> = ({
                           </div>
                           <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
                             {
-                              collection?.profile?.handle?.suggestedFormatted
-                                ?.localName
+                              collection?.publication?.by?.handle
+                                ?.suggestedFormatted?.localName
                             }
                           </div>
                         </Link>

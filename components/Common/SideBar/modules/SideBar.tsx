@@ -28,43 +28,23 @@ const SideBar: FunctionComponent<SideBarProps> = ({
   dispatchVideos,
   mainVideo,
   address,
-  chain,
-  openChainModal,
   currency,
   setCurrency,
-  baseColor,
-  setBaseColor,
-  selectSize,
-  setSelectSize,
   totalAmount,
   approved,
   buyNFT,
   approveSpend,
   purchaseLoading,
-  viewScreenNFT,
-  setViewScreenNFT,
-  handleCheckoutCrypto,
-  oracleValue,
-  cryptoCheckoutLoading,
-  imageIndex,
-  setImageIndex,
-  historyLoading,
   historySwitch,
   setHistorySwitch,
   getMoreBuyerHistory,
   getMoreUserHistory,
-  moreHistoryLoading,
   action,
   profile,
-  encryptedInformation,
   mainNFT,
-  historyReducer,
   collections,
   isCreator,
-  buyerHistoryReducer,
-  fulfillmentDetails,
-  hasMoreHistory,
-  hasMoreHistorySpecific,
+  historyLoading,
   commentors,
   likeCommentLoading,
   mirrorCommentLoading,
@@ -75,6 +55,7 @@ const SideBar: FunctionComponent<SideBarProps> = ({
   mirrorVideo,
   hasMoreComments,
   commentsLoading,
+  historyData
 }): JSX.Element => {
   return (
     <div className="relative w-full lg:w-80 h-fit lg:h-full flex flex-col">
@@ -114,10 +95,6 @@ const SideBar: FunctionComponent<SideBarProps> = ({
           mainVideo={mainVideo}
           currency={currency}
           setCurrency={setCurrency}
-          setBaseColor={setBaseColor}
-          selectSize={selectSize}
-          baseColor={baseColor}
-          setSelectSize={setSelectSize}
           totalAmount={totalAmount}
           approved={approved}
           mainNFT={mainNFT}
@@ -125,29 +102,13 @@ const SideBar: FunctionComponent<SideBarProps> = ({
           approveSpend={approveSpend}
           purchaseLoading={purchaseLoading}
           collections={collections}
-          viewScreenNFT={viewScreenNFT}
-          setViewScreenNFT={setViewScreenNFT}
-          handleCheckoutCrypto={handleCheckoutCrypto}
           address={address}
-          cryptoCheckoutLoading={cryptoCheckoutLoading}
-          oracleValue={oracleValue}
-          openChainModal={openChainModal}
-          openConnectModal={openConnectModal}
-          encryptedInformation={encryptedInformation}
-          fulfillmentDetails={fulfillmentDetails}
-          chain={chain as any}
-          imageIndex={imageIndex}
-          setImageIndex={setImageIndex}
-          historyReducer={historyReducer}
+          historyData={historyData}
           historyLoading={historyLoading}
-          buyerHistoryReducer={buyerHistoryReducer}
           historySwitch={historySwitch}
           setHistorySwitch={setHistorySwitch}
           getMoreBuyerHistory={getMoreBuyerHistory}
           getMoreUserHistory={getMoreUserHistory}
-          moreHistoryLoading={moreHistoryLoading}
-          hasMoreHistory={hasMoreHistory}
-          hasMoreHistorySpecific={hasMoreHistorySpecific}
           isCreator={isCreator}
           action={action}
         />

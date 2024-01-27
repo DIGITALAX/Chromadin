@@ -6,8 +6,8 @@ export interface DateFilterState {
 }
 
 const initialDateFilterState: DateFilterState = {
-  values: ["latest", "earliest"],
-  selected: "latest",
+  values: ["random", "latest", "earliest"],
+  selected: "random",
 };
 
 export const dateFilterSlice = createSlice({

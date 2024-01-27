@@ -20,7 +20,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
-      {(mainNFT as MainNFT)?.media && (
+      {!router.asPath.includes("/autograph/") && (
         <div
           className={
             "relative w-full h-full flex flex-col items-center justify-center pt-4"
@@ -32,48 +32,57 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
             onClick={() =>
               router.push(
                 `/autograph/${
-                  (mainNFT as MainNFT)?.creator?.name?.split("@")?.[1]
-                }/collection/${(mainNFT as MainNFT)?.name
+                  (
+                    mainNFT as MainNFT
+                  )?.publication?.by?.handle?.suggestedFormatted?.localName?.split(
+                    "@"
+                  )?.[1]
+                }/collection/${(mainNFT as MainNFT)?.title
                   ?.replaceAll(" ", "_")
                   .toLowerCase()}`
               )
             }
           >
-            {(mainNFT as MainNFT).media &&
-              ((mainNFT as MainNFT).type === "video/mp4" ? (
-                <video
-                  playsInline
-                  className="rounded-br-lg rounded-tl-lg w-full h-full object-cover"
-                  loop
-                  controls={(mainNFT as MainNFT).hasAudio ? false : true}
-                  key={(mainNFT as MainNFT).media}
-                  id={(mainNFT as MainNFT).media}
-                  muted
-                >
-                  <source
-                    src={`${INFURA_GATEWAY}/ipfs/${(mainNFT as MainNFT).media}`}
-                    type="video/mp4"
-                    draggable={false}
-                  />
-                </video>
-              ) : (
-                <Image
-                  src={`${INFURA_GATEWAY}/ipfs/${(mainNFT as MainNFT).media}`}
-                  className="rounded-br-lg rounded-tl-lg w-full h-full"
-                  layout="fill"
+            {(mainNFT as MainNFT).type === "video" ? (
+              <video
+                playsInline
+                className="rounded-br-lg rounded-tl-lg w-full h-full object-cover"
+                loop
+                key={(mainNFT as MainNFT).video}
+                id={(mainNFT as MainNFT).video}
+                muted
+                poster={`${INFURA_GATEWAY}/ipfs/${
+                  (mainNFT as MainNFT).mediaCover
+                }`}
+              >
+                <source
+                  src={`${INFURA_GATEWAY}/ipfs/${(mainNFT as MainNFT).video}`}
+                  type="video/mp4"
                   draggable={false}
-                  objectFit="cover"
-                  key={(mainNFT as MainNFT).media}
                 />
-              ))}
-            {((mainNFT as MainNFT).audio || (mainNFT as MainNFT).hasAudio) && (
+              </video>
+            ) : (
+              <Image
+                src={`${INFURA_GATEWAY}/ipfs/${
+                  (mainNFT as MainNFT).image || (mainNFT as MainNFT).mediaCover
+                }`}
+                className="rounded-br-lg rounded-tl-lg w-full h-full"
+                layout="fill"
+                draggable={false}
+                objectFit="cover"
+                key={
+                  (mainNFT as MainNFT).image || (mainNFT as MainNFT).mediaCover
+                }
+              />
+            )}
+            {(mainNFT as MainNFT).video && (
               <div
                 className="absolute w-full h-fit flex bottom-0 cursor-default"
                 onClick={(e) => e.stopPropagation()}
               >
                 <WaveformComponent
                   audio={(mainNFT as MainNFT).audio}
-                  image={(mainNFT as MainNFT).media}
+                  image={(mainNFT as MainNFT).mediaCover}
                 />
               </div>
             )}
@@ -81,10 +90,8 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
         </div>
       )}
       <div
-        className={`relative w-full h-fit flex flex-col gap-3 pt-4  ${
-          (mainNFT as MainNFT)?.media
-            ? "justify-center items-center px-3"
-            : "justify-center items-center lg:items-end lg:justify-end"
+        className={`relative w-full h-fit flex flex-col gap-3 pt-4 px-3 ${
+          !router.asPath.includes("/autograph/") ? "justify-center items-center" : "justify-end items-end"
         }`}
       >
         <div className="relative w-fit h-fit flex flex-row items-center justify-center gap-2">
@@ -112,103 +119,53 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
         </div>
         <div
           className={`relative w-1/2 h-fit font-digi text-white text-sm flex whitespace-nowrap ${
-            (mainNFT as MainNFT)?.media
-              ? "justify-center items-center"
-              : "justify-center items-center lg:items-end lg:justify-end"
+            !router.asPath.includes("/autograph/") ? "justify-center items-center" : "justify-end items-end"
           }`}
         >
-          Total: {totalAmount} {currency}
+          Total:{" "}
+          {(totalAmount / (currency == "USDT" ? 10 ** 6 : 10 ** 18)).toFixed(2)}{" "}
+          {currency}
         </div>
       </div>
       <div
         className={`relative w-full h-fit font-earl flex text-sm pt-4 ${
-          (mainNFT as MainNFT)?.media
-            ? "justify-center items-center"
-            : "justify-center items-center lg:items-end lg:justify-end"
+          !router.asPath.includes("/autograph/") ? "justify-center items-center" : "justify-end items-end"
         }`}
       >
-        {(mainNFT as MainNFT)?.media ? (
-          <div
-            className={`relative rounded-lg p-1.5 w-24 text-center border-white border text-white h-8 hover:bg-moda cursor-pointer
+        <div
+          className={`relative rounded-lg p-1.5 w-24 text-center border-white border text-white h-8 hover:bg-moda cursor-pointer
           ${
-            (mainNFT as MainNFT)?.tokensSold &&
-            mainNFT?.tokenIds?.length! -
-              (mainNFT as MainNFT)?.tokensSold?.length! !==
-              0
+            Number((mainNFT as Collection)?.soldTokens) ==
+            Number((mainNFT as Collection)?.amount)
               ? " bg-verde/60"
               : "bg-verde/20"
           }`}
-            onClick={
-              (mainNFT as MainNFT)?.tokensSold &&
-              mainNFT?.tokenIds?.length! -
-                (mainNFT as MainNFT)?.tokensSold?.length! ===
-                0
-                ? () => {}
-                : !approved
-                ? () => approveSpend()
-                : () => buyNFT()
-            }
-          >
-            <div
-              className={`relative w-full h-full flex items-center justify-center ${
-                purchaseLoading && "animate-spin"
-              }`}
-            >
-              {purchaseLoading ? (
-                <AiOutlineLoading size={10} color="white" />
-              ) : (mainNFT as MainNFT)?.tokensSold &&
-                (mainNFT as MainNFT)?.tokenIds?.length! -
-                  (mainNFT as MainNFT)?.tokensSold?.length! ===
-                  0 ? (
-                "SOLD OUT"
-              ) : !approved ? (
-                "APPROVE"
-              ) : (
-                "COLLECT"
-              )}
-            </div>
-          </div>
-        ) : (
+          onClick={
+            Number((mainNFT as Collection)?.soldTokens) ==
+            Number((mainNFT as Collection)?.amount)
+              ? () => {}
+              : !approved
+              ? () => approveSpend()
+              : () => buyNFT()
+          }
+        >
           <div
-            className={`relative rounded-lg p-1.5 w-24 text-center border-white border text-white h-8 hover:bg-moda cursor-pointer
-        ${
-          (mainNFT as Collection)?.soldTokens &&
-          mainNFT?.tokenIds?.length! -
-            (mainNFT as Collection)?.soldTokens?.length! !==
-            0
-            ? "bg-verde/60"
-            : "bg-verde/20"
-        }`}
-            onClick={
-              (mainNFT as Collection)?.soldTokens &&
-              mainNFT?.tokenIds?.length! -
-                (mainNFT as Collection)?.soldTokens?.length! ===
-                0
-                ? () => {}
-                : !approved
-                ? () => approveSpend()
-                : () => buyNFT()
-            }
+            className={`relative w-full h-full flex items-center justify-center ${
+              purchaseLoading && "animate-spin"
+            }`}
           >
-            <div
-              className={`relative w-full h-full flex items-center justify-center ${
-                purchaseLoading && "animate-spin"
-              }`}
-            >
-              {purchaseLoading ? (
-                <AiOutlineLoading size={10} color="white" />
-              ) : (mainNFT as Collection)?.tokenIds?.length! -
-                  (mainNFT as Collection)?.soldTokens?.length! ===
-                0 ? (
-                "SOLD OUT"
-              ) : !approved ? (
-                "APPROVE"
-              ) : (
-                "COLLECT"
-              )}
-            </div>
+            {purchaseLoading ? (
+              <AiOutlineLoading size={10} color="white" />
+            ) : Number((mainNFT as Collection)?.soldTokens) ==
+              Number((mainNFT as Collection)?.amount) ? (
+              "SOLD OUT"
+            ) : !approved ? (
+              "APPROVE"
+            ) : (
+              "COLLECT"
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

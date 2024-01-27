@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import {
-  QuickProfilesInterface,
+  Post,
   QuickProfilesProps,
 } from "../types/wavs.types";
 import Image from "next/legacy/image";
@@ -13,7 +13,7 @@ const QuickProfiles: FunctionComponent<QuickProfilesProps> = ({
     <div className="relative w-full h-fit grid grid-flow-col auto-cols-auto overflow-x-scroll">
       <div className="relative w-fit h-full overflow-x-scroll grid grid-flow-col auto-cols-auto gap-2">
         {quickProfiles?.map(
-          (profile: QuickProfilesInterface, index: number) => {
+          (profile: Post, index: number) => {
             return (
               <div
                 key={index}

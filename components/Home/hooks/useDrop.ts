@@ -1,28 +1,18 @@
-import {
-  getAllCollectionsPaginated,
-  getAllCollectionsPaginatedUpdated,
-} from "@/graphql/subgraph/queries/getAllCollections";
+import { getAllCollectionsPaginated } from "@/graphql/subgraph/queries/getAllCollections";
 import { useEffect, useState } from "react";
-import { Collection, Drop } from "../types/home.types";
-import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
+import { Collection } from "../types/home.types";
 import { setMainNFT } from "@/redux/reducers/mainNFTSlice";
-import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import { setCollectionsRedux } from "@/redux/reducers/collectionsSlice";
-import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
-import { setDropsRedux } from "@/redux/reducers/dropsSlice";
 import { setHasMoreCollectionsRedux } from "@/redux/reducers/hasMoreCollectionSlice";
 import { setCollectionPaginated } from "@/redux/reducers/collectionPaginatedSlice";
-import { QuickProfilesInterface } from "@/components/Common/Wavs/types/wavs.types";
-import { INFURA_GATEWAY, LENS_CREATORS } from "@/lib/constants";
+import { LENS_CREATORS } from "@/lib/constants";
 import getProfiles from "@/graphql/lens/queries/getProfiles";
 import { setQuickProfilesRedux } from "@/redux/reducers/quickProfilesSlice";
-import { Mirror, Post, Profile, Quote } from "../types/generated";
-import getAllDrops, {
-  getAllDropsUpdated,
-} from "@/graphql/subgraph/queries/getAllDrops";
-import { getCoinOpCollection } from "@/lib/helpers/getCoinOp";
+import { Post, Profile } from "../types/generated";
 import { AnyAction, Dispatch } from "redux";
 import { NextRouter } from "next/router";
+import { getPublication } from "@/graphql/lens/queries/getPublication";
+import toHexWithLeadingZero from "@/lib/helpers/leadingZero";
 
 const useDrop = (
   router: NextRouter,
@@ -31,15 +21,10 @@ const useDrop = (
   paginated: {
     skip: number;
     first: number;
-    skipUpdated: number;
-    firstUpdated: number;
   },
-  dropsDispatched: Drop[],
-  hasMoreCollections: {
-    new: boolean;
-    old: boolean;
-  },
-  quickProfiles: QuickProfilesInterface[]
+  hasMoreCollections: boolean,
+  quickProfiles: Profile[],
+  lensConnected: Profile | undefined
 ) => {
   const [collectionsLoading, setCollectionsLoading] = useState<boolean>(false);
   const [moreCollectionsLoading, setMoreCollectionsLoading] =
@@ -49,152 +34,61 @@ const useDrop = (
   const handleAllCollections = async (): Promise<void> => {
     setCollectionsLoading(true);
     try {
-      const res = await getAllCollectionsPaginatedUpdated(12, 0);
-      let data =
-        res?.data?.updatedChromadinCollectionCollectionMinteds.filter(
-          (obj: Collection) =>
-            obj.collectionId !== "4" && obj.collectionId !== "5"
-        ) || [];
-      if (!data || data?.length < 12) {
-        dispatch(
-          setHasMoreCollectionsRedux({
-            old: true,
-            new: false,
-          })
-        );
-        const res = await getAllCollectionsPaginated(12, 0);
-        data = [
-          ...data,
-          ...((res?.data?.collectionMinteds || []).filter(
-            (obj: Collection) =>
-              obj.collectionId !== "104" && obj.collectionId !== "99"
-          ) || []),
-        ];
+      const res = await getAllCollectionsPaginated(12, 0);
+      const data = res?.data?.collectionCreateds || [];
 
-        if (data?.length < 12) {
-          dispatch(
-            setHasMoreCollectionsRedux({
-              old: false,
-              new: false,
-            })
-          );
-        }
+      if (data?.length < 12) {
+        dispatch(setHasMoreCollectionsRedux(false));
       }
 
-      if (!data) {
-        setError(true);
-        setCollectionsLoading(false);
-        return;
-      }
-
-      if (data?.length < 1) {
-        setCollectionsLoading(false);
-        return;
-      }
-
-      const drops = await handleAllDrops();
-      const fullDrops = await Promise.all(
-        drops?.map(async (drop: Drop) => {
-          const dropjson = await fetchIPFSJSON((drop as any)?.dropURI);
-
-          return {
-            ...drop,
-            uri: {
-              name: dropjson.name,
-              image: dropjson.image,
-            },
-          };
-        })
-      );
-      dispatch(setDropsRedux(fullDrops));
-
-      const validCollections = [...data].filter((collection: Collection) => {
-        const collectionDrops = [...fullDrops]?.filter((drop: any) => {
-          if (Number(collection?.blockNumber) < 45189643) {
-            return (
-              drop.collectionIds?.includes(collection?.collectionId) &&
-              Number(drop.blockNumber) < 45189643
-            );
-          } else {
-            return (
-              drop.collectionIds?.includes(collection?.collectionId) &&
-              Number(drop.blockNumber) >= 45189643
-            );
-          }
-        });
-
-        return collectionDrops.length > 0;
-      });
-
-      const collections = await validateDrop(validCollections, fullDrops);
-
-      if (!collections) {
-        setError(true);
-        setCollectionsLoading(false);
-        return;
-      }
-
-      const collectionDrops = fullDrops
-        ?.filter((drop: any) =>
-          drop.collectionIds.includes(
-            collections![collections!?.length - 1]?.collectionId
-          )
-        )
-        .sort((a: any, b: any) => b.dropId - a.dropId);
-      const coinOpCollections = await Promise.all(
-        collections.map(async (collection: Collection) => {
-          const coinOp = await getCoinOpCollection(collection);
-          return {
-            ...collection,
-            coinOp,
-          };
-        })
+      const collections = await handleCollectionData(
+        res?.data?.collectionCreateds
       );
 
       dispatch(
         setMainNFT({
-          name: coinOpCollections![coinOpCollections!?.length - 1].name,
-          media:
-            coinOpCollections![coinOpCollections!?.length - 1].uri.image.split(
-              "ipfs://"
-            )[1],
+          title:
+            collections![collections!?.length - 1].collectionMetadata?.title,
+          image:
+            collections![
+              collections!?.length - 1
+            ].collectionMetadata?.images?.[0]?.split("ipfs://")[1],
+          mediaCover:
+            collections![
+              collections!?.length - 1
+            ].collectionMetadata?.mediaCover?.split("ipfs://")[1],
+          video:
+            collections![
+              collections!?.length - 1
+            ].collectionMetadata?.video?.split("ipfs://")[1],
           audio:
-            coinOpCollections![
-              coinOpCollections!?.length - 1
-            ].uri?.audio?.split("ipfs://")[1] || undefined,
+            collections![
+              collections!?.length - 1
+            ].collectionMetadata?.video?.split("ipfs://")[1],
           description:
-            coinOpCollections![coinOpCollections!?.length - 1].uri.description,
-          type: coinOpCollections![coinOpCollections!?.length - 1].uri.type,
+            collections![collections!?.length - 1].collectionMetadata
+              ?.description,
+          type: collections![collections!?.length - 1].collectionMetadata
+            .mediaTypes?.[0],
           drop: {
-            name: collectionDrops[0]?.uri?.name,
-            image: collectionDrops[0]?.uri?.image,
+            dropTitle:
+              collections![collections!?.length - 1].dropMetadata?.dropTitle,
+            dropCover:
+              collections![collections!?.length - 1].dropMetadata?.dropCover,
           },
-          creator: {
-            media:
-              coinOpCollections![coinOpCollections!?.length - 1].profile
-                ?.metadata?.picture! &&
-              createProfilePicture(
-                coinOpCollections![coinOpCollections!?.length - 1].profile
-                  ?.metadata?.picture
-              )!,
-            name: coinOpCollections![coinOpCollections!?.length - 1].profile
-              ?.handle?.localName!,
-          },
-          price: coinOpCollections![coinOpCollections!?.length - 1].basePrices,
-          acceptedTokens:
-            coinOpCollections![coinOpCollections!?.length - 1].acceptedTokens,
-          amount: coinOpCollections![coinOpCollections!?.length - 1]?.amount,
-          tokenIds: coinOpCollections![coinOpCollections!?.length - 1].tokenIds,
-          tokensSold:
-            coinOpCollections![coinOpCollections!?.length - 1].soldTokens,
-          blockNumber:
-            coinOpCollections![coinOpCollections!?.length - 1].blockNumber,
-          hasAudio: coinOpCollections![coinOpCollections!?.length - 1].hasAudio,
-          coinOp: coinOpCollections![coinOpCollections!?.length - 1]?.coinOp,
+          publication: collections![collections!?.length - 1].publication,
+          prices: collections![collections!?.length - 1].prices,
+          acceptedTokens: collections![collections!?.length - 1].acceptedTokens,
+          amount: collections![collections!?.length - 1]?.amount,
+          soldTokens: collections![collections!?.length - 1].soldTokens,
         })
       );
 
-      dispatch(setCollectionsRedux(coinOpCollections!));
+      dispatch(
+        setCollectionsRedux(
+          collections?.sort(() => Math.random() - 0.5) as Collection[]
+        )
+      );
     } catch (err: any) {
       setError(true);
       console.error(err.message);
@@ -203,144 +97,37 @@ const useDrop = (
   };
 
   const handleGetMoreCollections = async () => {
-    if (
-      moreCollectionsLoading ||
-      (!hasMoreCollections.old && !hasMoreCollections.new)
-    ) {
+    if (moreCollectionsLoading || !hasMoreCollections) {
       return;
     }
     setMoreCollectionsLoading(true);
     try {
-      let data;
-      if (hasMoreCollections.new) {
-        const res = await getAllCollectionsPaginatedUpdated(
-          paginated.firstUpdated,
-          paginated.skipUpdated
-        );
-        data =
-          res?.data?.updatedChromadinCollectionCollectionMinteds.filter(
-            (obj: Collection) =>
-              obj.collectionId !== "4" && obj.collectionId !== "5"
-          ) || [];
-        if (data?.length < 12) {
-          const res = await getAllCollectionsPaginated(12, 0);
-          data = [
-            ...data,
-            ...((res?.data?.collectionMinteds || []).filter(
-              (obj: Collection) =>
-                obj.collectionId !== "104" && obj.collectionId !== "99"
-            ) || []),
-          ];
-          dispatch(
-            setHasMoreCollectionsRedux({
-              old: true,
-              new: false,
-            })
-          );
-          dispatch(
-            setCollectionPaginated({
-              actionSkip: paginated.skip + 12,
-              actionFirst: paginated.first,
-              actionSkipUpdated: paginated.skipUpdated,
-              actionFirstUpdated: paginated.firstUpdated,
-            })
-          );
-        } else {
-          dispatch(
-            setHasMoreCollectionsRedux({
-              old: true,
-              new: true,
-            })
-          );
-          dispatch(
-            setCollectionPaginated({
-              actionSkip: paginated.skip,
-              actionFirst: paginated.first,
-              actionSkipUpdated: paginated.skipUpdated + 12,
-              actionFirstUpdated: paginated.firstUpdated,
-            })
-          );
-        }
+      const res = await getAllCollectionsPaginated(
+        paginated.first,
+        paginated.skip
+      );
+      const data = res?.data?.collectionCreateds || [];
+      if (data?.length < 12) {
+        dispatch(setHasMoreCollectionsRedux(false));
       } else {
-        const res = await getAllCollectionsPaginated(
-          paginated.first,
-          paginated.skip
+        dispatch(setHasMoreCollectionsRedux(true));
+        dispatch(
+          setCollectionPaginated({
+            actionSkip: paginated.skip + 12,
+            actionFirst: paginated.first,
+          })
         );
-        data = (res?.data?.collectionMinteds || []).filter(
-          (obj: Collection) =>
-            obj.collectionId !== "104" && obj.collectionId !== "99"
-        );
-        if (data?.length < 12) {
-          dispatch(
-            setHasMoreCollectionsRedux({
-              old: false,
-              new: false,
-            })
-          );
-          dispatch(
-            setCollectionPaginated({
-              actionSkip: paginated.skip,
-              actionFirst: paginated.first,
-              actionSkipUpdated: paginated.skipUpdated,
-              actionFirstUpdated: paginated.firstUpdated,
-            })
-          );
-        } else {
-          dispatch(
-            setHasMoreCollectionsRedux({
-              old: true,
-              new: false,
-            })
-          );
-          dispatch(
-            setCollectionPaginated({
-              actionSkip: paginated.skip + 12,
-              actionFirst: paginated.first,
-              actionSkipUpdated: paginated.skipUpdated,
-              actionFirstUpdated: paginated.firstUpdated,
-            })
-          );
-        }
       }
 
-      if (!data) {
-        setError(true);
-        setMoreCollectionsLoading(false);
-        return;
-      }
-
-      if (data < 1) {
-        setMoreCollectionsLoading(false);
-        return;
-      }
-
-      const validCollections = data?.filter((collection: Collection) => {
-        const collectionDrops = [...dropsDispatched]?.filter((drop: any) =>
-          drop?.collectionIds?.includes(collection.collectionId)
-        );
-        return collectionDrops.length > 0;
-      });
-
-      const collections = await validateDrop(validCollections, dropsDispatched);
-
-      if (!collections) {
-        setError(true);
-        setMoreCollectionsLoading(false);
-        return;
-      }
-
-      const coinOpCollections = await Promise.all(
-        collections.map(async (collection: Collection) => {
-          const coinOp = await getCoinOpCollection(collection);
-          return {
-            ...collection,
-            coinOp,
-          };
-        })
+      const collections = await handleCollectionData(
+        res?.data?.collectionCreateds
       );
 
       dispatch(
-        setCollectionsRedux([...collectionsDispatched, ...coinOpCollections!])
+        setCollectionsRedux([
+          ...collectionsDispatched,
+          ...(collections?.sort(() => Math.random() - 0.5) || []),
+        ])
       );
     } catch (err: any) {
       setError(true);
@@ -349,137 +136,24 @@ const useDrop = (
     setMoreCollectionsLoading(false);
   };
 
-  const handleAllDrops = async (): Promise<any> => {
-    try {
-      const data = await getAllDrops();
-      const dataUpdated = await getAllDropsUpdated();
-
-      let dataUpdatedDrops = (
-        dataUpdated?.data?.updatedChromadinDropDropCreateds || []
-      )
-        .map((drop: Drop) => {
-          return {
-            ...drop,
-            collectionIds: drop.collectionIds.filter(
-              (id: string) => !["4", "5"].includes(id)
-            ),
-          };
-        })
-        .filter((drop: Drop) => drop.collectionIds.length > 0);
-
-      let dataDrops = (data?.data?.dropCreateds || [])
-        .map((drop: Drop) => {
-          return {
-            ...drop,
-            collectionIds: drop.collectionIds.filter(
-              (id: string) => !["104", "99"].includes(id)
-            ),
-          };
-        })
-        .filter((drop: Drop) => drop.collectionIds.length > 0);
-
-      let allDrops = [...dataDrops, ...dataUpdatedDrops];
-
-      return allDrops;
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
-  const validateDrop = async (
-    validCollections: Collection[],
-    drops: Drop[]
+  const handleCollectionData = async (
+    validCollections: Collection[]
   ): Promise<Collection[] | undefined> => {
     try {
       return await Promise.all(
         validCollections.map(async (collection: Collection) => {
-          const json = await fetchIPFSJSON(collection.uri as any);
-
-          const type = await fetch(
-            `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
-            { method: "HEAD" }
-          ).then((response) => {
-            if (response.ok) {
-              return response.headers.get("Content-Type");
-            }
-          });
-
-          let collectionDrops;
-
-          collectionDrops = drops
-            ?.filter((drop: any) => {
-              if (Number(collection?.blockNumber) < 45189643) {
-                return (
-                  drop.collectionIds?.includes(collection.collectionId) &&
-                  Number(drop.blockNumber) < 45189643
-                );
-              } else {
-                return (
-                  drop.collectionIds?.includes(collection.collectionId) &&
-                  Number(drop.blockNumber) >= 45189643
-                );
-              }
-            })
-            ?.sort((a: any, b: any) => b.dropId - a.dropId);
-
-          const defaultProfile = await getDefaultProfile({
-            for: collection.owner,
-          });
-
-          let hasAudio: boolean = false;
-
-          if (type?.includes("video")) {
-            const video = document.createElement("video");
-            video.muted = true;
-            video.crossOrigin = "anonymous";
-            video.preload = "auto";
-
-            const value = new Promise((resolve, reject) => {
-              video.addEventListener("error", reject);
-
-              video.addEventListener(
-                "canplay",
-                () => {
-                  video.currentTime = 0.99;
-                },
-                { once: true }
-              );
-
-              video.addEventListener(
-                "seeked",
-                () =>
-                  resolve(
-                    (video as any).mozHasAudio ||
-                      Boolean((video as any).webkitAudioDecodedByteCount) ||
-                      Boolean((video as any).audioTracks?.length)
-                  ),
-                {
-                  once: true,
-                }
-              );
-
-              video.src = `${INFURA_GATEWAY}/ipfs/${
-                json.image?.includes("ipfs://")
-                  ? json.image?.split("ipfs://")[1]
-                  : json.image
-              }`;
-            });
-
-            hasAudio = (await value) as boolean;
-          }
+          const publication = await getPublication(
+            {
+              forId: `${toHexWithLeadingZero(
+                Number(collection?.profileId)
+              )}-${toHexWithLeadingZero(Number(collection?.pubId))}`,
+            },
+            lensConnected?.id
+          );
 
           return {
             ...collection,
-            uri: {
-              ...json,
-              type,
-            },
-            profile: defaultProfile?.data?.defaultProfile as Profile,
-            drop: {
-              name: collectionDrops[0]?.uri?.name,
-              image: collectionDrops[0]?.uri?.image,
-            },
-            hasAudio,
+            publication: publication?.data?.publication as Post,
           };
         })
       );
@@ -495,20 +169,8 @@ const useDrop = (
           profileIds: LENS_CREATORS,
         },
       });
-      const quickProfiles = (profs?.data?.profiles?.items as Profile[])?.map(
-        (prof: Profile) => {
-          return {
-            id: prof.id,
-            handle: prof.handle?.suggestedFormatted?.localName?.split("@")[1],
-            image: createProfilePicture(prof?.metadata?.picture),
-            followModule: prof?.followModule,
-            name: prof?.handle?.localName,
-            ownedBy: prof?.ownedBy?.address,
-          };
-        }
-      );
       dispatch(
-        setQuickProfilesRedux(quickProfiles as QuickProfilesInterface[])
+        setQuickProfilesRedux(profs?.data?.profiles?.items as Profile[])
       );
     } catch (err: any) {
       console.error(err.message);

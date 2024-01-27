@@ -2,28 +2,24 @@ import { setOptions } from "@/redux/reducers/optionsSlice";
 import { setView } from "@/redux/reducers/viewSlice";
 import { FormEvent, useEffect, useState } from "react";
 import { Collection, Drop } from "../types/home.types";
-import {
-  getCollectionsSearch,
-  getCollectionsSearchUpdated,
-} from "@/graphql/subgraph/queries/getAllCollections";
-import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
-import { QuickProfilesInterface } from "@/components/Common/Wavs/types/wavs.types";
-import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
-import { INFURA_GATEWAY } from "@/lib/constants";
+import { getCollectionsSearch } from "@/graphql/subgraph/queries/getAllCollections";
 import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
+import toHexWithLeadingZero from "@/lib/helpers/leadingZero";
+import { Profile } from "../types/generated";
+import { getOneProfile } from "@/graphql/lens/queries/getProfile";
 
 const useViewer = (
   router: NextRouter,
   dispatch: Dispatch<AnyAction>,
-  quickProfiles: QuickProfilesInterface[],
-  dropsDispatched: Drop[]
+  quickProfiles: Profile[],
+  profile: Profile | undefined
 ) => {
   const [dropDownPriceSort, setDropDownPriceSort] = useState<boolean>(false);
   const [dropDownDateSort, setDropDownDateSort] = useState<boolean>(false);
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<
-    (Collection | QuickProfilesInterface | Drop)[]
+    (Collection | Profile | Drop)[]
   >([]);
 
   const handleSearch = async (e: FormEvent) => {
@@ -40,71 +36,65 @@ const useViewer = (
       const data = await getCollectionsSearch(
         (e.target as HTMLFormElement).value
       );
-      const updatedData = await getCollectionsSearchUpdated(
-        (e.target as HTMLFormElement).value
-      );
 
-      const collectionsMatched = await Promise.all(
-        [
-          ...((
-            updatedData?.data?.updatedChromadinCollectionCollectionMinteds || []
-          ).filter(
-            (obj: Collection) =>
-              obj.collectionId !== "4" && obj.collectionId !== "5"
-          ) || []),
-          ...((data?.data?.collectionMinteds || []).filter(
-            (obj: Collection) =>
-              obj.collectionId !== "104" && obj.collectionId !== "99"
-          ) || []),
-        ].map(async (collection: any) => {
-          const json = await fetchIPFSJSON((collection as any)?.uri);
-          const type = await fetch(
-            `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
-            { method: "HEAD" }
-          ).then((response) => {
-            if (response.ok) {
-              return response.headers.get("Content-Type");
-            }
-          });
-          return {
-            ...collection,
-            uri: {
-              ...json,
-              type,
-            },
-          };
-        })
-      );
-
-      const dropsMatch = dropsDispatched.filter((drop: Drop) => {
+      const profilesMatch = quickProfiles.filter((profile: Profile) => {
         if (
-          drop.uri.name
+          profile?.handle?.suggestedFormatted?.localName
             ?.toLowerCase()
-            ?.includes((e.target as HTMLFormElement).value.toLowerCase())
+            .includes((e.target as HTMLFormElement).value.toLowerCase())
         ) {
-          return drop;
+          return profile;
         }
       });
-      const profilesMatch = quickProfiles.filter(
-        (profile: QuickProfilesInterface) => {
-          if (
-            profile?.handle
-              ?.toLowerCase()
-              .includes((e.target as HTMLFormElement).value.toLowerCase()) ||
-            profile?.name
-              ?.toLowerCase()
-              .includes((e.target as HTMLFormElement).value.toLowerCase())
-          ) {
-            return profile;
+
+      const collections = await Promise.all(
+        data?.data?.collectionCreateds?.map(
+          async (collection: { profileId: string; pubId: string }) => {
+            const publication = await getOneProfile(
+              {
+                forProfileId: `${toHexWithLeadingZero(
+                  Number(collection?.profileId)
+                )}`,
+              },
+              profile?.id
+            );
+
+            return {
+              ...collection,
+              profile: publication?.data?.profile,
+            };
           }
-        }
+        )
       );
 
-      setSearchResults([
-        ...collectionsMatched,
-        ...dropsMatch,
-        ...profilesMatch,
-      ]);
+      setSearchResults(
+        [
+          ...(collections || []),
+          ...collections?.reduce(
+            (
+              accumulator: {
+                seenDropIds: Set<string>;
+                uniqueMetadata: {
+                  dropDetails: { dropTitle: string; dropCover: string };
+                  profile: Profile;
+                }[];
+              },
+              item: Collection
+            ) => {
+              if (item?.dropId && !accumulator.seenDropIds.has(item.dropId)) {
+                accumulator.seenDropIds.add(item.dropId);
+                accumulator.uniqueMetadata.push({
+                  dropDetails: item.dropMetadata,
+                  profile: item.profile,
+                });
+              }
+              return accumulator;
+            },
+            { seenDropIds: new Set(), uniqueMetadata: [] }
+          ).uniqueMetadata,
+          ...profilesMatch,
+        ]?.sort(() => Math.random() - 0.5)
+      );
     } catch (err: any) {
       console.error(err.message);
     }
@@ -135,43 +125,36 @@ const useViewer = (
   }, [router.asPath]);
 
   const handleSearchChoose = async (
-    chosen: QuickProfilesInterface | Drop | Collection
+    chosen: Profile | Drop | Collection
   ): Promise<void> => {
     setSearchOpen(false);
     if ((chosen as Collection)?.acceptedTokens?.length > 0) {
-      const defaultProfile = await getDefaultProfile({
-        for: (chosen as Collection).owner,
-      });
       router.push(
         `/autograph/${
-          defaultProfile?.data?.defaultProfile?.handle?.suggestedFormatted?.localName?.split(
-            "@"
-          )[1]
-        }/collection/${(chosen as Collection)?.uri?.name
+          (
+            chosen as Collection
+          )?.profile?.handle?.suggestedFormatted?.localName?.split("@")[1]
+        }/collection/${(chosen as Collection)?.collectionMetadata?.title
           ?.replace(/\s/g, "_")
           .toLowerCase()}`
       );
-    } else if ((chosen as QuickProfilesInterface)?.handle) {
-      const defaultProfile = await getDefaultProfile({
-        for: (chosen as QuickProfilesInterface).ownedBy,
-      });
+    } else if ((chosen as Profile)?.handle) {
       router.push(
         `/autograph/${
-          defaultProfile?.data?.defaultProfile?.handle?.suggestedFormatted?.localName?.split(
+          (chosen as Profile)?.handle?.suggestedFormatted?.localName?.split(
             "@"
           )[1]
         }`
       );
     } else {
-      const defaultProfile = await getDefaultProfile({
-        for: (chosen as Drop).creator,
-      });
       router.push(
         `/autograph/${
-          defaultProfile?.data?.defaultProfile?.handle?.suggestedFormatted?.localName?.split(
-            "@"
-          )[1]
-        }/drop/${(chosen as Drop).uri.name?.replace(/\s/g, "_").toLowerCase()}`
+          (
+            chosen as Collection
+          )?.profile?.handle?.suggestedFormatted?.localName?.split("@")[1]
+        }/drop/${(chosen as Drop)?.dropDetails?.dropTitle
+          ?.replace(/\s/g, "_")
+          .toLowerCase()}`
       );
     }
   };

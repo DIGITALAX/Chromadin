@@ -1,7 +1,4 @@
-import {
-  getPublication,
-  getPublicationAuth,
-} from "@/graphql/lens/queries/getPublication";
+import { getPublication } from "@/graphql/lens/queries/getPublication";
 import { useEffect, useState } from "react";
 import { setCommentsRedux } from "@/redux/reducers/commentSlice";
 import {
@@ -16,29 +13,26 @@ import {
   Mirror,
   Post,
   Profile,
-  PublicationsQuery,
   Quote,
   Comment,
 } from "@/components/Home/types/generated";
-import {
-  getPublications,
-  getPublicationsAuth,
-} from "@/graphql/lens/queries/getVideos";
-import { FetchResult } from "@apollo/client";
+import { getPublications } from "@/graphql/lens/queries/getVideos";
 import { decryptPostIndividual } from "@/lib/helpers/decryptPost";
 import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
 import { IndexModalState } from "@/redux/reducers/indexModalSlice";
+import { createWalletClient, custom } from "viem";
+import { polygon } from "viem/chains";
 
 const useIndividual = (
   router: NextRouter,
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
   lensProfile: Profile | undefined,
-  feedType: string,
   commentFeedCount: CommentFeedCountState,
   index: IndexModalState,
-  commentors: Comment[]
+  commentors: Comment[],
+  feedType: string
 ) => {
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [paginated, setPaginated] = useState<any>();
@@ -75,33 +69,21 @@ const useIndividual = (
   const getPostComments = async (): Promise<void> => {
     setCommentsLoading(true);
     try {
-      let comments: FetchResult<PublicationsQuery>;
+      const comments = await getPublications(
+        {
+          where: {
+            commentOn: {
+              id: feedType,
+              ranking: {
+                filter: CommentRankingFilterType.Relevant,
+              },
+            },
+          },
+          limit: LimitType.Ten,
+        },
+        lensProfile?.id
+      );
 
-      if (lensProfile) {
-        comments = await getPublicationsAuth({
-          where: {
-            commentOn: {
-              id: feedType,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-          limit: LimitType.Ten,
-        });
-      } else {
-        comments = await getPublications({
-          where: {
-            commentOn: {
-              id: feedType,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-          limit: LimitType.Ten,
-        });
-      }
       if (!comments || !comments?.data || !comments?.data?.publications) {
         setCommentsLoading(false);
         return;
@@ -152,13 +134,12 @@ const useIndividual = (
   const getMorePostComments = async (): Promise<void> => {
     try {
       if (!paginated?.next) {
-        // fix apollo duplications on null next
         setHasMoreComments(false);
         return;
       }
-      let comments: FetchResult<PublicationsQuery>;
-      if (lensProfile) {
-        comments = await getPublicationsAuth({
+
+      const comments = await getPublications(
+        {
           where: {
             commentOn: {
               id: feedType,
@@ -169,21 +150,10 @@ const useIndividual = (
           },
           limit: LimitType.Ten,
           cursor: paginated?.next,
-        });
-      } else {
-        comments = await getPublications({
-          where: {
-            commentOn: {
-              id: feedType,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-          limit: LimitType.Ten,
-          cursor: paginated?.next,
-        });
-      }
+        },
+        lensProfile?.id
+      );
+
       if (
         !comments ||
         !comments?.data ||
@@ -253,23 +223,22 @@ const useIndividual = (
   const getPostInfo = async () => {
     setMainPostLoading(true);
     try {
-      let pubData: Post | Comment | Quote | Mirror;
-      if (lensProfile) {
-        const { data } = await getPublicationAuth({
+      const { data } = await getPublication(
+        {
           forId: feedType,
-        });
+        },
+        lensProfile?.id
+      );
 
-        pubData = data?.publication as Post | Comment | Quote | Mirror;
-      } else {
-        const { data } = await getPublication({
-          forId: feedType,
-        });
-        pubData = data?.publication as Post | Comment | Quote | Mirror;
-      }
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
 
-      pubData = await decryptPostIndividual(
+      const pubData = await decryptPostIndividual(
         address,
-        pubData as Post | Comment | Quote | Mirror
+        data?.publication as Post | Comment | Quote | Mirror,
+        clientWallet
       );
 
       setMainPost(pubData);

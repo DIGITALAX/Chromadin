@@ -8,7 +8,7 @@ import indexModalReducer from "./reducers/indexModalSlice";
 import postImageReducer from "./reducers/postImageSlice";
 import collectValueTypeReducer from "./reducers/collectValueTypeSlice";
 import optionsReducer from "./reducers/optionsSlice";
-import productTypeReducer from "./reducers/productTypeSlice";
+import oracleDataReducer from "./reducers/oracleDataSlice";
 import collectionsReducer from "./reducers/collectionsSlice";
 import modalReducer from "./reducers/modalSlice";
 import purchaseReducer from "./reducers/purchaseSlice";
@@ -23,16 +23,13 @@ import reactIdReducer from "./reducers/reactIdSlice";
 import secondaryCommentReducer from "./reducers/secondaryCommentSlice";
 import errorReducer from "./reducers/errorSlice";
 import successReducer from "./reducers/successSlice";
-import historyReducer from "./reducers/historySlice";
 import ratesReducer from "./reducers/ratesSlice";
 import statsReducer from "./reducers/statsSlice";
 import piesReducer from "./reducers/piesSlice";
 import graphReducer from "./reducers/graphSlice";
-import nftScreenReducer from "./reducers/nftScreenSlice";
 import isCreatorReducer from "./reducers/isCreatorSlice";
 import priceFilterReducer from "./reducers/priceFilterSlice";
 import dateFilterReducer from "./reducers/dateFilterSlice";
-import dropsReducer from "./reducers/dropsSlice";
 import commentFeedCountReducer from "./reducers/commentFeedCountSlice";
 import reactionFeedCountReducer from "./reducers/reactionFeedCountSlice";
 import reactionStateReducer from "./reducers/reactionStateSlice";
@@ -43,7 +40,6 @@ import feedReactIdReducer from "./reducers/feedReactIdSlice";
 import feedReducer from "./reducers/feedSlice";
 import commentReducer from "./reducers/commentSlice";
 import paginatedReducer from "./reducers/paginatedSlice";
-import scrollPosReducer from "./reducers/scrollPosSlice";
 import individualFeedCountReducer from "./reducers/individualFeedCountReducer";
 import fullScreenVideoReducer from "./reducers/fullScreenVideoSlice";
 import videoSyncReducer from "./reducers/videoSyncSlice";
@@ -53,7 +49,6 @@ import profileReducer from "./reducers/profileSlice";
 import profileFeedCountReducer from "./reducers/profileFeedCountSlice";
 import profileFeedReducer from "./reducers/profileFeedSlice";
 import profilePaginatedReducer from "./reducers/profilePaginatedSlice";
-import profileScrollPosReducer from "./reducers/profileScrollPosSlice";
 import quickProfilesReducer from "./reducers/quickProfilesSlice";
 import historyURLReducer from "./reducers/historyURLSlice";
 import superFollowReducer from "./reducers/superFollowSlice";
@@ -66,26 +61,15 @@ import filterDecryptReducer from "./reducers/filterDecryptSlice";
 import decryptFeedCountReducer from "./reducers/decryptFeedCountSlice";
 import decryptFeedReducer from "./reducers/decryptFeedSlice";
 import decryptPaginatedReducer from "./reducers/decryptPaginatedSlice";
-import decryptScrollPosReducer from "./reducers/decryptScrollPosSlice";
 import decryptProfileFeedCountReducer from "./reducers/decryptProfileCountSlice";
 import decryptProfileFeedReducer from "./reducers/decryptProfileFeedSlice";
 import decryptProfilePaginatedReducer from "./reducers/decryptProfilePaginatedSlice";
-import decryptProfileScrollPosReducer from "./reducers/decryptProfileScrollPosSlice";
 import collectionPaginatedReducer from "./reducers/collectionPaginatedSlice";
-import buyerHistoryReducer from "./reducers/buyerHistorySlice";
 import IPFSReducer from "./reducers/IPFSSlice";
 import hasMoreVideosReducer from "./reducers/hasMoreVideosSlice";
 import hasMoreCollectionReducer from "./reducers/hasMoreCollectionSlice";
-import hasMoreHistoryReducer from "./reducers/hasMoreHistoryReducer";
-import historyPaginationReducer from "./reducers/historyPaginationSlice";
-import buyerHistoryPaginationReducer from "./reducers/buyerHistoryPaginationSlice";
-import hasMoreBuyerHistoryReducer from "./reducers/hasMoreBuyerHistorySlice";
-import autoCollectionReducer from "./reducers/autoCollectionSlice";
+import historyDataReducer from "./reducers/hasMoreHistoryReducer";
 import imageLoadingReducer from "./reducers/imageLoadingSlice";
-import autoDropReducer from "./reducers/autoDropSlice";
-import autographReducer from "./reducers/autographSlice";
-import fulfillmentDetailsReducer from "./reducers/fulfillmentDetailsSlice";
-import encryptedInformationReducer from "./reducers/encryptedInformationSlice";
 import connectedReducer from "./reducers/connectedSlice";
 
 const reducer = combineReducers({
@@ -97,7 +81,6 @@ const reducer = combineReducers({
   postImageReducer,
   collectValueTypeReducer,
   optionsReducer,
-  productTypeReducer,
   collectionsReducer,
   modalReducer,
   purchaseReducer,
@@ -112,7 +95,6 @@ const reducer = combineReducers({
   secondaryCommentReducer,
   errorReducer,
   successReducer,
-  historyReducer,
   ratesReducer,
   piesReducer,
   statsReducer,
@@ -120,7 +102,6 @@ const reducer = combineReducers({
   isCreatorReducer,
   priceFilterReducer,
   dateFilterReducer,
-  dropsReducer,
   feedTypeReducer,
   openCommentReducer,
   reactionStateReducer,
@@ -131,7 +112,6 @@ const reducer = combineReducers({
   feedReducer,
   commentReducer,
   paginatedReducer,
-  scrollPosReducer,
   individualFeedCountReducer,
   fullScreenVideoReducer,
   videoSyncReducer,
@@ -141,7 +121,6 @@ const reducer = combineReducers({
   profileFeedCountReducer,
   profileFeedReducer,
   profilePaginatedReducer,
-  profileScrollPosReducer,
   quickProfilesReducer,
   historyURLReducer,
   superFollowReducer,
@@ -154,28 +133,17 @@ const reducer = combineReducers({
   decryptFeedCountReducer,
   decryptFeedReducer,
   decryptPaginatedReducer,
-  decryptScrollPosReducer,
   decryptProfileFeedCountReducer,
   decryptProfileFeedReducer,
   decryptProfilePaginatedReducer,
-  decryptProfileScrollPosReducer,
   collectionPaginatedReducer,
-  buyerHistoryReducer,
   IPFSReducer,
   hasMoreVideosReducer,
   hasMoreCollectionReducer,
-  hasMoreHistoryReducer,
-  historyPaginationReducer,
-  buyerHistoryPaginationReducer,
-  hasMoreBuyerHistoryReducer,
-  autoCollectionReducer,
+  historyDataReducer,
   imageLoadingReducer,
-  autoDropReducer,
-  autographReducer,
-  fulfillmentDetailsReducer,
   connectedReducer,
-  encryptedInformationReducer,
-  nftScreenReducer,
+  oracleDataReducer,
 });
 
 export const store = configureStore({

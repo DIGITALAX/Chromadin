@@ -1,8 +1,8 @@
-import { QuickProfilesInterface } from "@/components/Common/Wavs/types/wavs.types";
+import { Profile } from "@/components/Home/types/generated";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface QuickProfilesState {
-  value: QuickProfilesInterface[];
+  value: Profile[];
 }
 
 const initialQuickProfilesState: QuickProfilesState = {
@@ -15,7 +15,7 @@ export const quickProfilesSlice = createSlice({
   reducers: {
     setQuickProfilesRedux: (
       state: QuickProfilesState,
-      action: PayloadAction<QuickProfilesInterface[]>
+      action: PayloadAction<Profile[]>
     ) => {
       state.value = action.payload;
     },

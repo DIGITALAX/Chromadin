@@ -1,48 +1,26 @@
-import {
-  ACCEPTED_TOKENS,
-  CHROMADIN_MARKETPLACE_CONTRACT,
-  CHROMADIN_MARKETPLACE_CONTRACT_UPDATED,
-  COIN_OP_MARKET,
-  COIN_OP_ORACLE,
-} from "@/lib/constants";
+import { ACCEPTED_TOKENS, CHROMADIN_OPEN_ACTION } from "@/lib/constants";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import ChromadinMarketplaceABI from "./../../../../abis/ChromadinMarketplace.json";
-import { setIndexModal } from "@/redux/reducers/indexModalSlice";
-import { SuccessState, setSuccess } from "@/redux/reducers/successSlice";
+import { setSuccess } from "@/redux/reducers/successSlice";
 import { setError } from "@/redux/reducers/errorSlice";
 import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
-import {
-  Details,
-  setFulfillmentDetails,
-} from "@/redux/reducers/fulfillmentDetailsSlice";
-import { setModal } from "@/redux/reducers/modalSlice";
-import { removeFulfillmentDetailsLocalStorage } from "@/lib/subgraph/utils";
-import CoinOpMarketABI from "./../../../../abis/CoinOpMarketABI.json";
-import { encryptItems } from "@/lib/helpers/encryptItems";
-import { MainNFT, PreRoll } from "../../NFT/types/nft.types";
+import { MainNFT } from "../../NFT/types/nft.types";
 import { AnyAction, Dispatch } from "redux";
-import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { AbiCoder } from "ethers/lib/utils";
+import actPost from "@/lib/helpers/actPost";
+import findBalance from "@/lib/helpers/findBalance";
+import { OracleData } from "../../Wavs/types/wavs.types";
+import { Collection } from "@/components/Home/types/home.types";
 
 const useFulfillment = (
   publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
-  client: LitNodeClient,
-  mainNFT: MainNFT | undefined,
-  success: SuccessState,
-  fulfillmentDetails: Details
+  mainNFT: MainNFT | undefined | Collection,
+  oracleData: OracleData[]
 ) => {
-  const [viewScreenNFT, setViewScreenNFT] = useState<boolean>(true);
-  const [imageIndex, setImageIndex] = useState<number>(0);
-  const [oracleValue, setOracleValue] = useState<number>(1);
-  const [cryptoCheckoutLoading, setCryptoCheckoutLoading] =
-    useState<boolean>(false);
   const [approved, setApproved] = useState<boolean>(false);
-  const [tokenId, setTokenId] = useState<string>();
-  const [selectSize, setSelectSize] = useState<number>(0);
-  const [baseColor, setBaseColor] = useState<number>(0);
   const [currency, setCurrency] = useState<string>(
     ACCEPTED_TOKENS.filter(
       (token) =>
@@ -51,12 +29,9 @@ const useFulfillment = (
   );
   const [purchaseLoading, setPurchaseLoading] = useState<boolean>(false);
   const [totalAmount, setTotalAmount] = useState<number>(
-    !Number.isNaN(mainNFT?.price?.[0]) && isFinite(Number(mainNFT?.price?.[0]))
-      ? Number(mainNFT?.price?.[0]) /
-          (mainNFT?.acceptedTokens?.[0] ===
-          "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
-            ? 10 ** 6
-            : 10 ** 18)
+    !Number.isNaN(mainNFT?.prices?.[0]) &&
+      isFinite(Number(mainNFT?.prices?.[0]))
+      ? Number(mainNFT?.prices?.[0]) / 10 ** 18
       : 0
   );
 
@@ -93,24 +68,13 @@ const useFulfillment = (
           },
         ],
         functionName: "allowance",
-        args: [
-          address as `0x${string}`,
-          Number(mainNFT?.blockNumber) < 45189643
-            ? CHROMADIN_MARKETPLACE_CONTRACT
-            : CHROMADIN_MARKETPLACE_CONTRACT_UPDATED,
-        ],
+        args: [address as `0x${string}`, CHROMADIN_OPEN_ACTION],
       });
 
-      if (data && address) {
-        if (
-          Number((data as any)?.toString()) /
-            (currency === "USDT" ? 10 ** 6 : 10 ** 18) >=
-          totalAmount
-        ) {
-          setApproved(true);
-        } else {
-          setApproved(false);
-        }
+      if (Number(data as any) >= totalAmount) {
+        setApproved(true);
+      } else {
+        setApproved(false);
       }
     } catch (err: any) {
       console.error(err.message);
@@ -118,101 +82,47 @@ const useFulfillment = (
   };
 
   const getTotalAmount = async () => {
-    let number;
-
-    if (viewScreenNFT) {
-      if (
-        mainNFT?.acceptedTokens.find(
-          (token) =>
-            token ===
-            ACCEPTED_TOKENS.find(
-              (token) => token[0].toLowerCase() === currency?.toLowerCase()
-            )?.[1]!
-        )
-      ) {
-        number = Number(
-          mainNFT?.price[
-            mainNFT?.acceptedTokens.indexOf(
-              ACCEPTED_TOKENS.find(
-                (token) => token[0].toLowerCase() === currency?.toLowerCase()
-              )?.[1]!
-            )
-          ]
-        );
-      } else {
-        setCurrency(
+    let number: number = 0,
+      currentCurrency: string | undefined = mainNFT?.acceptedTokens.find(
+        (token) =>
+          token ===
           ACCEPTED_TOKENS.find(
-            (token) =>
-              token[1]?.toLowerCase() ===
-              mainNFT?.acceptedTokens[0]?.toLowerCase()
-          )?.[0]!
-        );
-        number = Number(
-          mainNFT?.price[
-            mainNFT?.acceptedTokens.indexOf(
-              ACCEPTED_TOKENS.find(
-                (token) =>
-                  token[1].toLowerCase() ===
-                  mainNFT?.acceptedTokens[0].toLowerCase()
-              )?.[1]?.toLowerCase()!
-            )
-          ]
-        );
-      }
+            (token) => token[0].toLowerCase() === currency?.toLowerCase()
+          )?.[1]!
+      );
+
+    if (currentCurrency) {
+      number = Number(mainNFT?.prices[0]);
     } else {
-      const data = await publicClient.readContract({
-        address: COIN_OP_ORACLE.toLowerCase() as `0x${string}`,
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: "address",
-                name: "_tokenAddress",
-                type: "address",
-              },
-            ],
-            name: "getRateByAddress",
-            outputs: [
-              {
-                internalType: "uint256",
-                name: "",
-                type: "uint256",
-              },
-            ],
-            stateMutability: "view",
-            type: "function",
-          },
-        ],
-        functionName: "getRateByAddress",
-        args: [
-          ACCEPTED_TOKENS.find(
-            ([token]) => token === currency
-          )?.[1].toLowerCase() as `0x${string}`,
-        ],
-      });
-
-      const oracle = Number(data as any) / 10 ** 18;
-      setOracleValue(oracle);
-      number = Number(mainNFT?.coinOp?.price[0]) / Number(oracle);
+      currentCurrency = ACCEPTED_TOKENS.find(
+        (token) =>
+          token[1].toLowerCase() === mainNFT?.acceptedTokens?.[0]?.toLowerCase()
+      )?.[1]!;
+      setCurrency(
+        ACCEPTED_TOKENS.find(
+          (token) =>
+            token[1].toLowerCase() ===
+            mainNFT?.acceptedTokens?.[0]?.toLowerCase()
+        )?.[0]!
+      );
+      number = Number(mainNFT?.prices?.[0]);
     }
 
     setTotalAmount(
-      currency === "USDT"
-        ? Number((number / 10 ** 6).toFixed(2))
-        : Number((number / 10 ** 18).toFixed(2))
+      (Number(number) /
+        Number(
+          oracleData?.find(
+            (oracle) =>
+              oracle.currency?.toLowerCase() === currentCurrency?.toLowerCase()
+          )?.rate
+        )) *
+        Number(
+          oracleData?.find(
+            (oracle) =>
+              oracle.currency?.toLowerCase() === currentCurrency?.toLowerCase()
+          )?.wei
+        )
     );
-  };
-
-  const getTokenId = (): void => {
-    if (!mainNFT?.tokensSold || mainNFT?.tokensSold.length == 0) {
-      setTokenId(mainNFT?.tokenIds[0]);
-    } else {
-      for (let i = 0; i < mainNFT?.tokenIds.length; i++) {
-        if (!mainNFT?.tokensSold.includes(mainNFT?.tokenIds[i])) {
-          setTokenId(mainNFT?.tokenIds[i]);
-        }
-      }
-    }
   };
 
   const approveSpend = async () => {
@@ -226,9 +136,9 @@ const useFulfillment = (
       let simulateContract;
       try {
         simulateContract = await publicClient.simulateContract({
-          address: ACCEPTED_TOKENS.filter(
+          address: ACCEPTED_TOKENS.find(
             (token) => token[0].toLowerCase() === currency?.toLowerCase()
-          )?.[0]?.[1] as `0x${string}`,
+          )?.[1] as `0x${string}`,
           abi: [
             currency === "MONA"
               ? {
@@ -290,12 +200,7 @@ const useFulfillment = (
                 },
           ] as any,
           functionName: "approve",
-          args: [
-            Number(mainNFT?.blockNumber) < 45189643
-              ? CHROMADIN_MARKETPLACE_CONTRACT
-              : CHROMADIN_MARKETPLACE_CONTRACT_UPDATED,
-            ethers.utils.parseEther(totalAmount.toString()),
-          ],
+          args: [CHROMADIN_OPEN_ACTION, totalAmount.toString()],
           chain: polygon,
           account: address,
         });
@@ -322,220 +227,98 @@ const useFulfillment = (
   };
 
   const buyNFT = async (): Promise<void> => {
-    if (!tokenId) return;
+    if (!address) return;
     setPurchaseLoading(true);
-    setCurrency(currency);
-    const clientWallet = createWalletClient({
-      chain: polygon,
-      transport: custom((window as any).ethereum),
-    });
-    let simulateResult;
     try {
-      simulateResult = await publicClient.simulateContract({
-        address:
-          Number(mainNFT?.blockNumber) < 45189643
-            ? CHROMADIN_MARKETPLACE_CONTRACT
-            : CHROMADIN_MARKETPLACE_CONTRACT_UPDATED,
-        abi: ChromadinMarketplaceABI,
-        args: [
-          [Number(tokenId)],
-          ACCEPTED_TOKENS.filter(
-            (token) => token[0].toLowerCase() === currency?.toLowerCase()
-          )?.[0]?.[1] as `0x${string}`,
-        ],
-        functionName: "buyTokens",
-        chain: polygon,
-        account: address,
-      });
-    } catch (err: any) {
-      if (err.message.includes("Insufficient Approval Allowance")) {
+
+      const balance = await findBalance(
+        publicClient,
+        ACCEPTED_TOKENS?.find(
+          (item) => item[0].toLowerCase() == currency?.toLowerCase()
+        )?.[1]!,
+        address as `0x${string}`
+      );
+
+      if (
+        Number(balance) <
+        ((Number(mainNFT?.prices?.[0]) * 10 ** 18) /
+          Number(
+            oracleData?.find(
+              (oracle) =>
+                oracle.currency?.toLowerCase() ===
+                ACCEPTED_TOKENS?.find(
+                  (item) => item[0].toLowerCase() == currency?.toLowerCase()
+                )?.[1]?.toLowerCase()
+            )?.rate
+          )) *
+          10 ** 18
+      ) {
         dispatch(setError(true));
+        setPurchaseLoading(false);
+        return;
       }
-      console.error(err.message);
-      setPurchaseLoading(false);
-      return;
-    }
-
-    const res = await clientWallet.writeContract(simulateResult.request);
-    await publicClient.waitForTransactionReceipt({ hash: res });
-    try {
-      dispatch(
-        setSuccess({
-          actionOpen: true,
-          actionMedia: success.media?.includes("ipfs://")
-            ? success.media?.split("ipfs://")[1]
-            : success.media,
-          actionName: success.name,
-          actionCoinOp: false,
-        })
-      );
-      setTimeout(() => {
-        dispatch(
-          setIndexModal({
-            actionValue: true,
-            actionMessage: "Purchase Successful",
-          })
-        );
-      }, 5000);
-      setTimeout(() => {
-        dispatch(
-          setIndexModal({
-            actionValue: false,
-            actionMessage: undefined,
-          })
-        );
-      }, 8000);
-    } catch (err: any) {
-      setPurchaseLoading(false);
-      if (!err.message.includes("User rejected")) {
-        dispatch(setError(true));
-      }
-      console.error(err.message);
-    }
-    setPurchaseLoading(false);
-  };
-
-  const handleCheckoutCrypto = async () => {
-    if (
-      fulfillmentDetails.address.trim() === "" ||
-      fulfillmentDetails.city.trim() === "" ||
-      fulfillmentDetails.contact.trim() === "" ||
-      fulfillmentDetails.country.trim() === "" ||
-      fulfillmentDetails.name.trim() === "" ||
-      fulfillmentDetails.state.trim() === "" ||
-      fulfillmentDetails.zip.trim() === ""
-    ) {
-      dispatch(
-        setModal({
-          actionOpen: true,
-          actionMessage: "Fill out your Contact & Shipment details first.",
-        })
-      );
-      return;
-    }
-
-    setCryptoCheckoutLoading(true);
-    try {
-      let fulfillerGroups: { [key: string]: PreRoll[] } = {};
-
-      fulfillerGroups[mainNFT?.coinOp?.fulfillerAddress!] = [mainNFT?.coinOp!];
-
-      const returned = await encryptItems(
-        client,
-        {
-          sizes: [mainNFT?.coinOp?.chosenSize!],
-          colors: [mainNFT?.coinOp?.chosenColor!],
-          collectionIds: [Number(mainNFT?.coinOp?.collectionId)],
-          collectionAmounts: [1],
-        },
-        fulfillerGroups,
-        fulfillmentDetails,
-        address!
-      );
-
-      const response = await fetch("/api/ipfs", {
-        method: "POST",
-        body: JSON.stringify(returned?.fulfillerDetails),
-      });
-      let cid = await response.json();
-
-      const { request } = await publicClient.simulateContract({
-        address: COIN_OP_MARKET.toLowerCase() as `0x${string}`,
-        abi: CoinOpMarketABI,
-        functionName: "buyTokens",
-        args: [
-          {
-            preRollIds: [Number(mainNFT?.coinOp?.collectionId)],
-            preRollAmounts: [1],
-            preRollIndexes: [0],
-            customIds: [],
-            customAmounts: [],
-            customIndexes: [],
-            customURIs: [],
-            fulfillmentDetails: "ipfs://" + cid?.cid,
-            pkpTokenId: "",
-            chosenTokenAddress: ACCEPTED_TOKENS.find(
-              ([token]) => token === currency
-            )?.[1],
-            sinPKP: true,
-          },
-        ],
-        account: address?.toLowerCase() as `0x${string}`,
-      });
 
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),
       });
-      const res = await clientWallet.writeContract(request);
-      await publicClient.waitForTransactionReceipt({ hash: res });
-      removeFulfillmentDetailsLocalStorage();
-      dispatch(
-        setFulfillmentDetails({
-          name: "",
-          contact: "",
-          address: "",
-          zip: "",
-          city: "",
-          state: "",
-          country: "",
-        })
-      );
 
-      dispatch(
-        setSuccess({
-          actionOpen: true,
-          actionMedia: success.media?.includes("ipfs://")
-            ? success.media?.split("ipfs://")[1]
-            : success.media,
-          actionName: success.name,
-          actionCoinOp: true,
-        })
+      const coder = new AbiCoder();
+
+      const complete = await actPost(
+        mainNFT?.publication?.id,
+        {
+          unknownOpenAction: {
+            address: CHROMADIN_OPEN_ACTION,
+            data: coder.encode(
+              ["address", "uint256"],
+              [
+                ACCEPTED_TOKENS?.find(
+                  (item) => item[0].toLowerCase() == currency?.toLowerCase()
+                )?.[1],
+                1,
+              ]
+            ),
+          },
+        },
+        dispatch,
+        address!,
+        clientWallet,
+        publicClient
       );
+      if (complete) {
+        dispatch(
+          setSuccess({
+            actionOpen: true,
+            actionMedia: (mainNFT as MainNFT)?.title
+              ? (mainNFT as MainNFT)?.image || (mainNFT as MainNFT)?.mediaCover
+              : (mainNFT as Collection)?.collectionMetadata?.images?.[0] ||
+                (mainNFT as Collection)?.collectionMetadata?.mediaCover,
+            actionName: (mainNFT as MainNFT)?.title
+              ? (mainNFT as MainNFT)?.title
+              : (mainNFT as Collection)?.collectionMetadata?.title,
+          })
+        );
+      }
     } catch (err: any) {
-      dispatch(setError(true));
-      console.error(err.message);
+      console.error(err.messgae);
     }
-    setCryptoCheckoutLoading(false);
+    setPurchaseLoading(false);
   };
 
   useEffect(() => {
     if (mainNFT?.acceptedTokens) {
       getTotalAmount();
     }
-    setImageIndex(0);
-  }, [currency, mainNFT, viewScreenNFT]);
+  }, [currency, mainNFT]);
 
   useEffect(() => {
     if (address) {
       getAllowance();
     }
-  }, [address, totalAmount, mainNFT, viewScreenNFT]);
-
-  useEffect(() => {
-    if (mainNFT) {
-      getTokenId();
-      if (!mainNFT.coinOp && !viewScreenNFT) {
-        setViewScreenNFT(true);
-      }
-    }
-    dispatch(
-      setSuccess({
-        actionOpen: false,
-        actionMedia: mainNFT?.media?.includes("ipfs://")
-          ? mainNFT?.media?.split("ipfs://")[1]
-          : mainNFT?.media,
-        actionName: mainNFT?.name,
-        actionCoinOp: false,
-      })
-    );
-  }, [mainNFT]);
+  }, [address, totalAmount, mainNFT]);
 
   return {
-    baseColor,
-    selectSize,
-    setBaseColor,
-    setSelectSize,
     currency,
     setCurrency,
     totalAmount,
@@ -543,13 +326,6 @@ const useFulfillment = (
     buyNFT,
     approveSpend,
     purchaseLoading,
-    viewScreenNFT,
-    setViewScreenNFT,
-    cryptoCheckoutLoading,
-    oracleValue,
-    handleCheckoutCrypto,
-    imageIndex,
-    setImageIndex,
   };
 };
 

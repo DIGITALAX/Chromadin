@@ -7,8 +7,7 @@ import Link from "next/link";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 
 const AllDrops: FunctionComponent<AllDropsProps> = ({
-  autoDrop,
-  autoCollections,
+  collections,
   autoProfile,
   router,
 }): JSX.Element => {
@@ -16,7 +15,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
   return (
     <div className="relative w-full h-full flex flex-col gap-3">
       <div className="relative w-fit h-fit text-white font-earl text-3xl">
-        {autoDrop?.uri?.name}
+        {collections?.[0]?.dropMetadata?.dropTitle}
       </div>
       {autoProfile && (
         <Link
@@ -45,7 +44,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
         </Link>
       )}
       <div className="relative inline-flex flex-wrap gap-5">
-        {autoCollections?.map((collection: Collection, index: number) => {
+        {collections?.map((collection: Collection, index: number) => {
           return (
             <div
               key={index}
@@ -56,56 +55,53 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
                     autoProfile?.handle?.suggestedFormatted?.localName?.split(
                       "@"
                     )[1]
-                  }/collection/${collection.name
+                  }/collection/${collection.collectionMetadata?.title
                     ?.replaceAll(" ", "_")
                     ?.toLowerCase()}`
                 )
               }
             >
-              <div className="relative w-48 h-48 rounded-md" id="staticLoad">
-                {collection?.uri?.image?.split("ipfs://")[1] &&
-                  (collection?.uri?.type?.includes("video") ? (
-                    <video
-                      muted
-                      autoPlay
-                      playsInline
-                      className="w-full h-full object-cover rounded-md"
-                    >
-                      <source
-                        src={`${INFURA_GATEWAY}/ipfs/${
-                          collection?.uri?.image?.split("ipfs://")[1]
-                        }`}
-                        type="video/mp4"
-                      />
-                    </video>
-                  ) : (
-                    <Image
+              <div className="relative w-60 h-60 rounded-md" id="staticLoad">
+                {collection?.collectionMetadata?.mediaTypes?.[0]?.includes(
+                  "video"
+                ) ? (
+                  <video
+                    muted
+                    autoPlay
+                    playsInline
+                    className="w-full h-full object-cover rounded-md"
+                  >
+                    <source
                       src={`${INFURA_GATEWAY}/ipfs/${
-                        collection?.uri?.image?.split("ipfs://")[1]
+                        collection?.collectionMetadata?.images?.[0]?.split(
+                          "ipfs://"
+                        )[1]
                       }`}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded-md"
-                      draggable={false}
+                      type="video/mp4"
                     />
-                  ))}
+                  </video>
+                ) : (
+                  <Image
+                    src={`${INFURA_GATEWAY}/ipfs/${
+                      collection?.collectionMetadata?.images?.[0]?.split(
+                        "ipfs://"
+                      )[1]
+                    }`}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-md"
+                    draggable={false}
+                  />
+                )}
                 <div className="absolute w-full h-fit flex flex-col gap-2 justify-end ml-auto items-end right-0 top-4">
                   <div
                     className={`relative flex w-fit p-1 rounded-l-md h-fit text-ama font-mana items-end justify-end whitespace-nowrap text-xs bg-black right-0 border border-ama`}
                   >
-                    {Number(collection?.tokenIds?.length) -
-                      (collection?.soldTokens?.length
-                        ? collection?.soldTokens?.length
-                        : 0) ===
-                    0
+                    {Number(collection?.soldTokens) ===
+                    Number(collection?.amount)
                       ? "SOLD OUT"
-                      : `${
-                          Number(collection?.tokenIds?.length) -
-                          (collection?.soldTokens?.length
-                            ? collection?.soldTokens?.length
-                            : 0)
-                        } /
-                  ${Number(collection?.tokenIds?.length)}`}
+                      : `${Number(collection?.soldTokens)} /
+                  ${Number(collection?.amount)}`}
                   </div>
                 </div>
                 <div
@@ -114,9 +110,10 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
                   <div
                     className={`relative w-fit h-fit text-white font-mana words-break flex text-xs p-1 bg-black border border-ama rounded-tl-md rounded-br-md`}
                   >
-                    {collection?.uri?.name?.length! > 12
-                      ? collection?.uri?.name?.slice(0, 12) + "..."
-                      : collection?.uri?.name}
+                    {collection?.collectionMetadata?.title?.length! > 12
+                      ? collection?.collectionMetadata?.title?.slice(0, 12) +
+                        "..."
+                      : collection?.collectionMetadata?.title}
                   </div>
                 </div>
               </div>

@@ -8,12 +8,12 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
   router,
   collection,
   autoProfile,
-  handleShareCollection,
   imageLoading,
   address,
   lensProfile,
   openConnectModal,
   handleLensSignIn,
+  dispatch,
 }): JSX.Element => {
   const pfp = createProfilePicture(autoProfile?.metadata?.picture);
   return (
@@ -21,70 +21,52 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
       className={`relative flex rounded-md w-full h-[40rem]`}
       id="staticLoad"
     >
-      {collection?.uri?.image?.split("ipfs://")[1] &&
-        (!collection?.uri?.type?.includes("video") ? (
-          <Image
-            src={`${INFURA_GATEWAY}/ipfs/${
-              collection?.uri?.image?.split("ipfs://")[1]
-            }`}
-            layout="fill"
-            objectFit="cover"
-            className="rounded-md cursor-pointer hover:opacity-80"
-            draggable={false}
-            onClick={() =>
-              router.push(
-                `/autograph/${
-                  autoProfile?.handle?.suggestedFormatted?.localName?.split(
-                    "@"
-                  )[1]
-                }/collection/${collection?.uri?.name
-                  ?.replaceAll(" ", "_")
-                  ?.toLowerCase()}`
-              )
-            }
-          />
-        ) : (
-          <video
-            muted
-            autoPlay
-            playsInline
-            onClick={() =>
-              router.push(
-                `/autograph/${
-                  autoProfile?.handle?.suggestedFormatted?.localName?.split(
-                    "@"
-                  )[1]
-                }/collection/${collection?.uri?.name
-                  ?.replaceAll(" ", "_")
-                  ?.toLowerCase()}`
-              )
-            }
-            className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80"
-          >
-            <source
-              src={`${INFURA_GATEWAY}/ipfs/${
-                collection?.uri?.image?.split("ipfs://")[1]
-              }`}
-              type="video/mp4"
-            />
-          </video>
-        ))}
-      {collection?.coinOp && (
-        <div
-          className="absolute flex top-2 right-2 w-7 h-7 rounded-full p-px"
-          id="raincode"
-          title="irl fulfillment"
+      {!collection?.collectionMetadata?.mediaTypes?.[0]?.includes("video") ? (
+        <Image
+          src={`${INFURA_GATEWAY}/ipfs/${
+            collection?.collectionMetadata?.images?.[0]?.split("ipfs://")[1]
+          }`}
+          layout="fill"
+          objectFit="cover"
+          className="rounded-md cursor-pointer hover:opacity-80"
+          draggable={false}
+          onClick={() =>
+            router.push(
+              `/autograph/${
+                autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                  "@"
+                )[1]
+              }/collection/${collection?.collectionMetadata?.title
+                ?.replaceAll(" ", "_")
+                ?.toLowerCase()}`
+            )
+          }
+        />
+      ) : (
+        <video
+          muted
+          autoPlay
+          playsInline
+          onClick={() =>
+            router.push(
+              `/autograph/${
+                autoProfile?.handle?.suggestedFormatted?.localName?.split(
+                  "@"
+                )[1]
+              }/collection/${collection?.collectionMetadata?.title
+                ?.replaceAll(" ", "_")
+                ?.toLowerCase()}`
+            )
+          }
+          className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80"
         >
-          <div className="relative w-full h-full bg-black rounded-full">
-            <Image
-              layout="fill"
-              src={`${INFURA_GATEWAY}/ipfs/QmcK1EJdp5HFuqPUds3WjgoSPmoomiWfiroRFa3bQUh5Xj`}
-              objectFit="cover"
-              className="rounded-full"
-              draggable={false}
-            />
-          </div>
-        </div>
+          <source
+            src={`${INFURA_GATEWAY}/ipfs/${
+              collection?.collectionMetadata?.video?.split("ipfs://")[1]
+            }`}
+            type="video/mp4"
+          />
+        </video>
       )}
       <div
         className={`absolute w-5/6 h-fit flex preG:items-center preG:justify-center justify-start items-start z-1 bg-black md:left-20 rounded-t-lg bottom-0`}
@@ -123,36 +105,27 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
             <div
               className={`relative w-fit h-fit text-white font-mana words-break flex text-lg`}
             >
-              {collection?.uri?.name?.length! > 15
-                ? collection?.uri?.name?.slice(0, 12) + "..."
-                : collection?.uri?.name}
+              {collection?.collectionMetadata?.title?.length! > 15
+                ? collection?.collectionMetadata?.title?.slice(0, 12) + "..."
+                : collection?.collectionMetadata?.title}
             </div>
 
             <div
               className={`relative w-fit h-fit text-verde font-mana text-sm words-break flex`}
             >
-              {collection?.drop?.name?.length! > 18
-                ? collection?.drop?.name?.slice(0, 16) + "..."
-                : collection?.drop?.name}
+              {collection?.dropMetadata?.dropTitle?.length! > 18
+                ? collection?.dropMetadata?.dropTitle?.slice(0, 16) + "..."
+                : collection?.dropMetadata?.dropTitle}
             </div>
           </div>
           <div className="relative w-fit h-fit justify-start items-start preG:items-center preG:justify-center gap-2 flex flex-row preG:flex-col">
             <div
               className={`relative flex w-full h-fit text-ama font-mana justify-start whitespace-nowrap pb-2 text-sm`}
             >
-              {Number(collection?.tokenIds?.length) -
-                (collection?.soldTokens?.length
-                  ? collection?.soldTokens?.length
-                  : 0) ===
-              0
+              {Number(collection?.soldTokens) === Number(collection?.amount)
                 ? "SOLD OUT"
-                : `${
-                    Number(collection?.tokenIds?.length) -
-                    (collection?.soldTokens?.length
-                      ? collection?.soldTokens?.length
-                      : 0)
-                  } /
-                  ${Number(collection?.tokenIds?.length)}`}
+                : `${Number(collection?.soldTokens)} /
+                  ${Number(collection?.amount)}`}
             </div>
             <div
               className={`relative text-ama items-start preG:items-center flex cursor-pointer hover:opacity-70 active:scale-95 flex-row gap-1`}
@@ -163,7 +136,7 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
                   ? () => handleLensSignIn()
                   : imageLoading
                   ? () => {}
-                  : () => handleShareCollection(collection!)
+                  : () => dispatch(setQuote(collection!))
               }
             >
               <div className="relative w-6 h-4 flex items-center justify-center preG:items-center preG:justify-center">

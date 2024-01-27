@@ -175,6 +175,9 @@ const Modals = ({ router }: { router: NextRouter }) => {
   const dispatchVideos = useSelector(
     (state: RootState) => state.app.channelsReducer.value
   );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
   const fullScreenVideo = useSelector(
     (state: RootState) => state.app.fullScreenVideoReducer
   );
@@ -206,7 +209,8 @@ const Modals = ({ router }: { router: NextRouter }) => {
     isConnected,
     dispatch,
     collectOpen,
-    publicClient
+    publicClient,
+    oracleData
   );
   const {
     collectInfoLoading: controlsCollectInfoLoading,
@@ -370,7 +374,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
     feedId,
     reactionFeedCount,
     postSent,
-    feedType,
+    
     commentFeed,
     comments,
     paginated,
@@ -576,11 +580,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
       {errorModal.value && <Error />}
       {ipfsModal.value && <IPFS />}
       {successModal.open && (
-        <Success
-          dispatch={dispatch}
-          media={successModal.media}
-          coinOp={successModal.coinOp}
-        />
+        <Success dispatch={dispatch} media={successModal.media} />
       )}
       {indexingModal?.value && (
         <IndexingModal message={indexingModal?.message} />

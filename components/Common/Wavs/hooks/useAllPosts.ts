@@ -26,31 +26,20 @@ import {
   ReactionFeedCountState,
   setReactionFeedCount,
 } from "@/redux/reducers/reactionFeedCountSlice";
-import { setScrollPosRedux } from "@/redux/reducers/scrollPosSlice";
-import { MouseEvent, useEffect, useRef, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { useEffect, useState } from "react";
 import { setPostSent } from "@/redux/reducers/postSentSlice";
-import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 import { setDecryptFeedRedux } from "@/redux/reducers/decryptFeedSlice";
 import {
   DecryptFeedCountState,
   setDecryptFeedCount,
 } from "@/redux/reducers/decryptFeedCountSlice";
 import { setDecryptPaginated } from "@/redux/reducers/decryptPaginatedSlice";
-import { setDecryptScrollPosRedux } from "@/redux/reducers/decryptScrollPosSlice";
 import {
   DecryptProfileFeedCountState,
   setDecryptProfileFeedCount,
 } from "@/redux/reducers/decryptProfileCountSlice";
 import { Collection } from "@/components/Home/types/home.types";
-import {
-  getCollectionsDecrypt,
-  getCollectionsDecryptUpdated,
-} from "@/graphql/subgraph/queries/getAllCollections";
-import {
-  getPublications,
-  getPublicationsAuth,
-} from "@/graphql/lens/queries/getVideos";
+import { getPublications } from "@/graphql/lens/queries/getVideos";
 import { decryptPostArray } from "@/lib/helpers/decryptPost";
 import { AnyAction, Dispatch } from "redux";
 import { NextRouter } from "next/router";
@@ -74,7 +63,6 @@ const useAllPosts = (
   feedId: FeedReactIdState,
   reactionFeedCount: ReactionFeedCountState,
   postSent: boolean,
-  feedType: string,
   commentFeed: CommentFeedCountState,
   comments: Comment[],
   paginated: string | undefined,
@@ -83,8 +71,6 @@ const useAllPosts = (
   decryptProfileFeedCount: DecryptProfileFeedCountState,
   profileFeedCount: ProfileFeedCountState
 ) => {
-  const scrollRef = useRef<InfiniteScroll>(null);
-  const scrollRefDecrypt = useRef<InfiniteScroll>(null);
   const [followerOnly, setFollowerOnly] = useState<boolean[]>(
     Array.from({ length: feedDispatch?.length }, () => false)
   );
@@ -102,10 +88,8 @@ const useAllPosts = (
   const getTimeline = async () => {
     setPostsLoading(true);
     try {
-      let data;
-
-      if (lensProfile?.id) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           where: {
             from: LENS_CREATORS,
             publicationTypes: [
@@ -115,20 +99,9 @@ const useAllPosts = (
             ],
           },
           limit: LimitType.Ten,
-        });
-      } else {
-        data = await getPublications({
-          where: {
-            from: LENS_CREATORS,
-            publicationTypes: [
-              PublicationType.Post,
-              PublicationType.Mirror,
-              PublicationType.Quote,
-            ],
-          },
-          limit: LimitType.Ten,
-        });
-      }
+        },
+        lensProfile?.id
+      );
 
       if (!data || !data?.data || !data?.data?.publications.items) {
         setPostsLoading(false);
@@ -219,10 +192,9 @@ const useAllPosts = (
         setHasMore(false);
         return;
       }
-      let data;
 
-      if (lensProfile?.id) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           where: {
             from: LENS_CREATORS,
             publicationTypes: [
@@ -233,21 +205,9 @@ const useAllPosts = (
           },
           limit: LimitType.Ten,
           cursor: paginated,
-        });
-      } else {
-        data = await getPublications({
-          where: {
-            from: LENS_CREATORS,
-            publicationTypes: [
-              PublicationType.Post,
-              PublicationType.Mirror,
-              PublicationType.Quote,
-            ],
-          },
-          limit: LimitType.Ten,
-          cursor: paginated,
-        });
-      }
+        },
+        lensProfile?.id
+      );
 
       const arr: (Post | Quote | Mirror)[] = [
         ...(data?.data?.publications?.items || []),
@@ -349,10 +309,8 @@ const useAllPosts = (
   const getDecryptFeed = async () => {
     setDecryptLoading(true);
     try {
-      let data;
-
-      if (lensProfile?.id) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           where: {
             metadata: {
               tags: {
@@ -362,20 +320,9 @@ const useAllPosts = (
             publicationTypes: [PublicationType.Post],
           },
           limit: LimitType.Ten,
-        });
-      } else {
-        data = await getPublications({
-          where: {
-            metadata: {
-              tags: {
-                all: ["encrypted", "chromadin", "labyrinth"],
-              },
-            },
-            publicationTypes: [PublicationType.Post],
-          },
-          limit: LimitType.Ten,
-        });
-      }
+        },
+        lensProfile?.id
+      );
 
       if (!data || !data?.data || !data?.data?.publications) {
         setDecryptLoading(false);
@@ -435,10 +382,9 @@ const useAllPosts = (
         setHasMoreDecrypt(false);
         return;
       }
-      let data;
 
-      if (lensProfile?.id) {
-        data = await getPublicationsAuth({
+      const data = await getPublications(
+        {
           where: {
             metadata: {
               tags: {
@@ -449,21 +395,9 @@ const useAllPosts = (
           },
           limit: LimitType.Ten,
           cursor: decryptPaginated,
-        });
-      } else {
-        data = await getPublications({
-          where: {
-            metadata: {
-              tags: {
-                all: ["encrypted", "chromadin", "labyrinth"],
-              },
-            },
-            publicationTypes: [PublicationType.Post],
-          },
-          limit: LimitType.Ten,
-          cursor: decryptPaginated,
-        });
-      }
+        },
+        lensProfile?.id
+      );
 
       const arr: Post[] = [
         ...(data?.data?.publications?.items || []),
@@ -832,14 +766,6 @@ const useAllPosts = (
     }
   };
 
-  const setScrollPos = (e: MouseEvent) => {
-    dispatch(setScrollPosRedux((e.target as HTMLDivElement)?.scrollTop));
-  };
-
-  const setScrollPosDecrypt = (e: MouseEvent) => {
-    dispatch(setDecryptScrollPosRedux((e.target as HTMLDivElement)?.scrollTop));
-  };
-
   const getDecryptCollections = async (): Promise<void> => {
     try {
       let collections: Collection[] = [];
@@ -849,45 +775,8 @@ const useAllPosts = (
           decrypt.collections[name],
           decrypt.owner as string
         );
-        const collectionUpdated = await getCollectionsDecryptUpdated(
-          decrypt.collections[name],
-          decrypt.owner as string
-        );
 
-        let data = [
-          ...((
-            collectionUpdated?.data
-              ?.updatedChromadinCollectionCollectionMinteds || []
-          ).filter(
-            (obj: Collection) =>
-              obj.collectionId !== "4" && obj.collectionId !== "5"
-          ) || []),
-          ...((collection?.data?.collectionMinteds || []).filter(
-            (obj: Collection) =>
-              obj.collectionId !== "104" && obj.collectionId !== "99"
-          ) || []),
-        ];
-        const json = await fetchIPFSJSON(data[0].uri as any);
-
-        const type = await fetch(
-          `${INFURA_GATEWAY}/ipfs/${json.image?.split("ipfs://")[1]}`,
-          { method: "HEAD" }
-        ).then((response) => {
-          if (response.ok) {
-            return response.headers.get("Content-Type");
-          }
-        });
-
-        if (data?.length > 0) {
-          const newCollections = {
-            ...data[0],
-            uri: {
-              ...json,
-              type,
-            },
-          };
-          collections.push(newCollections);
-        }
+        collections.push(collection);
       }
 
       setDecryptCollections(collections);
@@ -944,7 +833,6 @@ const useAllPosts = (
       !router.asPath.includes("&profile=") &&
       feedDispatch?.length < 1
     ) {
-
       if (filterDecrypt) {
         getDecryptFeed();
       } else {
@@ -964,13 +852,9 @@ const useAllPosts = (
     postsLoading,
     fetchMore,
     hasMore,
-    scrollRef,
-    setScrollPos,
     fetchMoreDecrypt,
     decryptLoading,
     hasMoreDecrypt,
-    scrollRefDecrypt,
-    setScrollPosDecrypt,
     followerOnlyDecrypt,
     decryptCollections,
   };

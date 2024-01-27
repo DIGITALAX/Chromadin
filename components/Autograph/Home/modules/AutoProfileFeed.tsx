@@ -15,7 +15,6 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
   hasMoreProfile,
   fetchMoreProfile,
   profileFeed,
-  feedType,
   profileAmounts,
   collectPost,
   mirrorPost,
@@ -91,7 +90,7 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
   setCollectProfileLoading,
   setMirrorProfileLoading,
   setReactProfileLoading,
-  profileType,
+  
   preElement,
   handleImagePaste,
   decryptPost,
@@ -140,12 +139,12 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
                     collectAmount={profileAmounts.collect[index]}
                     commentAmount={profileAmounts.comment[index]}
                     openComment={commentOpen}
-                    feedType={feedType}
+                    
                     router={router}
                     setCollectLoader={setCollectProfileLoading}
                     setMirrorLoader={setMirrorProfileLoading}
                     setReactLoader={setReactProfileLoading}
-                    profileType={profileType}
+                    
                     decryptPost={decryptPost}
                     decryptLoading={decryptLoading}
                     openMirrorChoice={openMirrorChoice}

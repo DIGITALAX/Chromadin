@@ -1,4 +1,3 @@
-import { PreRoll } from "@/components/Common/NFT/types/nft.types";
 import {
   Collection,
   Drop,
@@ -49,7 +48,6 @@ export type AutoProfileFeedProps = {
   mirrorLoading: boolean[];
   reactLoading: boolean[];
   collectLoading: boolean[];
-  profileType: string;
   profileAmounts: ProfileFeedCountState;
   setCollectProfileLoading: (e: boolean[]) => void;
   setMirrorProfileLoading: (e: boolean[]) => void;
@@ -118,7 +116,6 @@ export type AutoProfileFeedProps = {
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  feedType: string;
   profile: Profile | undefined;
   profileCollections?: Collection[];
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
@@ -132,7 +129,7 @@ export type CollectionsProps = {
   autoCollections: Collection[] | undefined;
   router: NextRouter;
   autoProfile: Profile | undefined;
-  handleShareCollection: (collection: Collection) => Promise<void>;
+  dispatch: Dispatch<AnyAction>;
   imageLoading: boolean;
   address: `0x${string}` | undefined;
   lensProfile: Profile | undefined;
@@ -144,23 +141,16 @@ export type CollectionCaseProps = {
   collection: Collection | undefined;
   router: NextRouter;
   autoProfile: Profile | undefined;
-  handleShareCollection: (collection: Collection) => Promise<void>;
   imageLoading: boolean;
   address: `0x${string}` | undefined;
   lensProfile: Profile | undefined;
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
+  dispatch: Dispatch<AnyAction>;
 };
 
 export type DropsProps = {
   router: NextRouter;
   allDrops: Drop[] | undefined;
   autoProfile: Profile | undefined;
-};
-
-export type CoinOpProps = {
-  router: NextRouter;
-  coinOpItems: (PreRoll | undefined)[];
-  autoProfile: Profile | undefined;
-  dispatch: Dispatch<AnyAction>;
 };

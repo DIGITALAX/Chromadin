@@ -127,14 +127,10 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   collectOpen,
   mappedFeaturedFiles,
   postImagesDispatched,
-  feedType,
-  scrollRef,
-  setScrollPos,
-  scrollPos,
+  
   individualAmounts,
   setCollectibleDropDown,
   setTimeLimitDropDown,
-  profileRef,
   hasMoreProfile,
   profileAmounts,
   profileDispatch,
@@ -147,8 +143,6 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   mirrorProfileLoading,
   collectProfileLoading,
   reactProfileLoading,
-  setProfileScroll,
-  profileScroll,
   quickProfiles,
   profileCollections,
   searchProfiles,
@@ -158,7 +152,7 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   hasMoreSearch,
   setProfilesOpenSearch,
   setProfilesFound,
-  profileType,
+  
   preElement,
   filterDecrypt,
   decryptFeed,
@@ -167,18 +161,12 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   hasMoreDecrypt,
   fetchMoreDecrypt,
   followerOnlyDecrypt,
-  decryptScrollPos,
-  setScrollPosDecrypt,
-  scrollRefDecrypt,
   decryptFeedProfile,
   decryptProfileAmounts,
   decryptProfileLoading,
   fetchMoreProfileDecrypt,
   followerOnlyProfileDecrypt,
-  scrollRefDecryptProfile,
-  setScrollPosDecryptProfile,
   hasMoreDecryptProfile,
-  decryptProfileScrollPos,
   handleImagePaste,
   profileCollectionsLoading,
   clientRendered,
@@ -334,15 +322,11 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
           collectOpen={collectOpen}
           mappedFeaturedFiles={mappedFeaturedFiles}
           postImagesDispatched={postImagesDispatched}
-          feedType={feedType}
-          scrollRef={scrollRef}
-          setScrollPos={setScrollPos}
-          scrollPos={scrollPos}
+          
           individualAmounts={individualAmounts}
           router={router}
           setCollectibleDropDown={setCollectibleDropDown}
           setTimeLimitDropDown={setTimeLimitDropDown}
-          profileRef={profileRef}
           hasMoreProfile={hasMoreProfile}
           profileAmounts={profileAmounts}
           profileDispatch={profileDispatch}
@@ -355,8 +339,6 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
           mirrorProfileLoading={mirrorProfileLoading}
           collectProfileLoading={collectProfileLoading}
           reactProfileLoading={reactProfileLoading}
-          setProfileScroll={setProfileScroll}
-          profileScroll={profileScroll}
           quickProfiles={quickProfiles}
           profileCollections={profileCollections}
           searchProfiles={searchProfiles}
@@ -366,7 +348,7 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
           hasMoreSearch={hasMoreSearch}
           setProfilesOpenSearch={setProfilesOpenSearch}
           setProfilesFound={setProfilesFound}
-          profileType={profileType}
+          
           preElement={preElement}
           filterDecrypt={filterDecrypt}
           decryptFeed={decryptFeed}
@@ -375,18 +357,12 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
           hasMoreDecrypt={hasMoreDecrypt}
           fetchMoreDecrypt={fetchMoreDecrypt}
           followerOnlyDecrypt={followerOnlyDecrypt}
-          decryptScrollPos={decryptScrollPos}
-          setScrollPosDecrypt={setScrollPosDecrypt}
-          scrollRefDecrypt={scrollRefDecrypt}
           decryptFeedProfile={decryptFeedProfile}
           decryptProfileAmounts={decryptProfileAmounts}
           decryptProfileLoading={decryptProfileLoading}
           fetchMoreProfileDecrypt={fetchMoreProfileDecrypt}
           followerOnlyProfileDecrypt={followerOnlyProfileDecrypt}
-          scrollRefDecryptProfile={scrollRefDecryptProfile}
-          setScrollPosDecryptProfile={setScrollPosDecryptProfile}
           hasMoreDecryptProfile={hasMoreDecryptProfile}
-          decryptProfileScroll={decryptProfileScrollPos}
           handleImagePaste={handleImagePaste}
           profileCollectionsLoading={profileCollectionsLoading}
           clientRendered={clientRendered}

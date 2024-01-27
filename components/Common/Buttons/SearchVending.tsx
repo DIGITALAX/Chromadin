@@ -3,7 +3,8 @@ import { SearchVendingProps } from "./types/buttons.types";
 import { Collection, Drop } from "@/components/Home/types/home.types";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
-import { QuickProfilesInterface } from "../Wavs/types/wavs.types";
+import { Profile } from "@/components/Home/types/generated";
+import createProfilePicture from "@/lib/helpers/createProfilePicture";
 
 const SearchVending: FunctionComponent<SearchVendingProps> = ({
   handleSearch,
@@ -29,10 +30,15 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
       {searchOpen && (
         <div className="absolute w-full justify-start top-9 right-0 h-40 rounded-br-lg rounded-tl-lg flex flex-col gap-4 bg-black border border-white z-1 overflow-y-scroll py-2 px-1">
           {searchResults?.map(
-            (
-              result: Collection | QuickProfilesInterface | Drop,
-              index: number
-            ) => {
+            (result: Collection | Profile | Drop, index: number) => {
+              const pfp: string | undefined =
+                (result as Profile)?.handle?.suggestedFormatted?.localName &&
+                createProfilePicture((result as Profile)?.metadata?.picture);
+              const name =
+                !(result as Profile)?.handle?.suggestedFormatted?.localName &&
+                (result as Collection)?.acceptedTokens?.length > 0
+                  ? (result as Collection)?.collectionMetadata?.title
+                  : (result as Drop)?.dropDetails?.dropTitle;
               return (
                 <div
                   key={index}
@@ -48,30 +54,37 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
                       }`}
                       id="crt"
                     >
-                      {(result as QuickProfilesInterface)?.handle ? (
+                      {pfp ? (
                         <Image
-                          src={(result as QuickProfilesInterface).image}
+                          src={pfp}
                           className="rounded-md"
                           layout="fill"
                           objectFit="cover"
                           draggable={false}
                         />
                       ) : (
-                        (result as Collection | Drop)?.uri?.image?.split(
-                          "ipfs://"
-                        )[1] && (
-                          <Image
-                            src={`${INFURA_GATEWAY}/ipfs/${
-                              (result as Collection | Drop)?.uri?.image?.split(
-                                "ipfs://"
-                              )[1]
-                            }`}
-                            className="rounded-md"
-                            layout="fill"
-                            objectFit="cover"
-                            draggable={false}
-                          />
-                        )
+                        <Image
+                          src={`${INFURA_GATEWAY}/ipfs/${
+                            (result as Collection)?.acceptedTokens?.length > 0
+                              ? (
+                                  result as Collection
+                                )?.collectionMetadata?.images?.[0]?.split(
+                                  "ipfs://"
+                                )?.[1] ||
+                                (
+                                  result as Collection
+                                )?.collectionMetadata?.mediaCover?.split(
+                                  "ipfs://"
+                                )?.[1]
+                              : (result as Drop)?.dropDetails?.dropCover?.split(
+                                  "ipfs://"
+                                )?.[1]
+                          }`}
+                          className="rounded-md"
+                          layout="fill"
+                          objectFit="cover"
+                          draggable={false}
+                        />
                       )}
                     </div>
                     <div className="relative flex flex-col h-fit w-full items-start justify-center">
@@ -79,40 +92,42 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
                         className={`relative w-fit h-fit justify-start ${
                           (result as Collection)?.acceptedTokens?.length > 0
                             ? "text-ama"
-                            : (result as QuickProfilesInterface)?.handle
+                            : (result as Profile)?.handle?.suggestedFormatted
+                                ?.localName
                             ? "text-moda"
                             : "text-azul"
                         }  font-arcade flex`}
                       >
                         {(result as Collection)?.acceptedTokens?.length > 0
                           ? "Collection"
-                          : (result as QuickProfilesInterface)?.handle
+                          : (result as Profile)?.handle?.suggestedFormatted
+                              ?.localName
                           ? "Profile"
                           : "Drop"}
                       </div>
                       <div className="relative w-full h-fit justify-start items-center text-xs">
-                        {(result as Collection | Drop)?.uri?.name
-                          ? (
-                              mainPage
-                                ? (result as Collection)?.uri?.name?.length > 20
-                                : (result as Collection)?.uri?.name?.length > 10
-                            )
+                        {name
+                          ? (mainPage ? name?.length > 20 : name?.length > 10)
                             ? (mainPage
-                                ? (result as Collection)?.uri?.name?.slice(
-                                    0,
-                                    18
-                                  )
-                                : (result as Collection)?.uri?.name?.slice(
-                                    0,
-                                    8
-                                  )) + "..."
-                            : (result as Collection)?.uri?.name
-                          : (result as QuickProfilesInterface)?.handle?.length >
-                            10
+                                ? name?.slice(0, 18)
+                                : name?.slice(0, 8)) + "..."
+                            : name
+                          : Number(
+                              (result as Profile)?.handle?.suggestedFormatted
+                                ?.localName?.length
+                            ) > 10
                           ? `${(
-                              result as QuickProfilesInterface
-                            )?.handle?.slice(0, 8)}` + "..."
-                          : `${(result as QuickProfilesInterface)?.handle}`}
+                              result as Profile
+                            )?.handle?.suggestedFormatted?.localName
+                              ?.split("@")?.[1]
+                              ?.slice(0, 8)}` + "..."
+                          : `${
+                              (
+                                result as Profile
+                              )?.handle?.suggestedFormatted?.localName?.split(
+                                "@"
+                              )?.[1]
+                            }`}
                       </div>
                     </div>
                   </div>

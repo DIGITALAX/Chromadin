@@ -1,35 +1,51 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { History } from "@/components/Common/Interactions/types/interactions.types";
+import { createSlice } from "@reduxjs/toolkit";
 
-export interface HasMoreHistorysState {
-  value: {
-    old: boolean;
-    new: boolean;
-  };
+export interface HistoryDataState {
+  hasMoreBuyerHistory: boolean;
+  hasMoreAllHistory: boolean;
+  buyerHistory: History[];
+  allHistory: History[];
+  buyerSkip: number;
+  allSkip: number;
 }
 
-const initialHasMoreHistorysState: HasMoreHistorysState = {
-  value: {
-    old: true,
-    new: true,
-  },
+const initialHistoryDataState: HistoryDataState = {
+  buyerHistory: [],
+  allHistory: [],
+  hasMoreBuyerHistory: true,
+  hasMoreAllHistory: true,
+  buyerSkip: 0,
+  allSkip: 0,
 };
 
-export const hasMoreHistorysSlice = createSlice({
-  name: "hasMoreHistorys",
-  initialState: initialHasMoreHistorysState,
+export const historyDataSlice = createSlice({
+  name: "historyData",
+  initialState: initialHistoryDataState,
   reducers: {
-    setHasMoreHistorysRedux: (
-      state: HasMoreHistorysState,
-      action: PayloadAction<{
-        old: boolean;
-        new: boolean;
-      }>
+    setHistoryDataRedux: (
+      state: HistoryDataState,
+      {
+        payload: {
+          actionBuyerHistory,
+          actionAllHistory,
+          actionHasMoreBuyerHistory,
+          actionHasMoreHistory,
+          actionAllSkip,
+          actionBuyerSkip,
+        },
+      }
     ) => {
-      state.value = action.payload;
+      state.buyerHistory = actionBuyerHistory;
+      state.allHistory = actionAllHistory;
+      state.hasMoreAllHistory = actionHasMoreHistory;
+      state.hasMoreBuyerHistory = actionHasMoreBuyerHistory;
+      state.buyerSkip = actionBuyerSkip;
+      state.allSkip = actionAllSkip;
     },
   },
 });
 
-export const { setHasMoreHistorysRedux } = hasMoreHistorysSlice.actions;
+export const { setHistoryDataRedux } = historyDataSlice.actions;
 
-export default hasMoreHistorysSlice.reducer;
+export default historyDataSlice.reducer;

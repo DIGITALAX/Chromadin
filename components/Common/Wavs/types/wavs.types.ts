@@ -1,7 +1,6 @@
 import { Collection } from "@/components/Home/types/home.types";
 import {
   Erc20,
-  FollowModule,
   Profile,
   Post,
   Mirror,
@@ -14,7 +13,6 @@ import { DecryptProfileFeedCountState } from "@/redux/reducers/decryptProfileCou
 import { IndividualFeedCountState } from "@/redux/reducers/individualFeedCountReducer";
 import { ProfileFeedCountState } from "@/redux/reducers/profileFeedCountSlice";
 import { ReactionFeedCountState } from "@/redux/reducers/reactionFeedCountSlice";
-import { Url } from "next/dist/shared/lib/router/router";
 import { NextRouter } from "next/router";
 import {
   ClipboardEvent,
@@ -24,7 +22,6 @@ import {
   Ref,
   RefObject,
 } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { AnyAction, Dispatch } from "redux";
 
 export enum MediaType {
@@ -80,12 +77,12 @@ export type FeedPublicationProps = {
   collectAmount: number;
   mirrorAmount: number;
   commentAmount: number;
-  feedType: string;
+  
   setCollectLoader?: (e: boolean[]) => void;
   setReactLoader?: (e: boolean[]) => void;
   setMirrorLoader?: (e: boolean[]) => void;
   openComment: string;
-  profileType: string;
+
   decryptPost?:
     | ((post: Post | Mirror | Quote | Comment) => Promise<void>)
     | ((post: Post) => Promise<void>);
@@ -134,9 +131,8 @@ export type ProfileSideBarProps = {
   setReactLoader?: (e: boolean[]) => void;
   setMirrorLoader?: (e: boolean[]) => void;
   openComment: string;
-  feedType: string;
+  
   router: NextRouter;
-  profileType: string;
 };
 
 export type ReactionProps = {
@@ -183,8 +179,8 @@ export type ReactionProps = {
   setReactLoader?: (e: boolean[]) => void;
   setMirrorLoader?: (e: boolean[]) => void;
   openComment: string;
-  feedType: string;
-  profileType: string;
+  
+
   router: NextRouter;
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
@@ -232,7 +228,7 @@ export type FeedProps = {
   mirrorLoading: boolean[];
   reactLoading: boolean[];
   collectLoading: boolean[];
-  profileType: string;
+
   reactionAmounts: ReactionFeedCountState;
   mainPost: Post | Mirror | Quote | Comment;
   followerOnlyMain: boolean;
@@ -317,18 +313,13 @@ export type FeedProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  feedType: string;
-  scrollRef: Ref<InfiniteScroll>;
-  setScrollPos: (e: MouseEvent) => void;
-  scrollPos: number;
+  
   individualAmounts: IndividualFeedCountState;
   fetchMoreProfile: () => Promise<void>;
   hasMoreProfile: boolean;
   followerOnlyProfile: boolean[];
-  profileRef: Ref<InfiniteScroll>;
   profileDispatch: (Post | Mirror | Quote)[];
   profileAmounts: ProfileFeedCountState;
   profileLoading: boolean;
@@ -338,9 +329,7 @@ export type FeedProps = {
   collectProfileLoading: boolean[];
   mirrorProfileLoading: boolean[];
   reactProfileLoading: boolean[];
-  setProfileScroll: (e: MouseEvent) => void;
-  profileScroll: number;
-  quickProfiles: QuickProfilesInterface[];
+  quickProfiles: Profile[];
   profileCollections: Collection[];
   searchProfiles: (e: FormEvent) => Promise<void>;
   profilesFound: Profile[];
@@ -356,18 +345,12 @@ export type FeedProps = {
   decryptLoading: boolean;
   fetchMoreDecrypt: () => Promise<void>;
   hasMoreDecrypt: boolean;
-  decryptScrollPos: number;
-  setScrollPosDecrypt: (e: MouseEvent) => void;
-  scrollRefDecrypt: Ref<InfiniteScroll>;
   decryptFeedProfile: (Post | Mirror | Quote)[];
   decryptProfileAmounts: DecryptProfileFeedCountState;
   decryptProfileLoading: boolean;
   fetchMoreProfileDecrypt: () => Promise<void>;
   followerOnlyProfileDecrypt: boolean[];
-  scrollRefDecryptProfile: Ref<InfiniteScroll>;
-  setScrollPosDecryptProfile: (e: MouseEvent) => void;
   hasMoreDecryptProfile: boolean;
-  decryptProfileScrollPos: number;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
   profileCollectionsLoading: boolean;
 };
@@ -427,9 +410,9 @@ export type IndividualProps = {
   router: NextRouter;
   dispatch: Dispatch<AnyAction>;
   mainPost: Post | Mirror | Quote | Comment;
-  feedType: string;
+  
   history: string;
-  profileType: string;
+
   lensProfile: Profile | undefined;
   clientRendered: boolean;
   openPostMirrorChoice: boolean[];
@@ -555,7 +538,7 @@ export type CommentsProps = {
   mirrorLoading: boolean[];
   reactLoading: boolean[];
   collectLoading: boolean[];
-  feedType: string;
+  
   dispatch: Dispatch<AnyAction>;
   address: `0x${string}` | undefined;
   followerOnly: boolean[];
@@ -648,7 +631,7 @@ export type CommentsProps = {
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
   commentId: string;
   openComment: string;
-  profileType: string;
+
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
 };
 
@@ -661,6 +644,12 @@ export interface PostImage {
   item: string;
   type: string;
   altTag: string;
+}
+
+export interface OracleData {
+  currency: string;
+  rate: string;
+  wei: string;
 }
 
 export interface CollectValueType {
@@ -833,7 +822,7 @@ export type ProfileFeedProps = {
   mirrorLoading: boolean[];
   reactLoading: boolean[];
   collectLoading: boolean[];
-  profileType: string;
+
   profileAmounts: ProfileFeedCountState;
   setCollectProfileLoading: (e: boolean[]) => void;
   setMirrorProfileLoading: (e: boolean[]) => void;
@@ -901,13 +890,9 @@ export type ProfileFeedProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  feedType: string;
-  profileRef: Ref<InfiniteScroll> | undefined;
-  setScrollPos?: (e: MouseEvent) => void;
-  scrollPos?: number;
+  
   profile: Profile | undefined;
   profileCollections?: Collection[];
   filterDecrypt: boolean;
@@ -915,10 +900,7 @@ export type ProfileFeedProps = {
   decryptProfileAmounts: DecryptProfileFeedCountState;
   fetchMoreProfileDecrypt: () => Promise<void>;
   followerOnlyProfileDecrypt: boolean[];
-  scrollRefDecryptProfile?: Ref<InfiniteScroll>;
-  setScrollPosDecryptProfile?: (e: MouseEvent) => void;
   hasMoreDecryptProfile: boolean;
-  decryptProfileScrollPos?: number;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
 };
 
@@ -936,7 +918,7 @@ export type SwitchProps = {
   followerOnly: boolean[];
   feedDispatch: (Post | Mirror | Quote)[];
   hasMore: boolean;
-  profileType: string;
+
   fetchMore: () => Promise<void>;
   address: `0x${string}` | undefined;
   collectPost: (
@@ -1023,14 +1005,9 @@ export type SwitchProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  feedType: string;
-  scrollRef: Ref<InfiniteScroll>;
-  profileRef: Ref<InfiniteScroll>;
-  setScrollPos: (e: MouseEvent) => void;
-  scrollPos: number;
+  
   profile: Profile | undefined;
   hasMoreProfile: boolean;
   fetchMoreProfile: () => Promise<void>;
@@ -1043,9 +1020,7 @@ export type SwitchProps = {
   collectProfileLoading: boolean[];
   mirrorProfileLoading: boolean[];
   reactProfileLoading: boolean[];
-  setProfileScroll: (e: MouseEvent) => void;
-  profileScroll: number;
-  quickProfiles: QuickProfilesInterface[];
+  quickProfiles: Profile[];
   profileCollections: Collection[];
   searchProfiles: (e: FormEvent) => Promise<void>;
   profilesFound: Profile[];
@@ -1059,19 +1034,12 @@ export type SwitchProps = {
   followerOnlyDecrypt: boolean[];
   fetchMoreDecrypt: () => Promise<void>;
   hasMoreDecrypt: boolean;
-  decryptScrollPos: number;
-  setScrollPosDecrypt: (e: MouseEvent) => void;
-  scrollRefDecrypt: Ref<InfiniteScroll>;
   decryptFeedProfile: (Post | Mirror | Quote)[];
   decryptProfileAmounts: DecryptProfileFeedCountState;
   fetchMoreProfileDecrypt: () => Promise<void>;
   followerOnlyProfileDecrypt: boolean[];
-  scrollRefDecryptProfile: Ref<InfiniteScroll>;
-  setScrollPosDecryptProfile: (e: MouseEvent) => void;
   hasMoreDecryptProfile: boolean;
-  decryptProfileScrollPos: number;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
-
   profileCollectionsLoading: boolean;
 };
 
@@ -1172,14 +1140,10 @@ export type AllPostsProps = {
   timeLimitDropDown: boolean;
   setTimeLimitDropDown: (e: boolean) => void;
   collectNotif: string;
-
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  feedType: string;
-  scrollRef: Ref<InfiniteScroll>;
-  setScrollPos: (e: MouseEvent) => void;
-  scrollPos: number;
-  quickProfiles: QuickProfilesInterface[];
+  
+  quickProfiles: Profile[];
   searchProfiles: (e: FormEvent) => Promise<void>;
   profilesFound: Profile[];
   profilesOpenSearch: boolean;
@@ -1187,29 +1151,17 @@ export type AllPostsProps = {
   fetchMoreSearch: () => Promise<void>;
   setProfilesOpenSearch: (e: boolean) => void;
   setProfilesFound: (e: Profile[]) => void;
-  profileType: string;
+
   decryptFeed: (Post | Mirror | Quote)[];
   decryptAmounts: DecryptFeedCountState;
   followerOnlyDecrypt: boolean[];
   fetchMoreDecrypt: () => Promise<void>;
   hasMoreDecrypt: boolean;
-  decryptScrollPos: number;
-  setScrollPosDecrypt: (e: MouseEvent) => void;
-  scrollRefDecrypt: Ref<InfiniteScroll>;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
 };
 
-export interface QuickProfilesInterface {
-  handle: string;
-  id: string;
-  image: string;
-  followModule: FollowModule;
-  name: string;
-  ownedBy: string;
-}
-
 export type QuickProfilesProps = {
-  quickProfiles: QuickProfilesInterface[];
+  quickProfiles: Profile[];
   router: NextRouter;
 };
 

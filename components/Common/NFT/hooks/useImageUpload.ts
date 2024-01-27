@@ -48,12 +48,6 @@ const useImageUpload = (
     }
     let finalImages: UploadedMedia[] = [];
     dispatch(setImageLoadingRedux(true));
-    // if (
-    //   fileLimitAlert(pasted ? (e as File[])[0] : (e as any).target.files[0])
-    // ) {
-    //   setImageLoading(false);
-    //   return;
-    // }
     let uploadCounter = 0; // add a counter here
     const numberOfFiles = pasted
       ? (e as File[]).length
@@ -138,9 +132,6 @@ const useImageUpload = (
       if ((e as any).target.files.length < 1) {
         return;
       }
-      // if (videoLimitAlert((e as any).target.files[0])) {
-      //   return;
-      // }
       setVideoLoading(true);
       const response = await fetch("/api/ipfs", {
         method: "POST",

@@ -21,8 +21,8 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
   const hasMoreCollections = useSelector(
     (state: RootState) => state.app.hasMoreCollectionReducer.value
   );
-  const allDrops = useSelector(
-    (state: RootState) => state.app.dropsReducer.value
+  const lensProfile = useSelector(
+    (state: RootState) => state.app.lensProfileReducer.profile
   );
   const paginated = useSelector(
     (state: RootState) => state.app.collectionPaginatedReducer
@@ -45,9 +45,9 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
     dispatch,
     dispatchCollections,
     paginated,
-    allDrops,
     hasMoreCollections,
-    quickProfiles
+    quickProfiles,
+    lensProfile
   );
   return (
     <div className="relative w-full h-fit preG:h-60 flex flex-row items-center md:pt-0 pt-6">
@@ -65,10 +65,7 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
               className="flex cursor-pointer active:scale-95"
               onClick={async () => {
                 if (moreCollectionsLoading) return;
-                if (
-                  (hasMoreCollections.new || hasMoreCollections.old) &&
-                  currentIndex === 0
-                ) {
+                if (hasMoreCollections && currentIndex === 0) {
                   await handleGetMoreCollections();
                 }
                 moveBackward();
@@ -92,7 +89,7 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
               onClick={async () => {
                 if (moreCollectionsLoading) return;
                 if (
-                  (hasMoreCollections.new || hasMoreCollections.old) &&
+                  hasMoreCollections &&
                   currentIndex === dispatchCollections.length - 6
                 ) {
                   await handleGetMoreCollections();

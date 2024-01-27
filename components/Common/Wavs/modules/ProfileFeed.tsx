@@ -18,10 +18,7 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
   hasMoreProfile,
   fetchMoreProfile,
   profileDispatch,
-  setScrollPos,
-  profileRef,
-  feedType,
-  scrollPos,
+  
   profileAmounts,
   collectPost,
   mirrorPost,
@@ -97,17 +94,14 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
   setReactProfileLoading,
   profile,
   profileCollections,
-  profileType,
+  
   preElement,
   filterDecrypt,
   hasMoreDecryptProfile,
-  scrollRefDecryptProfile,
-  setScrollPosDecryptProfile,
   decryptFeedProfile,
   decryptProfileAmounts,
   openMirrorChoice,
   setOpenMirrorChoice,
-  decryptProfileScrollPos,
   fetchMoreProfileDecrypt,
   followerOnlyProfileDecrypt,
   handleImagePaste,
@@ -155,24 +149,6 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
           style={{ color: "#131313", fontFamily: "Digi Reg" }}
           scrollThreshold={0.9}
           scrollableTarget={"scrollableDiv"}
-          ref={filterDecrypt ? scrollRefDecryptProfile : profileRef}
-          onScroll={
-            (filterDecrypt
-              ? (e: MouseEvent) =>
-                  setScrollPosDecryptProfile && setScrollPosDecryptProfile(e)
-              : (e: MouseEvent) => setScrollPos && setScrollPos(e)) as any
-          }
-          initialScrollY={
-            feedType === ""
-              ? decryptProfileAmounts
-                ? decryptProfileScrollPos
-                  ? decryptProfileScrollPos
-                  : 0
-                : scrollPos
-                ? scrollPos
-                : 0
-              : 0
-          }
         >
           <div className="w-full h-full relative flex flex-col gap-4 pb-3">
             {(filterDecrypt ? decryptFeedProfile : profileDispatch)?.map(
@@ -248,12 +224,12 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
                           : profileAmounts.comment[index]
                       }
                       openComment={commentOpen}
-                      feedType={feedType}
+                      
                       router={router}
                       setCollectLoader={setCollectProfileLoading}
                       setMirrorLoader={setMirrorProfileLoading}
                       setReactLoader={setReactProfileLoading}
-                      profileType={profileType}
+                      
                     />
                     {(publication?.__typename === "Mirror"
                       ? publication?.mirrorOn?.id

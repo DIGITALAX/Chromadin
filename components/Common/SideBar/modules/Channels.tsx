@@ -16,7 +16,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
   scrollHeight,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-100 lg:h-128 flex flex-col overflow-y-scroll border border-white/80">
+    <div className="relative w-full h-100 lg:h-full flex flex-col overflow-y-scroll border border-white/80">
       {videoSync.videosLoading ? (
         <>
           {Array.from({ length: 10 }).map((_: any, index: number) => {

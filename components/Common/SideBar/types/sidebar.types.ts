@@ -4,9 +4,9 @@ import { VideoSyncState } from "@/redux/reducers/videoSyncSlice";
 import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
 import { MainNFT } from "../../NFT/types/nft.types";
-import { Details } from "@/redux/reducers/fulfillmentDetailsSlice";
 import { Collection } from "@/components/Home/types/home.types";
 import { History } from "../../Interactions/types/interactions.types";
+import { HistoryDataState } from "@/redux/reducers/hasMoreHistoryReducer";
 
 export type ChannelsProps = {
   dispatch: Dispatch<AnyAction>;
@@ -109,46 +109,21 @@ export type SideBarProps = {
   hasMoreCollects: boolean;
   router: NextRouter;
   mainVideo: MainVideoState;
-  historyReducer: History[];
+  historyData: HistoryDataState;
   historyLoading: boolean;
-  buyerHistoryReducer: History[];
   historySwitch: boolean;
   setHistorySwitch: (e: boolean) => void;
-  moreHistoryLoading: boolean;
   getMoreUserHistory: () => Promise<void>;
   getMoreBuyerHistory: () => Promise<void>;
-  hasMoreHistory: {
-    old: boolean;
-    new: boolean;
-  };
-  hasMoreHistorySpecific: {
-    old: boolean;
-    new: boolean;
-  };
   address: `0x${string}` | undefined;
-  chain: any;
-  openChainModal: (() => void) | undefined;
-  baseColor: number;
-  selectSize: number;
-  setBaseColor: (e: number) => void;
-  setSelectSize: (e: number) => void;
   currency: string;
   setCurrency: (e: string) => void;
-  imageIndex: number;
-  setImageIndex: (e: number) => void;
   totalAmount: number;
   approved: boolean;
   mainNFT: MainNFT | undefined;
   approveSpend: () => Promise<void>;
   buyNFT: () => void;
   purchaseLoading: boolean;
-  viewScreenNFT: boolean;
-  setViewScreenNFT: (e: boolean) => void;
-  oracleValue: number;
-  cryptoCheckoutLoading: boolean;
-  encryptedInformation: string[] | undefined;
-  handleCheckoutCrypto: () => Promise<void>;
-  fulfillmentDetails: Details;
   isCreator: boolean;
   action: string;
   collections: Collection[];

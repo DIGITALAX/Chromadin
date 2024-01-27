@@ -9,24 +9,16 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import FetchMoreLoading from "../../Loading/FetchMoreLoading";
 
 const History: FunctionComponent<HistoryProps> = ({
-  historyReducer,
   historyLoading,
-  buyerHistoryReducer,
   historySwitch,
   setHistorySwitch,
-  moreHistoryLoading,
   getMoreUserHistory,
   getMoreBuyerHistory,
-  hasMoreHistory,
-  hasMoreHistorySpecific,
+  historyData
 }): JSX.Element => {
   return (
     <div
-      className={`relative w-full flex flex-col items-center justify-center bg-black border-t border-white ${
-        history?.length === 0 && historyReducer?.length === 0
-          ? "h-full"
-          : "h-full xl:h-[45.8rem]"
-      }`}
+      className={`relative w-full flex flex-col items-center justify-center bg-black border-t border-white h-full xl:h-[45.8rem]`}
     >
       <div className="relative w-full h-16 max-h-20 flex flex-row border-white border-b text-white font-earl text-sm">
         <div
@@ -80,8 +72,8 @@ const History: FunctionComponent<HistoryProps> = ({
         </div>
       ) : (
           historySwitch
-            ? buyerHistoryReducer?.length === 0
-            : historyReducer?.length === 0
+            ? historyData?.buyerHistory?.length === 0
+            : historyData?.allHistory?.length === 0
         ) ? (
         <div className="relative w-full h-full flex flex-col items-center justify-center font-earl text-moda text-center p-3">
           Nothing to see here.
@@ -95,24 +87,16 @@ const History: FunctionComponent<HistoryProps> = ({
         </div>
       ) : (
         <InfiniteScroll
-          hasMore={
-            historySwitch
-              ? hasMoreHistorySpecific?.new
-                ? hasMoreHistorySpecific?.new
-                : hasMoreHistorySpecific?.old
-              : hasMoreHistory?.new
-              ? hasMoreHistory?.new
-              : hasMoreHistory?.old
-          }
+          hasMore={historySwitch ? historyData?.hasMoreBuyerHistory : historyData?.hasMoreAllHistory}
           height={"20rem"}
           loader={<FetchMoreLoading size="3" />}
           dataLength={
-            historySwitch ? buyerHistoryReducer?.length : historyReducer?.length
+            historySwitch ? historyData?.buyerHistory?.length : historyData?.allHistory?.length
           }
           next={historySwitch ? getMoreBuyerHistory : getMoreUserHistory}
           className="relative w-full h-full flex flex-col overflow-y-scroll gap-8 p-3 lg:flex-nowrap flex-nowrap preG:flex-wrap items-start"
         >
-          {(historySwitch ? buyerHistoryReducer : historyReducer)?.map(
+          {(historySwitch ? historyData?.buyerHistory : historyData?.allHistory)?.map(
             (value: History, index: number) => {
               const pfp = createProfilePicture(
                 value.profile?.metadata?.picture
@@ -131,7 +115,9 @@ const History: FunctionComponent<HistoryProps> = ({
                   >
                     <Image
                       src={`${INFURA_GATEWAY}/ipfs/${
-                        value.uri.image.split("ipfs://")[1]
+                        value.collection?.collectionMetadata?.images?.[0].split(
+                          "ipfs://"
+                        )[1]
                       }`}
                       layout="fill"
                       objectFit="cover"
@@ -171,18 +157,14 @@ const History: FunctionComponent<HistoryProps> = ({
                       {value.transactionHash.slice(0, 14) + "..."}
                     </div>
                     <div className="relative text-white font-arcade flex items-center justify-start text-sm w-fit h-fit">
-                      {Number(value.totalPrice) /
-                        (value.chosenAddress ===
-                        "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
-                          ? 10 ** 6
-                          : 10 ** 18)}{" "}
-                      {value.chosenAddress ===
+                      {Number(value.totalPrice) / 10 ** 18}{" "}
+                      {value.currency ===
                       "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
                         ? "USDT"
-                        : value.chosenAddress ===
+                        : value.currency ===
                           "0x6968105460f67c3bf751be7c15f92f5286fd0ce5"
                         ? "MONA"
-                        : value.chosenAddress ===
+                        : value.currency ===
                           "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
                         ? "WMATIC"
                         : "WETH"}

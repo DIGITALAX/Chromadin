@@ -3,15 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface CollectionPaginatedState {
   skip: number;
   first: number;
-  skipUpdated: number;
-  firstUpdated: number;
 }
 
 const initialCollectionPaginatedState: CollectionPaginatedState = {
   skip: 12,
   first: 12,
-  skipUpdated: 12,
-  firstUpdated: 12,
 };
 
 export const collectionPaginatedSlice = createSlice({
@@ -20,19 +16,10 @@ export const collectionPaginatedSlice = createSlice({
   reducers: {
     setCollectionPaginated: (
       state: CollectionPaginatedState,
-      {
-        payload: {
-          actionSkip,
-          actionFirst,
-          actionSkipUpdated,
-          actionFirstUpdated,
-        },
-      }
+      { payload: { actionSkip, actionFirst } }
     ) => {
       state.skip = actionSkip;
       state.first = actionFirst;
-      state.skipUpdated = actionSkipUpdated;
-      state.firstUpdated = actionFirstUpdated;
     },
   },
 });

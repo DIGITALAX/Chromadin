@@ -15,7 +15,7 @@ const InDrop: FunctionComponent<InDropProps> = ({
   }
   return (
     <div className="relative w-full h-40 flex flex-col justify-center items-end text-right">
-      <div className="relative w-fit h-fit text-white font-arcade text-base">{`More Collections in ${autoCollection?.drop?.name}`}</div>
+      <div className="relative w-fit h-fit text-white font-arcade text-base">{`More Collections in ${autoCollection?.dropMetadata?.dropTitle}`}</div>
       <div className="relative w-full sm:w-128 h-fit flex overflow-x-scroll justify-end">
         <div className="relative grid grid-flow-col auto-cols-auto gap-2 overflow-x-scroll overflow-y-hidden">
           {otherCollectionsDrop?.map((coll: Collection, index: number) => {
@@ -30,43 +30,40 @@ const InDrop: FunctionComponent<InDropProps> = ({
                       autoProfile?.handle?.suggestedFormatted?.localName?.split(
                         "@"
                       )[1]
-                    }/collection/${coll?.name
+                    }/collection/${coll?.collectionMetadata?.title
                       ?.replace(/\s/g, "_")
                       ?.toLowerCase()}`
                   )
                 }
               >
-                {coll.uri.image?.split("ipfs://")[1] &&
-                  (!coll.uri.type.includes("video") ? (
-                    <Image
-                      layout="fill"
-                      className="rounded-md w-full h-full flex"
-                      objectFit="cover"
-                      objectPosition={"center"}
+                {!coll.collectionMetadata?.mediaTypes?.[0].includes("video") ? (
+                  <Image
+                    layout="fill"
+                    className="rounded-md w-full h-full flex"
+                    objectFit="cover"
+                    objectPosition={"center"}
+                    src={`${INFURA_GATEWAY}/ipfs/${
+                      coll.collectionMetadata?.images?.[0]?.split("ipfs://")[1]
+                    }`}
+                    draggable={false}
+                  />
+                ) : (
+                  <video
+                    muted
+                    autoPlay
+                    playsInline
+                    loop
+                    key={coll.collectionMetadata.video}
+                    className="w-full h-full object-cover rounded-md flex"
+                  >
+                    <source
                       src={`${INFURA_GATEWAY}/ipfs/${
-                        coll.uri.image?.split("ipfs://")[1]
+                        coll?.collectionMetadata?.video?.split("ipfs://")[1]
                       }`}
-                      draggable={false}
+                      type="video/mp4"
                     />
-                  ) : (
-                    coll.uri.image && (
-                      <video
-                        muted
-                        autoPlay
-                        playsInline
-                        loop
-                        key={coll.uri.image}
-                        className="w-full h-full object-cover rounded-md flex"
-                      >
-                        <source
-                          src={`${INFURA_GATEWAY}/ipfs/${
-                            coll.uri.image?.split("ipfs://")[1]
-                          }`}
-                          type="video/mp4"
-                        />
-                      </video>
-                    )
-                  ))}
+                  </video>
+                )}
                 <div className="relative absolute top-0 left-0 bg-black opacity-60 w-full h-full rounded-md hover:opacity-0"></div>
               </div>
             );

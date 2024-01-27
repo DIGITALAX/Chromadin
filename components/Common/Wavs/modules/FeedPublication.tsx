@@ -34,13 +34,11 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
   mirrorAmount,
   collectAmount,
   commentAmount,
-  feedType,
   setCollectLoader,
   setReactLoader,
   setMirrorLoader,
   openComment,
   router,
-  profileType,
   decryptPost,
   decryptLoading,
   hasCollected,
@@ -80,9 +78,7 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
         setReactLoader={setReactLoader}
         setMirrorLoader={setMirrorLoader}
         openComment={openComment}
-        feedType={feedType}
         router={router}
-        profileType={profileType}
         hasCollected={hasCollected}
         openMirrorChoice={openMirrorChoice}
         setOpenMirrorChoice={setOpenMirrorChoice}
@@ -306,10 +302,9 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               : "row-start-3"
           } grid grid-flow-col auto-cols-auto justify-end items-end`}
         >
-          {(feedType !==
-            (publication?.__typename !== "Mirror"
-              ? publication?.id
-              : publication?.mirrorOn.id) ||
+          {((publication?.__typename !== "Mirror"
+            ? publication?.id
+            : publication?.mirrorOn.id) ||
             (publication?.__typename === "Mirror"
               ? publication?.mirrorOn
               : (publication as Post)

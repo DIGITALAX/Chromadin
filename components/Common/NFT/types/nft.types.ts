@@ -1,13 +1,7 @@
 import { UploadedMedia } from "@/components/Home/types/home.types";
-import { Comment, Erc20, Profile } from "@/components/Home/types/generated";
+import { Erc20, Post, Profile } from "@/components/Home/types/generated";
 import { NextRouter } from "next/router";
-import {
-  ClipboardEvent,
-  FormEvent,
-  KeyboardEvent,
-  Ref,
-  RefObject,
-} from "react";
+import { ClipboardEvent, FormEvent, KeyboardEvent, RefObject } from "react";
 import { AnyAction, Dispatch } from "redux";
 
 export type NFTProps = {
@@ -167,51 +161,23 @@ export type MainDropProps = {
   router: NextRouter;
 };
 
-export interface PreRoll {
-  collectionId: number;
-  name: string;
-  uri: {
-    image: string[];
-    prompt: string;
-    tags: string[];
-    category: string;
-    profile: Profile;
-  };
-  currentIndex: number;
-  amount: number;
-  soldTokens: number;
-  colors: string[];
-  sizes: string[];
-  price: number[];
-  printType: string;
-  bgColor: string;
-  chosenColor: string;
-  chosenSize: string;
-  fulfillerAddress: string;
-}
-
 export interface MainNFT {
-  name: string;
-  media: string;
-  audio?: string;
-  coinOp?: PreRoll;
+  title: string;
+  image: string;
+  audio: string;
+  video: string;
+  mediaCover: string;
   description: string;
-  drop: {
-    name: string;
-    image: string;
-  };
   type: string;
-  creator: {
-    media: string;
-    name: string;
+  drop: {
+    dropTitle: string;
+    dropCover: string;
   };
-  price: string[];
+  prices: string[];
   acceptedTokens: string[];
   amount: string;
-  tokenIds: string[];
-  tokensSold: string[] | null;
-  blockNumber: string;
-  hasAudio: boolean;
+  soldTokens: string;
+  publication: Post;
 }
 
 export type DescriptionProps = {
