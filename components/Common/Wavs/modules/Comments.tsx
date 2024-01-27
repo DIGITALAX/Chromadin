@@ -11,7 +11,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
   mirrorLoading,
   reactLoading,
   collectLoading,
-  
+
   dispatch,
   address,
   followerOnly,
@@ -86,13 +86,14 @@ const Comments: FunctionComponent<CommentsProps> = ({
   commentId,
   openComment,
   router,
-  
+  profileType,
   preElement,
   handleImagePaste,
   clientRendered,
   openMirrorChoice,
   setOpenMirrorChoice,
-  lensProfile
+  lensProfile,
+  feedType,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex min-w-full">
@@ -128,6 +129,8 @@ const Comments: FunctionComponent<CommentsProps> = ({
                   key={index}
                 >
                   <FeedPublication
+                    feedType={feedType}
+                    profileType={profileType}
                     dispatch={dispatch}
                     openMirrorChoice={openMirrorChoice}
                     setOpenMirrorChoice={setOpenMirrorChoice}
@@ -148,13 +151,11 @@ const Comments: FunctionComponent<CommentsProps> = ({
                     mirrorAmount={commentAmounts?.mirror?.[index]}
                     collectAmount={commentAmounts?.collect?.[index]}
                     commentAmount={commentAmounts?.comment?.[index]}
-                    
                     setCollectLoader={setCollectLoader}
                     setMirrorLoader={setMirrorLoader}
                     setReactLoader={setReactLoader}
                     openComment={openComment}
                     router={router}
-                    
                   />
                   {comment?.id === commentId && (
                     <MakeComment

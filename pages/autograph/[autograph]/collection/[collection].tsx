@@ -108,7 +108,6 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     autoCollection,
     oracleData
   );
-
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
     mainVideo,
@@ -363,8 +362,10 @@ const Collection: NextPage<{ router: NextRouter }> = ({
             >
               <div className="relative flex flex-col w-full h-full bg-offBlack/50 p-2 items-center justify-center">
                 <div className="relative w-full h-full flex">
-                  {autoCollection?.collectionMetadata?.mediaTypes?.[0] ==
-                  "video" ? (
+                  {autoCollection?.collectionMetadata?.mediaTypes
+                    ?.toLowerCase()
+                    ?.toLowerCase()
+                    ?.includes("video") ? (
                     <video
                       playsInline
                       muted
@@ -406,8 +407,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
                       onClick={(e) => e.stopPropagation()}
                     >
                       <WaveformComponent
-                        audio={autoCollection?.collectionMetadata?.video}
-                        image={autoCollection?.collectionMetadata?.mediaCover}
+                        video={autoCollection?.collectionMetadata?.video}
                       />
                     </div>
                   )}

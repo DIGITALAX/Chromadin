@@ -57,6 +57,7 @@ const Reactions: FunctionComponent<ReactionProps> = ({
   router,
   openMirrorChoice,
   setOpenMirrorChoice,
+  profileType
 }): JSX.Element => {
   return (
     <div

@@ -101,6 +101,8 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
   clientRendered,
   history,
   lensProfile,
+  feedType,
+  profileType
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col items-start justify-start gap-4 max-w-full">
@@ -150,9 +152,11 @@ const ProfileFeed: FunctionComponent<ProfileFeedProps> = ({
                     key={index}
                   >
                     <FeedPublication
+                      profileType={profileType}
                       openMirrorChoice={openMirrorChoice}
                       setOpenMirrorChoice={setOpenMirrorChoice}
                       dispatch={dispatch}
+                      feedType={feedType}
                       publication={publication}
                       hasMirrored={profileAmounts.hasMirrored[index]}
                       hasReacted={profileAmounts.hasLiked?.[index]}

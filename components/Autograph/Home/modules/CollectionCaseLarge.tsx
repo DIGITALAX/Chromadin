@@ -22,7 +22,7 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
       className={`relative flex rounded-md w-full h-[40rem]`}
       id="staticLoad"
     >
-      {!collection?.collectionMetadata?.mediaTypes?.[0]?.includes("video") ? (
+      {!collection?.collectionMetadata?.mediaTypes?.toLowerCase()?.includes("video") ? (
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${
             collection?.collectionMetadata?.images?.[0]?.split("ipfs://")[1]

@@ -166,6 +166,7 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   setOpenProfileMirrorChoice,
   router,
   history,
+  profileType
 }): JSX.Element => {
   switch (viewer) {
     case "collect":
@@ -214,6 +215,7 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
         <Wavs
           feedType={feedType}
           history={history}
+          profileType={profileType}
           dispatch={dispatch}
           followerOnly={followerOnly}
           feedDispatch={feedDispatch}

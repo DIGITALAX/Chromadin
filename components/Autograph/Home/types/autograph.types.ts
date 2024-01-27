@@ -25,6 +25,8 @@ export type AutoProfileFeedProps = {
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
   hasMoreProfile: boolean;
+  feedType: string;
+  profileType: string;
   fetchMoreProfile: () => Promise<void>;
   address: `0x${string}` | undefined;
   collectPost: (
@@ -116,8 +118,6 @@ export type AutoProfileFeedProps = {
   collectNotif: string;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
-  profile: Profile | undefined;
-  profileCollections?: Collection[];
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
 };
 
@@ -125,7 +125,7 @@ export type CollectionsProps = {
   autoCollections: Collection[] | undefined;
   router: NextRouter;
   autoProfile: Profile | undefined;
-  dispatch: Dispatch<AnyAction>
+  dispatch: Dispatch<AnyAction>;
   imageLoading: boolean;
   address: `0x${string}` | undefined;
   lensProfile: Profile | undefined;

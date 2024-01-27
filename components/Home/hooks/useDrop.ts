@@ -69,7 +69,7 @@ const useDrop = (
             collections![collections!?.length - 1].collectionMetadata
               ?.description,
           type: collections![collections!?.length - 1].collectionMetadata
-            .mediaTypes?.[0],
+            .mediaTypes,
           drop: {
             dropTitle:
               collections![collections!?.length - 1].dropMetadata?.dropTitle,

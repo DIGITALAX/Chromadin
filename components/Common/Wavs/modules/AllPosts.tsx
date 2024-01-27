@@ -102,6 +102,8 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   openMirrorChoice,
   setOpenMirrorChoice,
   lensProfile,
+  feedType,
+  profileType,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col items-start justify-start gap-4 max-w-full">
@@ -149,6 +151,8 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                     key={index}
                   >
                     <FeedPublication
+                      profileType={profileType}
+                      feedType={feedType}
                       dispatch={dispatch}
                       publication={publication}
                       hasCollected={reactionAmounts.hasCollected[index]}

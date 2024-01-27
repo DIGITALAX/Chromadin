@@ -47,7 +47,7 @@ const Interactions: FunctionComponent<InteractionProps> = ({
   mainNFT,
   collections,
   isCreator,
-historyData
+  historyData,
 }): JSX.Element => {
   return (
     <div className="relative w-full lg:w-80 lg:shrink-0 xl:h-full flex-col border border-white h-100 lg:h-128 xl:min-h-[55rem] flex overflow-y-scroll">

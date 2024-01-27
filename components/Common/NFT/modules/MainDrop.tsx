@@ -102,7 +102,7 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
             dispatch(
               setImageViewer({
                 actionValue: true,
-                actionImage: mainNFT?.image || mainNFT?.mediaCover,
+                actionImage: mainNFT?.image || mainNFT?.video,
                 actionType: mainNFT?.type,
               })
             )

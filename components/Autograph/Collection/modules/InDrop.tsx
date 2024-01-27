@@ -36,7 +36,7 @@ const InDrop: FunctionComponent<InDropProps> = ({
                   )
                 }
               >
-                {!coll.collectionMetadata?.mediaTypes?.[0].includes("video") ? (
+                {!coll.collectionMetadata?.mediaTypes?.toLowerCase().includes("video") ? (
                   <Image
                     layout="fill"
                     className="rounded-md w-full h-full flex"

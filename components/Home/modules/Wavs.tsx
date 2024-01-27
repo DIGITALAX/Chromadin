@@ -137,11 +137,13 @@ const Wavs: FunctionComponent<WavsProps> = ({
   history,
   profile,
   feedType,
+  profileType
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full mid:h-[50.2rem] xl:h-[47.8rem] gap-3 flex items-start justify-center pt-10 overflow-y-scroll">
       <Feed
         feedType={feedType}
+        profileType={profileType}
         history={history}
         lensProfile={lensProfile}
         dispatch={dispatch}

@@ -139,6 +139,7 @@ const Feed: FunctionComponent<FeedProps> = ({
   openProfileMirrorChoice,
   lensProfile,
   history,
+  profileType,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 h-fit flex flex-col items-start justify-start gap-4">
@@ -150,6 +151,8 @@ const Feed: FunctionComponent<FeedProps> = ({
         />
         {feedType !== "" ? (
           <Individual
+            profileType={profileType}
+            feedType={feedType}
             history={history}
             preElement={preElement}
             dispatch={dispatch}
@@ -263,7 +266,9 @@ const Feed: FunctionComponent<FeedProps> = ({
           </div>
         ) : (
           <Switch
+            profileType={profileType}
             history={history}
+            feedType={feedType}
             preElement={preElement}
             dispatch={dispatch}
             followerOnly={followerOnly}

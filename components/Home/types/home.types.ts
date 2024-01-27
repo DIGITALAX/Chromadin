@@ -305,7 +305,7 @@ export interface Collection {
     title: string;
     tags: string[];
     prompt: string;
-    mediaTypes: string[];
+    mediaTypes: string;
     profileHandle: string;
     microbrandCover: string;
     microbrand: string;
@@ -351,8 +351,7 @@ export interface ApprovalArgs {
 }
 
 export type WaveformProps = {
-  audio: string | undefined;
-  image: string;
+  video: string;
 };
 
 export type WavsProps = {
@@ -450,6 +449,7 @@ export type WavsProps = {
   mappedFeaturedFiles: UploadedMedia[];
   collectOpen: boolean;
   feedType: string;
+  profileType: string;
   enabledCurrencies: Erc20[];
   audienceTypes: string[];
   setAudienceType: (e: string) => void;
@@ -518,6 +518,7 @@ export type SwitchViewProps = {
   viewer: string;
   feedType: string;
   history: string;
+  profileType: string;
   lensProfile: Profile | undefined;
   mirrorFeedLoading: boolean[];
   collectFeedLoading: boolean[];

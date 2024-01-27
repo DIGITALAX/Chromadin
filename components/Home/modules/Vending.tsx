@@ -208,7 +208,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                                 description:
                                   collection?.collectionMetadata?.description,
                                 type: collection?.collectionMetadata
-                                  ?.mediaTypes?.[0],
+                                  ?.mediaTypes,
                                 drop: collection?.dropMetadata,
                                 prices: collection?.prices,
                                 acceptedTokens: collection?.acceptedTokens,
@@ -251,51 +251,42 @@ const Vending: FunctionComponent<VendingProps> = ({
                                 );
                           }}
                         >
-                          {collection?.collectionMetadata?.images?.[0]?.split(
-                            "ipfs://"
-                          )[1] &&
-                            (collection.collectionMetadata.mediaTypes?.[0] ===
-                            "video" ? (
-                              <video
-                                playsInline
-                                className={`rounded-tr-2xl object-cover h-[12.5rem] w-full`}
-                                muted
-                                loop
-                                id={collection?.collectionMetadata?.images?.[0]}
-                                key={
-                                  collection?.collectionMetadata?.images?.[0]
-                                }
-                              >
-                                <source
-                                  src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.images?.[0]
-                                    .split("ipfs://")[1]
-                                    .replace(/"/g, "")
-                                    .trim()}`}
-                                  type="video/mp4"
-                                  draggable={false}
-                                />
-                              </video>
-                            ) : (
-                              <Image
-                                src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.images?.[0]
-                                  .split("ipfs://")[1]
-                                  .replace(/"/g, "")
-                                  .trim()}`}
-                                alt="vending"
-                                layout="fill"
-                                className={`rounded-tr-2xl`}
-                                objectFit="cover"
+                          {collection.collectionMetadata.mediaTypes
+                            ?.toLowerCase()
+                            ?.includes("video") ? (
+                            <video
+                              playsInline
+                              className={`rounded-tr-2xl object-cover h-[12.5rem] w-full`}
+                              muted
+                              loop
+                              id={collection?.collectionMetadata?.video}
+                              key={collection?.collectionMetadata?.video}
+                            >
+                              <source
+                                src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.video
+                                  ?.split("ipfs://")[1]
+                                  ?.replace(/"/g, "")
+                                  ?.trim()}`}
+                                type="video/mp4"
                                 draggable={false}
                               />
-                            ))}
-                          {(collection.collectionMetadata?.audio ||
-                            collection?.collectionMetadata?.video) && (
+                            </video>
+                          ) : (
+                            <Image
+                              src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.images?.[0]
+                                ?.split("ipfs://")[1]
+                                ?.replace(/"/g, "")
+                                ?.trim()}`}
+                              alt="vending"
+                              layout="fill"
+                              className={`rounded-tr-2xl`}
+                              objectFit="cover"
+                              draggable={false}
+                            />
+                          )}
+                          {collection?.collectionMetadata?.video && (
                             <WaveformComponent
-                              audio={
-                                collection?.collectionMetadata?.audio ||
-                                collection?.collectionMetadata?.video
-                              }
-                              image={collection?.collectionMetadata?.mediaCover}
+                              video={collection?.collectionMetadata?.video}
                             />
                           )}
                         </div>

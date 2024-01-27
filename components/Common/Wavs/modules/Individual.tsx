@@ -10,7 +10,7 @@ import { Post, Quote, TriStateValue } from "@/components/Home/types/generated";
 const Individual: FunctionComponent<IndividualProps> = ({
   dispatch,
   mainPost,
-  
+
   address,
   followerOnlyMain,
   collectPost,
@@ -101,12 +101,13 @@ const Individual: FunctionComponent<IndividualProps> = ({
   postImagesDispatched,
   individualAmounts,
   router,
-  
+  feedType,
   preElement,
   handleImagePaste,
   clientRendered,
   history,
   lensProfile,
+  profileType,
 }): JSX.Element => {
   return (
     <div className="relative flex flex-col items-start justify-start gap-3 h-full w-full">
@@ -132,7 +133,9 @@ const Individual: FunctionComponent<IndividualProps> = ({
       {!mainPostLoading ? (
         <div className="relative w-full h-fit gap-2 flex flex-col">
           <FeedPublication
+            profileType={profileType}
             dispatch={dispatch}
+            feedType={feedType}
             openMirrorChoice={openPostMirrorChoice}
             setOpenMirrorChoice={setOpenPostMirrorChoice}
             publication={mainPost}
@@ -152,13 +155,11 @@ const Individual: FunctionComponent<IndividualProps> = ({
             mirrorAmount={individualAmounts?.mirror}
             collectAmount={individualAmounts?.collect}
             commentAmount={individualAmounts?.comment}
-            
             setCollectLoader={setCollectPostLoading}
             setMirrorLoader={setMirrorPostLoading}
             setReactLoader={setReactPostLoading}
             openComment={commentOpen}
             router={router}
-            
           />
           {(mainPost?.__typename === "Mirror"
             ? mainPost?.mirrorOn?.id
@@ -251,6 +252,8 @@ const Individual: FunctionComponent<IndividualProps> = ({
         ></div>
       )}
       <Comments
+        profileType={profileType}
+        feedType={feedType}
         dispatch={dispatch}
         commentors={commentors}
         commentAmounts={commentAmounts}
@@ -263,7 +266,6 @@ const Individual: FunctionComponent<IndividualProps> = ({
         mirrorLoading={mirrorCommentLoading}
         reactLoading={reactCommentLoading}
         collectLoading={collectCommentLoading}
-        
         followerOnly={followerOnlyComments}
         fetchMoreComments={fetchMoreComments}
         hasMoreComments={hasMoreComments}
@@ -334,7 +336,6 @@ const Individual: FunctionComponent<IndividualProps> = ({
         openComment={commentOpen}
         postImagesDispatched={postImagesDispatched}
         router={router}
-        
         preElement={preElement}
         handleImagePaste={handleImagePaste}
         clientRendered={clientRendered}

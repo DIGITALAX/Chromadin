@@ -81,6 +81,8 @@ export type FeedPublicationProps = {
   openComment: string;
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: boolean[]) => void;
+  feedType: string;
+  profileType: string;
 };
 
 export type ProfileSideBarProps = {
@@ -90,6 +92,7 @@ export type ProfileSideBarProps = {
   setOpenMirrorChoice: (e: boolean[]) => void;
   dispatch: Dispatch<AnyAction>;
   index: number;
+  profileType: string;
   address: `0x${string}` | undefined;
   collectPost: (
     id: string,
@@ -123,13 +126,14 @@ export type ProfileSideBarProps = {
   setReactLoader?: (e: boolean[]) => void;
   setMirrorLoader?: (e: boolean[]) => void;
   openComment: string;
-
+  feedType: string;
   router: NextRouter;
 };
 
 export type ReactionProps = {
   id?: string;
   textColor: string;
+  profileType: string;
   commentColor: string;
   mirrorColor: string;
   collectColor: string;
@@ -191,6 +195,7 @@ export type FeedProps = {
   setOpenMirrorChoice: (e: boolean[]) => void;
   setOpenProfileMirrorChoice: (e: boolean[]) => void;
   openProfileMirrorChoice: boolean[];
+  profileType: string;
   followerOnly: boolean[];
   feedDispatch: (Post | Mirror | Quote)[];
   clientRendered: boolean;
@@ -389,10 +394,10 @@ export type IndividualProps = {
   router: NextRouter;
   dispatch: Dispatch<AnyAction>;
   mainPost: Post | Mirror | Quote | Comment;
-
+  feedType: string;
   history: string;
-
   lensProfile: Profile | undefined;
+  profileType: string;
   clientRendered: boolean;
   openPostMirrorChoice: boolean[];
   setOpenPostMirrorChoice: (e: boolean[]) => void;
@@ -517,7 +522,7 @@ export type CommentsProps = {
   mirrorLoading: boolean[];
   reactLoading: boolean[];
   collectLoading: boolean[];
-
+  feedType: string;
   dispatch: Dispatch<AnyAction>;
   address: `0x${string}` | undefined;
   followerOnly: boolean[];
@@ -557,6 +562,7 @@ export type CommentsProps = {
     x: number;
     y: number;
   };
+  profileType: string;
   mentionProfiles: Profile[];
   profilesOpen: boolean;
   handleMentionClick: (user: Profile) => void;
@@ -836,6 +842,8 @@ export type ProfileFeedProps = {
   lensProfile: Profile | undefined;
   mappedFeaturedFiles: UploadedMedia[];
   collectOpen: boolean;
+  feedType: string;
+  profileType: string;
   enabledCurrencies: Erc20[];
   audienceTypes: string[];
   setAudienceType: (e: string) => void;
@@ -879,6 +887,7 @@ export type ProfileFeedProps = {
 export type SwitchProps = {
   router: NextRouter;
   history: string;
+  profileType: string;
   clientRendered: boolean;
   lensProfile: Profile | undefined;
   setOpenProfileMirrorChoice: (e: boolean[]) => void;
@@ -959,6 +968,7 @@ export type SwitchProps = {
   limit: number;
   setLimit: (e: number) => void;
   value: number;
+  feedType: string;
   setValue: (e: number) => void;
   collectibleDropDown: boolean;
   setCollectibleDropDown: (e: boolean) => void;
@@ -998,7 +1008,7 @@ export type SwitchProps = {
   fetchMoreSearch: () => Promise<void>;
   hasMoreSearch: boolean;
   setProfilesOpenSearch: (e: boolean) => void;
-  setProfilesFound: (e: Profile[]) => void
+  setProfilesFound: (e: Profile[]) => void;
   handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
   profileCollectionsLoading: boolean;
 };
@@ -1060,6 +1070,8 @@ export type AllPostsProps = {
   videoLoading: boolean;
   imageLoading: boolean;
   lensProfile: Profile | undefined;
+  feedType: string;
+  profileType: string;
   uploadImages: (e: FormEvent) => Promise<void>;
   uploadVideo: (e: FormEvent) => Promise<void>;
   handleRemoveImage: (e: UploadedMedia) => void;

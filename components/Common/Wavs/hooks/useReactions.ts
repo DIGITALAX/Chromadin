@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import addReaction from "@/graphql/lens/mutations/react";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
-import {
-  getPublication,
-  getPublicationAuth,
-} from "@/graphql/lens/queries/getPublication";
+import { getPublication } from "@/graphql/lens/queries/getPublication";
 import checkApproved from "@/lib/helpers/checkApproved";
 import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
@@ -16,7 +13,6 @@ import {
   Mirror,
   Post,
   Profile,
-  PublicationQuery,
   PublicationReactionType,
   Quote,
 } from "@/components/Home/types/generated";
@@ -314,22 +310,17 @@ const useReactions = (
   const getCollectInfo = async (): Promise<void> => {
     setCollectInfoLoading(true);
     try {
-      let pubData: PublicationQuery;
-      if (profile?.id) {
-        const { data } = await getPublicationAuth({
+      const { data } = await getPublication(
+        {
           forId: purchase.id,
-        });
-        pubData = data!;
-      } else {
-        const { data } = await getPublication({
-          forId: purchase.id,
-        });
-        pubData = data!;
-      }
+        },
+        profile?.id
+      );
+
       const collectModule =
-        pubData?.publication?.__typename === "Mirror"
-          ? pubData?.publication?.mirrorOn?.openActionModules?.[0]
-          : (pubData?.publication as Post)?.openActionModules?.[0];
+        data?.publication?.__typename === "Mirror"
+          ? data?.publication?.mirrorOn?.openActionModules?.[0]
+          : (data?.publication as Post)?.openActionModules?.[0];
 
       if (collectModule?.__typename !== "SimpleCollectOpenActionSettings")
         return;
@@ -365,9 +356,9 @@ const useReactions = (
             value: collectModule?.amount?.value,
           },
           actionCanCollect:
-            pubData?.publication?.__typename === "Mirror"
-              ? !pubData?.publication?.mirrorOn?.operations.hasActed
-              : !(pubData?.publication as Post)?.operations?.hasActed,
+            data?.publication?.__typename === "Mirror"
+              ? !data?.publication?.mirrorOn?.operations.hasActed
+              : !(data?.publication as Post)?.operations?.hasActed,
           actionApproved:
             (!collectModule?.amount?.value ||
               isApproved > Number(collectModule?.amount?.value)) &&
@@ -375,14 +366,14 @@ const useReactions = (
               (collectModule?.endsAt && Date.now() < collectModule?.endsAt)) &&
             (!collectModule.collectLimit ||
               (collectModule.collectLimit &&
-                (pubData?.publication?.__typename === "Mirror"
-                  ? pubData?.publication?.mirrorOn?.stats?.countOpenActions
-                  : (pubData?.publication as Post)?.stats?.countOpenActions) <
+                (data?.publication?.__typename === "Mirror"
+                  ? data?.publication?.mirrorOn?.stats?.countOpenActions
+                  : (data?.publication as Post)?.stats?.countOpenActions) <
                   Number(collectModule.collectLimit))),
           actionTotalCollects:
-            pubData?.publication?.__typename === "Mirror"
-              ? pubData?.publication?.mirrorOn?.stats?.countOpenActions
-              : (pubData?.publication as Post)?.stats?.countOpenActions,
+            data?.publication?.__typename === "Mirror"
+              ? data?.publication?.mirrorOn?.stats?.countOpenActions
+              : (data?.publication as Post)?.stats?.countOpenActions,
         })
       );
     } catch (err: any) {

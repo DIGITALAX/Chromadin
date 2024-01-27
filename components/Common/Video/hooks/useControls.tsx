@@ -7,10 +7,7 @@ import {
   IndexModalState,
   setIndexModal,
 } from "@/redux/reducers/indexModalSlice";
-import {
-  getPublication,
-  getPublicationAuth,
-} from "@/graphql/lens/queries/getPublication";
+import { getPublication } from "@/graphql/lens/queries/getPublication";
 import checkApproved from "@/lib/helpers/checkApproved";
 import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
 import { setModal } from "@/redux/reducers/modalSlice";
@@ -311,19 +308,14 @@ const useControls = (
   const getCollectInfo = async (): Promise<void> => {
     setCollectInfoLoading(true);
     try {
-      let pubData: PublicationQuery;
-      if (profile?.id) {
-        const { data } = await getPublicationAuth({
+      const { data } = await getPublication(
+        {
           forId: purchase.id,
-        });
-        pubData = data!;
-      } else {
-        const { data } = await getPublication({
-          forId: purchase.id,
-        });
-        pubData = data!;
-      }
-      const collectModule = (pubData?.publication as Post)
+        },
+        profile?.id
+      );
+
+      const collectModule = (data?.publication as Post)
         ?.openActionModules?.[0] as SimpleCollectOpenActionSettings;
 
       const approvalData: ApprovalAllowance | void = await checkApproved(
@@ -357,7 +349,7 @@ const useControls = (
           },
           actionCanCollect: true,
           actionApproved: isApproved,
-          actionTotalCollects: (pubData?.publication as Post)?.stats
+          actionTotalCollects: (data?.publication as Post)?.stats
             ?.countOpenActions,
         })
       );

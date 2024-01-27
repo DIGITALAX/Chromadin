@@ -56,6 +56,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
   collectOpen,
   setValue,
   limit,
+  feedType,
   collectibleDropDown,
   enabledCurrencies,
   audienceDropDown,
@@ -109,6 +110,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
   openMirrorChoice,
   lensProfile,
   history,
+  profileType
 }): JSX.Element => {
   let action: string;
 
@@ -123,6 +125,8 @@ const Switch: FunctionComponent<SwitchProps> = ({
     case "profile":
       return (
         <ProfileFeed
+          profileType={profileType}
+          feedType={feedType}
           history={history}
           hasMoreProfile={hasMoreProfile}
           fetchMoreProfile={fetchMoreProfile}
@@ -216,6 +220,8 @@ const Switch: FunctionComponent<SwitchProps> = ({
       return (
         <AllPosts
           router={router}
+          profileType={profileType}
+          feedType={feedType}
           dispatch={dispatch}
           feedDispatch={feedDispatch}
           followerOnly={followerOnly}

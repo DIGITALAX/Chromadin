@@ -225,6 +225,7 @@ const View: FunctionComponent<ViewProps> = ({
       <SwitchView
         dispatch={dispatch}
         viewer={viewer}
+        profileType={dispatchProfile?.id}
         dateFilter={dateFilter}
         setDropDownDateSort={setDropDownDateSort}
         searchOpen={searchOpen}
@@ -321,7 +322,6 @@ const View: FunctionComponent<ViewProps> = ({
         hasMoreSearch={hasMoreSearch}
         setProfilesOpenSearch={setProfilesOpenSearch}
         setProfilesFound={setProfilesFound}
-        profileType={dispatchProfile?.id}
         profile={dispatchProfile}
         textElement={textElement}
         profileAmounts={profileFeedCount}

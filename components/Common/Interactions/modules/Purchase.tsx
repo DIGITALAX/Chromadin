@@ -43,7 +43,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
               )
             }
           >
-            {(mainNFT as MainNFT).type === "video" ? (
+            {(mainNFT as MainNFT).type?.toLowerCase()?.includes("video") ? (
               <video
                 playsInline
                 className="rounded-br-lg rounded-tl-lg w-full h-full object-cover"
@@ -80,10 +80,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
                 className="absolute w-full h-fit flex bottom-0 cursor-default"
                 onClick={(e) => e.stopPropagation()}
               >
-                <WaveformComponent
-                  audio={(mainNFT as MainNFT).audio}
-                  image={(mainNFT as MainNFT).mediaCover}
-                />
+                <WaveformComponent video={(mainNFT as MainNFT).video} />
               </div>
             )}
           </div>
@@ -91,7 +88,9 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
       )}
       <div
         className={`relative w-full h-fit flex flex-col gap-3 pt-4 px-3 ${
-          !router.asPath.includes("/autograph/") ? "justify-center items-center" : "justify-end items-end"
+          !router.asPath.includes("/autograph/")
+            ? "justify-center items-center"
+            : "justify-end items-end"
         }`}
       >
         <div className="relative w-fit h-fit flex flex-row items-center justify-center gap-2">
@@ -119,7 +118,9 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
         </div>
         <div
           className={`relative w-1/2 h-fit font-digi text-white text-sm flex whitespace-nowrap ${
-            !router.asPath.includes("/autograph/") ? "justify-center items-center" : "justify-end items-end"
+            !router.asPath.includes("/autograph/")
+              ? "justify-center items-center"
+              : "justify-end items-end"
           }`}
         >
           Total:{" "}
@@ -129,7 +130,9 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
       </div>
       <div
         className={`relative w-full h-fit font-earl flex text-sm pt-4 ${
-          !router.asPath.includes("/autograph/") ? "justify-center items-center" : "justify-end items-end"
+          !router.asPath.includes("/autograph/")
+            ? "justify-center items-center"
+            : "justify-end items-end"
         }`}
       >
         <div

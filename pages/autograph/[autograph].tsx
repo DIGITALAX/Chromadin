@@ -50,6 +50,9 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
+  const profileType = useSelector(
+    (state: RootState) => state.app.profileReducer.profile?.id
+  );
   const index = useSelector((state: RootState) => state.app.indexModalReducer);
   const collectModuleType = useSelector(
     (state: RootState) => state.app.collectValueTypeReducer?.type
@@ -94,6 +97,9 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   );
   const publicationImages = useSelector(
     (state: RootState) => state.app.publicationImageReducer.value
+  );
+  const feedType = useSelector(
+    (state: RootState) => state.app.feedTypeReducer?.value
   );
   const imageLoading = useSelector(
     (state: RootState) => state.app.imageLoadingReducer.value
@@ -491,6 +497,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                       </div>
                     ) : (
                       <AutoProfileFeed
+                        feedType={feedType}
                         followerOnly={followerOnlyProfile}
                         clientRendered={clientRendered}
                         hasMoreProfile={hasMoreProfile}
@@ -520,6 +527,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                         handleMentionClick={handleMentionClick}
                         handleGifSubmit={handleGifSubmit}
                         handleGif={handleGif}
+                        profileType={profileType}
                         results={results}
                         handleSetGif={handleSetGif}
                         gifOpen={gifOpen}
@@ -571,7 +579,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                         setCollectProfileLoading={setCollectProfileLoading}
                         setMirrorProfileLoading={setMirrorProfileLoading}
                         setReactProfileLoading={setReactProfileLoading}
-                        profile={autographData?.profile}
+                        // profile={autographData?.profile}
                         preElement={preElement}
                         handleImagePaste={handleImagePaste}
                         router={router}

@@ -26,14 +26,14 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
   setMirrorLoader,
   setCollectLoader,
   setReactLoader,
-  
+  feedType,
   router,
-  
   hasMirrored,
   hasReacted,
   hasCollected,
   openMirrorChoice,
   setOpenMirrorChoice,
+  profileType
 }): JSX.Element => {
   const profileImage = createProfilePicture(
     publication?.__typename === "Mirror"
@@ -199,6 +199,8 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
         </div>
         <div className="relative w-full h-full grid grid-flow-col auto-cols-auto items-end pt-3">
           <Reactions
+            profileType={profileType}
+            feedType={feedType}
             id={publication?.id}
             textColor={"black"}
             commentColor={"#0AC7AB"}
@@ -227,8 +229,6 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
             setReactLoader={setReactLoader}
             setMirrorLoader={setMirrorLoader}
             setCollectLoader={setCollectLoader}
-            
-            
             router={router}
             openMirrorChoice={openMirrorChoice}
             setOpenMirrorChoice={setOpenMirrorChoice}

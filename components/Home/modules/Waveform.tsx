@@ -5,8 +5,7 @@ import WaveSurfer from "wavesurfer.js";
 import { WaveformProps } from "../types/home.types";
 
 const WaveformComponent: FunctionComponent<WaveformProps> = ({
-  audio,
-  image,
+  video,
 }): JSX.Element => {
   const waveformRef = useRef(null);
   const wavesurfer = useRef<null | WaveSurfer>(null);
@@ -25,57 +24,40 @@ const WaveformComponent: FunctionComponent<WaveformProps> = ({
       });
 
       wavesurfer.current.on("seeking", function (seekProgress) {
-        const videoElement = document.getElementById(
-          image
-        ) as HTMLVideoElement;
+        const videoElement = document.getElementById(video) as HTMLVideoElement;
         if (videoElement) {
           videoElement.currentTime = seekProgress;
         }
       });
 
       wavesurfer.current.on("play", function () {
-        const videoElement = document.getElementById(
-          image
-        ) as HTMLVideoElement;
+        const videoElement = document.getElementById(video) as HTMLVideoElement;
         if (videoElement) {
           videoElement.play();
         }
       });
 
       wavesurfer.current.on("pause", function () {
-        const videoElement = document.getElementById(
-          image
-        ) as HTMLVideoElement;
+        const videoElement = document.getElementById(video) as HTMLVideoElement;
         if (videoElement) {
           videoElement.pause();
         }
       });
 
-      if (audio && audio !== "") {
-        wavesurfer.current.load(
-          `${INFURA_GATEWAY}/ipfs/${
-            audio?.includes("ipfs://") ? audio?.split("ipfs://")[1] : audio
-          }`
-        );
-      } else if (image && image !== "") {
-    
-        wavesurfer.current.load(
-          `${INFURA_GATEWAY}/ipfs/${
-            image?.includes("ipfs://") ? image?.split("ipfs://")[1] : image
-          }`
-        );
-      }
+      wavesurfer.current.load(
+        `${INFURA_GATEWAY}/ipfs/${
+          video?.includes("ipfs://") ? video?.split("ipfs://")[1] : video
+        }`
+      );
     }
 
     return () => {
       wavesurfer.current?.destroy();
     };
-  }, [audio, wavesurfer, image]);
+  }, [wavesurfer, video]);
 
   const handlePlayPause = () => {
-    const videoElement = document.getElementById(
-      image
-    ) as HTMLVideoElement;
+    const videoElement = document.getElementById(video) as HTMLVideoElement;
 
     if (videoElement && wavesurfer.current) {
       if (videoElement.paused) {

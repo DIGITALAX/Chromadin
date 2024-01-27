@@ -94,6 +94,8 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
   handleImagePaste,
   clientRendered,
   lensProfile,
+  feedType,
+  profileType,
 }) => {
   return (
     <>
@@ -117,7 +119,9 @@ const AutoProfileFeed: FunctionComponent<AutoProfileFeedProps> = ({
                   key={index}
                 >
                   <FeedPublication
+                    profileType={profileType}
                     dispatch={dispatch}
+                    feedType={feedType}
                     publication={publication}
                     hasMirrored={profileAmounts.hasMirrored?.[index]}
                     hasReacted={profileAmounts.hasLiked?.[index]}

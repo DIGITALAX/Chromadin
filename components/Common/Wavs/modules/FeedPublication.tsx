@@ -1,6 +1,6 @@
 import Profile from "./Profile";
 import Image from "next/legacy/image";
-import { AiFillEye,  AiOutlineRetweet } from "react-icons/ai";
+import { AiFillEye, AiOutlineRetweet } from "react-icons/ai";
 import { FunctionComponent } from "react";
 import { FeedPublicationProps } from "../types/wavs.types";
 import { setImageFeedViewer } from "@/redux/reducers/imageFeedViewerSlice";
@@ -42,6 +42,8 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
   hasReacted,
   setOpenMirrorChoice,
   openMirrorChoice,
+  feedType,
+  profileType
 }): JSX.Element => {
   const metadata = postMetadata(publication);
   return (
@@ -53,6 +55,8 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
       id={publication?.id}
     >
       <Profile
+        profileType={profileType}
+        feedType={feedType}
         publication={publication}
         followerOnly={followerOnly}
         dispatch={dispatch}

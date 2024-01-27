@@ -18,7 +18,7 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
   return (
     <div className={`relative flex rounded-md w-40 h-40`} id="staticLoad">
       <div className="relative w-full h-full border border-ama rounded-md">
-        {!collection?.collectionMetadata?.mediaTypes?.[0]?.includes("video") ? (
+        {!collection?.collectionMetadata?.mediaTypes?.includes("video") ? (
           <Image
             src={`${INFURA_GATEWAY}/ipfs/${
               collection?.collectionMetadata?.images[0]?.split("ipfs://")[1]

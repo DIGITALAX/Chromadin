@@ -64,7 +64,7 @@ const Drops: FunctionComponent<DropsProps> = ({
                         collection?.collectionMetadata?.mediaCover?.split(
                           "ipfs://"
                         )[1],
-                      type: collection?.collectionMetadata?.mediaTypes?.[0],
+                      type: collection?.collectionMetadata?.mediaTypes,
                       drop: collection?.dropMetadata,
                       prices: collection?.prices,
                       acceptedTokens: collection?.acceptedTokens,
@@ -154,8 +154,9 @@ const Drops: FunctionComponent<DropsProps> = ({
                   className="relative w-full h-full border-white border"
                   id="staticLoad"
                 >
-                  {collection?.collectionMetadata?.mediaTypes?.[0] ===
-                  "video" ? (
+                  {collection?.collectionMetadata?.mediaTypes
+                    ?.toLowerCase()
+                    ?.includes("video") ? (
                     <video
                       playsInline
                       autoPlay
@@ -166,9 +167,9 @@ const Drops: FunctionComponent<DropsProps> = ({
                     >
                       <source
                         src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.images?.[0]
-                          .split("ipfs://")[1]
-                          .replace(/"/g, "")
-                          .trim()}`}
+                          ?.split("ipfs://")[1]
+                          ?.replace(/"/g, "")
+                          ?.trim()}`}
                         type="video/mp4"
                         draggable={false}
                       />
