@@ -35,7 +35,6 @@ const useFollowCollect = (
   const [openMeasure, setOpenMeasure] = useState<{
     searchedGifs: string[];
     search: string;
-    collectibleOpen: boolean;
     award: string;
     whoCollectsOpen: boolean;
     creatorAwardOpen: boolean;
@@ -47,7 +46,6 @@ const useFollowCollect = (
   }>({
     searchedGifs: [],
     search: "",
-    collectibleOpen: false,
     award: "No",
     whoCollectsOpen: false,
     creatorAwardOpen: false,
@@ -384,7 +382,6 @@ const useFollowCollect = (
       if (postCollectGif.collectTypes?.[postCollectGif?.id!]) {
         setOpenMeasure((prev) => ({
           ...prev,
-          collectibleOpen: false,
           award:
             postCollectGif.collectTypes?.[postCollectGif?.id!]?.amount?.value ||
             Number(
