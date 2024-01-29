@@ -166,7 +166,6 @@ export type CollectOptionsProps = {
       searchedGifs: string[];
       search: string;
       collectibleOpen: boolean;
-      collectible: string;
       award: string;
       whoCollectsOpen: boolean;
       creatorAwardOpen: boolean;
@@ -188,7 +187,6 @@ export type PostCollectGifProps = {
     searchedGifs: string[];
     search: string;
     collectibleOpen: boolean;
-    collectible: string;
     award: string;
     whoCollectsOpen: boolean;
     creatorAwardOpen: boolean;
@@ -203,7 +201,6 @@ export type PostCollectGifProps = {
       searchedGifs: string[];
       search: string;
       collectibleOpen: boolean;
-      collectible: string;
       award: string;
       whoCollectsOpen: boolean;
       creatorAwardOpen: boolean;

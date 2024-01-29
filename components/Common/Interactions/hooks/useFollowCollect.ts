@@ -36,7 +36,6 @@ const useFollowCollect = (
     searchedGifs: string[];
     search: string;
     collectibleOpen: boolean;
-    collectible: string;
     award: string;
     whoCollectsOpen: boolean;
     creatorAwardOpen: boolean;
@@ -49,7 +48,6 @@ const useFollowCollect = (
     searchedGifs: [],
     search: "",
     collectibleOpen: false,
-    collectible: "Yes",
     award: "No",
     whoCollectsOpen: false,
     creatorAwardOpen: false,
@@ -387,13 +385,6 @@ const useFollowCollect = (
         setOpenMeasure((prev) => ({
           ...prev,
           collectibleOpen: false,
-          collectible:
-            postCollectGif.collectTypes?.[postCollectGif?.id!]?.amount?.value ||
-            Number(
-              postCollectGif.collectTypes?.[postCollectGif?.id!]?.amount?.value
-            ) > 0
-              ? "Yes"
-              : "No",
           award:
             postCollectGif.collectTypes?.[postCollectGif?.id!]?.amount?.value ||
             Number(

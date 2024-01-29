@@ -11,13 +11,11 @@ export interface CollectOptions {
   limit: number;
   value: number;
   collectibleDropDown: boolean;
-  collectible: string;
   chargeCollect: string;
   limitedDropDown: boolean;
   limitedEdition: string;
   timeLimit: string;
   timeLimitDropDown: boolean;
-
   audienceTypes: string[];
   audienceType: string;
   enabledCurrency: string | undefined;
