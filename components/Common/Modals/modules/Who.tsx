@@ -1,14 +1,13 @@
 import { FunctionComponent } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ImCross } from "react-icons/im";
-import { setReactionState } from "@/redux/reducers/reactionStateSlice";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import Image from "next/legacy/image";
 import { AiOutlineLoading } from "react-icons/ai";
 import { WhoProps } from "../types/modals.types";
-import {
-  Profile,
-} from "@/components/Home/types/generated";
+import { Profile } from "@/components/Home/types/generated";
+import { setWho } from "@/redux/reducers/whoSlice";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const Who: FunctionComponent<WhoProps> = ({
   loading,
@@ -31,11 +30,11 @@ const Who: FunctionComponent<WhoProps> = ({
                   size={10}
                   onClick={() =>
                     dispatch(
-                      setReactionState({
+                      setWho({
                         actionOpen: false,
                         actionType: "",
                         actionValue: "",
-                        actionResponseReact: "",
+                        actionReact: "",
                       })
                     )
                   }
@@ -66,25 +65,25 @@ const Who: FunctionComponent<WhoProps> = ({
                               key={index}
                               className="relative w-full h-fit p-2 drop-shadow-lg flex flex-row bg-gradient-to-r from-offBlack via-gray-600 to-black auto-cols-auto rounded-lg border border-black font-economica text-white cursor-pointer"
                               onClick={() =>
-                                !router.asPath.includes("/autograph/")
+                                !router?.asPath?.includes("/autograph/")
                                   ? router.push(
-                                      router.asPath.includes("&post=")
-                                        ? router.asPath.includes("?option=")
-                                          ? router.asPath.split("&post=")[0] +
+                                      router?.asPath?.includes("&post=")
+                                        ? router?.asPath?.includes("?option=")
+                                          ? router?.asPath.split("&post=")[0] +
                                             `&profile=${
                                               reacter?.handle?.suggestedFormatted?.localName?.split(
                                                 "@"
                                               )[1]
                                             }`
-                                          : router.asPath.split("&post=")[0] +
+                                          : router?.asPath.split("&post=")[0] +
                                             `?option=history&profile=${
                                               reacter?.handle?.suggestedFormatted?.localName?.split(
                                                 "@"
                                               )[1]
                                             }`
-                                        : router.asPath.includes("&profile=")
-                                        ? router.asPath.includes("?option=")
-                                          ? router.asPath.split(
+                                        : router?.asPath?.includes("&profile=")
+                                        ? router?.asPath?.includes("?option=")
+                                          ? router?.asPath.split(
                                               "&profile="
                                             )[0] +
                                             `&profile=${
@@ -92,7 +91,7 @@ const Who: FunctionComponent<WhoProps> = ({
                                                 "@"
                                               )[1]
                                             }`
-                                          : router.asPath.split(
+                                          : router?.asPath.split(
                                               "&profile="
                                             )[0] +
                                             `?option=history&profile=${
@@ -100,14 +99,14 @@ const Who: FunctionComponent<WhoProps> = ({
                                                 "@"
                                               )[1]
                                             }`
-                                        : router.asPath.includes("?option=")
-                                        ? router.asPath +
+                                        : router?.asPath?.includes("?option=")
+                                        ? router?.asPath +
                                           `&profile=${
                                             reacter?.handle?.suggestedFormatted?.localName?.split(
                                               "@"
                                             )[1]
                                           }`
-                                        : router.asPath +
+                                        : router?.asPath +
                                           `?option=history&profile=${
                                             reacter?.handle?.suggestedFormatted?.localName?.split(
                                               "@"
@@ -132,6 +131,7 @@ const Who: FunctionComponent<WhoProps> = ({
                                   {profileImage && (
                                     <Image
                                       src={profileImage}
+                                      onError={(e) => handleImageError(e)}
                                       objectFit="cover"
                                       layout="fill"
                                       alt="pfp"

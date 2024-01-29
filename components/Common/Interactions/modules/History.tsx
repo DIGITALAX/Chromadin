@@ -7,6 +7,7 @@ import Link from "next/link";
 import moment from "moment";
 import InfiniteScroll from "react-infinite-scroll-component";
 import FetchMoreLoading from "../../Loading/FetchMoreLoading";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const History: FunctionComponent<HistoryProps> = ({
   historyLoading,
@@ -138,6 +139,7 @@ const History: FunctionComponent<HistoryProps> = ({
                             layout="fill"
                             className="relative w-full h-full flex rounded-full"
                             src={pfp}
+                            onError={(e) => handleImageError(e)}
                             draggable={false}
                           />
                         )}

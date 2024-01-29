@@ -4,6 +4,7 @@ import { FunctionComponent } from "react";
 import { MainDropProps } from "../types/nft.types";
 import { setImageViewer } from "@/redux/reducers/imageViewerSlice";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const MainDrop: FunctionComponent<MainDropProps> = ({
   mainNFT,
@@ -15,15 +16,17 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
   return (
     <div className="relative w-full h-96 sm:h-full flex">
       <div className="relative w-full h-full flex" id="staticLoad">
-        {!mainNFT?.type?.includes("video") ? (
+        {!mainNFT?.collectionMetadata?.mediaTypes?.includes("video") ? (
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/${mainNFT?.image}`}
+            src={`${INFURA_GATEWAY}/ipfs/${
+              mainNFT?.collectionMetadata?.images?.[0]?.split("ipfs://")?.[1]
+            }`}
             layout="fill"
             objectFit="cover"
             draggable={false}
             objectPosition="top"
             alt="nft"
-            key={mainNFT?.video}
+            key={mainNFT?.collectionMetadata?.images?.[0]}
           />
         ) : (
           <video
@@ -31,12 +34,12 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
             autoPlay
             playsInline
             loop
-            key={mainNFT?.video || mainNFT?.mediaCover}
+            key={mainNFT?.collectionMetadata?.video}
             className="w-full h-full object-cover"
           >
             <source
               src={`${INFURA_GATEWAY}/ipfs/${
-                mainNFT?.video || mainNFT?.mediaCover
+                mainNFT?.collectionMetadata?.video?.split("ipfs://")?.[1]
               }`}
               type="video/mp4"
             />
@@ -62,6 +65,7 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
               src={pfp}
               layout="fill"
               alt="pfp"
+              onError={(e) => handleImageError(e)}
               className="flex rounded-full w-full h-full"
               draggable={false}
             />
@@ -87,13 +91,15 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
                   mainNFT?.publication?.by?.handle?.suggestedFormatted?.localName?.split(
                     "@"
                   )?.[1]
-                }/collection/${mainNFT?.title
+                }/collection/${mainNFT?.collectionMetadata?.title
                   ?.replaceAll(" ", "_")
                   .toLowerCase()}`
               )
             }
           >
-            {collectionsLoading ? "7zXj@tE$vU^%" : mainNFT?.title}
+            {collectionsLoading
+              ? "7zXj@tE$vU^%"
+              : mainNFT?.collectionMetadata?.title}
           </div>
         </div>
         <div
@@ -102,8 +108,13 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
             dispatch(
               setImageViewer({
                 actionValue: true,
-                actionImage: mainNFT?.image || mainNFT?.video,
-                actionType: mainNFT?.type,
+                actionImage: `${INFURA_GATEWAY}/ipfs/${
+                  mainNFT?.collectionMetadata?.images?.[0]?.split(
+                    "ipfs://"
+                  )?.[1] ||
+                  mainNFT?.collectionMetadata?.video?.split("ipfs://")?.[1]
+                }`,
+                actionType: mainNFT?.collectionMetadata?.mediaTypes,
               })
             )
           }

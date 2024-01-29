@@ -9,11 +9,10 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
   setCurrency,
   totalAmount,
   approved,
-  mainNFT,
+  collectionInfo,
   approveSpend,
   buyNFT,
   purchaseLoading,
-  collections,
   router,
 }): JSX.Element => {
   return (
@@ -26,7 +25,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
           objectFit="cover"
         />
       </div>
-      {collections?.length > 0 && (
+      {collectionInfo?.collections?.length > 0 && (
         <div className="relative w-full h-fit flex flex-col overflow-y-scroll py-4 items-center justify-center gap-3">
           <div className="relative w-full h-full text-center items-start font-earl text-moda text-lg p-3 flex justify-center flex-row gap-1">
             <div
@@ -38,23 +37,24 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
             </div>
           </div>
           <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-xl flex text-center">
-            {mainNFT?.title}
+            {collectionInfo?.main?.collectionMetadata?.title}
           </div>
           <div className="relative w-full preG:w-1/2 lg:w-full h-fit items-center justify-center text-white font-earl text-xs flex text-center px-3">
-            {mainNFT?.description}
+            {collectionInfo?.main?.collectionMetadata?.description}
           </div>
           <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-base flex">
-            {Number(mainNFT?.soldTokens) === Number(mainNFT?.amount)
+            {Number(collectionInfo?.main?.soldTokens) ===
+            Number(collectionInfo?.main?.amount)
               ? "SOLD OUT"
-              : `${Number(mainNFT?.soldTokens)} /
-                  ${Number(mainNFT?.amount)}`}
+              : `${Number(collectionInfo?.main?.soldTokens)} /
+                  ${Number(collectionInfo?.main?.amount)}`}
           </div>
           <Purchase
             approved={approved}
             currency={currency}
             setCurrency={setCurrency}
             totalAmount={totalAmount}
-            mainNFT={mainNFT}
+            mainNFT={collectionInfo?.main!}
             approveSpend={approveSpend}
             buyNFT={buyNFT}
             purchaseLoading={purchaseLoading}

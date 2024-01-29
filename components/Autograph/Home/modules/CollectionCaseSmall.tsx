@@ -9,7 +9,6 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
   collection,
   autoProfile,
   dispatch,
-  imageLoading,
   address,
   lensProfile,
   openConnectModal,
@@ -83,8 +82,6 @@ const CollectionCaseSmall: FunctionComponent<CollectionCaseProps> = ({
               ? openConnectModal
               : address && !lensProfile?.id
               ? () => handleLensSignIn()
-              : imageLoading
-              ? () => {}
               : () =>
                   dispatch(
                     setMakePost({

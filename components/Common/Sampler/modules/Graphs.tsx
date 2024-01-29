@@ -4,7 +4,6 @@ import { FunctionComponent } from "react";
 import { GraphsProps } from "../types/sampler.types";
 
 const Graphs: FunctionComponent<GraphsProps> = ({
-  graphData,
   graphLoading,
   setCanvas,
   canvas,
@@ -69,17 +68,17 @@ const Graphs: FunctionComponent<GraphsProps> = ({
                     ></div>
                   );
                 })
-              : (graphData.length < 1 ? graphsRedux : graphData)
-                  .find((item) => item.name === canvas)
+              : graphsRedux
+                  ?.find((item) => item.name === canvas)
                   ?.data?.slice()
-                  .sort((a: any, b: any) => b.percentage - a.percentage)
+                  ?.sort((a: any, b: any) => b.percentage - a.percentage)
                   ?.map((item: any, index: number) => {
                     const percentage =
                       (item.percentage /
-                        ((graphData.length < 1 ? graphsRedux : graphData)
-                          .find((item) => item.name === canvas)
+                        (graphsRedux
+                          ?.find((item) => item.name === canvas)
                           ?.data?.slice()
-                          .sort(
+                          ?.sort(
                             (a: any, b: any) => b.percentage - a.percentage
                           )?.[0]?.percentage ?? 0)) *
                       100;
@@ -124,14 +123,22 @@ const Graphs: FunctionComponent<GraphsProps> = ({
                             ? `#${item.label
                                 .replace(/_{2,}/g, " ")
                                 .replace(/_/g, " ")}`
-                            : `@${item.label.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`}
+                            : `@${
+                                item.label.handle?.suggestedFormatted?.localName?.split(
+                                  "@"
+                                )?.[1]
+                              }`}
                         </div>
                         <div
                           onClick={
                             canvas !== "interests" && canvas !== "hashtags"
                               ? () =>
                                   window.open(
-                                    `https://www.chromadin.xyz/#chat?option=history&profile=${item?.label?.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`
+                                    `https://www.chromadin.xyz/#chat?option=history&profile=${
+                                      item?.label?.handle?.suggestedFormatted?.localName?.split(
+                                        "@"
+                                      )?.[1]
+                                    }`
                                   )
                               : () => {}
                           }
@@ -169,7 +176,11 @@ const Graphs: FunctionComponent<GraphsProps> = ({
                                 ? `#${item.label
                                     .replace(/_{2,}/g, " ")
                                     .replace(/_/g, " ")}`
-                                : `@${item.label.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`;
+                                : `@${
+                                    item.label.handle?.suggestedFormatted?.localName?.split(
+                                      "@"
+                                    )?.[1]
+                                  }`;
                             label.style.marginLeft = "4px";
                             tooltip.appendChild(label);
 

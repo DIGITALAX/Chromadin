@@ -1,18 +1,19 @@
+import { Options } from "@/components/Common/Interactions/types/interactions.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface OptionsState {
-  value: string;
+  value: Options;
 }
 
 const initialOptionsState: OptionsState = {
-  value: "history",
+  value: Options.History,
 };
 
 export const optionsSlice = createSlice({
   name: "options",
   initialState: initialOptionsState,
   reducers: {
-    setOptions: (state: OptionsState, action: PayloadAction<string>) => {
+    setOptions: (state: OptionsState, action: PayloadAction<Options>) => {
       state.value = action.payload;
     },
   },

@@ -10,7 +10,6 @@ const Collections: FunctionComponent<CollectionsProps> = ({
   router,
   autoProfile,
   dispatch,
-  imageLoading,
   address,
   lensProfile,
   openConnectModal,
@@ -25,7 +24,6 @@ const Collections: FunctionComponent<CollectionsProps> = ({
             collection={autoCollections?.[0]}
             autoProfile={autoProfile}
             dispatch={dispatch}
-            imageLoading={imageLoading}
             address={address}
             lensProfile={lensProfile}
             openConnectModal={openConnectModal}
@@ -53,7 +51,6 @@ const Collections: FunctionComponent<CollectionsProps> = ({
                       dispatch={dispatch}
                       collection={collection}
                       autoProfile={autoProfile}
-                      imageLoading={imageLoading}
                       address={address}
                       lensProfile={lensProfile}
                       openConnectModal={openConnectModal}
@@ -65,35 +62,45 @@ const Collections: FunctionComponent<CollectionsProps> = ({
           </div>
         </div>
       </div>
-      <div className="relative w-full h-[50rem] overflow-y-scroll justify-end items-start flex">
-        <div className="relative w-fit h-fit gap-6 tablet:gap-12 flex inline-flex flex-wrap overflow-y-scroll justify-end">
-          {autoCollections
-            ?.filter((collection) => {
-              if (
-                collection?.dropMetadata?.dropTitle !==
-                autoCollections[0]?.dropMetadata?.dropTitle
-              ) {
-                return true;
-              }
-            })
-            ?.map((collection: Collection, index: number) => {
-              return (
-                <CollectionCaseMedium
-                  router={router}
-                  dispatch={dispatch}
-                  key={index}
-                  collection={collection}
-                  autoProfile={autoProfile}
-                  imageLoading={imageLoading}
-                  address={address}
-                  lensProfile={lensProfile}
-                  openConnectModal={openConnectModal}
-                  handleLensSignIn={handleLensSignIn}
-                />
-              );
-            })}
+      {(
+        autoCollections?.filter((collection) => {
+          if (
+            collection?.dropMetadata?.dropTitle !==
+            autoCollections[0]?.dropMetadata?.dropTitle
+          ) {
+            return true;
+          }
+        }) || []
+      )?.length > 0 && (
+        <div className="relative w-full h-[50rem] overflow-y-scroll justify-end items-start flex">
+          <div className="relative w-fit h-fit gap-6 tablet:gap-12 flex inline-flex flex-wrap overflow-y-scroll justify-end">
+            {autoCollections
+              ?.filter((collection) => {
+                if (
+                  collection?.dropMetadata?.dropTitle !==
+                  autoCollections[0]?.dropMetadata?.dropTitle
+                ) {
+                  return true;
+                }
+              })
+              ?.map((collection: Collection, index: number) => {
+                return (
+                  <CollectionCaseMedium
+                    router={router}
+                    dispatch={dispatch}
+                    key={index}
+                    collection={collection}
+                    autoProfile={autoProfile}
+                    address={address}
+                    lensProfile={lensProfile}
+                    openConnectModal={openConnectModal}
+                    handleLensSignIn={handleLensSignIn}
+                  />
+                );
+              })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

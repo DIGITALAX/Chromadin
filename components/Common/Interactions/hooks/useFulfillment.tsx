@@ -1,14 +1,12 @@
 import { ACCEPTED_TOKENS, CHROMADIN_OPEN_ACTION } from "@/lib/constants";
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
 import { setSuccess } from "@/redux/reducers/successSlice";
 import { setError } from "@/redux/reducers/errorSlice";
 import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
-import { MainNFT } from "../../NFT/types/nft.types";
 import { AnyAction, Dispatch } from "redux";
 import { AbiCoder } from "ethers/lib/utils";
-import actPost from "@/lib/helpers/actPost";
+import actPost from "@/lib/helpers/actSig";
 import findBalance from "@/lib/helpers/findBalance";
 import { OracleData } from "../../Wavs/types/wavs.types";
 import { Collection } from "@/components/Home/types/home.types";
@@ -17,7 +15,7 @@ const useFulfillment = (
   publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
-  mainNFT: MainNFT | undefined | Collection,
+  mainNFT: Collection,
   oracleData: OracleData[]
 ) => {
   const [approved, setApproved] = useState<boolean>(false);
@@ -230,7 +228,6 @@ const useFulfillment = (
     if (!address) return;
     setPurchaseLoading(true);
     try {
-
       const balance = await findBalance(
         publicClient,
         ACCEPTED_TOKENS?.find(
@@ -290,13 +287,10 @@ const useFulfillment = (
         dispatch(
           setSuccess({
             actionOpen: true,
-            actionMedia: (mainNFT as MainNFT)?.title
-              ? (mainNFT as MainNFT)?.image || (mainNFT as MainNFT)?.mediaCover
-              : (mainNFT as Collection)?.collectionMetadata?.images?.[0] ||
-                (mainNFT as Collection)?.collectionMetadata?.mediaCover,
-            actionName: (mainNFT as MainNFT)?.title
-              ? (mainNFT as MainNFT)?.title
-              : (mainNFT as Collection)?.collectionMetadata?.title,
+            actionMedia:
+              mainNFT?.collectionMetadata?.images?.[0] ||
+              mainNFT?.collectionMetadata?.mediaCover,
+            actionName: mainNFT?.collectionMetadata?.title,
           })
         );
       }

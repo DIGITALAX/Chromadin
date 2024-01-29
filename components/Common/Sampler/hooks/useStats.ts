@@ -1,37 +1,17 @@
-import { setStatsRedux } from "@/redux/reducers/statsSlice";
 import { useEffect, useState } from "react";
-import { UseStatsResults } from "../types/sampler.types";
 import getDailyMappings from "@/graphql/subgraph/queries/getDailyMappings";
 import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
-import { setPiesRedux } from "@/redux/reducers/piesSlice";
-import { setRatesRedux } from "@/redux/reducers/ratesSlice";
-import { setGraphRedux } from "@/redux/reducers/graphSlice";
+import { setSamplerRedux } from "@/redux/reducers/samplerSlice";
 import { AnyAction, Dispatch } from "redux";
+import { Viewer } from "../../Interactions/types/interactions.types";
 
 const useStats = (
   dispatch: Dispatch<AnyAction>,
-  viewer: string,
+  viewer: Viewer,
   stats: any[]
-): UseStatsResults => {
+) => {
   const [statsLoading, setStatsLoading] = useState<boolean>(false);
-  const [statsTitles, setStatsTitles] = useState<any[][]>([
-    ["Top 50 Mirrorers (All Time)"],
-    ["Top 50 Collectors (All Time)"],
-    ["Top 50 Authors (All Time)"],
-    ["Unique Collects (24HRS)"],
-    ["Pub Collect β (All Time)"],
-    ["Pub Collect β (72HRS)"],
-    ["Amount Paid Leaderboard (72HRS)"],
-  ]);
   const [canvas, setCanvas] = useState<string>("interests");
-  const [totalChanges, setTotalChanges] = useState<number[]>([]);
-  const [topAccountsFollowed, setTopAccountsFollowed] = useState<
-    {
-      handle: string;
-      percentage: string;
-    }[]
-  >([]);
-  const [graphData, setGraphData] = useState<any[]>([]);
 
   const getDashboardData = async () => {
     setStatsLoading(true);
@@ -152,14 +132,14 @@ const useStats = (
         { name: "hashtags", data: graphData[0] },
       ];
 
-      setStatsTitles(stats);
-      setTopAccountsFollowed(follow);
-      setTotalChanges(changes);
-      setGraphData(graphs);
-      dispatch(setStatsRedux(stats));
-      dispatch(setPiesRedux(follow));
-      dispatch(setRatesRedux(changes));
-      dispatch(setGraphRedux(graphs));
+      dispatch(
+        setSamplerRedux({
+          graphs,
+          stats,
+          pies: follow,
+          rates: changes,
+        })
+      );
     } catch (err: any) {
       console.error(err.message);
     }
@@ -168,17 +148,13 @@ const useStats = (
   };
 
   useEffect(() => {
-    if (viewer === "sampler" && stats.length === 0) {
+    if (viewer === Viewer.Sampler && stats?.length === 0) {
       getDashboardData();
     }
   }, [viewer]);
 
   return {
-    statsTitles,
     statsLoading,
-    topAccountsFollowed,
-    totalChanges,
-    graphData,
     setCanvas,
     canvas,
   };

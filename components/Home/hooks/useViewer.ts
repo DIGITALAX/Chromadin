@@ -8,6 +8,7 @@ import { AnyAction, Dispatch } from "redux";
 import toHexWithLeadingZero from "@/lib/helpers/leadingZero";
 import { Profile } from "../types/generated";
 import { getOneProfile } from "@/graphql/lens/queries/getProfile";
+import { Options, Viewer } from "@/components/Common/Interactions/types/interactions.types";
 
 const useViewer = (
   router: NextRouter,
@@ -101,28 +102,37 @@ const useViewer = (
   };
 
   useEffect(() => {
-    if (router.asPath.includes("#")) {
-      dispatch(setView(router.asPath.split("#")[1].split("?option=")[0]));
-      if (router.asPath.includes("&profile=")) {
+    if (router?.asPath?.includes("#")) {
+      dispatch(
+        setView(router?.asPath.split("#")[1].split("?option=")[0] as Viewer)
+      );
+      if (router?.asPath?.includes("&profile=")) {
         dispatch(
           setOptions(
-            router.asPath
+            router?.asPath
               .split("#")[1]
               .split("?option=")[1]
-              ?.split("&profile=")[0]
+              ?.split("&profile=")[0] as Options
           )
         );
-      } else if (router.asPath.includes("&post=")) {
+      } else if (router?.asPath?.includes("&post=")) {
         dispatch(
           setOptions(
-            router.asPath.split("#")[1].split("?option=")[1]?.split("&post=")[0]
+            router?.asPath
+              .split("#")[1]
+              .split("?option=")[1]
+              ?.split("&post=")[0] as Options
           )
         );
       } else {
-        dispatch(setOptions(router.asPath.split("#")[1].split("?option=")[1]));
+        dispatch(
+          setOptions(
+            router?.asPath.split("#")[1].split("?option=")[1] as Options
+          )
+        );
       }
     }
-  }, [router.asPath]);
+  }, [router?.asPath]);
 
   const handleSearchChoose = async (
     chosen: Profile | Drop | Collection

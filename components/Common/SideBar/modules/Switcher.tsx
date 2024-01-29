@@ -3,12 +3,11 @@ import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import MarqueeText from "react-fast-marquee";
 import { SwitcherProps } from "../types/sidebar.types";
-import { setCollectOpen } from "@/redux/reducers/collectOpenSlice";
+import { Options } from "../../Interactions/types/interactions.types";
 
 const Switcher: FunctionComponent<SwitcherProps> = ({
   options,
-  dispatch,
-  router
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex-col flex-wrap">
@@ -55,28 +54,27 @@ const Switcher: FunctionComponent<SwitcherProps> = ({
                   className="relative w-fit justify-center lg:w-full h-full grid grid-flow-row auto-rows-auto flex items-center"
                   key={index}
                   onClick={() => {
-                    dispatch(setCollectOpen(false));
-                    if (router.asPath.includes("&profile=")) {
+                    if (router?.asPath?.includes("&profile=")) {
                       router.push(
                         `#${values[1]}` +
                           "?option=" +
-                          (options ? options : "history") +
+                          (options ? options : Options.History) +
                           "&profile=" +
-                          router.asPath.split("&profile=")[1]
+                          router?.asPath.split("&profile=")[1]
                       );
-                    } else if (router.asPath.includes("&post=")) {
+                    } else if (router?.asPath?.includes("&post=")) {
                       router.push(
                         `#${values[1]}` +
                           "?option=" +
-                          (options ? options : "history") +
+                          (options ? options : Options.History) +
                           "&post=" +
-                          router.asPath.split("&post=")[1]
+                          router?.asPath.split("&post=")[1]
                       );
                     } else {
                       router.push(
                         `#${values[1]}` +
                           "?option=" +
-                          (options ? options : "history")
+                          (options ? options : Options.History)
                       );
                     }
                   }}

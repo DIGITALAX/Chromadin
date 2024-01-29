@@ -5,35 +5,23 @@ import { ProfileSideBarProps } from "../types/wavs.types";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Reactions from "./Reactions";
+import { Post } from "@/components/Home/types/generated";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const Profile: FunctionComponent<ProfileSideBarProps> = ({
   publication,
-  followerOnly,
   dispatch,
   index,
-  collectPost,
-  reactPost,
-  mirrorPost,
+  collect,
+  mirror,
+  like,
+  interactionsLoading,
   address,
-  reactLoading,
-  mirrorLoading,
-  collectLoading,
-  reactAmount,
-  collectAmount,
-  mirrorAmount,
-  commentAmount,
-  openComment,
-  setMirrorLoader,
-  setCollectLoader,
-  setReactLoader,
-  feedType,
+  setOpenComment,
+  main,
   router,
-  hasMirrored,
-  hasReacted,
-  hasCollected,
   openMirrorChoice,
   setOpenMirrorChoice,
-  profileType
 }): JSX.Element => {
   const profileImage = createProfilePicture(
     publication?.__typename === "Mirror"
@@ -72,10 +60,10 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
             className={`absolute rounded-full flex bg-white w-8 h-full justify-self-center sm:right-6 col-start-1 cursor-pointer active:scale-95 hover:opacity-80`}
             id="crt"
             onClick={() =>
-              !router.asPath?.includes("/autograph/")
+              !router?.asPath?.includes("/autograph/")
                 ? router.push(
-                    router.asPath.includes("&post=")
-                      ? router.asPath.split("&post=")[0] +
+                    router?.asPath?.includes("&post=")
+                      ? router?.asPath.split("&post=")[0] +
                           `&profile=${
                             publication?.__typename !== "Mirror"
                               ? publication?.by?.handle?.suggestedFormatted?.localName?.split(
@@ -85,8 +73,8 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
                                   "@"
                                 )[1]
                           }`
-                      : router.asPath.includes("&profile=")
-                      ? router.asPath.split("&profile=")[0] +
+                      : router?.asPath?.includes("&profile=")
+                      ? router?.asPath.split("&profile=")[0] +
                         `&profile=${
                           publication?.__typename !== "Mirror"
                             ? publication?.by?.handle?.suggestedFormatted?.localName?.split(
@@ -96,8 +84,8 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
                                 "@"
                               )[1]
                         }`
-                      : router.asPath.includes("?option=")
-                      ? router.asPath +
+                      : router?.asPath?.includes("?option=")
+                      ? router?.asPath +
                         `&profile=${
                           publication?.__typename !== "Mirror"
                             ? publication?.by?.handle?.suggestedFormatted?.localName?.split(
@@ -107,7 +95,7 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
                                 "@"
                               )[1]
                         }`
-                      : router.asPath +
+                      : router?.asPath +
                         `?option=history&profile=${
                           publication?.__typename !== "Mirror"
                             ? publication?.by?.handle?.suggestedFormatted?.localName?.split(
@@ -134,6 +122,7 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
             {profileImage && (
               <Image
                 src={profileImage}
+                onError={(e) => handleImageError(e)}
                 objectFit="cover"
                 alt="pfp"
                 layout="fill"
@@ -199,37 +188,22 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
         </div>
         <div className="relative w-full h-full grid grid-flow-col auto-cols-auto items-end pt-3">
           <Reactions
-            profileType={profileType}
-            feedType={feedType}
             id={publication?.id}
-            textColor={"black"}
-            commentColor={"#0AC7AB"}
-            mirrorColor={"#712AF6"}
-            collectColor={"#81A8F8"}
-            heartColor={"red"}
             dispatch={dispatch}
-            followerOnly={followerOnly as boolean}
-            collectPost={collectPost}
-            mirrorPost={mirrorPost}
-            reactPost={reactPost}
             address={address!}
-            publication={publication}
+            publication={
+              (publication?.__typename == "Mirror"
+                ? publication?.mirrorOn
+                : publication) as Post
+            }
             index={index}
-            reactLoading={reactLoading}
-            mirrorLoading={mirrorLoading}
-            collectLoading={collectLoading}
-            reactAmount={reactAmount}
-            collectAmount={collectAmount}
-            mirrorAmount={mirrorAmount}
-            commentAmount={commentAmount}
-            openComment={openComment}
-            hasCollected={hasCollected}
-            hasMirrored={hasMirrored}
-            hasReacted={hasReacted}
-            setReactLoader={setReactLoader}
-            setMirrorLoader={setMirrorLoader}
-            setCollectLoader={setCollectLoader}
+            interactionsLoading={interactionsLoading}
+            collect={collect}
+            like={like}
+            mirror={mirror}
             router={router}
+            setOpenComment={setOpenComment}
+            main={main}
             openMirrorChoice={openMirrorChoice}
             setOpenMirrorChoice={setOpenMirrorChoice}
           />

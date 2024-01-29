@@ -1,18 +1,19 @@
+import { Viewer } from "@/components/Common/Interactions/types/interactions.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ViewState {
-  value: string;
+  value: Viewer;
 }
 
 const initialViewState: ViewState = {
-  value: "stream",
+  value: Viewer.Stream,
 };
 
 export const viewSlice = createSlice({
   name: "view",
   initialState: initialViewState,
   reducers: {
-    setView: (state: ViewState, action: PayloadAction<string>) => {
+    setView: (state: ViewState, action: PayloadAction<Viewer>) => {
       state.value = action.payload;
     },
   },

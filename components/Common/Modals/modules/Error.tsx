@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 const Error: FunctionComponent = (): JSX.Element => {
   const dispatch = useDispatch();
   return (
-    <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
+    <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
       <div className="relative w-full md:w-[30vw] h-fit col-start-1 place-self-center bg-offBlack rounded-lg">
         <div className="relative w-full row-start-2 h-fit rounded-xl grid grid-flow-col auto-cols-auto">
           <div className="relative w-full h-full col-start-1 rounded-xl place-self-center">
@@ -14,7 +14,7 @@ const Error: FunctionComponent = (): JSX.Element => {
               <div className="relative w-fit h-fit row-start-1 self-center justify-self-end pr-3 pt-3 cursor-pointer">
                 <ImCross
                   color="white"
-                  size={15}
+                  size={10}
                   onClick={() => dispatch(setError(false))}
                 />
               </div>

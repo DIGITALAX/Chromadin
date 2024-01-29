@@ -3,7 +3,6 @@ import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { PurchaseProps } from "../types/interactions.types";
 import { AiOutlineLoading } from "react-icons/ai";
-import { MainNFT } from "../../NFT/types/nft.types";
 import { Collection } from "@/components/Home/types/home.types";
 import WaveformComponent from "@/components/Home/modules/Waveform";
 
@@ -20,7 +19,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
-      {!router.asPath.includes("/autograph/") && (
+      {!router?.asPath?.includes("/autograph/") && (
         <div
           className={
             "relative w-full h-full flex flex-col items-center justify-center pt-4"
@@ -32,31 +31,31 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
             onClick={() =>
               router.push(
                 `/autograph/${
-                  (
-                    mainNFT as MainNFT
-                  )?.publication?.by?.handle?.suggestedFormatted?.localName?.split(
+                  mainNFT?.publication?.by?.handle?.suggestedFormatted?.localName?.split(
                     "@"
                   )?.[1]
-                }/collection/${(mainNFT as MainNFT)?.title
+                }/collection/${mainNFT?.collectionMetadata?.title
                   ?.replaceAll(" ", "_")
                   .toLowerCase()}`
               )
             }
           >
-            {(mainNFT as MainNFT).type?.toLowerCase()?.includes("video") ? (
+            {mainNFT.collectionMetadata?.mediaTypes
+              ?.toLowerCase()
+              ?.includes("video") ? (
               <video
                 playsInline
                 className="rounded-br-lg rounded-tl-lg w-full h-full object-cover"
                 loop
-                key={(mainNFT as MainNFT).video}
-                id={(mainNFT as MainNFT).video}
+                key={mainNFT?.collectionMetadata?.video}
+                id={mainNFT?.collectionMetadata?.video}
                 muted
-                poster={`${INFURA_GATEWAY}/ipfs/${
-                  (mainNFT as MainNFT).mediaCover
-                }`}
+                poster={`${INFURA_GATEWAY}/ipfs/${mainNFT?.collectionMetadata?.mediaCover}`}
               >
                 <source
-                  src={`${INFURA_GATEWAY}/ipfs/${(mainNFT as MainNFT).video}`}
+                  src={`${INFURA_GATEWAY}/ipfs/${
+                    mainNFT?.collectionMetadata?.video?.split("ipfs://")?.[1]
+                  }`}
                   type="video/mp4"
                   draggable={false}
                 />
@@ -64,23 +63,27 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
             ) : (
               <Image
                 src={`${INFURA_GATEWAY}/ipfs/${
-                  (mainNFT as MainNFT).image || (mainNFT as MainNFT).mediaCover
+                  mainNFT?.collectionMetadata?.images?.[0]?.split(
+                    "ipfs://"
+                  )?.[1] ||
+                  mainNFT?.collectionMetadata?.mediaCover?.split("ipfs://")?.[1]
                 }`}
                 className="rounded-br-lg rounded-tl-lg w-full h-full"
                 layout="fill"
                 draggable={false}
                 objectFit="cover"
                 key={
-                  (mainNFT as MainNFT).image || (mainNFT as MainNFT).mediaCover
+                  mainNFT?.collectionMetadata?.images?.[0] ||
+                  mainNFT?.collectionMetadata?.mediaCover
                 }
               />
             )}
-            {(mainNFT as MainNFT).video && (
+            {mainNFT.collectionMetadata?.video && (
               <div
                 className="absolute w-full h-fit flex bottom-0 cursor-default"
                 onClick={(e) => e.stopPropagation()}
               >
-                <WaveformComponent video={(mainNFT as MainNFT).video} />
+                <WaveformComponent video={mainNFT.collectionMetadata?.video} />
               </div>
             )}
           </div>
@@ -88,7 +91,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
       )}
       <div
         className={`relative w-full h-fit flex flex-col gap-3 pt-4 px-3 ${
-          !router.asPath.includes("/autograph/")
+          !router?.asPath?.includes("/autograph/")
             ? "justify-center items-center"
             : "justify-end items-end"
         }`}
@@ -118,7 +121,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
         </div>
         <div
           className={`relative w-1/2 h-fit font-digi text-white text-sm flex whitespace-nowrap ${
-            !router.asPath.includes("/autograph/")
+            !router?.asPath?.includes("/autograph/")
               ? "justify-center items-center"
               : "justify-end items-end"
           }`}
@@ -130,7 +133,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
       </div>
       <div
         className={`relative w-full h-fit font-earl flex text-sm pt-4 ${
-          !router.asPath.includes("/autograph/")
+          !router?.asPath?.includes("/autograph/")
             ? "justify-center items-center"
             : "justify-end items-end"
         }`}

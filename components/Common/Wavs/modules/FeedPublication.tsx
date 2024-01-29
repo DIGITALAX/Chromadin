@@ -3,7 +3,6 @@ import Image from "next/legacy/image";
 import { AiFillEye, AiOutlineRetweet } from "react-icons/ai";
 import { FunctionComponent } from "react";
 import { FeedPublicationProps } from "../types/wavs.types";
-import { setImageFeedViewer } from "@/redux/reducers/imageFeedViewerSlice";
 import descriptionRegex from "@/lib/helpers/descriptionRegex";
 import { FaRegCommentDots } from "react-icons/fa";
 import ReactPlayer from "react-player";
@@ -14,36 +13,23 @@ import {
 } from "@/components/Home/types/generated";
 import { metadataMedia, postMetadata } from "@/lib/helpers/postMetadata";
 import Quote from "./Quote";
+import { setImageViewer } from "@/redux/reducers/imageViewerSlice";
 
 const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
   publication,
   dispatch,
-  followerOnly,
   height,
   address,
-  collectPost,
-  reactPost,
-  mirrorPost,
+  collect,
+  mirror,
+  like,
   index,
-  collectLoading,
-  mirrorLoading,
-  reactLoading,
-  reactAmount,
-  mirrorAmount,
-  collectAmount,
-  commentAmount,
-  setCollectLoader,
-  setReactLoader,
-  setMirrorLoader,
-  openComment,
+  setOpenComment,
+  interactionsLoading,
+  main,
   router,
-  hasCollected,
-  hasMirrored,
-  hasReacted,
   setOpenMirrorChoice,
   openMirrorChoice,
-  feedType,
-  profileType
 }): JSX.Element => {
   const metadata = postMetadata(publication);
   return (
@@ -55,31 +41,17 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
       id={publication?.id}
     >
       <Profile
-        profileType={profileType}
-        feedType={feedType}
         publication={publication}
-        followerOnly={followerOnly}
         dispatch={dispatch}
-        collectPost={collectPost}
-        reactPost={reactPost}
-        mirrorPost={mirrorPost}
         address={address}
         index={index}
-        collectLoading={collectLoading}
-        reactLoading={reactLoading}
-        mirrorLoading={mirrorLoading}
-        reactAmount={reactAmount}
-        mirrorAmount={mirrorAmount}
-        hasMirrored={hasMirrored}
-        hasReacted={hasReacted}
-        collectAmount={collectAmount}
-        commentAmount={commentAmount}
-        setCollectLoader={setCollectLoader}
-        setReactLoader={setReactLoader}
-        setMirrorLoader={setMirrorLoader}
-        openComment={openComment}
+        collect={collect}
+        mirror={mirror}
+        like={like}
+        interactionsLoading={interactionsLoading}
+        setOpenComment={setOpenComment}
+        main={main}
         router={router}
-        hasCollected={hasCollected}
         openMirrorChoice={openMirrorChoice}
         setOpenMirrorChoice={setOpenMirrorChoice}
       />
@@ -102,23 +74,23 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
             }`}
             onClick={() =>
               publication?.__typename === "Comment" &&
-              (!router.asPath.includes("/autograph/")
+              (!router?.asPath?.includes("/autograph/")
                 ? router.push(
-                    router.asPath.includes("&post=")
-                      ? router.asPath.includes("?option=")
-                        ? router.asPath.split("&post=")[0] +
+                    router?.asPath?.includes("&post=")
+                      ? router?.asPath?.includes("?option=")
+                        ? router?.asPath.split("&post=")[0] +
                           `&post=${publication?.commentOn?.id}`
-                        : router.asPath.split("&post=")[0] +
+                        : router?.asPath.split("&post=")[0] +
                           `?option=history&post=${publication?.commentOn?.id}`
-                      : router.asPath.includes("&profile=")
-                      ? router.asPath.includes("?option=")
-                        ? router.asPath.split("&profile=")[0] +
+                      : router?.asPath?.includes("&profile=")
+                      ? router?.asPath?.includes("?option=")
+                        ? router?.asPath.split("&profile=")[0] +
                           `&post=${publication?.commentOn?.id}`
-                        : router.asPath.split("&profile=")[0] +
+                        : router?.asPath.split("&profile=")[0] +
                           `?option=history&post=${publication?.commentOn?.id}`
-                      : router.asPath.includes("?option=")
-                      ? router.asPath + `&post=${publication?.commentOn?.id}`
-                      : router.asPath +
+                      : router?.asPath?.includes("?option=")
+                      ? router?.asPath + `&post=${publication?.commentOn?.id}`
+                      : router?.asPath +
                         `?option=history&post=${publication?.commentOn?.id}`
                   )
                 : router.replace(
@@ -207,9 +179,9 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
                     onClick={() =>
                       media?.type === "Image" &&
                       dispatch(
-                        setImageFeedViewer({
+                        setImageViewer({
                           actionType: media?.type,
-                          actionOpen: true,
+                          actionValue: true,
                           actionImage: media?.url,
                         })
                       )
@@ -279,44 +251,44 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
             <div
               className={`relative w-fit h-full col-start-1 row-start-1 sm:col-start-2 sm:pt-0 pt-3  grid grid-flow-col auto-cols-auto font-digi gap-1 cursor-pointer justify-self-end self-end hover:opacity-70 active:scale-95 text-white`}
               onClick={() =>
-                !router.asPath.includes("/autograph/")
+                !router?.asPath?.includes("/autograph/")
                   ? router.push(
-                      router.asPath.includes("&post=")
-                        ? router.asPath.includes("?option=")
-                          ? router.asPath.split("&post=")[0] +
+                      router?.asPath?.includes("&post=")
+                        ? router?.asPath?.includes("?option=")
+                          ? router?.asPath.split("&post=")[0] +
                             `&post=${
                               publication?.__typename !== "Mirror"
                                 ? publication?.id
                                 : publication?.mirrorOn.id
                             }`
-                          : router.asPath.split("&post=")[0] +
+                          : router?.asPath.split("&post=")[0] +
                             `?option=history&post=${
                               publication?.__typename !== "Mirror"
                                 ? publication?.id
                                 : publication?.mirrorOn.id
                             }`
-                        : router.asPath.includes("&profile=")
-                        ? router.asPath.includes("?option=")
-                          ? router.asPath.split("&profile=")[0] +
+                        : router?.asPath?.includes("&profile=")
+                        ? router?.asPath?.includes("?option=")
+                          ? router?.asPath.split("&profile=")[0] +
                             `&post=${
                               publication?.__typename !== "Mirror"
                                 ? publication?.id
                                 : publication?.mirrorOn.id
                             }`
-                          : router.asPath.split("&profile=")[0] +
+                          : router?.asPath.split("&profile=")[0] +
                             `?option=history&post=${
                               publication?.__typename !== "Mirror"
                                 ? publication?.id
                                 : publication?.mirrorOn.id
                             }`
-                        : router.asPath.includes("?option=")
-                        ? router.asPath +
+                        : router?.asPath?.includes("?option=")
+                        ? router?.asPath +
                           `&post=${
                             publication?.__typename !== "Mirror"
                               ? publication?.id
                               : publication?.mirrorOn.id
                           }`
-                        : router.asPath +
+                        : router?.asPath +
                           `?option=history&post=${
                             publication?.__typename !== "Mirror"
                               ? publication?.id
@@ -351,23 +323,23 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
             <div
               className="relative w-full h-fit p-2 flex items-center justify-start flex-col from-gray-400 via-gray-600 to-gray-800 bg-gradient-to-r rounded-md gap-5"
               onClick={() =>
-                !router.asPath.includes("/autograph/")
+                !router?.asPath?.includes("/autograph/")
                   ? router.push(
-                      router.asPath.includes("&post=")
-                        ? router.asPath.includes("?option=")
-                          ? router.asPath.split("&post=")[0] +
+                      router?.asPath?.includes("&post=")
+                        ? router?.asPath?.includes("?option=")
+                          ? router?.asPath.split("&post=")[0] +
                             `&post=${publication?.quoteOn?.id}`
-                          : router.asPath.split("&post=")[0] +
+                          : router?.asPath.split("&post=")[0] +
                             `?option=history&post=${publication?.quoteOn?.id}`
-                        : router.asPath.includes("&profile=")
-                        ? router.asPath.includes("?option=")
-                          ? router.asPath.split("&profile=")[0] +
+                        : router?.asPath?.includes("&profile=")
+                        ? router?.asPath?.includes("?option=")
+                          ? router?.asPath.split("&profile=")[0] +
                             `&post=${publication?.quoteOn?.id}`
-                          : router.asPath.split("&profile=")[0] +
+                          : router?.asPath.split("&profile=")[0] +
                             `?option=history&post=${publication?.quoteOn?.id}`
-                        : router.asPath.includes("?option=")
-                        ? router.asPath + `&post=${publication?.quoteOn?.id}`
-                        : router.asPath +
+                        : router?.asPath?.includes("?option=")
+                        ? router?.asPath + `&post=${publication?.quoteOn?.id}`
+                        : router?.asPath +
                           `?option=history&post=${publication?.quoteOn?.id}`
                     )
                   : router.replace(

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { DropsResults } from "../types/collections.types";
 import shuffle from "shuffle-array";
 import { Collection } from "@/components/Home/types/home.types";
 
-const useDrops = (collections: Collection[]): DropsResults => {
+const useDrops = (collections: Collection[]) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const moshVideoRef = useRef<HTMLVideoElement>(null);

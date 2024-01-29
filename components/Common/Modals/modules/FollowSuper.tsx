@@ -28,7 +28,7 @@ const FollowSuper: FunctionComponent<SuperFollowProps> = ({
               <div className="relative w-fit h-fit row-start-1 self-center justify-self-end pr-3 pt-3 cursor-pointer">
                 <ImCross
                   color="white"
-                  size={15}
+                  size={10}
                   onClick={() => dispatch(setSuperFollow(false))}
                 />
               </div>
@@ -78,12 +78,6 @@ const FollowSuper: FunctionComponent<SuperFollowProps> = ({
           </div>
         </div>
       </div>
-      {rain && (
-        <canvas
-          ref={canvasRef}
-          className="absolute w-full h-full top-0 left-0"
-        />
-      )}
     </div>
   );
 };

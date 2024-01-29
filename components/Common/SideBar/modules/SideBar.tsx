@@ -17,16 +17,14 @@ const SideBar: FunctionComponent<SideBarProps> = ({
   options,
   videoSync,
   fetchMoreVideos,
-  hasMore,
-  scrollHeight,
+  hasMoreVideos,
   collectors,
-  collectLoading,
+  collectsLoading,
+  action,
   getMorePostCollects,
   hasMoreCollects,
   router,
-  commentId,
-  dispatchVideos,
-  mainVideo,
+  allVideos,
   address,
   currency,
   setCurrency,
@@ -39,69 +37,64 @@ const SideBar: FunctionComponent<SideBarProps> = ({
   setHistorySwitch,
   getMoreBuyerHistory,
   getMoreUserHistory,
-  action,
   profile,
-  mainNFT,
-  collections,
   isCreator,
   historyLoading,
   commentors,
-  likeCommentLoading,
-  mirrorCommentLoading,
-  collectCommentLoading,
-  collectVideo,
-  likeVideo,
+  collect,
+  like,
   getMorePostComments,
-  mirrorVideo,
+  mirror,
   hasMoreComments,
   commentsLoading,
-  historyData
+  historyData,
+  handleLogout,
+  interactionsLoading,
+  collectionInfo,
+  setSecondaryComment,
+  secondaryComment,
 }): JSX.Element => {
   return (
     <div className="relative w-full lg:w-80 h-fit lg:h-full flex flex-col">
-      <Switcher router={router} options={options} dispatch={dispatch} />
+      <Switcher router={router} options={options} />
       <Tabs tab={tab} setTab={setTab} viewer={viewer} />
       {tab === 0 ? (
         <Channels
           dispatch={dispatch}
-          dispatchVideos={dispatchVideos}
+          allVideos={allVideos}
           videoSync={videoSync}
           fetchMoreVideos={fetchMoreVideos}
-          hasMore={hasMore}
-          scrollHeight={scrollHeight}
+          hasMore={hasMoreVideos}
         />
       ) : (
         <Interactions
+          interactionsLoading={interactionsLoading}
           viewer={viewer}
+          collectionInfo={collectionInfo}
           commentors={commentors}
           getMorePostComments={getMorePostComments}
           commentsLoading={commentsLoading}
-          dispatchVideos={dispatchVideos}
+          allVideos={allVideos}
           hasMoreComments={hasMoreComments}
-          mirrorVideo={mirrorVideo}
-          collectVideo={collectVideo}
-          likeVideo={likeVideo}
-          likeCommentLoading={likeCommentLoading}
-          mirrorCommentLoading={mirrorCommentLoading}
-          collectCommentLoading={collectCommentLoading}
+          mirror={mirror}
+          collect={collect}
+          like={like}
           dispatch={dispatch}
           lensProfile={profile}
-          commentId={commentId}
+          secondaryComment={secondaryComment}
+          setSecondaryComment={setSecondaryComment}
           router={router}
           collectors={collectors}
-          collectLoading={collectLoading}
+          collectLoading={collectsLoading}
           getMorePostCollects={getMorePostCollects}
           hasMoreCollects={hasMoreCollects}
-          mainVideo={mainVideo}
           currency={currency}
           setCurrency={setCurrency}
           totalAmount={totalAmount}
           approved={approved}
-          mainNFT={mainNFT}
           buyNFT={buyNFT}
           approveSpend={approveSpend}
           purchaseLoading={purchaseLoading}
-          collections={collections}
           address={address}
           historyData={historyData}
           historyLoading={historyLoading}
@@ -114,7 +107,7 @@ const SideBar: FunctionComponent<SideBarProps> = ({
         />
       )}
       <Connect
-        router={router}
+        handleLogout={handleLogout}
         connected={connected}
         handleLensSignIn={handleLensSignIn}
         profile={profile}

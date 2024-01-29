@@ -1,16 +1,17 @@
 import { FunctionComponent } from "react";
 import { DropsProps } from "../types/collections.types";
-import { setMainNFT } from "@/redux/reducers/mainNFTSlice";
 import { Collection } from "@/components/Home/types/home.types";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "@/lib/constants";
+import { setCollectionInfo } from "@/redux/reducers/collectionInfoSlice";
 
 const Drops: FunctionComponent<DropsProps> = ({
-  collections,
+  collectionInfo,
   dispatch,
   collectionsLoading,
   router,
   moreCollectionsLoading,
+  currentIndex
 }): JSX.Element => {
   return (
     <div className="relative w-[80%] h-full p-4 flex flex-row gap-4">
@@ -38,42 +39,24 @@ const Drops: FunctionComponent<DropsProps> = ({
               </div>
             );
           })
-        : collections?.map((collection: Collection, index: number) => {
+        : [
+            ...collectionInfo?.collections!?.slice(currentIndex),
+            ...collectionInfo?.collections!?.slice(0, currentIndex),
+          ]?.map((collection: Collection, index: number) => {
             return (
               <div
                 className="relative w-60 h-40 flex flex-col items-center shrink-0 cursor-pointer"
                 key={index}
                 onClick={() => {
                   dispatch(
-                    setMainNFT({
-                      title: collection?.collectionMetadata?.title,
-                      image:
-                        collection?.collectionMetadata?.images?.[0]?.split(
-                          "ipfs://"
-                        )[1],
-                      audio:
-                        collection?.collectionMetadata?.audio?.split(
-                          "ipfs://"
-                        )[1],
-                      video:
-                        collection?.collectionMetadata?.video?.split(
-                          "ipfs://"
-                        )[1],
-                      description: collection?.collectionMetadata?.description,
-                      mediaCover:
-                        collection?.collectionMetadata?.mediaCover?.split(
-                          "ipfs://"
-                        )[1],
-                      type: collection?.collectionMetadata?.mediaTypes,
-                      drop: collection?.dropMetadata,
-                      prices: collection?.prices,
-                      acceptedTokens: collection?.acceptedTokens,
-                      amount: collection?.amount,
-                      soldTokens: collection?.soldTokens,
-                      publication: collection?.publication,
+                    setCollectionInfo({
+                      actionSkip: collectionInfo?.skip,
+                      actionCollections: collectionInfo?.collections,
+                      actionHasMore: collectionInfo?.hasMore,
+                      actionMain: collection,
                     })
                   );
-                  if (router.asPath.includes("/autograph")) {
+                  if (router?.asPath?.includes("/autograph")) {
                     router?.replace(
                       `/autograph/${
                         collection?.publication?.by?.handle?.suggestedFormatted?.localName?.split(
@@ -84,62 +67,62 @@ const Drops: FunctionComponent<DropsProps> = ({
                         ?.toLowerCase()}`
                     );
                   } else if (
-                    router.asPath.includes("#sampler") ||
-                    router.asPath.includes("#chat")
+                    router?.asPath?.includes("#sampler") ||
+                    router?.asPath?.includes("#chat")
                   ) {
-                    if (router.asPath?.includes("&post=")) {
+                    if (router?.asPath?.includes("&post=")) {
                       router.push(
                         "#collect?option=fulfillment" +
                           "&post=" +
-                          router.asPath?.split("&post=")[1]
+                          router?.asPath?.split("&post=")[1]
                       );
-                    } else if (router.asPath?.includes("&profile=")) {
+                    } else if (router?.asPath?.includes("&profile=")) {
                       router.push(
                         "#collect?option=fulfillment" +
                           "&profile=" +
-                          router.asPath?.split("&profile=")[1]
+                          router?.asPath?.split("&profile=")[1]
                       );
                     } else {
                       router.push("#collect?option=fulfillment");
                     }
                   } else {
-                    if (router.asPath.includes("#")) {
-                      if (router.asPath.includes("&profile=")) {
-                        router.asPath.includes("?option=")
+                    if (router?.asPath?.includes("#")) {
+                      if (router?.asPath?.includes("&profile=")) {
+                        router?.asPath?.includes("?option=")
                           ? router.push(
-                              router.asPath?.split("?option=")[0] +
+                              router?.asPath?.split("?option=")[0] +
                                 "?option=fulfillment" +
                                 "&profile=" +
-                                router.asPath?.split("&profile=")[1]
+                                router?.asPath?.split("&profile=")[1]
                             )
                           : router.push(
                               "?option=fulfillment" +
                                 "&profile=" +
-                                router.asPath?.split("&profile=")[1]
+                                router?.asPath?.split("&profile=")[1]
                             );
-                      } else if (router.asPath.includes("&post=")) {
-                        router.asPath.includes("?option=")
+                      } else if (router?.asPath?.includes("&post=")) {
+                        router?.asPath?.includes("?option=")
                           ? router.push(
-                              router.asPath?.split("?option=")[0] +
+                              router?.asPath?.split("?option=")[0] +
                                 "?option=fulfillment" +
-                                router.asPath
+                                router?.asPath
                                   ?.split("?option=fulfillment")[1]
                                   ?.split("&post=")[0] +
                                 "&post=" +
-                                router.asPath?.split("&post=")[1]
+                                router?.asPath?.split("&post=")[1]
                             )
                           : router.push(
                               "?option=fulfillment" +
-                                router.asPath
+                                router?.asPath
                                   ?.split("?option=fulfillment")[1]
                                   ?.split("&post=")[0] +
                                 "&post=" +
-                                router.asPath?.split("&post=")[1]
+                                router?.asPath?.split("&post=")[1]
                             );
                       } else {
-                        router.asPath.includes("?option=")
+                        router?.asPath?.includes("?option=")
                           ? router.push(
-                              router.asPath?.split("?option=")[0] +
+                              router?.asPath?.split("?option=")[0] +
                                 "?option=fulfillment"
                             )
                           : router.push("?option=fulfillment");
@@ -166,7 +149,7 @@ const Drops: FunctionComponent<DropsProps> = ({
                       key={collection?.collectionMetadata?.video}
                     >
                       <source
-                        src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.images?.[0]
+                        src={`${INFURA_GATEWAY}/ipfs/${collection?.collectionMetadata?.video
                           ?.split("ipfs://")[1]
                           ?.replace(/"/g, "")
                           ?.trim()}`}

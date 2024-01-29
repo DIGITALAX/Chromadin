@@ -5,6 +5,7 @@ import FetchMoreLoading from "../../Loading/FetchMoreLoading";
 import Image from "next/legacy/image";
 import { Profile } from "@/components/Home/types/generated";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const Collectors: FunctionComponent<CollectorsProps> = ({
   collectors,
@@ -66,6 +67,7 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
                           layout="fill"
                           objectFit="cover"
                           draggable={false}
+                          onError={(e) => handleImageError(e)}
                         />
                       )}
                     </div>

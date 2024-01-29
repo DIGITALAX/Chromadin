@@ -12,6 +12,7 @@ import ReactPlayer from "react-player";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import moment from "moment";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const Quote: FunctionComponent<QuoteProps> = ({ publication }): JSX.Element => {
   const profileImage = createProfilePicture(publication?.by?.metadata?.picture);
@@ -55,6 +56,7 @@ const Quote: FunctionComponent<QuoteProps> = ({ publication }): JSX.Element => {
               {profileImage && (
                 <Image
                   src={profileImage}
+                  onError={(e) => handleImageError(e)}
                   objectFit="cover"
                   alt="pfp"
                   layout="fill"

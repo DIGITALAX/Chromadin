@@ -55,8 +55,6 @@ const followSig = async (
       });
       const res = await clientWallet.writeContract(request);
       clearFollow && clearFollow();
-      await publicClient.waitForTransactionReceipt({ hash: res });
-
       const tx = await publicClient.waitForTransactionReceipt({ hash: res });
 
       await handleIndexCheck(

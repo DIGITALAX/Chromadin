@@ -1,18 +1,18 @@
 import { FunctionComponent } from "react";
 import Vending from "./modules/Vending";
 import Sampler from "./modules/Sampler";
-import Wavs from "./modules/Wavs";
 import { SwitchViewProps } from "./types/home.types";
+import { Viewer } from "../Common/Interactions/types/interactions.types";
+import MakePost from "../Common/Wavs/modules/MakePost";
+import AllPosts from "../Common/Wavs/modules/AllPosts";
 const SwitchView: FunctionComponent<SwitchViewProps> = ({
   dispatch,
   viewer,
-  dateFilter,
+  allPosts,
+  enabledCurrencies,
+  setMediaLoading,
   handleGetMoreCollections,
-  hasMoreCollections,
-  dispatchCollections,
-  error,
   moreCollectionsLoading,
-  priceFilter,
   setDropDownDateSort,
   searchOpen,
   searchResults,
@@ -21,54 +21,24 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   handleSearchChoose,
   dropDownDateSort,
   dropDownPriceSort,
-  collectionsLoading,
-  mirrorFeedLoading,
-  collectFeedLoading,
-  reactFeedLoading,
-  rates,
-  stats,
-  pies,
-  statsTitles,
-  graphs,
   graphData,
   statsLoading,
-  topAccountsFollowed,
-  totalChanges,
   setCanvas,
   canvas,
-  followerOnly,
-  feedDispatch,
   postsLoading,
   hasMore,
   fetchMore,
   address,
-  collectPost,
-  mirrorPost,
-  reactPost,
-  reactionAmounts,
+  collect,
+  mirror,
+  like,
   mainPost,
-  followerOnlyMain,
   mainPostLoading,
   hasMoreComments,
-  getMorePostComments,
   commentors,
   commentsLoading,
-  reactCommentLoading,
-  mirrorCommentLoading,
-  collectCommentLoading,
-  followerOnlyComments,
-  commentAmounts,
-  collectPostLoading,
-  mirrorPostLoading,
-  reactPostLoading,
-  setMirrorCommentLoading,
-  setCollectCommentLoading,
-  setReactCommentLoading,
-  setCollectPostLoading,
-  setMirrorPostLoading,
-  setReactPostLoading,
-  commentOpen,
-  commentPost,
+  openComment,
+  comment,
   commentDescription,
   textElement,
   handleCommentDescription,
@@ -77,71 +47,12 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   mentionProfiles,
   profilesOpen,
   handleMentionClick,
-  handleGifSubmit,
-  handleGif,
-  results,
-  handleSetGif,
-  gifOpen,
-  setGifOpen,
   handleKeyDownDelete,
-  collectNotif,
-  referral,
-  setCollectible,
-  collectibleDropDown,
-  collectible,
-  setAudienceDropDown,
-  audienceType,
-  audienceTypes,
-  chargeCollect,
-  limit,
-  limitedEdition,
-  audienceDropDown,
-  setAudienceType,
-  setTimeLimit,
-  timeLimit,
-  timeLimitDropDown,
-  setLimitedEdition,
-  limitedDropDown,
-  setLimitedDropDown,
-  setReferral,
-  setLimit,
-  setChargeCollect,
-  setCurrencyDropDown,
-  chargeCollectDropDown,
-  setChargeCollectDropDown,
-  enabledCurrencies,
-  enabledCurrency,
-  currencyDropDown,
-  setEnabledCurrency,
-  value,
-  setValue,
   handleLensSignIn,
   openConnectModal,
-  handleRemoveImage,
-  videoLoading,
   lensProfile,
-  uploadImages,
   profile,
-  uploadVideo,
-  imageLoading,
-  collectOpen,
-  mappedFeaturedFiles,
-  postImagesDispatched,
-  individualAmounts,
-  setCollectibleDropDown,
-  setTimeLimitDropDown,
-  hasMoreProfile,
-  profileAmounts,
-  profileDispatch,
-  fetchMoreProfile,
-  followerOnlyProfile,
-  setCollectProfileLoading,
-  setMirrorProfileLoading,
-  setReactProfileLoading,
-  profileLoading,
-  mirrorProfileLoading,
-  collectProfileLoading,
-  reactProfileLoading,
+  mediaLoading,
   quickProfiles,
   profileCollections,
   searchProfiles,
@@ -151,28 +62,30 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   hasMoreSearch,
   setProfilesOpenSearch,
   setProfilesFound,
-  feedType,
   preElement,
-  handleImagePaste,
-  profileCollectionsLoading,
-  clientRendered,
-  setOpenCommentMirrorChoice,
-  openCommentMirrorChoice,
-  openPostMirrorChoice,
-  setOpenPostMirrorChoice,
   setOpenMirrorChoice,
   openMirrorChoice,
-  openProfileMirrorChoice,
-  setOpenProfileMirrorChoice,
   router,
   history,
-  profileType
+  filters,
+  collectionInfo,
+  collectionsLoading,
+  mainMediaLoading,
+  interactionsLoading,
+  postCollectGif,
+  fetchMoreComments,
+  setMainOpenMirrorChoice,
+  setOpenComment,
+  openMainMirrorChoice,
+  mainInteractionsLoading,
+  setMainMediaLoading,
 }): JSX.Element => {
   switch (viewer) {
-    case "collect":
+    case Viewer.Collect:
       return (
         <Vending
-          dateFilter={dateFilter}
+          collectionInfo={collectionInfo}
+          filters={filters}
           setDropDownDateSort={setDropDownDateSort}
           searchOpen={searchOpen}
           searchResults={searchResults}
@@ -180,175 +93,95 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
           handleGetMoreCollections={handleGetMoreCollections}
           handleSearch={handleSearch}
           handleSearchChoose={handleSearchChoose}
-          hasMoreCollections={hasMoreCollections}
-          dispatchCollections={dispatchCollections}
           dropDownDateSort={dropDownDateSort}
           dropDownPriceSort={dropDownPriceSort}
           collectionsLoading={collectionsLoading}
-          error={error}
           moreCollectionsLoading={moreCollectionsLoading}
-          priceFilter={priceFilter}
           dispatch={dispatch}
           router={router}
         />
       );
 
-    case "sampler":
+    case Viewer.Sampler:
       return (
         <Sampler
-          rates={rates}
-          stats={stats}
-          pies={pies}
-          statsTitles={statsTitles}
-          graphs={graphs}
           graphData={graphData}
           statsLoading={statsLoading}
-          topAccountsFollowed={topAccountsFollowed}
-          totalChanges={totalChanges}
           setCanvas={setCanvas}
           canvas={canvas}
         />
       );
 
-    case "chat":
+    case Viewer.Chat:
       return (
-        <Wavs
-          feedType={feedType}
-          history={history}
-          profileType={profileType}
-          dispatch={dispatch}
-          followerOnly={followerOnly}
-          feedDispatch={feedDispatch}
-          postsLoading={postsLoading}
-          hasMore={hasMore}
-          fetchMore={fetchMore}
-          address={address}
-          collectPost={collectPost}
-          mirrorPost={mirrorPost}
-          reactPost={reactPost}
-          mirrorLoading={mirrorFeedLoading}
-          collectLoading={collectFeedLoading}
-          reactLoading={reactFeedLoading}
-          reactionAmounts={reactionAmounts}
-          mainPost={mainPost!}
-          followerOnlyMain={followerOnlyMain}
-          mainPostLoading={mainPostLoading}
-          hasMoreComments={hasMoreComments}
-          getMorePostComments={getMorePostComments}
-          commentors={commentors}
-          commentsLoading={commentsLoading}
-          reactCommentLoading={reactCommentLoading}
-          mirrorCommentLoading={mirrorCommentLoading}
-          collectCommentLoading={collectCommentLoading}
-          followerOnlyComments={followerOnlyComments}
-          commentAmounts={commentAmounts}
-          collectPostLoading={collectPostLoading}
-          mirrorPostLoading={mirrorPostLoading}
-          reactPostLoading={reactPostLoading}
-          setMirrorCommentLoading={setMirrorCommentLoading}
-          setCollectCommentLoading={setCollectCommentLoading}
-          setReactCommentLoading={setReactCommentLoading}
-          setCollectPostLoading={setCollectPostLoading}
-          setMirrorPostLoading={setMirrorPostLoading}
-          setReactPostLoading={setReactPostLoading}
-          commentOpen={commentOpen}
-          commentPost={commentPost}
-          commentDescription={commentDescription}
-          textElement={textElement}
-          handleCommentDescription={handleCommentDescription}
-          commentLoading={commentLoading}
-          caretCoord={caretCoord}
-          mentionProfiles={mentionProfiles}
-          profilesOpen={profilesOpen}
-          handleMentionClick={handleMentionClick}
-          handleGifSubmit={handleGifSubmit}
-          handleGif={handleGif}
-          results={results}
-          handleSetGif={handleSetGif}
-          gifOpen={gifOpen}
-          setGifOpen={setGifOpen}
-          handleKeyDownDelete={handleKeyDownDelete}
-          collectNotif={collectNotif}
-          referral={referral}
-          setCollectible={setCollectible}
-          collectibleDropDown={collectibleDropDown}
-          collectible={collectible}
-          setAudienceDropDown={setAudienceDropDown}
-          audienceType={audienceType}
-          audienceTypes={audienceTypes}
-          chargeCollect={chargeCollect}
-          limit={limit}
-          limitedEdition={limitedEdition}
-          audienceDropDown={audienceDropDown}
-          setAudienceType={setAudienceType}
-          setTimeLimit={setTimeLimit}
-          timeLimit={timeLimit}
-          timeLimitDropDown={timeLimitDropDown}
-          setLimitedEdition={setLimitedEdition}
-          limitedDropDown={limitedDropDown}
-          setLimitedDropDown={setLimitedDropDown}
-          setReferral={setReferral}
-          setLimit={setLimit}
-          setChargeCollect={setChargeCollect}
-          setCurrencyDropDown={setCurrencyDropDown}
-          chargeCollectDropDown={chargeCollectDropDown}
-          setChargeCollectDropDown={setChargeCollectDropDown}
-          enabledCurrencies={enabledCurrencies}
-          enabledCurrency={enabledCurrency}
-          currencyDropDown={currencyDropDown}
-          setEnabledCurrency={setEnabledCurrency}
-          value={value}
-          setValue={setValue}
-          handleLensSignIn={handleLensSignIn}
-          openConnectModal={openConnectModal}
-          handleRemoveImage={handleRemoveImage}
-          videoLoading={videoLoading}
-          lensProfile={lensProfile}
-          profile={profile}
-          uploadImages={uploadImages}
-          uploadVideo={uploadVideo}
-          imageLoading={imageLoading}
-          collectOpen={collectOpen}
-          mappedFeaturedFiles={mappedFeaturedFiles}
-          postImagesDispatched={postImagesDispatched}
-          individualAmounts={individualAmounts}
-          router={router}
-          setCollectibleDropDown={setCollectibleDropDown}
-          setTimeLimitDropDown={setTimeLimitDropDown}
-          hasMoreProfile={hasMoreProfile}
-          profileAmounts={profileAmounts}
-          profileDispatch={profileDispatch}
-          fetchMoreProfile={fetchMoreProfile}
-          followerOnlyProfile={followerOnlyProfile}
-          setCollectProfileLoading={setCollectProfileLoading}
-          setMirrorProfileLoading={setMirrorProfileLoading}
-          setReactProfileLoading={setReactProfileLoading}
-          profileLoading={profileLoading}
-          mirrorProfileLoading={mirrorProfileLoading}
-          collectProfileLoading={collectProfileLoading}
-          reactProfileLoading={reactProfileLoading}
-          quickProfiles={quickProfiles}
-          profileCollections={profileCollections}
-          searchProfiles={searchProfiles}
-          profilesFound={profilesFound}
-          profilesOpenSearch={profilesOpenSearch}
-          fetchMoreSearch={fetchMoreSearch}
-          hasMoreSearch={hasMoreSearch}
-          setProfilesOpenSearch={setProfilesOpenSearch}
-          setProfilesFound={setProfilesFound}
-          preElement={preElement}
-          handleImagePaste={handleImagePaste}
-          profileCollectionsLoading={profileCollectionsLoading}
-          clientRendered={clientRendered}
-          setOpenCommentMirrorChoice={setOpenCommentMirrorChoice}
-          openCommentMirrorChoice={openCommentMirrorChoice}
-          openPostMirrorChoice={openPostMirrorChoice}
-          setOpenPostMirrorChoice={setOpenPostMirrorChoice}
-          setOpenMirrorChoice={setOpenMirrorChoice}
-          openMirrorChoice={openMirrorChoice}
-          openProfileMirrorChoice={openProfileMirrorChoice}
-          setOpenProfileMirrorChoice={setOpenProfileMirrorChoice}
-        />
+        <div className="relative w-full h-full mid:h-[50.2rem] xl:h-[47.8rem] gap-3 flex items-start justify-center pt-10 overflow-y-scroll">
+          <div className="relative w-3/4 h-fit flex flex-col items-start justify-start gap-4">
+            <div className="relative w-full h-full flex flex-col items-start justify-center gap-3">
+              <MakePost
+                dispatch={dispatch}
+                lensProfile={lensProfile}
+                address={address}
+              />
+              <AllPosts
+                interactionsLoading={interactionsLoading}
+                enabledCurrencies={enabledCurrencies}
+                hasMoreComments={hasMoreComments}
+                history={history}
+                mainMediaLoading={mainMediaLoading}
+                mainPost={mainPost}
+                postsLoading={postsLoading}
+                mainPostLoading={mainPostLoading}
+                router={router}
+                commentors={commentors}
+                profile={profile}
+                commentsLoading={commentsLoading}
+                profileCollections={profileCollections}
+                fetchMoreComments={fetchMoreComments}
+                postCollectGif={postCollectGif}
+                mainInteractionsLoading={mainInteractionsLoading}
+                setMainMediaLoading={setMainMediaLoading}
+                setMainOpenMirrorChoice={setMainOpenMirrorChoice}
+                setMediaLoading={setMediaLoading}
+                setOpenComment={setOpenComment}
+                openMainMirrorChoice={openMainMirrorChoice}
+                dispatch={dispatch}
+                allPosts={allPosts}
+                hasMore={hasMore}
+                fetchMore={fetchMore}
+                address={address!}
+                openMirrorChoice={openMirrorChoice}
+                setOpenMirrorChoice={setOpenMirrorChoice}
+                comment={comment}
+                like={like}
+                collect={collect}
+                mediaLoading={mediaLoading}
+                mirror={mirror}
+                commentDescription={commentDescription}
+                textElement={textElement}
+                handleCommentDescription={handleCommentDescription}
+                commentLoading={commentLoading}
+                caretCoord={caretCoord}
+                mentionProfiles={mentionProfiles}
+                profilesOpen={profilesOpen}
+                handleMentionClick={handleMentionClick}
+                handleKeyDownDelete={handleKeyDownDelete}
+                commentOpen={openComment}
+                handleLensSignIn={handleLensSignIn}
+                openConnectModal={openConnectModal}
+                lensProfile={lensProfile}
+                quickProfiles={quickProfiles}
+                searchProfiles={searchProfiles}
+                profilesFound={profilesFound}
+                profilesOpenSearch={profilesOpenSearch}
+                fetchMoreSearch={fetchMoreSearch}
+                hasMoreSearch={hasMoreSearch}
+                setProfilesOpenSearch={setProfilesOpenSearch}
+                setProfilesFound={setProfilesFound}
+                preElement={preElement}
+              />
+            </div>
+          </div>
+        </div>
       );
 
     default:

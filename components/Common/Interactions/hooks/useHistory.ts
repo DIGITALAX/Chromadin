@@ -2,23 +2,23 @@ import getBuyerHistory, {
   getBuyerHistorySpecific,
 } from "@/graphql/subgraph/queries/getBuyerHistory";
 import { useEffect, useState } from "react";
-import { History, useHistoryResults } from "../types/interactions.types";
+import { History, Options } from "../types/interactions.types";
 import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
 import { AnyAction, Dispatch } from "redux";
 import { getOneCollectionById } from "@/graphql/subgraph/queries/getAllCollections";
 import {
   HistoryDataState,
   setHistoryDataRedux,
-} from "@/redux/reducers/hasMoreHistoryReducer";
+} from "@/redux/reducers/historyDataReducer";
 
 const useHistory = (
   address: `0x${string}` | undefined,
   dispatch: Dispatch<AnyAction>,
   historyURL: string,
-  options: string,
+  options: Options,
   indexModal: string | undefined,
   historyData: HistoryDataState
-): useHistoryResults => {
+) => {
   const [historySwitch, setHistorySwitch] = useState<boolean>(false);
   const [historyLoading, setHistoryLoading] = useState<boolean>(false);
 
@@ -194,7 +194,7 @@ const useHistory = (
 
   useEffect(() => {
     if (
-      options === "history" &&
+      options === Options.History &&
       ((!historySwitch && historyData?.allHistory?.length < 1) ||
         indexModal === "Purchase Successful" ||
         (historySwitch && historyData?.buyerHistory?.length < 1))

@@ -8,9 +8,9 @@ import {
 } from "@/components/Home/types/generated";
 import getProfiles from "@/graphql/lens/queries/getProfiles";
 import { whoActed } from "@/graphql/lens/queries/whoActed";
-import { ReactionStateState } from "@/redux/reducers/reactionStateSlice";
+import { WhoState } from "@/redux/reducers/whoSlice";
 
-const useWho = (reaction: ReactionStateState) => {
+const useWho = (reaction: WhoState) => {
   const [reactInfoLoading, setReactInfoLoading] = useState<boolean>(false);
   const [reacters, setReacters] = useState<any[]>([]);
   const [reactionPageInfo, setReactionPageInfo] = useState<any>();

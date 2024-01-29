@@ -19,13 +19,14 @@ import { useAccount } from "wagmi";
 import useBar from "@/components/Autograph/Common/hooks/useBar";
 import WaveformComponent from "@/components/Home/modules/Waveform";
 import Checkout from "@/components/Autograph/Collection/modules/Checkout";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
 import useChannels from "@/components/Common/SideBar/hooks/useChannels";
 import useControls from "@/components/Common/Video/hooks/useControls";
 import useFulfillment from "@/components/Common/Interactions/hooks/useFulfillment";
 import { setMakePost } from "@/redux/reducers/makePostSlice";
+import NotFound from "@/components/Common/Loading/NotFound";
 
 const Collection: NextPage<{ router: NextRouter }> = ({
   router,
@@ -39,22 +40,22 @@ const Collection: NextPage<{ router: NextRouter }> = ({
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();
   const { autograph, collection } = router.query;
+  const { openAccountModal } = useAccountModal();
   const { openConnectModal, connectModalOpen } = useConnectModal();
-  const purchase = useSelector((state: RootState) => state.app.purchaseReducer);
   const fullScreenVideo = useSelector(
     (state: RootState) => state.app.fullScreenVideoReducer
   );
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer.data
   );
-  const imageLoading = useSelector(
-    (state: RootState) => state.app.imageLoadingReducer.value
+  const walletConnected = useSelector(
+    (state: RootState) => state.app.walletConnectedReducer?.value
   );
-  const commentId = useSelector(
-    (state: RootState) => state.app.secondaryCommentReducer.value
+  const enabledCurrencies = useSelector(
+    (state: RootState) => state.app.enabledCurrenciesReducer?.value
   );
-  const connected = useSelector(
-    (state: RootState) => state.app.connectedReducer?.value
+  const postCollectGif = useSelector(
+    (state: RootState) => state.app.postCollectGifReducer
   );
   const quickProfiles = useSelector(
     (state: RootState) => state.app.quickProfilesReducer.value
@@ -62,31 +63,10 @@ const Collection: NextPage<{ router: NextRouter }> = ({
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
+  const videoInfo = useSelector(
+    (state: RootState) => state.app.videoInfoReducer
   );
-  const index = useSelector((state: RootState) => state.app.indexModalReducer);
-  const dispatchVideos = useSelector(
-    (state: RootState) => state.app.channelsReducer.value
-  );
-  const videoSync = useSelector(
-    (state: RootState) => state.app.videoSyncReducer
-  );
-  const reactId = useSelector(
-    (state: RootState) => state.app.reactIdReducer.value
-  );
-  const approvalArgs = useSelector(
-    (state: RootState) => state.app.approvalArgsReducer.args
-  );
-  const reactions = useSelector(
-    (state: RootState) => state.app.videoCountReducer
-  );
-  const hasMore = useSelector(
-    (state: RootState) => state.app.hasMoreVideosReducer.value
-  );
-  const seek = useSelector(
-    (state: RootState) => state.app.seekSecondReducer.seek
-  );
+  const channels = useSelector((state: RootState) => state.app.channelsReducer);
 
   const {
     collectionLoading,
@@ -105,18 +85,15 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     publicClient,
     dispatch,
     address,
-    autoCollection,
+    autoCollection!,
     oracleData
   );
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
-    mainVideo,
     lensProfile,
-    dispatchVideos,
-    index.message,
-    reactId,
-    videoSync,
-    reactions
+    channels,
+    fullScreenVideo,
+    videoInfo
   );
   const {
     streamRef,
@@ -126,42 +103,35 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     volumeOpen,
     setVolumeOpen,
     handleHeart,
-    mirrorVideo,
-    collectVideo,
-    likeVideo,
-    mirrorLoading,
-    collectLoading,
-    likeLoading,
+    mirror,
+    like,
+    collect,
     wrapperRef,
     progressRef,
     handleSeek,
+    controlInteractionsLoading,
   } = useControls(
     dispatch,
     address,
     publicClient,
-    purchase,
-    seek,
-    approvalArgs,
-    mainVideo,
-    videoSync,
-    lensProfile,
     fullScreenVideo,
-    commentId,
-    index,
-    router
+    channels,
+    postCollectGif
   );
   const { isLargeScreen } = useBar();
   const pfp = createProfilePicture(autoCollection?.profile?.metadata?.picture);
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
     useViewer(router, dispatch, quickProfiles, lensProfile);
-  const { handleLensSignIn } = useConnect(
+  const { handleLensSignIn, handleLogout } = useConnect(
     router,
     address,
     isConnected,
     dispatch,
     connectModalOpen,
     publicClient,
-    oracleData
+    oracleData,
+    openAccountModal,
+    enabledCurrencies
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
 
@@ -318,8 +288,10 @@ const Collection: NextPage<{ router: NextRouter }> = ({
         </Head>
         <Bar
           router={router}
+          interactionsLoading={controlInteractionsLoading}
+          handleLogout={handleLogout}
           openConnectModal={openConnectModal}
-          connected={connected}
+          connected={walletConnected}
           handleLensSignIn={handleLensSignIn}
           lensProfile={lensProfile}
           handleSearch={handleSearch}
@@ -327,8 +299,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
           searchResults={searchResults}
           handleSearchChoose={handleSearchChoose}
           isLargeScreen={isLargeScreen}
-          hasMore={hasMore}
-          reactions={reactions}
+          hasMore={videoInfo?.hasMore}
           streamRef={streamRef}
           formatTime={formatTime}
           volume={volume}
@@ -336,24 +307,20 @@ const Collection: NextPage<{ router: NextRouter }> = ({
           volumeOpen={volumeOpen}
           setVolumeOpen={setVolumeOpen}
           handleHeart={handleHeart}
-          mirrorVideo={mirrorVideo}
-          collectVideo={collectVideo}
-          likeVideo={likeVideo}
-          mirrorLoading={mirrorLoading}
-          collectLoading={collectLoading}
-          likeLoading={likeLoading}
-          mainVideo={mainVideo}
+          mirror={mirror}
+          collect={collect}
+          like={like}
           wrapperRef={wrapperRef}
           progressRef={progressRef}
           handleSeek={handleSeek}
-          videoSync={videoSync}
+          videoSync={fullScreenVideo}
           fetchMoreVideos={fetchMoreVideos}
           videosLoading={videosLoading}
           setVideosLoading={setVideosLoading}
           dispatch={dispatch}
-          dispatchVideos={dispatchVideos}
+          allVideos={channels}
         />
-        {autoCollection && autoCollection?.profile && (
+        {autoCollection && autoCollection?.profile ? (
           <div
             className={`relative w-full h-full flex flex-col lg:flex-row bg-black items-center lg:items-start justify-center gap-12 lg:gap-8 lg:pl-20 pt-10`}
           >
@@ -420,14 +387,16 @@ const Collection: NextPage<{ router: NextRouter }> = ({
                     dispatch(
                       setImageViewer({
                         actionValue: true,
-                        actionImage:
+                        actionImage: `${INFURA_GATEWAY}/ipfs/${
                           autoCollection?.collectionMetadata?.images?.[0]?.split(
                             "ipfs://"
                           )[1] ||
-                          autoCollection?.collectionMetadata?.mediaCover?.split(
+                          autoCollection?.collectionMetadata?.video?.split(
                             "ipfs://"
-                          )[1],
-                        actionType: "image/png",
+                          )[1]
+                        }`,
+                        actionType:
+                          autoCollection?.collectionMetadata?.mediaTypes,
                       })
                     )
                   }
@@ -447,8 +416,6 @@ const Collection: NextPage<{ router: NextRouter }> = ({
                       ? openConnectModal
                       : address && !lensProfile?.id
                       ? () => handleLensSignIn()
-                      : imageLoading
-                      ? () => {}
                       : () =>
                           dispatch(
                             setMakePost({
@@ -554,6 +521,8 @@ const Collection: NextPage<{ router: NextRouter }> = ({
               )}
             </div>
           </div>
+        ) : (
+          <NotFound router={router} />
         )}
       </div>
     );

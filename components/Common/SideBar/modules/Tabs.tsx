@@ -2,6 +2,7 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { TabProps } from "../types/sidebar.types";
+import { Viewer } from "../../Interactions/types/interactions.types";
 
 const Tabs: FunctionComponent<TabProps> = ({
   tab,
@@ -22,7 +23,7 @@ const Tabs: FunctionComponent<TabProps> = ({
               tab === 1 ? "text-moda" : "text-ama"
             } flex items-center`}
           >
-            {viewer === "collect" ? "Fulfill Drop" : "Chat"}
+            {viewer === Viewer.Collect ? "Fulfill Drop" : "Chat"}
           </span>
           <span className="relative w-fit h-fit text-white font-earl flex items-center leading-0">
             &lt;-- --&gt;

@@ -2,8 +2,6 @@ import { LENS_CREATORS } from "@/lib/constants";
 import createFollowModule from "@/lib/helpers/createFollowModule";
 import { setModal } from "@/redux/reducers/modalSlice";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
-import getDefaultProfile from "@/graphql/lens/queries/getDefaultProfile";
-import { setLensProfile } from "@/redux/reducers/lensProfileSlice";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
@@ -11,28 +9,20 @@ import { Profile } from "@/components/Home/types/generated";
 import followSig from "@/lib/helpers/followSig";
 import { AnyAction, Dispatch } from "redux";
 import { setRainRedux } from "@/redux/reducers/rainSlice";
+import refetchProfile from "@/lib/helpers/refetchProfile";
 
 const useSuperCreator = (
   publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
   rain: boolean,
-  quickProfiles: Profile[]
+  quickProfiles: Profile[],
+  lensProfile: Profile | undefined
 ) => {
   const [superCreatorLoading, setSuperCreatorLoading] =
     useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<MutableRefObject<number | null>>(null);
-  const refetchProfile = async (): Promise<void> => {
-    try {
-      const profile = await getDefaultProfile({
-        for: address,
-      });
-      dispatch(setLensProfile(profile?.data?.defaultProfile as Profile));
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
 
   const followSuper = async () => {
     setSuperCreatorLoading(true);
@@ -48,16 +38,18 @@ const useSuperCreator = (
       let followers = [];
 
       for (let i = batchStart; i < batchEnd; i++) {
-        const followModule = createFollowModule(
-          quickProfiles[i]?.followModule?.type as any,
-          (quickProfiles[i]?.followModule as any)?.amount?.value,
-          (quickProfiles[i]?.followModule as any)?.amount?.asset?.address
-        );
+        if (!quickProfiles[i]?.operations?.isFollowedByMe?.value) {
+          const followModule = createFollowModule(
+            quickProfiles[i]?.followModule?.type as any,
+            (quickProfiles[i]?.followModule as any)?.amount?.value,
+            (quickProfiles[i]?.followModule as any)?.amount?.asset?.address
+          );
 
-        followers.push({
-          profileId: LENS_CREATORS[i],
-          followModule,
-        });
+          followers.push({
+            profileId: LENS_CREATORS[i],
+            followModule,
+          });
+        }
       }
 
       try {
@@ -74,8 +66,8 @@ const useSuperCreator = (
           dispatch
         );
 
-        dispatch(setRainRedux(true))
-        await refetchProfile();
+        await refetchProfile(dispatch, lensProfile?.id);
+        dispatch(setRainRedux(true));
       } catch (err: any) {
         if (err.message.includes("You do not have enough")) {
           dispatch(

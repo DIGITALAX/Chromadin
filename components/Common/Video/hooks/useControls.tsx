@@ -1,109 +1,138 @@
-import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { UseControlsResults } from "../types/controls.types";
-import addReaction from "@/graphql/lens/mutations/react";
-import { PublicClient } from "wagmi";
-import useInteractions from "../../Interactions/hooks/useInteractions";
 import {
-  IndexModalState,
-  setIndexModal,
-} from "@/redux/reducers/indexModalSlice";
-import { getPublication } from "@/graphql/lens/queries/getPublication";
-import checkApproved from "@/lib/helpers/checkApproved";
-import { setPostCollectValues } from "@/redux/reducers/postCollectSlice";
-import { setModal } from "@/redux/reducers/modalSlice";
+  FormEvent,
+  KeyboardEvent,
+  MouseEvent,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import ReactPlayer from "react-player";
-import { setReactId } from "@/redux/reducers/reactIdSlice";
-import { VideoSyncState, setVideoSync } from "@/redux/reducers/videoSyncSlice";
-import { setSeek } from "@/redux/reducers/seekSecondSlice";
-import { createWalletClient, custom } from "viem";
+import { createWalletClient, custom, PublicClient } from "viem";
 import { polygon } from "viem/chains";
+import mirrorSig from "@/lib/helpers/mirrorSig";
+import { AnyAction, Dispatch } from "redux";
 import {
-  AddReactionMutation,
-  ApprovalAllowance,
+  FullScreenVideoState,
+  setFullScreenVideo,
+} from "@/redux/reducers/fullScreenVideoSlice";
+import likeSig from "@/lib/helpers/likeSig";
+import {
+  Comment,
+  LimitType,
+  Mirror,
   Post,
   Profile,
-  PublicationQuery,
-  PublicationReactionType,
-  SimpleCollectOpenActionSettings,
+  PublicationStats,
+  Quote,
 } from "@/components/Home/types/generated";
-import { FetchResult } from "@apollo/client";
-import mirrorSig from "@/lib/helpers/mirrorSig";
-import actSig from "@/lib/helpers/actSig";
-import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
-import { AnyAction, Dispatch } from "redux";
-import { ApprovalArgs } from "@/components/Home/types/home.types";
-import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
-import { PurchaseState } from "@/redux/reducers/purchaseSlice";
-import { NextRouter } from "next/router";
-import { FullScreenVideoState } from "@/redux/reducers/fullScreenVideoSlice";
+import {
+  ChannelsState,
+  setChannelsRedux,
+} from "@/redux/reducers/channelsSlice";
+import collectSig from "@/lib/helpers/collectSig";
+import { setIndexModal } from "@/redux/reducers/indexModalSlice";
+import getCommentHTML from "@/lib/helpers/commentHTML";
+import { searchProfile } from "@/graphql/lens/queries/search";
+import uploadPostContent from "@/lib/helpers/uploadPostContent";
+import commentSig from "@/lib/helpers/commentSig";
+import getCaretPos from "@/lib/helpers/getCaretPos";
+import {
+  PostCollectGifState,
+  setPostCollectGif,
+} from "@/redux/reducers/postCollectGifSlice";
 
 const useControls = (
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
   publicClient: PublicClient,
-  purchase: PurchaseState,
-  seek: number,
-  approvalArgs: ApprovalArgs | undefined,
-  mainVideo: MainVideoState,
-  videoSync: VideoSyncState,
-  profile: Profile | undefined,
   fullScreenVideo: FullScreenVideoState,
-  commentId: string | undefined,
-  index: IndexModalState,
-  router: NextRouter
-): UseControlsResults => {
-  const { commentors } = useInteractions(
-    router,
-    profile,
-    mainVideo,
-    commentId,
-    index
-  );
+  allVideos: ChannelsState,
+  postCollectGif: PostCollectGifState,
+  currentFeed?: (Post | Mirror | Quote | Comment)[],
+  setCurrentFeed?:
+    | ((e: SetStateAction<(Post | Mirror | Quote)[]>) => void)
+    | ((e: SetStateAction<Comment[]>) => void),
+  getComments?: () => Promise<void>,
+  setSecondaryComment?: (e: string) => void
+) => {
   const streamRef = useRef<ReactPlayer>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const fullVideoRef = useRef<ReactPlayer>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const textElement = useRef<HTMLTextAreaElement>(null);
+  const preElement = useRef<HTMLPreElement>(null);
   const [volume, setVolume] = useState<number>(1);
+  const [profilesOpen, setProfilesOpen] = useState<boolean>(false);
+  const [mentionProfiles, setMentionProfiles] = useState<Profile[]>([]);
   const [volumeOpen, setVolumeOpen] = useState<boolean>(false);
-  const [likeLoading, setLikeLoading] = useState<boolean>(false);
-  const [collectLoading, setCollectLoading] = useState<boolean>(false);
-  const [mirrorLoading, setMirrorLoading] = useState<boolean>(false);
-  const [approvalLoading, setApprovalLoading] = useState<boolean>(false);
-  const [collectInfoLoading, setCollectInfoLoading] = useState<boolean>(false);
-  const [mirrorCommentLoading, setMirrorCommentLoading] = useState<boolean[]>(
-    Array.from({ length: commentors?.length }, () => false)
-  );
-  const [likeCommentLoading, setLikeCommentLoading] = useState<boolean[]>(
-    Array.from({ length: commentors?.length }, () => false)
-  );
-  const [collectCommentLoading, setCollectCommentLoading] = useState<boolean[]>(
-    Array.from({ length: commentors?.length }, () => false)
-  );
+  const [interactionsLoading, setInteractionsLoading] = useState<
+    {
+      mirror: boolean;
+      collect: boolean;
+      like: boolean;
+      comment: boolean;
+    }[]
+  >([]);
+  const [controlInteractionsLoading, setControlInteractionsLoading] = useState<{
+    mirror: boolean;
+    collect: boolean;
+    like: boolean;
+    comment: boolean;
+  }>({
+    mirror: false,
+    collect: false,
+    like: false,
+    comment: false,
+  });
+  const [controlCaretCoord, setControlCaretCoord] = useState<{
+    x: number;
+    y: number;
+  }>({
+    x: 0,
+    y: 0,
+  });
+  const [controlMediaLoading, setControlMediaLoading] = useState<
+    {
+      image: boolean;
+      video: boolean;
+    }[]
+  >([
+    {
+      image: false,
+      video: false,
+    },
+  ]);
+  const [controlCommentDetails, setControlCommentDetails] = useState<{
+    description: string;
+    html: string;
+  }>({
+    description: "",
+    html: "",
+  });
 
   const handleHeart = () => {
     dispatch(
-      setVideoSync({
+      setFullScreenVideo({
+        actionOpen: fullScreenVideo.open,
         actionHeart: true,
-        actionDuration: videoSync.duration,
-        actionCurrentTime: videoSync.currentTime,
-        actionIsPlaying: videoSync.isPlaying,
-        actionLikedArray: videoSync.likedArray,
-        actionMirroredArray: videoSync.mirroredArray,
-        actionCollectedArray: videoSync.collectedArray,
-        actionVideosLoading: videoSync.videosLoading,
+        actionDuration: fullScreenVideo.duration,
+        actionCurrentTime: fullScreenVideo.currentTime,
+        actionIsPlaying: fullScreenVideo.isPlaying,
+        actionVideosLoading: fullScreenVideo.videosLoading,
+        actionSeek: fullScreenVideo.seek,
       })
     );
     setTimeout(() => {
       dispatch(
-        setVideoSync({
+        setFullScreenVideo({
+          actionOpen: fullScreenVideo.open,
           actionHeart: false,
-          actionDuration: videoSync.duration,
-          actionCurrentTime: videoSync.currentTime,
-          actionIsPlaying: videoSync.isPlaying,
-          actionLikedArray: videoSync.likedArray,
-          actionMirroredArray: videoSync.mirroredArray,
-          actionCollectedArray: videoSync.collectedArray,
-          actionVideosLoading: videoSync.videosLoading,
+          actionDuration: fullScreenVideo.duration,
+          actionCurrentTime: fullScreenVideo.currentTime,
+          actionIsPlaying: fullScreenVideo.isPlaying,
+          actionVideosLoading: fullScreenVideo.videosLoading,
+          actionSeek: fullScreenVideo.seek,
         })
       );
     }, 3000);
@@ -121,95 +150,91 @@ const useControls = (
     setVolume(parseFloat((e.target as HTMLFormElement).value));
   };
 
-  const likeVideo = async (id?: string): Promise<void> => {
-    let index: number, react: FetchResult<AddReactionMutation>;
-    if (!id) {
-      setLikeLoading(true);
-      dispatch(setReactId(mainVideo.id));
-    } else {
-      index = commentors?.findIndex((commentor) => commentor.id === id);
-      if (index >= 0) {
-        setLikeCommentLoading((prev) => {
-          const updatedArray = [...prev];
-          updatedArray[index] = true;
-          return updatedArray;
-        });
-      }
-      setLikeLoading(true);
-    }
-    if (!profile?.id) {
-      setLikeLoading(false);
-      if (index! >= 0) {
-        setLikeCommentLoading((prev) => {
-          const updatedArray = [...prev];
-          updatedArray[index] = false;
-          return updatedArray;
-        });
-      }
-      return;
-    }
-    try {
-      react = await addReaction({
-        for: id ? id : mainVideo?.id,
-        reaction: PublicationReactionType.Upvote,
+  const like = async (
+    id: string,
+    hasReacted: boolean,
+    index: number,
+    main?: boolean
+  ): Promise<void> => {
+    if (!main) {
+      setInteractionsLoading((prev) => {
+        const arr = [...prev];
+        arr[index!] = {
+          ...arr[index!],
+          like: true,
+        };
+
+        return arr;
       });
+    } else {
+      setControlInteractionsLoading((prev) => ({
+        ...prev,
+        like: true,
+      }));
+    }
+
+    try {
+      await likeSig(id, dispatch, hasReacted);
+
+      updateInteractions(
+        main
+          ? allVideos?.channels?.findIndex((item) => item?.id == id)
+          : currentFeed!?.findIndex(
+              (item) =>
+                (item?.__typename === "Mirror" ? item?.mirrorOn : item)?.id ==
+                id
+            ),
+        {
+          hasReacted: hasReacted ? false : true,
+        },
+        "reactions",
+        hasReacted ? false : true,
+        main!
+      );
     } catch (err: any) {
-      setLikeLoading(false);
       console.error(err.message);
     }
-    if (!id) {
-      setLikeLoading(false);
-    } else {
-      setLikeCommentLoading((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index] = false;
-        return updatedArray;
+
+    if (!main) {
+      setInteractionsLoading((prev) => {
+        const arr = [...prev];
+        arr[index!] = {
+          ...arr[index!],
+          like: false,
+        };
+
+        return arr;
       });
+    } else {
+      setControlInteractionsLoading((prev) => ({
+        ...prev,
+        like: false,
+      }));
     }
-    dispatch(
-      setIndexModal({
-        actionValue: true,
-        actionMessage: "Successfully Indexed",
-      })
-    );
-    setTimeout(() => {
-      dispatch(
-        setIndexModal({
-          actionValue: false,
-          actionMessage: undefined,
-        })
-      );
-    }, 4000);
   };
 
-  const mirrorVideo = async (id?: string): Promise<void> => {
-    let index: number;
+  const mirror = async (
+    id: string,
+    index: number,
+    main?: boolean
+  ): Promise<void> => {
+    if (!main) {
+      setInteractionsLoading((prev) => {
+        const arr = [...prev];
+        arr[index!] = {
+          ...arr[index!],
+          mirror: true,
+        };
 
-    if (!id) {
-      setMirrorLoading(true);
-      dispatch(setReactId(mainVideo.id));
+        return arr;
+      });
     } else {
-      index = commentors.findIndex((commentor) => commentor.id === id);
-      if (index >= 0) {
-        setMirrorCommentLoading((prev) => {
-          const updatedArray = [...prev];
-          updatedArray[index] = true;
-          return updatedArray;
-        });
-      }
+      setControlInteractionsLoading((prev) => ({
+        ...prev,
+        mirror: true,
+      }));
     }
 
-    if (!profile?.id) {
-      setMirrorLoading(false);
-      if (index! >= 0) {
-        setMirrorCommentLoading((prev) => {
-          const updatedArray = [...prev];
-          updatedArray[index] = false;
-          return updatedArray;
-        });
-      }
-      return;
-    }
     try {
       const clientWallet = createWalletClient({
         chain: polygon,
@@ -217,182 +242,127 @@ const useControls = (
       });
 
       await mirrorSig(
-        id ? id : mainVideo.id,
-        clientWallet,
-        publicClient,
-        address as `0x${string}`,
-        dispatch
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    if (!id) {
-      setMirrorLoading(false);
-    } else {
-      setMirrorCommentLoading((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index] = false;
-        return updatedArray;
-      });
-    }
-  };
-
-  const collectVideo = async (id?: string): Promise<void> => {
-    let index: number;
-    if (!id) {
-      setCollectLoading(true);
-      dispatch(setReactId(mainVideo.id));
-    } else {
-      index = commentors.findIndex((commentor) => commentor.id === id);
-      if (index >= 0) {
-        setCollectCommentLoading((prev) => {
-          const updatedArray = [...prev];
-          updatedArray[index] = true;
-          return updatedArray;
-        });
-      }
-    }
-
-    if (!profile?.id) {
-      setCollectLoading(false);
-      if (index! >= 0) {
-        setCollectCommentLoading((prev) => {
-          const updatedArray = [...prev];
-          updatedArray[index] = false;
-          return updatedArray;
-        });
-      }
-      return;
-    }
-    try {
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      await actSig(
-        id ? id : mainVideo.id,
-        {
-          simpleCollectOpenAction: true,
-        },
-        clientWallet,
-        publicClient,
-        address as `0x${string}`,
-        dispatch
-      );
-    } catch (err: any) {
-      setCollectLoading(false);
-      if (err.message.includes("You do not have enough")) {
-        dispatch(
-          setModal({
-            actionOpen: true,
-            actionMessage: "Insufficient Balance to Collect.",
-          })
-        );
-      }
-      console.error(err.message);
-    }
-    if (!id) {
-      setCollectLoading(false);
-    } else {
-      if (index! >= 0) {
-        setCollectCommentLoading((prev) => {
-          const updatedArray = [...prev];
-          updatedArray[index] = false;
-          return updatedArray;
-        });
-      }
-    }
-  };
-
-  const getCollectInfo = async (): Promise<void> => {
-    setCollectInfoLoading(true);
-    try {
-      const { data } = await getPublication(
-        {
-          forId: purchase.id,
-        },
-        profile?.id
-      );
-
-      const collectModule = (data?.publication as Post)
-        ?.openActionModules?.[0] as SimpleCollectOpenActionSettings;
-
-      const approvalData: ApprovalAllowance | void = await checkApproved(
-        collectModule?.amount?.asset?.contract.address,
-        collectModule?.type,
-        null,
-        null,
-        collectModule?.amount?.value,
+        id,
         dispatch,
-        address,
-        profile?.id
+        address as `0x${string}`,
+        clientWallet,
+        publicClient
       );
-      const isApproved = parseInt(approvalData?.allowance?.value as string, 16);
-      dispatch(
-        setPostCollectValues({
-          actionType: collectModule?.type,
-          actionLimit: collectModule?.collectLimit,
-          actionRecipient: collectModule?.recipient,
-          actionReferralFee: collectModule?.referralFee,
-          actionEndTime: collectModule?.endsAt,
-          actionValue: collectModule?.amount.value,
-          actionFollowerOnly: collectModule?.followerOnly,
-          actionAmount: {
-            asset: {
-              address: collectModule?.amount?.asset?.contract,
-              decimals: collectModule?.amount?.asset?.decimals,
-              name: collectModule?.amount?.asset?.name,
-              symbol: collectModule?.amount?.asset?.symbol,
-            },
-            value: collectModule?.amount?.value,
-          },
-          actionCanCollect: true,
-          actionApproved: isApproved,
-          actionTotalCollects: (data?.publication as Post)?.stats
-            ?.countOpenActions,
-        })
+
+      updateInteractions(
+        main
+          ? allVideos?.channels?.findIndex((item) => item?.id == id)
+          : currentFeed!?.findIndex(
+              (item) =>
+                (item?.__typename === "Mirror" ? item?.mirrorOn : item)?.id ==
+                id
+            ),
+        {
+          hasMirrored: true,
+        },
+        "mirrors",
+        true,
+        main!
       );
     } catch (err: any) {
       console.error(err.message);
     }
-    setCollectInfoLoading(false);
+
+    if (!main) {
+      setInteractionsLoading((prev) => {
+        const arr = [...prev];
+        arr[index!] = {
+          ...arr[index!],
+          mirror: false,
+        };
+
+        return arr;
+      });
+    } else {
+      setControlInteractionsLoading((prev) => ({
+        ...prev,
+        mirror: false,
+      }));
+    }
   };
 
-  const callApprovalSign = async (): Promise<void> => {
+  const collect = async (
+    id: string,
+    type: string,
+    index: number,
+    main?: boolean
+  ): Promise<void> => {
+    if (!main) {
+      setInteractionsLoading((prev) => {
+        const arr = [...prev];
+        arr[index!] = {
+          ...arr[index!],
+          collect: true,
+        };
+
+        return arr;
+      });
+    } else {
+      setControlInteractionsLoading((prev) => ({
+        ...prev,
+        collect: true,
+      }));
+    }
+
     try {
       const clientWallet = createWalletClient({
         chain: polygon,
         transport: custom((window as any).ethereum),
       });
 
-      const res = await clientWallet.sendTransaction({
-        to: approvalArgs?.to as `0x${string}`,
-        account: approvalArgs?.from as `0x${string}`,
-        value: BigInt(approvalArgs?.data as string),
-      });
-      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
-      await handleIndexCheck(
-        {
-          forTxHash: tx.transactionHash,
-        },
-        dispatch
+      await collectSig(
+        id,
+        type,
+        dispatch,
+        address as `0x${string}`,
+        clientWallet,
+        publicClient
       );
-      await getCollectInfo();
-    } catch (err: any) {
-      setApprovalLoading(false);
-      console.error(err.message);
-    }
-  };
 
-  const approveCurrency = async (): Promise<void> => {
-    setApprovalLoading(true);
-    try {
-      await callApprovalSign();
+      updateInteractions(
+        main
+          ? allVideos?.channels?.findIndex((item) => item?.id == id)
+          : currentFeed!?.findIndex(
+              (item) =>
+                (item?.__typename === "Mirror" ? item?.mirrorOn : item)?.id ==
+                id
+            ),
+        {
+          hasActed: {
+            __typename: "OptimisticStatusResult",
+            isFinalisedOnchain: true,
+            value: true,
+          },
+        },
+        "countOpenActions",
+        true,
+        main!
+      );
     } catch (err: any) {
       console.error(err.message);
     }
-    setApprovalLoading(false);
+
+    if (!main) {
+      setInteractionsLoading((prev) => {
+        const arr = [...prev];
+        arr[index!] = {
+          ...arr[index!],
+          collect: false,
+        };
+
+        return arr;
+      });
+    } else {
+      setControlInteractionsLoading((prev) => ({
+        ...prev,
+        collect: false,
+      }));
+    }
   };
 
   const handleSeek = (
@@ -400,55 +370,346 @@ const useControls = (
   ) => {
     const progressRect = e.currentTarget.getBoundingClientRect();
     const seekPosition = (e.clientX - progressRect.left) / progressRect.width;
-    // setCurrentTime(seekPosition * duration);
-    dispatch(setSeek(seekPosition));
+
+    dispatch(
+      setFullScreenVideo({
+        actionOpen: fullScreenVideo.open,
+        actionHeart: fullScreenVideo.heart,
+        actionDuration: fullScreenVideo.duration,
+        actionCurrentTime: fullScreenVideo.currentTime,
+        actionIsPlaying: fullScreenVideo.isPlaying,
+        actionVideosLoading: fullScreenVideo.videosLoading,
+        actionSeek: seekPosition,
+      })
+    );
     streamRef.current?.seekTo(seekPosition, "fraction");
   };
 
   useEffect(() => {
-    if (seek !== 0) {
-      fullVideoRef?.current?.seekTo(seek, "fraction");
+    if (fullScreenVideo.seek !== 0) {
+      fullVideoRef?.current?.seekTo(fullScreenVideo.seek, "fraction");
     }
-  }, [seek]);
+  }, [fullScreenVideo.seek]);
 
   useEffect(() => {
-    if (fullScreenVideo.value) {
+    if (fullScreenVideo.open) {
       dispatch(
-        setVideoSync({
-          actionHeart: videoSync.heart,
-          actionDuration: videoSync.duration,
-          actionCurrentTime: videoSync.currentTime,
+        setFullScreenVideo({
+          actionOpen: fullScreenVideo.open,
+          actionHeart: fullScreenVideo.heart,
+          actionDuration: fullScreenVideo.duration,
+          actionCurrentTime: fullScreenVideo.currentTime,
           actionIsPlaying: false,
-          actionLikedArray: videoSync.likedArray,
-          actionMirroredArray: videoSync.mirroredArray,
-          actionCollectedArray: videoSync.collectedArray,
-          actionVideosLoading: videoSync.videosLoading,
+          actionVideosLoading: fullScreenVideo.videosLoading,
+          actionSeek: fullScreenVideo.seek,
         })
       );
-      streamRef?.current?.seekTo(videoSync.currentTime, "seconds");
-      fullVideoRef?.current?.seekTo(videoSync.currentTime, "seconds");
+      streamRef?.current?.seekTo(fullScreenVideo.currentTime, "seconds");
+      fullVideoRef?.current?.seekTo(fullScreenVideo.currentTime, "seconds");
       setTimeout(() => {
         dispatch(
-          setVideoSync({
-            actionHeart: videoSync.heart,
-            actionDuration: videoSync.duration,
-            actionCurrentTime: videoSync.currentTime,
+          setFullScreenVideo({
+            actionOpen: fullScreenVideo.open,
+            actionHeart: fullScreenVideo.heart,
+            actionDuration: fullScreenVideo.duration,
+            actionCurrentTime: fullScreenVideo.currentTime,
             actionIsPlaying: true,
-            actionLikedArray: videoSync.likedArray,
-            actionMirroredArray: videoSync.mirroredArray,
-            actionCollectedArray: videoSync.collectedArray,
-            actionVideosLoading: videoSync.videosLoading,
+            actionVideosLoading: fullScreenVideo.videosLoading,
+            actionSeek: fullScreenVideo.seek,
           })
         );
       }, 1000);
     }
-  }, [fullScreenVideo.value]);
+  }, [fullScreenVideo.open]);
+
+  const updateInteractions = (
+    index: number,
+    valueToUpdate: Object,
+    statToUpdate: string,
+    increase: boolean,
+    main: boolean
+  ) => {
+    const newItems = [...(main ? allVideos?.channels : currentFeed!)];
+
+    newItems[index] =
+      newItems[index]?.__typename !== "Mirror"
+        ? {
+            ...(newItems[index] as Post),
+            operations: {
+              ...(newItems[index] as Post)?.operations,
+              ...valueToUpdate,
+            },
+            stats: {
+              ...(newItems[index] as Post)?.stats,
+              [statToUpdate]:
+                (newItems[index] as Post)?.stats?.[
+                  statToUpdate as keyof PublicationStats
+                ] + (increase ? 1 : -1),
+            },
+          }
+        : {
+            ...(newItems[index] as Mirror),
+            mirrorOn: {
+              ...(newItems[index] as Mirror)?.mirrorOn,
+              operations: {
+                ...(newItems[index] as Mirror)?.mirrorOn?.operations,
+                ...valueToUpdate,
+              },
+              stats: {
+                ...(newItems[index] as Mirror)?.mirrorOn?.stats,
+                [statToUpdate]:
+                  (newItems[index] as Mirror)?.mirrorOn?.stats?.[
+                    statToUpdate as keyof PublicationStats
+                  ] + (increase ? 1 : -1),
+              },
+            },
+          };
+
+    main
+      ? dispatch(
+          setChannelsRedux({
+            actionChannels: newItems,
+            actionMain:
+              newItems[index]?.id == allVideos?.main?.video?.id
+                ? { video: newItems[index], local: allVideos?.main?.local }
+                : allVideos?.main,
+          })
+        )
+      : setCurrentFeed!(newItems as any);
+  };
+
+  const handleKeyDownDelete = (e: KeyboardEvent<Element>) => {
+    const highlightedContent = document.querySelector("#highlighted-content")!;
+    const selection = window.getSelection();
+    if (e.key === "Backspace" && selection?.toString() !== "") {
+      const start = textElement.current!.selectionStart;
+      const end = textElement.current!.selectionEnd;
+
+      if (start === 0 && end === textElement.current!.value?.length) {
+        setControlCommentDetails({
+          description: "",
+          html: "",
+        });
+      } else {
+        const selectedText = selection!.toString();
+        const selectedHtml = highlightedContent.innerHTML.substring(start, end);
+        const strippedHtml = selectedHtml?.replace(
+          /( style="[^"]*")|( style='[^']*')/g,
+          ""
+        );
+        const strippedText = selectedText?.replace(/<[^>]*>/g, "");
+
+        const newHTML =
+          controlCommentDetails?.html?.slice(0, start) +
+          strippedHtml +
+          controlCommentDetails?.html?.slice(end);
+        const newDescription =
+          controlCommentDetails?.description?.slice(0, start) +
+          strippedText +
+          controlCommentDetails?.description?.slice(end);
+
+        setControlCommentDetails({
+          description: newDescription,
+          html: newHTML,
+        });
+        (e.currentTarget! as any).value = newDescription;
+      }
+    } else if (
+      e.key === "Backspace" &&
+      controlCommentDetails?.description?.length === 0 &&
+      controlCommentDetails?.html?.length === 0
+    ) {
+      (e.currentTarget! as any).value = "";
+
+      e.preventDefault();
+    }
+  };
+
+  const handleCommentDescription = async (e: any): Promise<void> => {
+    let resultElement = document.querySelector("#highlighted-content");
+    const newValue = e.target.value.endsWith("\n")
+      ? e.target.value + " "
+      : e.target.value;
+
+    setControlCommentDetails({
+      description: newValue,
+      html: getCommentHTML(e, resultElement as Element),
+    });
+
+    if (
+      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1][0] ===
+        "@" &&
+      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1]
+        ?.length === 1
+    ) {
+      setControlCaretCoord(getCaretPos(e, textElement));
+      setProfilesOpen(true);
+    }
+    if (
+      e.target.value.split(" ")[e.target.value.split(" ")?.length - 1][0] ===
+      "@"
+    ) {
+      const allProfiles = await searchProfile({
+        query: e.target.value.split(" ")[e.target.value.split(" ")?.length - 1],
+        limit: LimitType.Ten,
+      });
+      setMentionProfiles(allProfiles?.data?.searchProfiles?.items as Profile[]);
+    } else {
+      setProfilesOpen(false);
+      setMentionProfiles([]);
+    }
+  };
+
+  const clearComment = (id: string, index: number, main?: boolean) => {
+    if (!main) {
+      setInteractionsLoading((prev) => {
+        const arr = [...prev];
+        arr[index!] = {
+          ...arr[index!],
+          comment: false,
+        };
+
+        return arr;
+      });
+    } else {
+      setControlInteractionsLoading((prev) => ({
+        ...prev,
+        comment: false,
+      }));
+    }
+
+    setControlCommentDetails({
+      description: "",
+      html: "",
+    });
+    setSecondaryComment!("");
+    dispatch(
+      setIndexModal({
+        actionValue: true,
+        actionMessage: "Indexing Interaction",
+      })
+    );
+    const newMedia = { ...postCollectGif?.media };
+    delete newMedia?.[id];
+    const newTypes = { ...postCollectGif?.collectTypes };
+    delete newTypes?.[id];
+    dispatch(
+      setPostCollectGif({
+        actionCollectTypes: newTypes,
+        actionMedia: newMedia,
+      })
+    );
+
+    updateInteractions(
+      main
+        ? allVideos?.channels?.findIndex((item) => item?.id == id)
+        : currentFeed!?.findIndex(
+            (item) =>
+              (item?.__typename === "Mirror" ? item?.mirrorOn : item)?.id == id
+          ),
+      {},
+      "comments",
+      true,
+      main!
+    );
+
+    getComments!();
+  };
+
+  const comment = async (
+    id: string,
+    index: number,
+    main?: boolean
+  ): Promise<void> => {
+    if (
+      (!controlCommentDetails?.description ||
+        controlCommentDetails?.description === "" ||
+        controlCommentDetails?.description?.trim()?.length < 0) &&
+      (!postCollectGif?.media?.[id]?.length ||
+        postCollectGif?.media?.[id]?.length < 1)
+    ) {
+      return;
+    }
+    setControlInteractionsLoading((prev) => ({
+      ...prev,
+      comment: true,
+    }));
+
+    try {
+      const contentURIValue = await uploadPostContent(
+        controlCommentDetails?.description,
+        postCollectGif?.media?.[id]!
+      );
+
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      await commentSig(
+        id,
+        contentURIValue as string,
+        [
+          {
+            collectOpenAction: {
+              simpleCollectOpenAction: postCollectGif?.collectTypes?.[id],
+            },
+          },
+        ],
+        clientWallet,
+        publicClient,
+        address as `0x${string}`,
+        dispatch,
+        () => clearComment(id, index, main!)
+      );
+    } catch (err: any) {
+      console.error(err.message);
+    }
+    setControlInteractionsLoading((prev) => ({
+      ...prev,
+      comment: false,
+    }));
+  };
+
+  const handleMentionClick = (user: Profile) => {
+    setProfilesOpen(false);
+    const newHTMLPost =
+      controlCommentDetails?.html?.substring(
+        0,
+        controlCommentDetails?.html.lastIndexOf("@")
+      ) + `@${user?.handle?.localName}</span>`;
+    const newElementPost =
+      controlCommentDetails?.description?.substring(
+        0,
+        controlCommentDetails?.description.lastIndexOf("@")
+      ) + `@${user?.handle?.localName}`;
+    setControlCommentDetails({
+      description: newElementPost,
+      html: newHTMLPost,
+    });
+  };
 
   useEffect(() => {
-    if (purchase.open) {
-      getCollectInfo();
+    if (document.querySelector("#highlighted-content")) {
+      document.querySelector("#highlighted-content")!.innerHTML =
+        controlCommentDetails?.html?.length === 0
+          ? "Have something to say?"
+          : controlCommentDetails?.html;
     }
-  }, [purchase.open]);
+  }, [controlCommentDetails?.html]);
+
+  useEffect(() => {
+    if (currentFeed && currentFeed!?.length > 0) {
+      setInteractionsLoading(
+        Array.from({ length: currentFeed!?.length }, () => ({
+          comment: false,
+          like: false,
+          collect: false,
+          mirror: false,
+        }))
+      );
+    }
+  }, [currentFeed]);
 
   return {
     streamRef,
@@ -457,23 +718,28 @@ const useControls = (
     volumeOpen,
     setVolumeOpen,
     handleHeart,
-    mirrorLoading,
-    collectLoading,
-    likeLoading,
-    collectVideo,
-    mirrorVideo,
-    likeVideo,
-    mirrorCommentLoading,
-    likeCommentLoading,
-    collectCommentLoading,
-    approvalLoading,
-    collectInfoLoading,
-    approveCurrency,
+    collect,
+    mirror,
+    like,
     handleVolumeChange,
     wrapperRef,
     progressRef,
     handleSeek,
     fullVideoRef,
+    interactionsLoading,
+    handleMentionClick,
+    comment,
+    preElement,
+    textElement,
+    profilesOpen,
+    mentionProfiles,
+    handleKeyDownDelete,
+    handleCommentDescription,
+    controlCaretCoord,
+    controlCommentDetails,
+    controlInteractionsLoading,
+    controlMediaLoading,
+    setControlMediaLoading,
   };
 };
 

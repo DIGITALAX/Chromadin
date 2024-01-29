@@ -1,20 +1,31 @@
 import { Post } from "@/components/Home/types/generated";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface ChannelsState {
-  value: Post[];
+  channels: Post[];
+  main:
+    | {
+        video: Post;
+        local: string;
+      }
+    | undefined;
 }
 
 const initialChannelsState: ChannelsState = {
-  value: [],
+  channels: [], 
+  main: undefined,
 };
 
 export const channelsSlice = createSlice({
   name: "channels",
   initialState: initialChannelsState,
   reducers: {
-    setChannelsRedux: (state: ChannelsState, action: PayloadAction<Post[]>) => {
-      state.value = action.payload;
+    setChannelsRedux: (
+      state: ChannelsState,
+      { payload: { actionChannels, actionMain } }
+    ) => {
+      state.channels = actionChannels;
+      state.main = actionMain;
     },
   },
 });

@@ -7,9 +7,8 @@ const FilterVending: FunctionComponent<FilterVendingProps> = ({
   handleOpenDropdown,
   openDropdown,
   values,
-  setDispatchFilter,
   selectorValue,
-  dispatch,
+  filterUpdate,
 }): JSX.Element => {
   return (
     <div
@@ -19,9 +18,7 @@ const FilterVending: FunctionComponent<FilterVendingProps> = ({
         className={`relative w-24 h-fit px-3 flex py-2 rounded-tr-lg ${
           !openDropdown && "rounded-bl-lg"
         } cursor-pointer gap-3 items-center justify-center border border-white hover:opacity-80`}
-        onClick={() => {
-          handleOpenDropdown(!openDropdown);
-        }}
+        onClick={() => handleOpenDropdown(!openDropdown)}
       >
         <div className="relative w-full h-fit items-center justify-center flex">
           <div className="relative justify-center items-center w-fit h-fit">
@@ -47,12 +44,7 @@ const FilterVending: FunctionComponent<FilterVendingProps> = ({
                   }`}
                   onClick={() => {
                     handleOpenDropdown(!openDropdown);
-                    dispatch(
-                      setDispatchFilter({
-                        actionValues: values,
-                        actionSelected: item,
-                      })
-                    );
+                    filterUpdate(item!);
                   }}
                 >
                   <div className="relative w-fit h-fit flex flex-col items-center justify-center">

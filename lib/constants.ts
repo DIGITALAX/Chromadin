@@ -1,12 +1,20 @@
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
 export const BASE_URL: string = "https://api-v2.lens.dev/";
-
+export const CHROMADIN_ID: string = "0x01c6a9";
 export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
 
 export const SAMPLER_CONTRACT: `0x${string}` =
   "0x948ed9CD14Ce2B60Cee4bca0BCe1a65B95BD34d2";
 export const CHROMADIN_OPEN_ACTION: `0x${string}` =
   "0x9A94C316F644D10641A528904e4a030a77498160";
+export const LISTENER_OPEN_ACTION: `0x${string}` =
+  "0x06BB03BAe0dE9A6808cd9AF9c9C3ec8F59e6FE39";
+export const COIN_OP_OPEN_ACTION: `0x${string}` =
+  "0x3710f718f9E78a58FEcfF5Cd9cc41a4b7466BB14";
+export const KINORA_OPEN_ACTION: `0x${string}` =
+  "0x196f267A4aCA1243CCCB85AD7098D1fDA1D683CD";
+export const F3M_OPEN_ACTION: `0x${string}` =
+  "0xba6a85811336781Bad55E624C40Dc1D5615243C7";
 export const PRINT_ACCESS_CONTROL: `0x${string}` =
   "0xd1e60b639e3c67b64e6f5de44aa079cf9b79ac55";
 export const LENS_HUB_PROXY_ADDRESS_MUMBAI: `0x${string}` =
@@ -57,4 +65,8 @@ export const LENS_CREATORS: string[] = [
   "0x01dfcd",
   "0x01e01d",
   "0x01e024",
+  "0x01f76d",
+  "0x01f76c",
+  "0x01ef68",
+  "0x01f55e"
 ];

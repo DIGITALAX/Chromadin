@@ -1,55 +1,24 @@
 import { Profile, Post, Comment } from "@/components/Home/types/generated";
-import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
-import { VideoSyncState } from "@/redux/reducers/videoSyncSlice";
 import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
-import { MainNFT } from "../../NFT/types/nft.types";
 import { Collection } from "@/components/Home/types/home.types";
-import { History } from "../../Interactions/types/interactions.types";
-import { HistoryDataState } from "@/redux/reducers/hasMoreHistoryReducer";
+import { Options, Viewer } from "../../Interactions/types/interactions.types";
+import { HistoryDataState } from "@/redux/reducers/historyDataReducer";
+import { FullScreenVideoState } from "@/redux/reducers/fullScreenVideoSlice";
+import { ChannelsState } from "@/redux/reducers/channelsSlice";
+import { CollectionInfoState } from "@/redux/reducers/collectionInfoSlice";
+import { SetStateAction } from "react";
 
 export type ChannelsProps = {
   dispatch: Dispatch<AnyAction>;
-  dispatchVideos: Post[];
-  videoSync: VideoSyncState;
-  fetchMoreVideos: () => Promise<
-    | {
-        videos: Post[];
-        mirrors: boolean[];
-        collects: boolean[];
-        likes: boolean[];
-      }
-    | undefined
-  >;
+  allVideos: ChannelsState;
+  videoSync: FullScreenVideoState;
+  fetchMoreVideos: () => Promise<Post[] | undefined>;
   hasMore: boolean;
-  scrollHeight: string;
-};
-
-export type UseChannelsResults = {
-  tab: number;
-  setTab: (e: number) => void;
-  fetchMoreVideos: () => Promise<
-    | {
-        videos: Post[];
-        mirrors: boolean[];
-        collects: boolean[];
-        likes: boolean[];
-      }
-    | undefined
-  >;
-  videosLoading: boolean;
-  setVideosLoading: (e: boolean) => void;
-  scrollHeight: string;
-};
-
-export type UseConnectResults = {
-  handleLensSignIn: () => Promise<void>;
-  handleRefreshProfile: () => Promise<void>;
-  signInLoading: boolean;
 };
 
 export type ConnectProps = {
-  router: NextRouter;
+  handleLogout: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   connected: boolean;
@@ -57,12 +26,12 @@ export type ConnectProps = {
 };
 
 export type AuthProps = {
-  router: NextRouter;
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   connected: boolean;
   profile: Profile | undefined;
   mainPage?: boolean;
+  handleLogout: () => Promise<void>;
 };
 
 export type WalletProps = {
@@ -75,13 +44,13 @@ export type WalletProps = {
 export type ProfileProps = {
   profile: Profile | undefined;
   mainPage?: boolean;
-  router: NextRouter;
+  handleLogout: () => Promise<void>;
 };
 
 export type TabProps = {
   tab: number;
   setTab: (e: number) => void;
-  viewer: string;
+  viewer: Viewer;
 };
 
 export type SideBarProps = {
@@ -92,23 +61,27 @@ export type SideBarProps = {
   tab: number;
   setTab: (e: number) => void;
   dispatch: Dispatch<AnyAction>;
-  viewer: string;
-  dispatchVideos: Post[];
-  options: string;
-  videoSync: VideoSyncState;
-  fetchMoreVideos: () => Promise<
-    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
-    | undefined
-  >;
-  hasMore: boolean;
-  scrollHeight: string;
-  commentId: string;
+  viewer: Viewer;
+  allVideos: ChannelsState;
+  options: Options;
+  videoSync: FullScreenVideoState;
+  fetchMoreVideos: () => Promise<Post[] | undefined>;
+  hasMoreVideos: boolean;
   collectors: any[];
-  collectLoading: boolean;
+  collectsLoading: boolean;
   getMorePostCollects: () => Promise<void>;
+  handleLogout: () => Promise<void>;
+  interactionsLoading: {
+    mirror: boolean;
+    like: boolean;
+    collect: boolean;
+    comment: boolean;
+  }[];
+  collectionInfo: CollectionInfoState;
+  setSecondaryComment: (e: SetStateAction<string>) => void;
+  secondaryComment: string;
   hasMoreCollects: boolean;
   router: NextRouter;
-  mainVideo: MainVideoState;
   historyData: HistoryDataState;
   historyLoading: boolean;
   historySwitch: boolean;
@@ -120,27 +93,26 @@ export type SideBarProps = {
   setCurrency: (e: string) => void;
   totalAmount: number;
   approved: boolean;
-  mainNFT: MainNFT | undefined;
   approveSpend: () => Promise<void>;
   buyNFT: () => void;
   purchaseLoading: boolean;
   isCreator: boolean;
-  action: string;
-  collections: Collection[];
+  action: Options;
   commentsLoading: boolean;
   hasMoreComments: boolean;
-  mirrorCommentLoading: boolean[];
-  likeCommentLoading: boolean[];
-  collectCommentLoading: boolean[];
-  likeVideo: (id?: string) => Promise<void>;
-  collectVideo: (id?: string) => Promise<void>;
-  mirrorVideo: (id?: string) => Promise<void>;
+  like: (id: string, hasReacted: boolean, index: number,main?: boolean) => Promise<void>;
+  collect: (
+    id: string,
+    type: string,
+    index: number,
+    main?: boolean
+  ) => Promise<void>;
+  mirror: (id: string, index: number, main?: boolean) => Promise<void>;
   commentors: Comment[];
   getMorePostComments: () => Promise<void>;
 };
 
 export type SwitcherProps = {
-  options: string;
-  dispatch: Dispatch<AnyAction>;
+  options: Options;
   router: NextRouter;
 };

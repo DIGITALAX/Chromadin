@@ -13,259 +13,330 @@ import {
   AiOutlineRetweet,
 } from "react-icons/ai";
 import { ReactionProps } from "../types/wavs.types";
-import { setFollowerOnly } from "@/redux/reducers/followerOnlySlice";
-import { setPurchase } from "@/redux/reducers/purchaseSlice";
 import handleHidePost from "@/lib/helpers/handleHidePost";
-import { setReactionState } from "@/redux/reducers/reactionStateSlice";
-import { setOpenComment } from "@/redux/reducers/openCommentSlice";
 import {
-  OpenActionModuleType,
-  Post,
+  ImageMetadataV3,
   SimpleCollectOpenActionSettings,
 } from "@/components/Home/types/generated";
 import { setMakePost } from "@/redux/reducers/makePostSlice";
+import { setWho } from "@/redux/reducers/whoSlice";
+import { setFollowCollect } from "@/redux/reducers/followCollectSlice";
+import openActionCheck from "@/lib/helpers/openActionCheck";
 
 const Reactions: FunctionComponent<ReactionProps> = ({
-  textColor,
-  commentColor,
-  mirrorColor,
-  heartColor,
-  collectColor,
   dispatch,
-  publication,
-  hasMirrored,
-  hasReacted,
-  followerOnly,
   address,
-  collectPost,
-  mirrorPost,
-  reactPost,
+  collect,
+  mirror,
+  like,
+  publication,
+  interactionsLoading,
   index,
-  mirrorLoading,
-  reactLoading,
-  collectLoading,
-  hasCollected,
-  reactAmount,
-  collectAmount,
-  mirrorAmount,
-  commentAmount,
-  setCollectLoader,
-  setReactLoader,
-  setMirrorLoader,
-  openComment,
-  feedType,
+  setOpenComment,
   router,
   openMirrorChoice,
   setOpenMirrorChoice,
-  profileType
+  main,
 }): JSX.Element => {
   return (
     <div
-      className={`relative w-fit h-fit col-start-1 justify-self-center grid grid-flow-col auto-cols-auto gap-4`}
+      className={`relative w-full h-fit gap-4 flex flex-col items-center justify-center`}
     >
-      <div className="relative w-fit h-fit col-start-1 row-start-1 grid grid-flow-col auto-cols-auto gap-2 place-self-center">
-        <div
-          className={`relative w-fit h-fit col-start-1 place-self-center cursor-pointer hover:opacity-70 active:scale-95 ${
-            reactLoading && "animate-spin"
-          }`}
-          onClick={() =>
-            !reactLoading &&
-            reactPost(
-              publication?.__typename !== "Mirror"
-                ? publication?.id
-                : publication?.mirrorOn.id,
-              setReactLoader,
-              feedType !== "" ||
-                (profileType !== "" && profileType !== undefined)
-                ? index
-                : undefined,
-              publication?.__typename === "Mirror" ? publication?.id : undefined
-            )
-          }
-        >
-          {reactLoading ? (
-            <AiOutlineLoading size={15} color={heartColor} />
-          ) : reactAmount > 0 && hasReacted ? (
-            <BsSuitHeartFill size={15} color={heartColor} />
-          ) : (
-            <BsSuitHeart color={heartColor} size={15} />
+      <div className="relative w-fit sm:w-full h-fit flex flex-row flex-wrap sm:grid sm:grid-cols-2 sm:auto-cols-auto gap-4 items-center justify-center">
+        <div className="relative w-fit sm:w-full h-fit grid grid-rows-2 auto-rows-auto gap-4 items-center justify-center">
+          {[
+            {
+              loader: interactionsLoading?.collect,
+              function: () =>
+                openActionCheck(
+                  publication?.openActionModules?.[0]?.contract?.address
+                )
+                  ? router.push(
+                      `/autograph/${
+                        publication?.by?.handle?.suggestedFormatted?.localName?.split(
+                          "@"
+                        )?.[1]
+                      }/collection/${(
+                        publication?.metadata as ImageMetadataV3
+                      )?.title?.replaceAll(" ", "_")}`
+                    )
+                  : publication?.openActionModules?.[0]?.__typename ===
+                    "SimpleCollectOpenActionSettings"
+                  ? (Number(
+                      (
+                        publication
+                          ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
+                      )?.amount?.value
+                    ) == 0 ||
+                      !Number(
+                        (
+                          publication
+                            ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
+                        )?.amount?.value
+                      )) &&
+                    (!(
+                      publication
+                        ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
+                    )?.followerOnly ||
+                      ((
+                        publication
+                          ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
+                      )?.followerOnly &&
+                        publication?.by?.operations?.isFollowedByMe?.value)) &&
+                    (publication?.stats?.countOpenActions <
+                      Number(
+                        (
+                          publication
+                            ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
+                        )?.collectLimit
+                      ) ||
+                      Number(
+                        (
+                          publication
+                            ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
+                        )?.collectLimit
+                      ) == 0 ||
+                      !(
+                        publication
+                          ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
+                      )?.collectLimit)
+                    ? collect(
+                        publication?.id,
+                        publication?.openActionModules?.[0]?.type!,
+                        index,
+                        main
+                      )
+                    : (
+                        publication
+                          ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
+                      )?.followerOnly &&
+                      !publication?.by?.operations?.isFollowedByMe?.value
+                    ? dispatch(
+                        setFollowCollect({
+                          actionType: "follow",
+                          actionFollower: publication?.by,
+                        })
+                      )
+                    : dispatch(
+                        setFollowCollect({
+                          actionType: "collect",
+                          actionCollect: {
+                            id: publication?.id,
+                            stats: publication?.stats.countOpenActions,
+                            item: publication?.openActionModules?.[0],
+                          },
+                        })
+                      )
+                  : {},
+
+              functionWho: () =>
+                dispatch(
+                  setWho({
+                    actionOpen: true,
+                    actionType: "collect",
+                    actionValue: publication?.id,
+                  })
+                ),
+              color: "#81A8F8",
+              amount: publication?.stats?.countOpenActions,
+              responded: publication?.operations?.hasActed?.value,
+              icon: <BsCollection color={"#81A8F8"} size={15} />,
+              respondedIcon: (
+                <BsFillCollectionFill size={15} color={"#81A8F8"} />
+              ),
+            },
+            {
+              loader: interactionsLoading?.comment,
+              function: () =>
+                setOpenComment((prev) => (prev !== index ? index : undefined)),
+              functionWho: () =>
+                !router?.asPath?.includes("/autograph/")
+                  ? router.push(
+                      router?.asPath?.includes("&post=")
+                        ? router?.asPath?.includes("?option=")
+                          ? router?.asPath.split("&post=")[0] +
+                            `&post=${publication.id}`
+                          : router?.asPath.split("&post=")[0] +
+                            `?option=history&post=${publication.id}`
+                        : router?.asPath?.includes("&profile=")
+                        ? router?.asPath?.includes("?option=")
+                          ? router?.asPath.split("&profile=")[0] +
+                            `&post=${publication.id}`
+                          : router?.asPath.split("&profile=")[0] +
+                            `?option=history&post=${publication.id}`
+                        : router?.asPath?.includes("?option=")
+                        ? router?.asPath + `&post=${publication.id}`
+                        : router?.asPath +
+                          `?option=history&post=${publication.id}`
+                    )
+                  : router.replace(
+                      `/#chat?option=history&post=${publication?.id}`
+                    ),
+              color: "#0AC7AB",
+              amount: publication?.stats?.comments,
+              responded: false,
+              icon: <FaRegCommentDots color={"#0AC7AB"} size={15} />,
+              respondedIcon: <FaRegCommentDots size={15} color={"#0AC7AB"} />,
+            },
+          ]?.map(
+            (
+              item: {
+                loader: boolean;
+                function: () => void;
+                functionWho: () => void;
+                amount: number;
+                responded: boolean;
+                icon: JSX.Element;
+                respondedIcon: JSX.Element;
+                color: string;
+              },
+              index
+            ) => {
+              return (
+                <div
+                  key={index}
+                  className="relative w-full h-fit flex flex-col gap-2 items-center justify-center"
+                >
+                  <div
+                    className={`relative w-fit h-fit flex items-center justify-center cursor-pointer hover:opacity-70 active:scale-95 ${
+                      item?.loader && "animate-spin"
+                    }`}
+                    onClick={() => !item?.loader && item?.function()}
+                  >
+                    {item?.loader ? (
+                      <AiOutlineLoading size={15} color={item?.color} />
+                    ) : item?.amount > 0 && item?.responded ? (
+                      item?.respondedIcon
+                    ) : (
+                      item?.icon
+                    )}
+                  </div>
+                  <div
+                    className={`relative w-fit h-fit text-black font-dosis text-xs flex items-center justify-center ${
+                      item?.amount > 0 && "cursor-pointer"
+                    }`}
+                    onClick={() => item?.amount > 0 && item?.functionWho()}
+                  >
+                    {item?.amount}
+                  </div>
+                </div>
+              );
+            }
           )}
         </div>
-        <div
-          className={`relative w-fit h-fit col-start-2 text-${textColor} font-dosis text-xs place-self-center ${
-            reactAmount > 0 && "cursor-pointer"
-          }`}
-          onClick={() =>
-            reactAmount > 0 &&
-            dispatch(
-              setReactionState({
-                actionOpen: true,
-                actionType: "heart",
-                actionValue:
-                  publication?.__typename === "Mirror"
-                    ? publication?.mirrorOn?.id
-                    : publication?.id,
-                actionResponseReact: hasReacted,
-              })
-            )
-          }
-        >
-          {reactAmount}
-        </div>
-      </div>
-      <div
-        className={`relative w-fit h-fit row-start-1 col-start-2 grid grid-flow-col auto-cols-auto gap-2 place-self-center`}
-      >
-        <div
-          className={`relative w-fit h-fit col-start-1 place-self-center cursor-pointer hover:opacity-70 active:scale-95 ${
-            followerOnly && "opacity-50"
-          }`}
-          onClick={() =>
-            dispatch(
-              setOpenComment(
-                openComment !==
-                  (publication?.__typename !== "Mirror"
-                    ? publication?.id
-                    : publication?.mirrorOn.id)
-                  ? publication?.__typename !== "Mirror"
-                    ? publication?.id
-                    : publication?.mirrorOn.id
-                  : ""
-              )
-            )
-          }
-        >
-          <FaRegCommentDots color={commentColor} size={15} />
-        </div>
-        <div
-          className={`relative w-fit h-fit col-start-2 text-${textColor} font-dosis text-xs place-self-center ${
-            commentAmount > 0 && "cursor-pointer"
-          }`}
-          onClick={() =>
-            commentAmount > 0 && !router.asPath.includes("/autograph/")
-              ? router.push(
-                  router.asPath.includes("&post=")
-                    ? router.asPath.includes("?option=")
-                      ? router.asPath.split("&post=")[0] +
-                        `&post=${
-                          publication?.__typename !== "Mirror"
-                            ? publication?.id
-                            : publication?.mirrorOn.id
-                        }`
-                      : router.asPath.split("&post=")[0] +
-                        `?option=history&post=${
-                          publication?.__typename !== "Mirror"
-                            ? publication?.id
-                            : publication?.mirrorOn.id
-                        }`
-                    : router.asPath.includes("&profile=")
-                    ? router.asPath.includes("?option=")
-                      ? router.asPath.split("&profile=")[0] +
-                        `&post=${
-                          publication?.__typename !== "Mirror"
-                            ? publication?.id
-                            : publication?.mirrorOn.id
-                        }`
-                      : router.asPath.split("&profile=")[0] +
-                        `?option=history&post=${
-                          publication?.__typename !== "Mirror"
-                            ? publication?.id
-                            : publication?.mirrorOn.id
-                        }`
-                    : router.asPath.includes("?option=")
-                    ? router.asPath +
-                      `&post=${
-                        publication?.__typename !== "Mirror"
-                          ? publication?.id
-                          : publication?.mirrorOn.id
-                      }`
-                    : router.asPath +
-                      `?option=history&post=${
-                        publication?.__typename !== "Mirror"
-                          ? publication?.id
-                          : publication?.mirrorOn.id
-                      }`
-                )
-              : router.replace(`/#chat?option=history&post=${publication?.id}`)
-          }
-        >
-          {commentAmount}
-        </div>
-      </div>
-      <div
-        className={`relative w-fit h-fit row-start-2 col-start-1 grid grid-flow-col auto-cols-auto gap-2 place-self-center`}
-      >
-        <div
-          className={`relative w-fit h-fit col-start-1 place-self-center cursor-pointer hover:opacity-70 active:scale-95 ${
-            followerOnly && "opacity-50"
-          }`}
-          onClick={() => {
-            const updatedArray = [...openMirrorChoice];
-            updatedArray[index] = !updatedArray[index];
-            setOpenMirrorChoice(updatedArray);
-          }}
-        >
-          <AiOutlineRetweet
-            color={mirrorAmount > 0 && hasMirrored ? "red" : mirrorColor}
-            size={15}
-          />
-        </div>
-        <div
-          className={`relative w-fit h-fit col-start-2 text-${textColor} font-dosis text-xs place-self-center  ${
-            mirrorAmount && "cursor-pointer"
-          }`}
-          onClick={() =>
-            mirrorAmount > 0 &&
-            dispatch(
-              setReactionState({
-                actionOpen: true,
-                actionType: "mirror",
-                actionValue:
-                  publication?.__typename === "Mirror"
-                    ? publication?.mirrorOn?.id
-                    : publication?.id,
-                actionResponseMirror: hasMirrored,
-                actionFollower: followerOnly,
-              })
-            )
-          }
-        >
-          {mirrorAmount}
+        <div className="relative w-fit sm:w-full h-fit grid grid-rows-2 auto-rows-auto gap-4 items-center justify-center">
+          {[
+            {
+              loader: interactionsLoading?.like,
+              function: () =>
+                like(
+                  publication?.id,
+                  publication?.operations?.hasReacted!,
+                  index,
+                  main
+                ),
+              functionWho: () =>
+                dispatch(
+                  setWho({
+                    actionOpen: true,
+                    actionType: "heart",
+                    actionValue: publication?.id,
+                  })
+                ),
+              color: "red",
+              amount: publication?.stats?.reactions,
+              responded: publication?.operations?.hasReacted,
+              icon: <BsSuitHeart color={"red"} size={15} />,
+              respondedIcon: <BsSuitHeartFill size={15} color={"red"} />,
+            },
+            {
+              loader: interactionsLoading?.mirror,
+              function: () =>
+                setOpenMirrorChoice((prev) => {
+                  const arr = [...prev];
+                  arr[index] = !arr[index];
+                  return arr;
+                }),
+              functionWho: () =>
+                dispatch(
+                  setWho({
+                    actionOpen: true,
+                    actionType: "mirror",
+                    actionValue: publication?.id,
+                  })
+                ),
+              color: "#712AF6",
+              amount: publication?.stats?.mirrors,
+              responded: publication?.operations?.hasMirrored,
+              icon: <AiOutlineRetweet color={"#712AF6"} size={15} />,
+              respondedIcon: <AiOutlineRetweet size={15} color={"#712AF6"} />,
+            },
+          ]?.map(
+            (
+              item: {
+                loader: boolean;
+                function: () => void;
+                functionWho: () => void;
+                amount: number;
+                responded: boolean;
+                icon: JSX.Element;
+                respondedIcon: JSX.Element;
+                color: string;
+              },
+              index
+            ) => {
+              return (
+                <div
+                  key={index}
+                  className="relative w-full h-fit flex flex-col gap-2 items-center justify-center"
+                >
+                  <div
+                    className={`relative w-fit h-fit flex items-center justify-center hover:opacity-70 cursor-pointer active:scale-95 ${
+                      item?.loader && "animate-spin"
+                    }`}
+                    onClick={() => !item?.loader && item?.function()}
+                  >
+                    {item?.loader ? (
+                      <AiOutlineLoading size={15} color={item?.color} />
+                    ) : item?.amount > 0 && item?.responded ? (
+                      item?.respondedIcon
+                    ) : (
+                      item?.icon
+                    )}
+                  </div>
+                  <div
+                    className={`relative w-fit h-fit flex items-center justify-center text-black font-dosis text-xs ${
+                      item?.amount > 0 && "cursor-pointer"
+                    }`}
+                    onClick={() => item?.amount > 0 && item?.functionWho()}
+                  >
+                    {item?.amount}
+                  </div>
+                </div>
+              );
+            }
+          )}
         </div>
       </div>
       {openMirrorChoice?.[index] && (
-        <div className="absolute flex flex-row items-center justify-center p-1.5 gap-3 bg-shame/80 border border-[#44afd3] rounded-md">
+        <div className="absolute flex flex-row items-center justify-center p-1.5 gap-3 bg-shame/80 border border-[#44afd3] rounded-md z-10">
           <div
             onClick={() =>
-              !mirrorLoading &&
-              mirrorPost(
-                publication?.__typename !== "Mirror"
-                  ? publication?.id
-                  : publication?.mirrorOn.id,
-                setMirrorLoader,
-                feedType !== "" ||
-                  (profileType !== "" && profileType !== undefined)
-                  ? index
-                  : undefined,
-                publication?.__typename === "Mirror"
-                  ? publication?.id
-                  : undefined
-              )
+              !interactionsLoading?.mirror &&
+              mirror(publication?.id, index, main)
             }
             className={`relative w-fit h-fit col-start-1 place-self-center cursor-pointer hover:opacity-70 active:scale-95 ${
-              followerOnly && "opacity-50"
-            } ${mirrorLoading && "animate-spin"}`}
+              interactionsLoading?.mirror && "animate-spin"
+            }`}
           >
-            {mirrorLoading ? (
-              <AiOutlineLoading size={15} color={mirrorColor} />
+            {interactionsLoading?.mirror ? (
+              <AiOutlineLoading size={15} color={"#712AF6"} />
             ) : (
-              <AiOutlineRetweet color={mirrorColor} size={15} />
+              <AiOutlineRetweet color={"#712AF6"} size={15} />
             )}
           </div>
           <div
-            className={`relative w-fit h-fit col-start-1 place-self-center cursor-pointer hover:opacity-70 active:scale-95 ${
-              followerOnly && "opacity-50"
-            }`}
+            className={`relative w-fit h-fit col-start-1 place-self-center cursor-pointer hover:opacity-70 active:scale-95`}
             onClick={() => {
               const updatedArray = [...openMirrorChoice];
               updatedArray[index] = false;
@@ -273,139 +344,12 @@ const Reactions: FunctionComponent<ReactionProps> = ({
               dispatch(
                 setMakePost({
                   actionValue: true,
-                  actionQuote:
-                    publication?.__typename === "Mirror"
-                      ? publication?.mirrorOn
-                      : publication,
+                  actionQuote: publication,
                 })
               );
             }}
           >
-            <BsChatLeftQuote color={mirrorColor} size={15} />
-          </div>
-        </div>
-      )}
-      {(publication?.__typename === "Mirror"
-        ? publication?.mirrorOn
-        : (publication as Post)
-      )?.openActionModules?.[0]?.type ==
-        OpenActionModuleType.SimpleCollectOpenActionModule && (
-        <div
-          className={`relative w-fit h-fit row-start-2 col-start-2 grid grid-flow-col auto-cols-auto gap-2 place-self-center`}
-        >
-          <div
-            className={`relative w-fit h-fit col-start-1 place-self-center cursor-pointer hover:opacity-70 active:scale-95 ${
-              collectLoading && "animate-spin"
-            }`}
-            onClick={
-              (publication?.__typename === "Mirror"
-                ? publication?.mirrorOn
-                : (publication as Post)
-              )?.openActionModules?.[0]?.__typename ===
-                "SimpleCollectOpenActionSettings" && !collectLoading
-                ? Number(
-                    (
-                      (publication?.__typename === "Mirror"
-                        ? publication?.mirrorOn
-                        : (publication as Post)
-                      )
-                        ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
-                    )?.amount?.value
-                  ) > 0 &&
-                  (!(
-                    (publication?.__typename === "Mirror"
-                      ? publication?.mirrorOn
-                      : (publication as Post)
-                    )?.openActionModules?.[0] as SimpleCollectOpenActionSettings
-                  )?.followerOnly ||
-                    ((
-                      (publication?.__typename === "Mirror"
-                        ? publication?.mirrorOn
-                        : (publication as Post)
-                      )
-                        ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
-                    )?.followerOnly &&
-                      publication?.by?.operations?.isFollowedByMe))
-                  ? () =>
-                      collectPost(
-                        (publication?.__typename === "Mirror"
-                          ? publication?.mirrorOn
-                          : (publication as Post)
-                        )?.id,
-                        setCollectLoader,
-                        feedType !== "" ||
-                          (profileType !== "" && profileType !== undefined)
-                          ? index
-                          : undefined,
-                        publication?.__typename === "Mirror"
-                          ? publication?.id
-                          : undefined
-                      )
-                  : (
-                      (publication?.__typename === "Mirror"
-                        ? publication?.mirrorOn
-                        : (publication as Post)
-                      )
-                        ?.openActionModules?.[0] as SimpleCollectOpenActionSettings
-                    )?.followerOnly &&
-                    !publication?.by?.operations?.isFollowedByMe
-                  ? () =>
-                      dispatch(
-                        setFollowerOnly({
-                          actionOpen: true,
-                          actionId: (publication?.__typename === "Mirror"
-                            ? publication?.mirrorOn
-                            : (publication as Post)
-                          )?.id,
-                          actionFollowerId: (publication?.__typename ===
-                          "Mirror"
-                            ? publication?.mirrorOn
-                            : (publication as Post)
-                          )?.by?.id,
-                          actionIndex: index,
-                        })
-                      )
-                  : () =>
-                      dispatch(
-                        setPurchase({
-                          actionOpen: true,
-                          actionId: (publication?.__typename === "Mirror"
-                            ? publication?.mirrorOn
-                            : (publication as Post)
-                          )?.id,
-                          actionIndex: index,
-                        })
-                      )
-                : () => {}
-            }
-          >
-            {collectLoading ? (
-              <AiOutlineLoading size={15} color={collectColor} />
-            ) : hasCollected ? (
-              <BsFillCollectionFill size={15} color={collectColor} />
-            ) : (
-              <BsCollection size={15} color={collectColor} />
-            )}
-          </div>
-          <div
-            onClick={() =>
-              collectAmount > 0 &&
-              dispatch(
-                setReactionState({
-                  actionOpen: true,
-                  actionType: "collect",
-                  actionValue:
-                    publication?.__typename === "Mirror"
-                      ? publication?.mirrorOn?.id
-                      : publication?.id,
-                })
-              )
-            }
-            className={`relative w-fit h-fit col-start-2 text-${textColor} font-dosis text-xs place-self-center ${
-              collectAmount > 0 && "cursor-pointer"
-            }`}
-          >
-            {collectAmount}
+            <BsChatLeftQuote color={"#712AF6"} size={15} />
           </div>
         </div>
       )}
@@ -414,7 +358,7 @@ const Reactions: FunctionComponent<ReactionProps> = ({
           className={`relative w-fit h-fit row-start-3 col-start-1 col-span-2 grid grid-flow-col auto-cols-auto gap-2 place-self-center cursor-pointer active:scale-95`}
           onClick={() => handleHidePost(publication.id as string, dispatch)}
         >
-          <AiOutlineMinusCircle color={textColor} size={15} />
+          <AiOutlineMinusCircle color={"black"} size={15} />
         </div>
       )}
     </div>

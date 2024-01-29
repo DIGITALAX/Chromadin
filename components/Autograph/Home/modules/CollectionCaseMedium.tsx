@@ -4,13 +4,13 @@ import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { CollectionCaseProps } from "../types/autograph.types";
 import { setMakePost } from "@/redux/reducers/makePostSlice";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
   router,
   collection,
   autoProfile,
   dispatch,
-  imageLoading,
   address,
   lensProfile,
   openConnectModal,
@@ -84,8 +84,6 @@ const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
               ? openConnectModal
               : address && !lensProfile?.id
               ? () => handleLensSignIn()
-              : imageLoading
-              ? () => {}
               : () =>
                   dispatch(
                     setMakePost({
@@ -127,6 +125,7 @@ const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
               alt="pfp"
               className="rounded-full w-full h-full flex"
               draggable={false}
+              onError={(e) => handleImageError(e)}
             />
           )}
         </div>

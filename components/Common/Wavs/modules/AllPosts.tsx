@@ -7,87 +7,34 @@ import QuickProfiles from "./QuickProfiles";
 import Search from "./Search";
 import SuperCreator from "./SuperCreator";
 import {
+  Comment,
   Mirror,
   Post,
   Quote,
-  TriStateValue,
 } from "@/components/Home/types/generated";
+import { BiHomeHeart } from "react-icons/bi";
+import { AiFillFastBackward } from "react-icons/ai";
+import Account from "./Account";
 
 const AllPosts: FunctionComponent<AllPostsProps> = ({
   hasMore,
   fetchMore,
-  feedDispatch,
   dispatch,
-  reactionAmounts,
-  reactPost,
-  collectPost,
-  mirrorPost,
-  commentPost,
-  followerOnly,
   address,
   router,
-  mirrorLoading,
-  reactLoading,
-  collectLoading,
   commentOpen,
   commentDescription,
   textElement,
   caretCoord,
   handleCommentDescription,
   openConnectModal,
-  handleRemoveImage,
-  commentLoading,
   mentionProfiles,
   profilesOpen,
-  gifOpen,
-  handleGifSubmit,
-  handleSetGif,
   handleMentionClick,
-  results,
-  handleGif,
-  value,
-  uploadImages,
-  uploadVideo,
-  setGifOpen,
   handleKeyDownDelete,
-  videoLoading,
+  mediaLoading,
   handleLensSignIn,
-  referral,
-  setLimit,
-  imageLoading,
-  mappedFeaturedFiles,
-  collectOpen,
   enabledCurrencies,
-  audienceDropDown,
-  audienceType,
-  setAudienceDropDown,
-  limitedDropDown,
-  limit,
-  postImagesDispatched,
-  setTimeLimit,
-  setReferral,
-  setAudienceType,
-  setCollectible,
-  setLimitedEdition,
-  setLimitedDropDown,
-  setCollectibleDropDown,
-  setCurrencyDropDown,
-  setEnabledCurrency,
-  timeLimit,
-  setTimeLimitDropDown,
-  timeLimitDropDown,
-  audienceTypes,
-  limitedEdition,
-  setValue,
-  chargeCollect,
-  enabledCurrency,
-  chargeCollectDropDown,
-  setChargeCollect,
-  setChargeCollectDropDown,
-  collectNotif,
-  collectible,
-  currencyDropDown,
-  collectibleDropDown,
   quickProfiles,
   searchProfiles,
   profilesFound,
@@ -97,174 +44,319 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   setProfilesFound,
   setProfilesOpenSearch,
   preElement,
-  handleImagePaste,
-  clientRendered,
   openMirrorChoice,
   setOpenMirrorChoice,
   lensProfile,
-  feedType,
-  profileType,
+  collect,
+  mirror,
+  like,
+  comment,
+  setOpenComment,
+  allPosts,
+  history,
+  mainPost,
+  interactionsLoading,
+  mainInteractionsLoading,
+  profileCollections,
+  profile,
+  commentsLoading,
+  hasMoreComments,
+  commentors,
+  fetchMoreComments,
+  setMediaLoading,
+  commentLoading,
+  postCollectGif,
+  mainPostLoading,
+  openMainMirrorChoice,
+  setMainOpenMirrorChoice,
+  setMainMediaLoading,
+  mainMediaLoading,
+  postsLoading,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col items-start justify-start gap-4 max-w-full">
       <div className="relative flex flex-col items-start justify-start gap-3 h-full w-full">
-        <div className="relative w-full h-fit flex flex-col sm:flex-row lg:flex-col stuck2:flex-row gap-3 sm:gap-10">
-          <div className="overflow-x-auto">
-            <QuickProfiles router={router} quickProfiles={quickProfiles} />
+        {(router?.asPath?.includes("profile=") ||
+          router?.asPath?.includes("post=")) && (
+          <div className="sticky z-0 w-full h-fit flex flex-row items-start justify-start mr-0 gap-2">
+            <div
+              className="relative w-fit h-fit flex items-start cursor-pointer justify-start"
+              onClick={() =>
+                router.push(
+                  router?.asPath?.includes("&profile=")
+                    ? router?.asPath.split("&profile=")[0]
+                    : router?.asPath.split("&post=")[0]
+                )
+              }
+            >
+              <BiHomeHeart color="white" size={18} />
+            </div>
+            <div
+              className="relative w-fit h-fit flex items-start cursor-pointer justify-start"
+              onClick={() => {
+                (history.includes("#chat") && history.includes("&profile=")) ||
+                history.includes("&post=")
+                  ? router.push("#chat?option=history")
+                  : router.back();
+              }}
+            >
+              <AiFillFastBackward color="white" size={20} />
+            </div>
           </div>
-          <div className="relative flex flex-col sm:flex-row lg:flex-col stuck2:flex-row gap-5 sm:gap-1 lg:gap-3 stuck2:gap-1 w-full sm:w-auto h-fit ml-auto sm:pt-0 pt-3">
-            <SuperCreator
-              dispatch={dispatch}
-              openConnectModal={openConnectModal}
-              address={address}
-              lensProfile={lensProfile}
-            />
-            <Search
-              searchProfiles={searchProfiles}
-              profilesFound={profilesFound}
-              profilesOpenSearch={profilesOpenSearch}
-              router={router}
-              fetchMoreSearch={fetchMoreSearch}
-              hasMoreSearch={hasMoreSearch}
-              setProfilesOpenSearch={setProfilesOpenSearch}
-              setProfilesFound={setProfilesFound}
-            />
-          </div>
-        </div>
-        <InfiniteScroll
-          height={"40rem"}
-          loader={""}
-          hasMore={hasMore}
-          next={fetchMore}
-          dataLength={feedDispatch?.length}
-          className={`relative row-start-1 w-full ml-auto h-full max-w-full overflow-y-scroll`}
-          style={{ color: "#131313", fontFamily: "Digi Reg" }}
-          scrollThreshold={0.9}
-          scrollableTarget={"scrollableDiv"}
-        >
-          <div className="w-full h-full relative flex flex-col gap-4 pb-3">
-            {feedDispatch?.map(
-              (publication: Post | Quote | Mirror, index: number) => {
+        )}
+        {router?.asPath?.includes("profile=") ? (
+          <Account
+            dispatch={dispatch}
+            profile={profile}
+            profileCollections={profileCollections}
+            router={router}
+          />
+        ) : (
+          !router?.asPath?.includes("&profile=") &&
+          !router.asPath?.includes("&post=") && (
+            <div className="relative w-full h-fit flex flex-col sm:flex-row lg:flex-col stuck2:flex-row gap-3 sm:gap-10">
+              <div className="overflow-x-auto">
+                <QuickProfiles router={router} quickProfiles={quickProfiles} />
+              </div>
+              <div className="relative flex flex-col sm:flex-row lg:flex-col stuck2:flex-row gap-5 sm:gap-1 lg:gap-3 stuck2:gap-1 w-full sm:w-auto h-fit ml-auto sm:pt-0 pt-3">
+                <SuperCreator
+                  dispatch={dispatch}
+                  openConnectModal={openConnectModal}
+                  address={address}
+                  lensProfile={lensProfile}
+                />
+                <Search
+                  searchProfiles={searchProfiles}
+                  profilesFound={profilesFound}
+                  profilesOpenSearch={profilesOpenSearch}
+                  router={router}
+                  fetchMoreSearch={fetchMoreSearch}
+                  hasMoreSearch={hasMoreSearch}
+                  setProfilesOpenSearch={setProfilesOpenSearch}
+                  setProfilesFound={setProfilesFound}
+                />
+              </div>
+            </div>
+          )
+        )}
+        {!router.asPath?.includes("&post=") ? (
+          postsLoading && allPosts?.length > 0 ? (
+            <div className="relative w-full h-auto flex flex-col gap-4 overflow-y-scroll">
+              {Array.from({ length: 30 }).map((_, index: number) => {
                 return (
                   <div
-                    className="relative w-full h-fit gap-2 flex flex-col"
                     key={index}
-                  >
-                    <FeedPublication
-                      profileType={profileType}
-                      feedType={feedType}
-                      dispatch={dispatch}
-                      publication={publication}
-                      hasCollected={reactionAmounts.hasCollected[index]}
-                      hasMirrored={reactionAmounts.hasMirrored[index]}
-                      hasReacted={reactionAmounts.hasLiked[index]}
-                      followerOnly={followerOnly[index]}
-                      collectPost={collectPost}
-                      mirrorPost={mirrorPost}
-                      reactPost={reactPost}
-                      address={address}
-                      index={index}
-                      openMirrorChoice={openMirrorChoice}
-                      setOpenMirrorChoice={setOpenMirrorChoice}
-                      mirrorLoading={mirrorLoading[index]}
-                      reactLoading={reactLoading[index]}
-                      collectLoading={collectLoading[index]}
-                      reactAmount={reactionAmounts.like[index]}
-                      mirrorAmount={reactionAmounts.mirror[index]}
-                      collectAmount={reactionAmounts.collect[index]}
-                      commentAmount={reactionAmounts.comment[index]}
-                      openComment={commentOpen}
-                      router={router}
-                    />
-                    {(publication?.__typename === "Mirror"
-                      ? publication?.mirrorOn?.id
-                      : publication?.id) === commentOpen && (
-                      <MakeComment
-                        commentPost={commentPost}
-                        commentDescription={commentDescription}
-                        textElement={textElement}
-                        handleCommentDescription={handleCommentDescription}
-                        commentLoading={commentLoading}
-                        caretCoord={caretCoord}
-                        mentionProfiles={mentionProfiles}
-                        profilesOpen={profilesOpen}
-                        handleMentionClick={handleMentionClick}
-                        handleGifSubmit={handleGifSubmit}
-                        handleGif={handleGif}
-                        results={results}
-                        handleSetGif={handleSetGif}
-                        gifOpen={gifOpen}
-                        setGifOpen={setGifOpen}
-                        handleKeyDownDelete={handleKeyDownDelete}
-                        handleLensSignIn={handleLensSignIn}
-                        openConnectModal={openConnectModal}
-                        handleRemoveImage={handleRemoveImage}
-                        address={address}
-                        lensProfile={lensProfile}
-                        videoLoading={videoLoading}
-                        uploadImages={uploadImages}
-                        uploadVideo={uploadVideo}
-                        imageLoading={imageLoading}
-                        mappedFeaturedFiles={mappedFeaturedFiles}
-                        collectOpen={collectOpen}
-                        enabledCurrencies={enabledCurrencies}
-                        audienceDropDown={audienceDropDown}
-                        audienceType={audienceType}
-                        setAudienceDropDown={setAudienceDropDown}
-                        setAudienceType={setAudienceType}
-                        value={value}
-                        setChargeCollect={setChargeCollect}
-                        setChargeCollectDropDown={setChargeCollectDropDown}
-                        setCollectible={setCollectible}
-                        setCollectibleDropDown={setCollectibleDropDown}
-                        setCurrencyDropDown={setCurrencyDropDown}
-                        setEnabledCurrency={setEnabledCurrency}
-                        setLimit={setLimit}
-                        setLimitedDropDown={setLimitedDropDown}
-                        setLimitedEdition={setLimitedEdition}
-                        setReferral={setReferral}
-                        setTimeLimit={setTimeLimit}
-                        setTimeLimitDropDown={setTimeLimitDropDown}
-                        setValue={setValue}
-                        enabledCurrency={enabledCurrency}
-                        chargeCollect={chargeCollect}
-                        chargeCollectDropDown={chargeCollectDropDown}
-                        limit={limit}
-                        limitedDropDown={limitedDropDown}
-                        limitedEdition={limitedEdition}
-                        timeLimit={timeLimit}
-                        timeLimitDropDown={timeLimitDropDown}
-                        audienceTypes={audienceTypes}
-                        referral={referral}
-                        collectNotif={collectNotif}
-                        collectible={collectible}
-                        collectibleDropDown={collectibleDropDown}
-                        commentId={commentOpen}
-                        currencyDropDown={currencyDropDown}
-                        dispatch={dispatch}
-                        postImagesDispatched={postImagesDispatched}
-                        preElement={preElement}
-                        handleImagePaste={handleImagePaste}
-                        clientRendered={clientRendered}
-                        canComment={
-                          publication?.__typename === "Mirror"
-                            ? publication?.mirrorOn?.operations?.canComment ===
-                              TriStateValue.No
-                              ? false
-                              : true
-                            : (publication as Post | Quote)?.operations
-                                ?.canComment === TriStateValue.No
-                            ? false
-                            : true
-                        }
-                      />
-                    )}
-                  </div>
+                    className="relative w-full h-60 rounded-md animate-pulse border border-white min-w-full opacity-70"
+                    id="staticLoad"
+                  ></div>
                 );
-              }
+              })}
+            </div>
+          ) : (
+            <InfiniteScroll
+              height={"40rem"}
+              loader={""}
+              hasMore={hasMore}
+              next={fetchMore}
+              dataLength={allPosts?.length}
+              className={`relative row-start-1 w-full ml-auto h-full max-w-full overflow-y-scroll`}
+              style={{ color: "#131313", fontFamily: "Digi Reg" }}
+              scrollThreshold={0.9}
+              scrollableTarget={"scrollableDiv"}
+            >
+              <div className="w-full h-full relative flex flex-col gap-4 pb-3">
+                {allPosts?.map(
+                  (publication: Post | Quote | Mirror, index: number) => {
+                    return (
+                      <div
+                        className="relative w-full h-fit gap-2 flex flex-col"
+                        key={index}
+                      >
+                        <FeedPublication
+                          main={false}
+                          setOpenComment={setOpenComment}
+                          dispatch={dispatch}
+                          publication={publication}
+                          collect={collect}
+                          mirror={mirror}
+                          like={like}
+                          interactionsLoading={interactionsLoading?.[index]}
+                          address={address}
+                          index={index}
+                          openMirrorChoice={openMirrorChoice}
+                          setOpenMirrorChoice={setOpenMirrorChoice}
+                          router={router}
+                        />
+                        {index === commentOpen && (
+                          <MakeComment
+                            id={
+                              publication?.__typename === "Mirror"
+                                ? publication?.mirrorOn?.id
+                                : publication?.id
+                            }
+                            postCollectGif={postCollectGif}
+                            index={index}
+                            enabledCurrencies={enabledCurrencies}
+                            setMediaLoading={setMediaLoading}
+                            mediaLoading={mediaLoading}
+                            comment={comment}
+                            commentDescription={commentDescription}
+                            textElement={textElement}
+                            handleCommentDescription={handleCommentDescription}
+                            commentLoading={
+                              interactionsLoading?.[index]?.comment
+                            }
+                            caretCoord={caretCoord}
+                            mentionProfiles={mentionProfiles}
+                            profilesOpen={profilesOpen}
+                            handleMentionClick={handleMentionClick}
+                            handleKeyDownDelete={handleKeyDownDelete}
+                            handleLensSignIn={handleLensSignIn}
+                            openConnectModal={openConnectModal}
+                            address={address}
+                            lensProfile={lensProfile}
+                            dispatch={dispatch}
+                            preElement={preElement}
+                          />
+                        )}
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+            </InfiniteScroll>
+          )
+        ) : mainPostLoading ? (
+          <div
+            className="relative w-full h-60 rounded-md animate-pulse border border-white min-w-full opacity-70"
+            id="staticLoad"
+          ></div>
+        ) : (
+          <>
+            <FeedPublication
+              dispatch={dispatch}
+              openMirrorChoice={openMainMirrorChoice}
+              setOpenMirrorChoice={setMainOpenMirrorChoice}
+              publication={mainPost!}
+              collect={collect}
+              mirror={mirror}
+              like={like}
+              setOpenComment={setOpenComment}
+              address={address}
+              index={0}
+              router={router}
+              main={true}
+              interactionsLoading={mainInteractionsLoading}
+            />
+            {0 === commentOpen && (
+              <MakeComment
+                id={mainPost?.id}
+                index={0}
+                postCollectGif={postCollectGif}
+                setMediaLoading={setMainMediaLoading}
+                mediaLoading={mainMediaLoading}
+                preElement={preElement}
+                comment={comment}
+                commentDescription={commentDescription}
+                textElement={textElement}
+                handleCommentDescription={handleCommentDescription}
+                commentLoading={mainInteractionsLoading?.comment}
+                caretCoord={caretCoord}
+                mentionProfiles={mentionProfiles}
+                profilesOpen={profilesOpen}
+                handleMentionClick={handleMentionClick}
+                handleKeyDownDelete={handleKeyDownDelete}
+                handleLensSignIn={handleLensSignIn}
+                openConnectModal={openConnectModal}
+                address={address}
+                lensProfile={lensProfile}
+                enabledCurrencies={enabledCurrencies}
+                dispatch={dispatch}
+                main={true}
+              />
             )}
-          </div>
-        </InfiniteScroll>
+            {commentsLoading && commentors?.length > 0 ? (
+              <div className="relative w-full h-auto flex flex-col gap-4 overflow-y-scroll">
+                {Array.from({ length: 1 }).map((_, index: number) => {
+                  return (
+                    <div
+                      key={index}
+                      className="relative w-full h-60 rounded-md animate-pulse border border-white min-w-full opacity-70"
+                      id="staticLoad"
+                    ></div>
+                  );
+                })}
+              </div>
+            ) : (
+              <InfiniteScroll
+                height={"20rem"}
+                loader={""}
+                hasMore={hasMoreComments}
+                next={fetchMoreComments}
+                dataLength={commentors?.length}
+                className={`relative w-full h-full max-w-full overflow-y-scroll grow`}
+                style={{ color: "#131313", fontFamily: "Digi Reg" }}
+                scrollThreshold={0.9}
+                scrollableTarget={"scrollableDiv"}
+              >
+                <div className="w-full h-full relative flex flex-col gap-4 pb-3 min-w-full">
+                  {commentors?.map((publication: Comment, index: number) => {
+                    return (
+                      <div
+                        className="relative w-full h-fit flex flex-col gap-2"
+                        key={index}
+                      >
+                        <FeedPublication
+                          dispatch={dispatch}
+                          openMirrorChoice={openMirrorChoice}
+                          setOpenMirrorChoice={setOpenMirrorChoice}
+                          publication={publication}
+                          collect={collect}
+                          mirror={mirror}
+                          like={like}
+                          address={address}
+                          index={index}
+                          router={router}
+                          main={false}
+                          setOpenComment={setOpenComment}
+                          interactionsLoading={interactionsLoading?.[index]}
+                        />
+                        {index + 1 === Number(commentOpen) + 1 && (
+                          <MakeComment
+                            id={publication?.id}
+                            index={index}
+                            mediaLoading={mediaLoading}
+                            setMediaLoading={setMediaLoading}
+                            postCollectGif={postCollectGif}
+                            comment={comment}
+                            preElement={preElement}
+                            commentDescription={commentDescription}
+                            textElement={textElement}
+                            handleCommentDescription={handleCommentDescription}
+                            commentLoading={
+                              interactionsLoading?.[index]?.comment
+                            }
+                            caretCoord={caretCoord}
+                            mentionProfiles={mentionProfiles}
+                            profilesOpen={profilesOpen}
+                            handleMentionClick={handleMentionClick}
+                            handleKeyDownDelete={handleKeyDownDelete}
+                            handleLensSignIn={handleLensSignIn}
+                            openConnectModal={openConnectModal}
+                            address={address}
+                            lensProfile={lensProfile}
+                            enabledCurrencies={enabledCurrencies}
+                            dispatch={dispatch}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </InfiniteScroll>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { BarProps } from "../../Collection/types/collection.types";
 import Auth from "@/components/Common/SideBar/modules/Auth";
 import SearchVending from "@/components/Common/Buttons/SearchVending";
 import Video from "@/components/Common/Video/modules/Video";
+import { Viewer } from "@/components/Common/Interactions/types/interactions.types";
 
 const Bar: FunctionComponent<BarProps> = ({
   router,
@@ -18,7 +19,6 @@ const Bar: FunctionComponent<BarProps> = ({
   handleSearchChoose,
   isLargeScreen,
   hasMore,
-  reactions,
   streamRef,
   formatTime,
   volume,
@@ -26,13 +26,9 @@ const Bar: FunctionComponent<BarProps> = ({
   volumeOpen,
   setVolumeOpen,
   handleHeart,
-  mirrorVideo,
-  collectVideo,
-  likeVideo,
-  mirrorLoading,
-  collectLoading,
-  likeLoading,
-  mainVideo,
+  mirror,
+  like,
+  collect,
   wrapperRef,
   progressRef,
   handleSeek,
@@ -41,7 +37,9 @@ const Bar: FunctionComponent<BarProps> = ({
   videosLoading,
   setVideosLoading,
   dispatch,
-  dispatchVideos,
+  handleLogout,
+  allVideos,
+  interactionsLoading,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit md:h-24 flex flex-col justify-start items-center bg-offBlack p-3 gap-3">
@@ -59,9 +57,8 @@ const Bar: FunctionComponent<BarProps> = ({
         {isLargeScreen && (
           <div className="relative w-full flex">
             <Video
-              viewer={"autograph"}
+              viewer={Viewer.Autograph}
               hasMore={hasMore}
-              reactions={reactions}
               streamRef={streamRef}
               formatTime={formatTime}
               volume={volume}
@@ -70,13 +67,11 @@ const Bar: FunctionComponent<BarProps> = ({
               volumeOpen={volumeOpen}
               setVolumeOpen={setVolumeOpen}
               handleHeart={handleHeart}
-              mirrorVideo={mirrorVideo}
-              collectVideo={collectVideo}
-              likeVideo={likeVideo}
-              mirrorLoading={mirrorLoading}
-              collectLoading={collectLoading}
-              likeLoading={likeLoading}
-              mainVideo={mainVideo}
+              mirror={mirror}
+              collect={collect}
+              like={like}
+              interactionsLoading={interactionsLoading}
+              allVideos={allVideos}
               wrapperRef={wrapperRef}
               progressRef={progressRef}
               handleSeek={handleSeek}
@@ -85,7 +80,6 @@ const Bar: FunctionComponent<BarProps> = ({
               videosLoading={videosLoading}
               setVideosLoading={setVideosLoading}
               dispatch={dispatch}
-              dispatchVideos={dispatchVideos}
             />
           </div>
         )}
@@ -98,7 +92,7 @@ const Bar: FunctionComponent<BarProps> = ({
             mainPage={true}
           />
           <Auth
-          router={router}
+            handleLogout={handleLogout}
             connected={connected}
             openConnectModal={openConnectModal}
             handleLensSignIn={handleLensSignIn}
@@ -128,9 +122,8 @@ const Bar: FunctionComponent<BarProps> = ({
       {!isLargeScreen && (
         <div className="relative w-full flex">
           <Video
-            viewer={"autograph"}
+            viewer={Viewer.Autograph}
             hasMore={hasMore}
-            reactions={reactions}
             streamRef={streamRef}
             formatTime={formatTime}
             volume={volume}
@@ -138,13 +131,10 @@ const Bar: FunctionComponent<BarProps> = ({
             volumeOpen={volumeOpen}
             setVolumeOpen={setVolumeOpen}
             handleHeart={handleHeart}
-            mirrorVideo={mirrorVideo}
-            collectVideo={collectVideo}
-            likeVideo={likeVideo}
-            mirrorLoading={mirrorLoading}
-            collectLoading={collectLoading}
-            likeLoading={likeLoading}
-            mainVideo={mainVideo}
+            mirror={mirror}
+            collect={collect}
+            like={like}
+            allVideos={allVideos}
             wrapperRef={wrapperRef}
             progressRef={progressRef}
             handleSeek={handleSeek}
@@ -153,7 +143,7 @@ const Bar: FunctionComponent<BarProps> = ({
             videosLoading={videosLoading}
             setVideosLoading={setVideosLoading}
             dispatch={dispatch}
-            dispatchVideos={dispatchVideos}
+            interactionsLoading={interactionsLoading}
             lensProfile={lensProfile}
           />
         </div>
@@ -167,12 +157,12 @@ const Bar: FunctionComponent<BarProps> = ({
           mainPage={true}
         />
         <Auth
-          router={router}
           connected={connected}
           openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
           profile={lensProfile}
           mainPage={true}
+          handleLogout={handleLogout}
         />
       </div>
     </div>

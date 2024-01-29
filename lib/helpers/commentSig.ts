@@ -12,6 +12,9 @@ import { polygon } from "viem/chains";
 import { PublicClient, WalletClient } from "viem";
 import handleIndexCheck from "./handleIndexCheck";
 import { AnyAction, Dispatch } from "redux";
+import cleanCollect from "./cleanCollect";
+import validateMetadata from "@/graphql/lens/mutations/validate";
+import { setModal } from "@/redux/reducers/modalSlice";
 
 const commentSig = async (
   commentOn: string,
@@ -24,6 +27,40 @@ const commentSig = async (
   clearComment: () => void
 ) => {
   try {
+    if (
+      openActionModules &&
+      openActionModules?.[0]?.hasOwnProperty("collectOpenAction") &&
+      openActionModules?.[0]?.collectOpenAction?.hasOwnProperty(
+        "simpleCollectOpenAction"
+      )
+    ) {
+      openActionModules = cleanCollect(openActionModules);
+    } else {
+      openActionModules = [
+        {
+          collectOpenAction: {
+            simpleCollectOpenAction: {
+              followerOnly: false,
+            },
+          },
+        },
+      ];
+    }
+
+    const metadata = await validateMetadata({
+      rawURI: contentURI,
+    });
+
+    if (!metadata?.data?.validatePublicationMetadata.valid) {
+      dispatch(
+        setModal({
+          actionOpen: true,
+          actionMessage: "Something went wrong. Try again?",
+        })
+      );
+      return;
+    }
+
     const result = await createCommentTypedData({
       commentOn,
       contentURI,

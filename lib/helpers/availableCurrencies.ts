@@ -1,22 +1,17 @@
-import { Erc20, LimitType } from "@/components/Home/types/generated";
+import { LimitType } from "@/components/Home/types/generated";
 import getEnabledCurrencies from "@/graphql/lens/queries/enabledCurrencies";
+import { setEnabledCurrenciesRedux } from "@/redux/reducers/enabledCurrenciesSlice";
+import { AnyAction, Dispatch } from "redux";
 
 const availableCurrencies = async (
-  setEnabledCurrencies: (e: Erc20[]) => void,
-  setEnabledCurrency: (e: string) => void,
-  presetCurrency?: string
+  dispatch: Dispatch<AnyAction>
 ): Promise<void> => {
   try {
     const response = await getEnabledCurrencies({
       limit: LimitType.TwentyFive,
     });
     if (response && response.data) {
-      setEnabledCurrencies(response.data.currencies.items);
-      setEnabledCurrency(
-        presetCurrency
-          ? presetCurrency
-          : response.data.currencies.items[0]?.symbol
-      );
+      dispatch(setEnabledCurrenciesRedux(response.data.currencies.items));
     }
   } catch (err: any) {
     console.error(err.message);

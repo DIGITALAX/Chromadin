@@ -4,7 +4,6 @@ import { FunctionComponent } from "react";
 import { PiesProps } from "../types/sampler.types";
 
 const Pies: FunctionComponent<PiesProps> = ({
-  topAccountsFollowed,
   piesRedux,
   piesLoading,
 }): JSX.Element => {
@@ -15,11 +14,7 @@ const Pies: FunctionComponent<PiesProps> = ({
       </div>
       <div className="relative grid grid-cols-2 galaxy:grid-cols-3 preG:grid-cols-4 gap-3 overflow-y-scroll h-fit w-full place-self-center">
         {Array.from({ length: 12 }).map((_, index: number) => {
-          const percentage = Number(
-            (topAccountsFollowed.length < 1 ? piesRedux : topAccountsFollowed)[
-              index
-            ]?.percentage || 0
-          );
+          const percentage = Number(piesRedux?.[index]?.percentage || 0);
           const numBars =
             Math.ceil(percentage / 5) > 15 ? 15 : Math.ceil(percentage / 5);
           return (
@@ -28,7 +23,7 @@ const Pies: FunctionComponent<PiesProps> = ({
               key={index}
               onClick={() =>
                 window.open(
-                  `https://www.chromadin.xyz/#chat?option=history&profile=${piesRedux[index]?.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`
+                  `https://www.chromadin.xyz/#chat?option=history&profile=${piesRedux[index]?.handle}`
                 )
               }
             >
@@ -49,24 +44,13 @@ const Pies: FunctionComponent<PiesProps> = ({
                 ))}
               </div>
               <div className="relative w-fit h-fit flex items-center justify-center text-center text-xxs font-geom pt-1">
-                {
-                  (topAccountsFollowed.length < 1
-                    ? piesRedux
-                    : topAccountsFollowed)[index]?.percentage
-                }
-                %
+                {piesRedux?.[index]?.percentage}%
               </div>
               <div className="relative w-fit h-fit flex items-center justify-center text-center text-xs cursor-pointer">
                 @
-                {(topAccountsFollowed.length < 1
-                  ? piesRedux
-                  : topAccountsFollowed)[index]?.handle?.length > 13
-                  ? (topAccountsFollowed.length < 1
-                      ? piesRedux
-                      : topAccountsFollowed)[index]?.handle.slice(0, 11) + "..."
-                  : (topAccountsFollowed.length < 1
-                      ? piesRedux
-                      : topAccountsFollowed)[index]?.handle?.suggestedFormatted?.localName?.split("@")?.[1]}
+                {piesRedux?.[index]?.handle?.length > 13
+                  ? piesRedux?.[index]?.handle.slice(0, 11) + "..."
+                  : piesRedux?.[index]?.handle}
               </div>
             </div>
           );

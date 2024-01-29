@@ -12,22 +12,12 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
   router,
 }): JSX.Element => {
   const dispatch = useDispatch();
-  const dispatchCollections = useSelector(
-    (state: RootState) => state.app.collectionsReducer.value
-  );
-  const quickProfiles = useSelector(
-    (state: RootState) => state.app.quickProfilesReducer.value
-  );
-  const hasMoreCollections = useSelector(
-    (state: RootState) => state.app.hasMoreCollectionReducer.value
+  const collectionInfo = useSelector(
+    (state: RootState) => state.app.collectionInfoReducer
   );
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
-  const paginated = useSelector(
-    (state: RootState) => state.app.collectionPaginatedReducer
-  );
-
   const {
     moveBackward,
     moveForward,
@@ -35,20 +25,12 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
     moshArray,
     moshVideoRef,
     currentVideoIndex,
-  } = useDrops(dispatchCollections);
+  } = useDrops(collectionInfo?.collections);
   const {
     collectionsLoading,
     handleGetMoreCollections,
     moreCollectionsLoading,
-  } = useDrop(
-    router,
-    dispatch,
-    dispatchCollections,
-    paginated,
-    hasMoreCollections,
-    quickProfiles,
-    lensProfile
-  );
+  } = useDrop(router, dispatch, collectionInfo, lensProfile);
   return (
     <div className="relative w-full h-fit preG:h-60 flex flex-row items-center md:pt-0 pt-6">
       <div className="relative w-[80%] h-full flex flex-col">
@@ -65,7 +47,7 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
               className="flex cursor-pointer active:scale-95"
               onClick={async () => {
                 if (moreCollectionsLoading) return;
-                if (hasMoreCollections && currentIndex === 0) {
+                if (collectionInfo?.hasMore && currentIndex === 0) {
                   await handleGetMoreCollections();
                 }
                 moveBackward();
@@ -89,8 +71,8 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
               onClick={async () => {
                 if (moreCollectionsLoading) return;
                 if (
-                  hasMoreCollections &&
-                  currentIndex === dispatchCollections.length - 6
+                  collectionInfo?.hasMore &&
+                  currentIndex === collectionInfo?.collections?.length - 6
                 ) {
                   await handleGetMoreCollections();
                 }
@@ -102,14 +84,12 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
         </div>
         <div className="relative w-full h-px flex" id="raincode"></div>
         <Drops
-          collections={[
-            ...dispatchCollections!?.slice(currentIndex),
-            ...dispatchCollections!?.slice(0, currentIndex),
-          ]}
+          collectionInfo={collectionInfo}
           dispatch={dispatch}
           collectionsLoading={collectionsLoading}
           router={router}
           moreCollectionsLoading={moreCollectionsLoading}
+          currentIndex={currentIndex}
         />
       </div>
       <div

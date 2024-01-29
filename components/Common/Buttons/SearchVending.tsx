@@ -5,6 +5,7 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
 import { Profile } from "@/components/Home/types/generated";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const SearchVending: FunctionComponent<SearchVendingProps> = ({
   handleSearch,
@@ -61,6 +62,7 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
                           layout="fill"
                           objectFit="cover"
                           draggable={false}
+                          onError={(e) => handleImageError(e)}
                         />
                       ) : (
                         <Image

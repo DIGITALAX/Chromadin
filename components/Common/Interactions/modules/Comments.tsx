@@ -9,9 +9,6 @@ import { CommentsProps } from "../types/interactions.types";
 import descriptionRegex from "@/lib/helpers/descriptionRegex";
 import { AiFillFastBackward, AiOutlineLoading } from "react-icons/ai";
 import ReactPlayer from "react-player";
-import { setPurchase } from "@/redux/reducers/purchaseSlice";
-import { setFollowerOnly } from "@/redux/reducers/followerOnlySlice";
-import { setSecondaryComment } from "@/redux/reducers/secondaryCommentSlice";
 import {
   Comment,
   ImageMetadataV3,
@@ -20,23 +17,26 @@ import {
   TextOnlyMetadataV3,
   VideoMetadataV3,
 } from "@/components/Home/types/generated";
+import { setImageViewer } from "@/redux/reducers/imageViewerSlice";
+import { setFollowCollect } from "@/redux/reducers/followCollectSlice";
+import handleImageError from "@/lib/helpers/handleImageError";
+import openActionCheck from "@/lib/helpers/openActionCheck";
 
 const Comments: FunctionComponent<CommentsProps> = ({
   commentors,
   video,
   getMorePostComments,
-  commentsLoading,
   hasMoreComments,
-  mirrorCommentLoading,
-  likeCommentLoading,
-  collectCommentLoading,
-  mirrorComment,
-  collectComment,
-  likeComment,
+  mirror,
+  like,
+  collect,
   dispatch,
   lensProfile,
-  commentId,
   router,
+  setSecondaryComment,
+  secondaryComment,
+  interactionsLoading,
+  commentsLoading,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col bg-verde">
@@ -79,13 +79,11 @@ const Comments: FunctionComponent<CommentsProps> = ({
         </div>
       </div>
       <div className="relative w-full h-[15rem] xl:h-[27.7rem] border-white border bg-offBlack overflow-y-scroll">
-        {commentId !== "" && (
+        {secondaryComment !== "" && (
           <div className="sticky z-0 w-full h-10 flex flex-col items-center justify-start px-3 bg-offBlack">
             <div
               className="relative w-full h-full flex items-center cursor-pointer"
-              onClick={() => {
-                dispatch(setSecondaryComment(""));
-              }}
+              onClick={() => setSecondaryComment("")}
             >
               <AiFillFastBackward color="white" size={20} />
             </div>
@@ -98,7 +96,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
         ) : !commentsLoading && commentors?.length < 1 ? (
           <div className="relative text-white font-arcade w-full h-full justify-center items-center py-3 flex text-center">
             <div className="relative w-3/4 h-full items-start justify-center flex">
-              {commentId !== ""
+              {secondaryComment !== ""
                 ? "Reply to this comment in the message box"
                 : "Be the first to comment on this stream :)"}
             </div>
@@ -127,7 +125,11 @@ const Comments: FunctionComponent<CommentsProps> = ({
                         className="relative w-fit h-full flex items-start justify-start cursor-pointer"
                         onClick={() => {
                           router.push(
-                            `https://www.chromadin.xyz/#chat?option=history&profile=${comment?.by?.handle?.suggestedFormatted?.localName?.split("@")?.[1]}`
+                            `https://www.chromadin.xyz/#chat?option=history&profile=${
+                              comment?.by?.handle?.suggestedFormatted?.localName?.split(
+                                "@"
+                              )?.[1]
+                            }`
                           );
                         }}
                       >
@@ -143,6 +145,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                               className="relative w-full h-full flex"
                               src={profileImage}
                               draggable={false}
+                              onError={(e) => handleImageError(e)}
                             />
                           )}
                         </div>
@@ -172,39 +175,56 @@ const Comments: FunctionComponent<CommentsProps> = ({
                               ),
                             }}
                           ></div>
-                          <div className="relative w-44 h-fit overflow-x-scroll grid grid-flow-col auto-cols-auto gap-3 z-10">
-                            {(
-                              comment?.metadata as ImageMetadataV3
-                            )?.attachments?.map(
+                          <div className="relative w-44 h-fit overflow-x-scroll grid grid-flow-col auto-cols-auto gap-3 z-1">
+                            {[
+                              (comment?.metadata as ImageMetadataV3)?.asset,
+                              ...((comment?.metadata as ImageMetadataV3)
+                                ?.attachments || []),
+                            ]?.map(
                               (
                                 media: PublicationMetadataMedia,
-                                index: number
+                                indexTwo: number
                               ) => {
                                 let formattedImageURL: string;
+
                                 const mediaType =
-                                  media.__typename ===
+                                  media?.__typename ===
                                   "PublicationMetadataMediaImage"
                                     ? media?.image
-                                    : media.__typename ===
+                                    : media?.__typename ===
                                       "PublicationMetadataMediaVideo"
                                     ? media?.video
                                     : undefined;
                                 if (mediaType) {
-                                  formattedImageURL = mediaType.optimized?.uri
-                                    ? mediaType.optimized?.uri
-                                    : mediaType?.raw?.uri?.includes("ipfs://")
-                                    ? `${INFURA_GATEWAY}/ipfs/${
-                                        mediaType?.raw?.uri.split("ipfs://")[1]
-                                      }`
-                                    : mediaType?.raw?.uri;
+                                  formattedImageURL =
+                                    mediaType?.raw?.uri?.includes("ipfs://")
+                                      ? `${INFURA_GATEWAY}/ipfs/${
+                                          mediaType?.raw?.uri.split(
+                                            "ipfs://"
+                                          )[1]
+                                        }`
+                                      : mediaType?.raw?.uri;
                                 } else {
                                   return;
                                 }
 
                                 return (
                                   <div
-                                    key={index}
-                                    className="relative w-24 h-24 grid grid-flow-col auto-cols-auto"
+                                    key={indexTwo}
+                                    className="relative w-24 h-24 grid grid-flow-col auto-cols-auto cursor-pointer"
+                                    onClick={() =>
+                                      dispatch(
+                                        setImageViewer({
+                                          actionValue: true,
+                                          actionImage: formattedImageURL,
+                                          actionType:
+                                            media.__typename ===
+                                            "PublicationMetadataMediaImage"
+                                              ? "image/png"
+                                              : "video/png",
+                                        })
+                                      )
+                                    }
                                   >
                                     {formattedImageURL &&
                                       ((
@@ -219,6 +239,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                                           objectFit="cover"
                                           draggable={false}
                                           className="rounded-lg"
+                                          onError={(e) => handleImageError(e)}
                                         />
                                       ) : formattedImageURL.includes(
                                           "index"
@@ -265,173 +286,162 @@ const Comments: FunctionComponent<CommentsProps> = ({
                         </div>
                       </div>
                       <div className="relative grid grid-rows-2 w-full h-full gap-2 items-end justify-end flex-wrap">
-                        <div className="relative w-full h-full grid grid-cols-2 gap-2 items-center justify-end">
-                          <div
-                            className={`relative w-full h-full grid grid-flow-col auto-cols-auto items-center justify-end flex-row gap-2 ${
-                              lensProfile && "cursor-pointer"
-                            }`}
-                            onClick={() => likeComment(comment?.id)}
-                          >
-                            {likeCommentLoading[index] ? (
-                              <AiOutlineLoading
-                                size={9}
-                                color="white"
-                                className={`${
-                                  likeCommentLoading?.[index] && "animate-spin"
-                                }
-                                `}
-                              />
-                            ) : commentors?.[index]?.operations?.hasReacted ? (
-                              <Image
-                                src={`${INFURA_GATEWAY}/ipfs/Qmc3KCKWRgN8iKwwAPM5pYkAYNeVwWu3moa5RDMDTBV6ZS`}
-                                width={12}
-                                height={12}
-                                alt="mirror"
-                                draggable={false}
-                              />
-                            ) : (
-                              <Image
-                                src={`${INFURA_GATEWAY}/ipfs/QmSX1Y5cKp8p53jv2CnfQBuhu3dgLANjZMTyAMKtgFtvV6`}
-                                width={12}
-                                height={12}
-                                alt="backward"
-                                draggable={false}
-                              />
-                            )}
-                            <div className="relative w-fit h-fit font-arcade text-xs text-white flex">
-                              {comment?.stats?.reactions}
-                            </div>
-                          </div>
-                          <div
-                            className={`relative w-full h-full grid grid-flow-col auto-cols-auto items-center justify-end flex-row gap-2 cursor-pointer`}
-                            onClick={() =>
-                              dispatch(setSecondaryComment(comment?.id))
-                            }
-                          >
-                            <Image
-                              src={`${INFURA_GATEWAY}/ipfs/QmeuR9Fzv8QF9R6ntjGKB78GteQgmEcXhBfVPhsTyWbumA`}
-                              width={12}
-                              height={12}
-                              alt="backward"
-                              draggable={false}
-                            />
-                            <div className="relative w-fit h-fit font-arcade text-xs text-white flex">
-                              {comment?.stats?.comments}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="relative w-full h-full grid grid-cols-2 gap-2 items-center justify-end">
-                          <div
-                            className={`relative w-full h-full grid grid-flow-col auto-cols-auto items-center justify-end flex-row gap-2 ${
-                              comment?.openActionModules?.[0]?.__typename ===
-                                "SimpleCollectOpenActionSettings" &&
-                              lensProfile &&
-                              "cursor-pointer"
-                            }`}
-                            onClick={
-                              comment?.openActionModules?.[0]?.__typename ===
-                              "SimpleCollectOpenActionSettings"
-                                ? Number(
+                        {[
+                          {
+                            function: () =>
+                              like(
+                                comment?.id,
+                                comment?.operations?.hasReacted!,
+                                index
+                              ),
+                            loader: interactionsLoading?.[index]?.like,
+                            responded:
+                              commentors?.[index]?.operations?.hasReacted,
+                            amount: commentors?.[index]?.stats?.reactions,
+                            image:
+                              "QmSX1Y5cKp8p53jv2CnfQBuhu3dgLANjZMTyAMKtgFtvV6",
+                            imageResponded:
+                              "Qmc3KCKWRgN8iKwwAPM5pYkAYNeVwWu3moa5RDMDTBV6ZS",
+                          },
+                          {
+                            function: () => mirror(comment?.id, index),
+                            loader: interactionsLoading?.[index]?.mirror,
+                            responded:
+                              commentors?.[index]?.operations?.hasMirrored,
+                            amount: commentors?.[index]?.stats?.mirrors,
+                            image:
+                              "QmXZi8e6UQaXm3BMMdsAUTnxoQSEr97nvuc19v7kBAgFsY",
+                            imageResponded:
+                              "QmcMNSnbKvUfx3B3iHBd9deZCDf7E4J8W6UtyNer3xoMsB",
+                          },
+                          {
+                            function: () =>
+                              openActionCheck(
+                                comment?.openActionModules?.[0]?.contract
+                                  ?.address
+                              )
+                                ? router.push(
+                                    `/autograph/${
+                                      comment?.by?.handle?.suggestedFormatted?.localName?.split(
+                                        "@"
+                                      )?.[1]
+                                    }/collection/${(
+                                      comment?.metadata as ImageMetadataV3
+                                    )?.title?.replaceAll(" ", "_")}`
+                                  )
+                                : comment?.openActionModules?.[0]
+                                    ?.__typename ===
+                                  "SimpleCollectOpenActionSettings"
+                                ? (Number(
                                     comment.openActionModules[0]?.amount?.value
-                                  ) > 0 &&
+                                  ) == 0 ||
+                                    !Number(
+                                      comment.openActionModules[0]?.amount
+                                        ?.value
+                                    )) &&
                                   (!comment.openActionModules[0]
                                     ?.followerOnly ||
                                     (comment.openActionModules[0]
                                       ?.followerOnly &&
-                                      lensProfile?.operations?.isFollowedByMe))
-                                  ? () => collectComment(comment?.id)
+                                      lensProfile?.operations?.isFollowedByMe
+                                        ?.value))
+                                  ? () =>
+                                      collect(
+                                        comment?.id,
+                                        comment?.openActionModules?.[0]?.type!,
+                                        index
+                                      )
                                   : comment?.openActionModules[0]
                                       ?.followerOnly &&
                                     !lensProfile?.operations?.isFollowedByMe
+                                      ?.value
                                   ? () =>
                                       dispatch(
-                                        setFollowerOnly({
-                                          actionOpen: true,
-                                          actionId: comment?.id,
-                                          actionFollowerId: comment?.by?.id,
-                                          actionIndex: index,
+                                        setFollowCollect({
+                                          actionType: "follow",
+                                          actionFollower: comment?.by,
                                         })
                                       )
                                   : () =>
                                       dispatch(
-                                        setPurchase({
-                                          actionOpen: true,
-                                          actionId: comment?.id,
-                                          actionIndex: index,
+                                        setFollowCollect({
+                                          actionType: "collect",
+                                          actionCollect: {
+                                            id: comment?.id,
+                                            stats:
+                                              comment?.stats.countOpenActions,
+                                            item: comment
+                                              ?.openActionModules?.[0],
+                                          },
                                         })
                                       )
-                                : () => {}
-                            }
-                          >
-                            {collectCommentLoading[index] ? (
-                              <AiOutlineLoading
-                                size={9}
-                                color="white"
-                                className={`${
-                                  collectCommentLoading?.[index] &&
-                                  "animate-spin"
-                                }
-                                `}
-                              />
-                            ) : comment?.operations?.actedOn ? (
-                              <Image
-                                src={`${INFURA_GATEWAY}/ipfs/QmXG1mnHdBDXMzMZ9t1wE1Tqo8DRXQ1oNLUxpETdUw17HU`}
-                                width={12}
-                                height={12}
-                                alt="collect"
-                                draggable={false}
-                              />
-                            ) : (
-                              <Image
-                                src={`${INFURA_GATEWAY}/ipfs/QmRGf1cz8h9bdw9VKp9zYXZoDfy15nRA1fKc7ARhxnRPwr`}
-                                width={12}
-                                height={12}
-                                alt="collect"
-                                draggable={false}
-                              />
-                            )}
-                            <div className="relative w-fit h-fit font-arcade text-xs text-white">
-                              {comment?.stats?.countOpenActions}
-                            </div>
-                          </div>
-                          <div
-                            className={`relative w-full h-full grid grid-flow-col auto-cols-auto items-center justify-end flex-row gap-2 ${
-                              lensProfile && "cursor-pointer"
-                            }`}
-                            onClick={() => mirrorComment(comment?.id)}
-                          >
-                            {mirrorCommentLoading?.[index] ? (
-                              <AiOutlineLoading
-                                size={9}
-                                color="white"
-                                className={`${
-                                  mirrorCommentLoading?.[index] &&
-                                  "animate-spin"
-                                }
-                                `}
-                              />
-                            ) : commentors?.[index]?.operations?.hasMirrored ? (
-                              <Image
-                                src={`${INFURA_GATEWAY}/ipfs/QmcMNSnbKvUfx3B3iHBd9deZCDf7E4J8W6UtyNer3xoMsB`}
-                                width={12}
-                                height={12}
-                                alt="mirror"
-                                draggable={false}
-                              />
-                            ) : (
-                              <Image
-                                src={`${INFURA_GATEWAY}/ipfs/QmXZi8e6UQaXm3BMMdsAUTnxoQSEr97nvuc19v7kBAgFsY`}
-                                width={12}
-                                height={12}
-                                alt="mirror"
-                                draggable={false}
-                              />
-                            )}
-                            <div className="relative w-fit h-fit font-arcade text-xs text-white">
-                              {comment?.stats?.mirrors}
-                            </div>
-                          </div>
-                        </div>
+                                : () => {},
+                            loader: interactionsLoading?.[index]?.collect,
+                            responded:
+                              commentors?.[index]?.operations?.hasActed?.value,
+                            amount:
+                              commentors?.[index]?.stats?.countOpenActions,
+                            image:
+                              "QmRGf1cz8h9bdw9VKp9zYXZoDfy15nRA1fKc7ARhxnRPwr",
+                            imageResponded:
+                              "QmXG1mnHdBDXMzMZ9t1wE1Tqo8DRXQ1oNLUxpETdUw17HU",
+                          },
+                          {
+                            function: () => setSecondaryComment(comment?.id),
+                            loader: interactionsLoading?.[index]?.comment,
+                            responded: false,
+                            amount: commentors?.[index]?.stats?.comments,
+                            image:
+                              "QmeuR9Fzv8QF9R6ntjGKB78GteQgmEcXhBfVPhsTyWbumA",
+                            imageResponded:
+                              "QmeuR9Fzv8QF9R6ntjGKB78GteQgmEcXhBfVPhsTyWbumA",
+                          },
+                        ]?.map(
+                          (
+                            item: {
+                              function: () => void;
+                              loader: boolean;
+                              responded: boolean;
+                              amount: number;
+                              image: string;
+                              imageResponded: string;
+                            },
+                            indexTwo
+                          ) => {
+                            return (
+                              <div
+                                key={indexTwo}
+                                className={`relative w-full h-full grid grid-flow-col auto-cols-auto items-center justify-end flex-row gap-2 ${
+                                  lensProfile && "cursor-pointer"
+                                }`}
+                                onClick={() => item.function()}
+                              >
+                                {item?.loader ? (
+                                  <AiOutlineLoading
+                                    size={9}
+                                    color="white"
+                                    className={"animate-spin"}
+                                  />
+                                ) : (
+                                  <Image
+                                    src={`${INFURA_GATEWAY}/ipfs/${
+                                      item?.responded
+                                        ? item?.imageResponded
+                                        : item?.image
+                                    }`}
+                                    width={12}
+                                    height={12}
+                                    alt="mirror"
+                                    draggable={false}
+                                  />
+                                )}
+                                <div className="relative w-fit h-fit font-arcade text-xs text-white flex">
+                                  {item?.amount}
+                                </div>
+                              </div>
+                            );
+                          }
+                        )}
                       </div>
                     </div>
                   );

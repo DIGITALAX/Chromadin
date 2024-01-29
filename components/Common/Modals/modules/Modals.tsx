@@ -1,36 +1,31 @@
 import { useDispatch, useSelector } from "react-redux";
 import IndexingModal from "./Indexer";
 import Collect from "./Collect";
-import Purchase from "./Purchase";
 import useControls from "../../Video/hooks/useControls";
 import { RootState } from "@/redux/store";
 import { useAccount } from "wagmi";
 import useConnect from "../../SideBar/hooks/useConnect";
-import FollowerOnly from "./FollowerOnly";
-import useFollowers from "../../Interactions/hooks/useFollowers";
+import useFollowCollect from "../../Interactions/hooks/useFollowCollect";
 import Claim from "./Claim";
-import ImageLarge from "./ImageLarge";
 import Error from "./Error";
 import Success from "./Success";
 import ImageViewerModal from "./ImageViewer";
 import Who from "./Who";
 import useWho from "../../Wavs/hooks/useWho";
-import useReactions from "../../Wavs/hooks/useReactions";
 import { NextRouter } from "next/router";
 import FullScreenVideo from "./FullScreenVideo";
 import { useRef } from "react";
 import FollowSuper from "./FollowSuper";
 import useSuperCreator from "../../Wavs/hooks/useSuperCreator";
 import Post from "./Post";
-import useCollectOptions from "../../NFT/hooks/useCollectOptions";
-import useImageUpload from "../../NFT/hooks/useImageUpload";
-import useMakePost from "../../Wavs/hooks/usePost";
-import IPFS from "./IPFS";
+import usePost from "../../Wavs/hooks/usePost";
 import useChannels from "../../SideBar/hooks/useChannels";
-import useAllPosts from "../../Wavs/hooks/useAllPosts";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
+import PostCollectGif from "./PostCollectGif";
+import FollowCollect from "./FollowCollect";
+import { Post as PostType } from "@/components/Home/types/generated";
 
 const Modals = ({ router }: { router: NextRouter }) => {
   const publicClient = createPublicClient({
@@ -40,12 +35,14 @@ const Modals = ({ router }: { router: NextRouter }) => {
     ),
   });
   const { address, isConnected } = useAccount();
-  const { openConnectModal } = useConnectModal();
+  const { openAccountModal } = useAccountModal();
+  const { openConnectModal, connectModalOpen } = useConnectModal();
   const dispatch = useDispatch();
   const videoRef = useRef<HTMLDivElement>(null);
   const quickProfiles = useSelector(
     (state: RootState) => state.app.quickProfilesReducer.value
   );
+  const who = useSelector((state: RootState) => state.app.whoReducer);
   const rain = useSelector((state: RootState) => state.app.rainReducer.value);
   const indexingModal = useSelector(
     (state: RootState) => state.app.indexModalReducer
@@ -53,78 +50,35 @@ const Modals = ({ router }: { router: NextRouter }) => {
   const collectModal = useSelector(
     (state: RootState) => state.app.modalReducer
   );
-  const purchaseModal = useSelector(
-    (state: RootState) => state.app.purchaseReducer
-  );
   const successModal = useSelector(
     (state: RootState) => state.app.successReducer
   );
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
-  );
-  const videoSync = useSelector(
-    (state: RootState) => state.app.videoSyncReducer
-  );
   const errorModal = useSelector((state: RootState) => state.app.errorReducer);
-  const ipfsModal = useSelector((state: RootState) => state.app.IPFSReducer);
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
-  const postImages = useSelector(
-    (state: RootState) => state.app.postImageReducer.value
+  const allVideos = useSelector(
+    (state: RootState) => state.app.channelsReducer
   );
-  const publicationImages = useSelector(
-    (state: RootState) => state.app.publicationImageReducer.value
+  const enabledCurrencies = useSelector(
+    (state: RootState) => state.app.enabledCurrenciesReducer.value
   );
-  const collectModuleValues = useSelector(
-    (state: RootState) => state.app.postCollectReducer
+  const followCollect = useSelector(
+    (state: RootState) => state.app.followCollectReducer
   );
-  const collectModuleType = useSelector(
-    (state: RootState) => state?.app?.collectValueTypeReducer?.type
-  );
-  const followersModal = useSelector(
-    (state: RootState) => state.app.followerOnlyReducer
-  );
-  const collectOpen = useSelector(
-    (state: RootState) => state.app.collectOpenReducer.value
+  const postCollectGif = useSelector(
+    (state: RootState) => state.app.postCollectGifReducer
   );
   const claimModal = useSelector(
     (state: RootState) => state.app.noHandleReducer
   );
-  const feedDispatch = useSelector(
-    (state: RootState) => state.app.feedReducer.value
-  );
-  const commentId = useSelector(
-    (state: RootState) => state.app.secondaryCommentReducer?.value
-  );
-  const seek = useSelector(
-    (state: RootState) => state.app.seekSecondReducer.seek
-  );
-  const reactId = useSelector(
-    (state: RootState) => state.app.reactIdReducer.value
+  const videoInfo = useSelector(
+    (state: RootState) => state.app.videoInfoReducer
   );
   const imageViewer = useSelector(
     (state: RootState) => state.app.imageViewerReducer
   );
-  const imageFeedViewer = useSelector(
-    (state: RootState) => state.app.imageFeedViewerReducer
-  );
-  const approvalArgs = useSelector(
-    (state: RootState) => state.app.approvalArgsReducer.args
-  );
-  const reaction = useSelector(
-    (state: RootState) => state.app.reactionStateReducer
-  );
-  const hasMore = useSelector(
-    (state: RootState) => state.app.hasMoreVideosReducer.value
-  );
-  const reactions = useSelector(
-    (state: RootState) => state.app.videoCountReducer
-  );
   const makePost = useSelector((state: RootState) => state.app.makePostReducer);
-  const dispatchVideos = useSelector(
-    (state: RootState) => state.app.channelsReducer.value
-  );
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer.data
   );
@@ -134,85 +88,53 @@ const Modals = ({ router }: { router: NextRouter }) => {
   const superFollow = useSelector(
     (state: RootState) => state.app.superFollowReducer
   );
-  const imageLoading = useSelector(
-    (state: RootState) => state.app.imageLoadingReducer.value
-  );
   const viewer = useSelector((state: RootState) => state.app.viewReducer.value);
   const {
-    profile,
-    followProfile,
-    followLoading,
     approved,
-    approveCurrency: approveFollowCurrency,
-    unfollowProfile,
-  } = useFollowers(
+    transactionLoading,
+    informationLoading,
+    handleCollect,
+    handleFollow,
+    approveSpend,
+    openMeasure,
+    setOpenMeasure,
+    handleGif,
+    gifsLoading,
+    handleUnfollow,
+  } = useFollowCollect(
     dispatch,
     address,
     publicClient,
-    approvalArgs,
-    lensProfile?.id,
-    followersModal
+    postCollectGif,
+    lensProfile,
+    followCollect
+  );
+  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
+    dispatch,
+    lensProfile,
+    allVideos,
+    fullScreenVideo,
+    videoInfo
   );
   const { handleLensSignIn, signInLoading } = useConnect(
     router,
     address,
     isConnected,
     dispatch,
-    collectOpen,
+    connectModalOpen,
     publicClient,
-    oracleData
+    oracleData,
+    openAccountModal,
+    enabledCurrencies
   );
-  const {
-    collectInfoLoading: controlsCollectInfoLoading,
-    approvalLoading,
-    collectCommentLoading,
-    approveCurrency,
-    collectVideo,
-    fullVideoRef,
-    wrapperRef,
-  } = useControls(
+  const { fullVideoRef, wrapperRef } = useControls(
     dispatch,
     address,
     publicClient,
-    purchaseModal,
-    seek,
-    approvalArgs,
-    mainVideo,
-    videoSync,
-    lensProfile,
     fullScreenVideo,
-    commentId,
-    indexingModal,
-    router
-  );
-  const {
-    videoLoading,
-    uploadImage,
-    uploadVideo,
-    handleRemoveImage,
-    mappedFeaturedFiles,
-    clientRendered,
-  } = useImageUpload(
-    dispatch,
-    viewer,
-    makePost?.value,
-    postImages,
-    publicationImages
-  );
-  const {
-    collectInfoLoading: purchaseInfoLoading,
-    approvalLoading: postApprovalLoading,
-    collectFeedLoading,
-    approveCurrency: postApproveCurrency,
-    collectPost,
-  } = useReactions(
-    publicClient,
-    dispatch,
-    address,
-    lensProfile,
-    feedDispatch,
-    approvalArgs,
-    purchaseModal
+    allVideos,
+    postCollectGif,
+    []
   );
   const {
     reacters,
@@ -227,13 +149,14 @@ const Modals = ({ router }: { router: NextRouter }) => {
     hasMoreReact,
     hasMoreCollect,
     hasMoreMirror,
-  } = useWho(reaction);
+  } = useWho(who);
   const { followSuper, superCreatorLoading, canvasRef } = useSuperCreator(
     publicClient,
     dispatch,
     address,
     rain,
-    quickProfiles
+    quickProfiles,
+    lensProfile
   );
   const {
     postDescription,
@@ -244,172 +167,66 @@ const Modals = ({ router }: { router: NextRouter }) => {
     mentionProfiles,
     profilesOpen,
     handleMentionClick,
-    handleGif,
-    handleGifSubmit,
-    handleSetGif,
-    results,
-    setGifOpen,
-    gifOpen,
     handleKeyDownDelete,
     handlePost,
     preElement,
-    handleImagePaste,
-  } = useMakePost(
-    address,
-    publicClient,
-    dispatch,
-    collectOpen,
-    collectModuleType,
-    publicationImages,
-    uploadImage
-  );
-  const {
-    collectNotif,
-    referral,
-    setCollectible,
-    collectibleDropDown,
-    setCollectibleDropDown,
-    collectible,
-    setAudienceDropDown,
-    audienceType,
-    audienceTypes,
-    chargeCollect,
-    limit,
-    limitedEdition,
-    audienceDropDown,
-    setAudienceType,
-    setTimeLimit,
-    timeLimit,
-    timeLimitDropDown,
-    setTimeLimitDropDown,
-    setLimitedEdition,
-    limitedDropDown,
-    setLimitedDropDown,
-    setReferral,
-    setLimit,
-    setChargeCollect,
-    setCurrencyDropDown,
-    chargeCollectDropDown,
-    setChargeCollectDropDown,
-    enabledCurrencies,
-    enabledCurrency,
-    currencyDropDown,
-    setEnabledCurrency,
-    value,
-    setValue,
-  } = useCollectOptions(dispatch, lensProfile, collectOpen);
-  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
-    dispatch,
-    mainVideo,
-    lensProfile,
-    dispatchVideos,
-    indexingModal?.message,
-    reactId,
-    videoSync,
-    reactions
-  );
+    mediaLoading,
+    setMediaLoading,
+  } = usePost(address, publicClient, dispatch, postCollectGif);
 
   return (
     <>
-      {fullScreenVideo.value && (
+      {fullScreenVideo.open && (
         <FullScreenVideo
           dispatch={dispatch}
-          mainVideo={mainVideo}
+          allVideos={allVideos}
           streamRef={fullVideoRef}
           wrapperRef={wrapperRef}
-          dispatchVideos={dispatchVideos}
-          videoSync={videoSync}
+          videoSync={fullScreenVideo}
           videoRef={videoRef}
           viewer={viewer}
-          hasMore={hasMore}
           fetchMoreVideos={fetchMoreVideos}
           videosLoading={videosLoading}
           setVideosLoading={setVideosLoading}
+          hasMore={videoInfo?.hasMore}
         />
       )}
-      {reaction.open && (
+      {who.open && (
         <Who
           accounts={
-            reaction.type === "heart"
+            who?.type === "heart"
               ? reacters
-              : reaction.type === "mirror"
+              : who?.type === "mirror"
               ? mirrorers
               : collectors
           }
           fetchMore={
-            reaction.type === "heart"
+            who?.type === "heart"
               ? getMorePostReactions
-              : reaction.type === "mirror"
+              : who?.type === "mirror"
               ? getMorePostMirrors
               : getMorePostCollects
           }
           loading={
-            reaction.type === "heart"
+            who?.type === "heart"
               ? reactInfoLoading
-              : reaction.type === "mirror"
+              : who?.type === "mirror"
               ? mirrorInfoLoading
               : collectInfoLoading
           }
           dispatch={dispatch}
           hasMore={
-            reaction.type === "heart"
+            who?.type === "heart"
               ? hasMoreReact
-              : reaction.type === "mirror"
+              : who?.type === "mirror"
               ? hasMoreMirror
               : hasMoreCollect
           }
-          type={
-            reaction.type === "heart" ? 0 : reaction.type === "collect" ? 1 : 2
-          }
+          type={who?.type === "heart" ? 0 : who?.type === "collect" ? 1 : 2}
           router={router}
         />
       )}
-      {purchaseModal?.open && (
-        <Purchase
-          dispatch={dispatch}
-          collectInfoLoading={
-            router.asPath?.includes("#chat")
-              ? purchaseInfoLoading
-              : controlsCollectInfoLoading
-          }
-          openConnectModal={openConnectModal}
-          approvalLoading={
-            router.asPath?.includes("#chat")
-              ? postApprovalLoading
-              : approvalLoading
-          }
-          address={address}
-          collectModuleValues={collectModuleValues}
-          lensProfile={lensProfile}
-          collectComment={
-            router.asPath?.includes("#chat") ? collectPost : collectVideo
-          }
-          collectLoading={
-            router.asPath?.includes("#chat")
-              ? collectFeedLoading[purchaseModal?.index!]
-              : collectCommentLoading[purchaseModal?.index!]
-          }
-          approveCurrency={
-            router.asPath?.includes("#chat")
-              ? postApproveCurrency
-              : approveCurrency
-          }
-          handleLensSignIn={handleLensSignIn}
-          commentId={purchaseModal?.id}
-        />
-      )}
-      {followersModal?.open && (
-        <FollowerOnly
-          profile={profile}
-          followProfile={followProfile}
-          followLoading={followLoading}
-          approved={approved}
-          approveCurrency={approveFollowCurrency}
-          dispatch={dispatch}
-          followDetails={followersModal}
-          unfollowProfile={unfollowProfile}
-        />
-      )}
+
       {collectModal?.open && <Collect message={collectModal?.message} />}
       {superFollow?.open && (
         <FollowSuper
@@ -422,16 +239,8 @@ const Modals = ({ router }: { router: NextRouter }) => {
           canvasRef={canvasRef}
         />
       )}
-      {imageViewer.value && (
-        <ImageLarge
-          mainImage={imageViewer.image}
-          dispatch={dispatch}
-          type={imageViewer.type}
-        />
-      )}
       {makePost.value && (
         <Post
-          clientRendered={clientRendered}
           handlePost={handlePost}
           dispatch={dispatch}
           openConnectModal={openConnectModal}
@@ -444,63 +253,16 @@ const Modals = ({ router }: { router: NextRouter }) => {
           mentionProfiles={mentionProfiles}
           profilesOpen={profilesOpen}
           handleMentionClick={handleMentionClick}
-          handleGifSubmit={handleGifSubmit}
-          handleGif={handleGif}
-          results={results}
-          handleSetGif={handleSetGif}
-          gifOpen={gifOpen}
-          setGifOpen={setGifOpen}
           handleKeyDownDelete={handleKeyDownDelete}
-          handleRemoveImage={handleRemoveImage}
           address={address}
           lensProfile={lensProfile}
-          videoLoading={videoLoading}
-          uploadImages={uploadImage}
-          uploadVideo={uploadVideo}
-          imageLoading={imageLoading}
-          mappedFeaturedFiles={mappedFeaturedFiles}
-          collectOpen={collectOpen}
-          enabledCurrencies={enabledCurrencies}
-          audienceDropDown={audienceDropDown}
-          audienceType={audienceType}
-          setAudienceDropDown={setAudienceDropDown}
-          setAudienceType={setAudienceType}
-          value={value}
-          quote={makePost.quote}
-          setChargeCollect={setChargeCollect}
-          setChargeCollectDropDown={setChargeCollectDropDown}
-          setCollectible={setCollectible}
-          setCollectibleDropDown={setCollectibleDropDown}
-          setCurrencyDropDown={setCurrencyDropDown}
-          setEnabledCurrency={setEnabledCurrency}
-          setLimit={setLimit}
-          setLimitedDropDown={setLimitedDropDown}
-          setLimitedEdition={setLimitedEdition}
-          setReferral={setReferral}
-          setTimeLimit={setTimeLimit}
-          setTimeLimitDropDown={setTimeLimitDropDown}
-          setValue={setValue}
-          enabledCurrency={enabledCurrency}
-          chargeCollect={chargeCollect}
-          chargeCollectDropDown={chargeCollectDropDown}
-          limit={limit}
-          limitedDropDown={limitedDropDown}
-          limitedEdition={limitedEdition}
-          timeLimit={timeLimit}
-          timeLimitDropDown={timeLimitDropDown}
-          audienceTypes={audienceTypes}
-          referral={referral}
-          collectNotif={collectNotif}
-          collectible={collectible}
-          collectibleDropDown={collectibleDropDown}
-          currencyDropDown={currencyDropDown}
-          postImagesDispatched={publicationImages}
+          postCollectGif={postCollectGif}
+          mediaLoading={mediaLoading}
+          setMediaLoading={setMediaLoading}
+          quote={makePost?.quote as PostType}
           preElement={preElement}
-          handleImagePaste={handleImagePaste}
         />
       )}
-      {errorModal.value && <Error />}
-      {ipfsModal.value && <IPFS />}
       {successModal.open && (
         <Success dispatch={dispatch} media={successModal.media} />
       )}
@@ -518,13 +280,40 @@ const Modals = ({ router }: { router: NextRouter }) => {
           lensProfile={lensProfile}
         />
       )}
-      {imageFeedViewer?.open && (
+      {imageViewer?.value && (
         <ImageViewerModal
-          image={imageFeedViewer.image}
-          type={imageFeedViewer.type}
+          image={imageViewer.image}
+          type={imageViewer.type}
           dispatch={dispatch}
         />
       )}
+      {followCollect?.type && (
+        <FollowCollect
+          handleUnfollow={handleUnfollow}
+          dispatch={dispatch}
+          type={followCollect?.type!}
+          collect={followCollect?.collect}
+          follower={followCollect?.follower}
+          handleCollect={handleCollect}
+          handleFollow={handleFollow}
+          informationLoading={informationLoading}
+          transactionLoading={transactionLoading}
+          approved={approved}
+          approveSpend={approveSpend}
+        />
+      )}
+      {postCollectGif?.type !== undefined && (
+        <PostCollectGif
+          dispatch={dispatch}
+          postCollectGif={postCollectGif}
+          openMeasure={openMeasure}
+          setOpenMeasure={setOpenMeasure}
+          availableCurrencies={enabledCurrencies}
+          searchGifLoading={gifsLoading}
+          handleGif={handleGif}
+        />
+      )}
+      {errorModal.value && <Error />}
     </>
   );
 };

@@ -4,15 +4,15 @@ import { FunctionComponent } from "react";
 import { PlayerProps } from "../types/controls.types";
 import dynamic from "next/dynamic";
 import FetchMoreLoading from "../../Loading/FetchMoreLoading";
+import { Viewer } from "../../Interactions/types/interactions.types";
 
 const Component = dynamic(() => import("./Component"), { ssr: false });
 
 const Player: FunctionComponent<PlayerProps> = ({
   streamRef,
-  mainVideo,
   volume,
   wrapperRef,
-  dispatchVideos,
+  allVideos,
   fullScreen,
   muted,
   videoSync,
@@ -28,16 +28,18 @@ const Player: FunctionComponent<PlayerProps> = ({
       className={`relative justify-center items-center flex ${
         fullScreen
           ? "w-full h-full"
-          : viewer === "sampler"
+          : viewer === Viewer.Sampler
           ? "w-0 h-0"
-          : viewer === "collect" || viewer === "chat" || viewer === "autograph"
+          : viewer === Viewer.Collect ||
+            viewer === Viewer.Chat ||
+            viewer === Viewer.Autograph
           ? "w-24 h-1/2"
           : "w-full h-[10rem] galaxy:h-[15rem] preG:h-[20rem] sm:h-[26rem] mid:h-[33rem]"
       }`}
-      key={mainVideo.local}
+      key={allVideos?.main?.local!}
       ref={wrapperRef}
     >
-      {viewer !== "sampler" && videoSync.heart && (
+      {viewer !== Viewer.Sampler && videoSync.heart && (
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmNPPsBttGAxvu6cX3gWT4cnFF8PMF9C55GgJUehGp3nCA`}
           layout="fill"
@@ -46,10 +48,10 @@ const Player: FunctionComponent<PlayerProps> = ({
           draggable={false}
         />
       )}
-      {videoSync.videosLoading && viewer !== "sampler" ? (
+      {videoSync.videosLoading && viewer !== Viewer.Sampler ? (
         <div
           className={`relative bg-offBlack flex flex-col items-center justify-center ${
-            viewer !== "collect" ? "w-full h-full" : "w-20 h-14"
+            viewer !== Viewer.Collect ? "w-full h-full" : "w-20 h-14"
           }`}
         >
           <FetchMoreLoading size="4" />
@@ -57,10 +59,9 @@ const Player: FunctionComponent<PlayerProps> = ({
       ) : (
         <Component
           streamRef={streamRef}
-          mainVideo={mainVideo}
+          allVideos={allVideos}
           isPlaying={videoSync.isPlaying}
           volume={volume}
-          dispatchVideos={dispatchVideos}
           muted={muted}
           videoSync={videoSync}
           dispatch={dispatch}

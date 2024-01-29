@@ -8,14 +8,7 @@ import { FunctionComponent } from "react";
 import { SamplerProps } from "../types/home.types";
 
 const Sampler: FunctionComponent<SamplerProps> = ({
-  rates,
-  stats,
-  pies,
-  graphs,
-  statsTitles,
   statsLoading,
-  topAccountsFollowed,
-  totalChanges,
   graphData,
   setCanvas,
   canvas,
@@ -35,28 +28,24 @@ const Sampler: FunctionComponent<SamplerProps> = ({
       <div className="relative flex flex-col p-4 gap-3" id="sampler">
         <div className="relative flex flex-row w-full h-fit mid:h-full gap-3 xl:flex-nowrap flex-wrap xl:overflow-y-visible overflow-y-scroll">
           <Graphs
-            graphData={graphData}
             graphLoading={statsLoading}
             canvas={canvas}
             setCanvas={setCanvas}
-            graphsRedux={graphs}
+            graphsRedux={graphData?.values?.graphs}
           />
           <div className="relative w-full xl:w-200 mid:h-fit xl:h-full flex flex-col gap-3">
             <Pies
-              topAccountsFollowed={topAccountsFollowed}
-              piesRedux={pies}
+              piesRedux={graphData?.values?.pies}
               piesLoading={statsLoading}
             />
             <Rates
-              totalChanges={totalChanges}
-              ratesRedux={rates}
+              ratesRedux={graphData?.values?.rates}
               ratesLoading={statsLoading}
             />
           </div>
         </div>
         <Stats
-          statsTitles={statsTitles}
-          statsRedux={stats}
+          statsRedux={graphData?.values?.stats}
           statsLoading={statsLoading}
         />
       </div>

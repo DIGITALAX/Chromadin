@@ -2,22 +2,21 @@ import { FunctionComponent } from "react";
 import { ChannelsProps } from "../types/sidebar.types";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
-import { setMainVideo } from "@/redux/reducers/mainVideoSlice";
 import { Post, VideoMetadataV3 } from "@/components/Home/types/generated";
 import json from "./../../../../public/videos/local.json";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { setChannelsRedux } from "@/redux/reducers/channelsSlice";
 
 const Channels: FunctionComponent<ChannelsProps> = ({
   dispatch,
   videoSync,
-  dispatchVideos,
+  allVideos,
   fetchMoreVideos,
   hasMore,
-  scrollHeight,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 lg:h-full flex flex-col overflow-y-scroll border border-white/80">
-      {videoSync.videosLoading ? (
+      {videoSync.videosLoading || allVideos?.channels?.length < 1 ? (
         <>
           {Array.from({ length: 10 }).map((_: any, index: number) => {
             return (
@@ -61,17 +60,21 @@ const Channels: FunctionComponent<ChannelsProps> = ({
           })}
         </>
       ) : (
-        <InfiniteScroll
-          next={fetchMoreVideos}
-          hasMore={hasMore}
-          height={scrollHeight}
-          loader={""}
-          dataLength={dispatchVideos.length}
-          className="relative w-full h-full overflow-y-scroll"
-          scrollThreshold={1}
-        >
-          {dispatchVideos?.length > 0 &&
-            dispatchVideos?.map((content: Post, index: number) => {
+        allVideos?.channels?.length > 0 && (
+          <InfiniteScroll
+            next={fetchMoreVideos}
+            hasMore={hasMore}
+            height={
+              typeof window !== "undefined" && window.innerWidth > 1024
+                ? "32rem"
+                : "27rem"
+            }
+            loader={""}
+            dataLength={allVideos?.channels?.length}
+            className="relative w-full h-full overflow-y-scroll"
+            scrollThreshold={0.8}
+          >
+            {allVideos?.channels?.map((content: Post, index: number) => {
               const metadata: VideoMetadataV3 =
                 content?.metadata as VideoMetadataV3;
               return (
@@ -80,12 +83,12 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                   key={index}
                   onClick={() =>
                     dispatch(
-                      setMainVideo({
-                        actionCollected: videoSync.collectedArray[index],
-                        actionLiked: videoSync.likedArray[index],
-                        actionMirrored: videoSync.mirroredArray[index],
-                        actionId: content?.id,
-                        actionLocal: `${json[index].link}`,
+                      setChannelsRedux({
+                        actionChannels: allVideos?.channels,
+                        actionMain: {
+                          video: content,
+                          local: `${json[index].link}`,
+                        },
                       })
                     )
                   }
@@ -138,7 +141,8 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                 </div>
               );
             })}
-        </InfiniteScroll>
+          </InfiniteScroll>
+        )
       )}
     </div>
   );

@@ -3,10 +3,9 @@ import { Post, Profile } from "@/components/Home/types/generated";
 import { NextRouter } from "next/dist/shared/lib/router/router";
 import { FormEvent, MouseEvent, Ref } from "react";
 import { AnyAction, Dispatch } from "redux";
-import { VideoCountState } from "@/redux/reducers/videoCountSlice";
 import ReactPlayer from "react-player";
-import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
-import { VideoSyncState } from "@/redux/reducers/videoSyncSlice";
+import { FullScreenVideoState } from "@/redux/reducers/fullScreenVideoSlice";
+import { ChannelsState } from "@/redux/reducers/channelsSlice";
 
 export type InDropProps = {
   autoCollection: Collection | undefined;
@@ -24,40 +23,42 @@ export type BarProps = {
   handleSearch: (e: FormEvent<Element>) => Promise<void>;
   searchOpen: boolean;
   searchResults: (Collection | Drop | Profile)[];
-  handleSearchChoose: (
-    chosen: Profile | Drop | Collection
-  ) => Promise<void>;
+  handleSearchChoose: (chosen: Profile | Drop | Collection) => Promise<void>;
   isLargeScreen: boolean;
-  videoSync: VideoSyncState;
+  videoSync: FullScreenVideoState;
   formatTime: (time: number) => string;
   volume: number;
   volumeOpen: boolean;
-  reactions: VideoCountState;
   setVolumeOpen: (volumeOpen: boolean) => void;
   handleVolumeChange: (e: FormEvent) => void;
   handleHeart: () => void;
-  mirrorVideo: () => Promise<void>;
-  likeVideo: () => Promise<void>;
-  collectVideo: () => Promise<void>;
-  mirrorLoading: boolean;
-  collectLoading: boolean;
-  likeLoading: boolean;
+  like: (id: string, hasReacted: boolean, index: number, main?: boolean) => Promise<void>;
+  collect: (
+    id: string,
+    type: string,
+    index: number,
+    main?: boolean
+  ) => Promise<void>;
+  mirror: (id: string, index: number, main?: boolean) => Promise<void>;
+  interactionsLoading: {
+    mirror: boolean;
+    collect: boolean;
+    like: boolean;
+    comment: boolean;
+  };
   progressRef: Ref<HTMLDivElement>;
   handleSeek: (
     e: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
   ) => void;
-  dispatchVideos: Post[];
   dispatch: Dispatch<AnyAction>;
   hasMore: boolean;
-  fetchMoreVideos: () => Promise<
-    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
-    | undefined
-  >;
+  fetchMoreVideos: () => Promise<Post[] | undefined>;
   videosLoading: boolean;
   setVideosLoading: (e: boolean) => void;
   streamRef: Ref<ReactPlayer>;
   wrapperRef: Ref<HTMLDivElement>;
-  mainVideo: MainVideoState;
+  handleLogout: () => Promise<void>;
+  allVideos: ChannelsState;
 };
 
 export type CheckoutProps = {

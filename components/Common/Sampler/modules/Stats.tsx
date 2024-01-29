@@ -5,13 +5,12 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 import FetchMoreLoading from "../../Loading/FetchMoreLoading";
 
 const Stats: FunctionComponent<StatsProps> = ({
-  statsTitles,
   statsRedux,
   statsLoading,
 }): JSX.Element => {
   return (
     <div className="w-full h-96 xl:h-full relative flex flex-row gap-3 overflow-x-scroll">
-      {(statsTitles.length < 1 ? statsRedux : statsTitles)
+      {statsRedux
         ?.map((innerArr) => innerArr[0])
         ?.map((statValue: string, indexOne: number) => {
           return (
@@ -37,7 +36,7 @@ const Stats: FunctionComponent<StatsProps> = ({
                         </div>
                       );
                     })
-                  : (!statsTitles?.[0]?.[1] ? statsRedux : statsTitles)
+                  : statsRedux
                       ?.map((innerArr) => innerArr[1])
                       [indexOne]?.map((value: any, indexTwo: number) => {
                         return (
@@ -49,9 +48,7 @@ const Stats: FunctionComponent<StatsProps> = ({
                                 indexOne === 4 || indexOne === 5
                                   ? `https://www.chromadin.xyz/#chat?option=history&post=${value?.publication_id}`
                                   : `https://www.chromadin.xyz/#chat?option=history&profile=${
-                                      value?.handle?.suggestedFormatted?.localName?.split(
-                                        "@"
-                                      )?.[1]
+                                      value?.handle?.split("@")?.[1]
                                     }`
                               )
                             }
@@ -123,7 +120,7 @@ const Stats: FunctionComponent<StatsProps> = ({
                                     @
                                     {value?.handle?.length >= 12
                                       ? value?.handle?.slice(0, 9) + "..."
-                                      : value?.handle[0]}
+                                      : value?.handle}
                                   </div>
                                   <div className="relative text-moda justify-start w-full h-fit items-center">
                                     {indexOne === 0

@@ -8,11 +8,10 @@ import Player from "../../Video/modules/Player";
 
 const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
   dispatch,
-  mainVideo,
+  allVideos,
   videoRef,
   streamRef,
   wrapperRef,
-  dispatchVideos,
   videoSync,
   viewer,
   hasMore,
@@ -44,7 +43,19 @@ const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
           </div>
           <div
             className="close"
-            onClick={() => dispatch(setFullScreenVideo(false))}
+            onClick={() =>
+              dispatch(
+                setFullScreenVideo({
+                  actionOpen: false,
+                  actionHeart: videoSync.heart,
+                  actionDuration: videoSync.duration,
+                  actionCurrentTime: videoSync.currentTime,
+                  actionIsPlaying: videoSync.isPlaying,
+                  actionVideosLoading: videoSync.videosLoading,
+                  actionSeek: videoSync.seek,
+                })
+              )
+            }
           >
             <Image
               src={`${INFURA_GATEWAY}/ipfs/QmRtXzfqbJXXZ6fReUihpauh9nz6pmjUv5CKGm3oXquzh4`}
@@ -58,9 +69,8 @@ const FullScreenVideo: FunctionComponent<FullScreenVideoProps> = ({
         <div className="relative w-full h-full justify-self-end row-start-2 border border-offBlue col-start-1 rounded-md bg-black">
           <Player
             streamRef={streamRef}
-            mainVideo={mainVideo}
+            allVideos={allVideos}
             wrapperRef={wrapperRef}
-            dispatchVideos={dispatchVideos}
             fullScreen={true}
             muted={true}
             volume={0}

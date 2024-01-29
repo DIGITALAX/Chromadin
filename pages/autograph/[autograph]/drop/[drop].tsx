@@ -2,13 +2,14 @@ import useBar from "@/components/Autograph/Common/hooks/useBar";
 import Bar from "@/components/Autograph/Common/modules/Bar";
 import useAutoDrop from "@/components/Autograph/Drop/hooks/useAutoDrop";
 import AllDrops from "@/components/Autograph/Drop/modules/AllDrops";
+import NotFound from "@/components/Common/Loading/NotFound";
 import RouterChange from "@/components/Common/Loading/RouterChange";
 import useChannels from "@/components/Common/SideBar/hooks/useChannels";
 import useConnect from "@/components/Common/SideBar/hooks/useConnect";
 import useControls from "@/components/Common/Video/hooks/useControls";
 import useViewer from "@/components/Home/hooks/useViewer";
 import { RootState } from "@/redux/store";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { NextPage } from "next";
 import Head from "next/head";
 import { NextRouter } from "next/router";
@@ -27,47 +28,29 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   });
   const dispatch = useDispatch();
   const { address, isConnected } = useAccount();
+  const { openAccountModal } = useAccountModal();
   const { openConnectModal, connectModalOpen } = useConnectModal();
-  const commentId = useSelector(
-    (state: RootState) => state.app.secondaryCommentReducer.value
-  );
   const fullScreenVideo = useSelector(
     (state: RootState) => state.app.fullScreenVideoReducer
-  );
-  const videoSync = useSelector(
-    (state: RootState) => state.app.videoSyncReducer
-  );
-  const reactions = useSelector(
-    (state: RootState) => state.app.videoCountReducer
-  );
-  const index = useSelector((state: RootState) => state.app.indexModalReducer);
-  const reactId = useSelector(
-    (state: RootState) => state.app.reactIdReducer.value
-  );
-  const dispatchVideos = useSelector(
-    (state: RootState) => state.app.channelsReducer.value
-  );
-  const connected = useSelector(
-    (state: RootState) => state.app.connectedReducer?.value
-  );
-  const hasMore = useSelector(
-    (state: RootState) => state.app.hasMoreVideosReducer.value
   );
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
-  const approvalArgs = useSelector(
-    (state: RootState) => state.app.approvalArgsReducer.args
+  const videoInfo = useSelector(
+    (state: RootState) => state.app.videoInfoReducer
   );
-  const seek = useSelector(
-    (state: RootState) => state.app.seekSecondReducer.seek
+  const postCollectGif = useSelector(
+    (state: RootState) => state.app.postCollectGifReducer
   );
-  const purchase = useSelector((state: RootState) => state.app.purchaseReducer);
+  const walletConnected = useSelector(
+    (state: RootState) => state.app.walletConnectedReducer?.value
+  );
+  const channels = useSelector((state: RootState) => state.app.channelsReducer);
+  const enabledCurrencies = useSelector(
+    (state: RootState) => state.app.enabledCurrenciesReducer?.value
+  );
   const quickProfiles = useSelector(
     (state: RootState) => state.app.quickProfilesReducer.value
-  );
-  const mainVideo = useSelector(
-    (state: RootState) => state.app.mainVideoReducer
   );
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer.data
@@ -75,14 +58,16 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const { autograph, drop } = router.query;
   const { handleSearch, searchOpen, searchResults, handleSearchChoose } =
     useViewer(router, dispatch, quickProfiles, lensProfile);
-  const { handleLensSignIn } = useConnect(
+  const { handleLensSignIn, handleLogout } = useConnect(
     router,
     address,
     isConnected,
     dispatch,
     connectModalOpen,
     publicClient,
-    oracleData
+    oracleData,
+    openAccountModal,
+    enabledCurrencies
   );
   const { isLargeScreen } = useBar();
   const { dropLoading, dropData } = useAutoDrop(
@@ -92,13 +77,10 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   );
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
-    mainVideo,
     lensProfile,
-    dispatchVideos,
-    index.message,
-    reactId,
-    videoSync,
-    reactions
+    channels,
+    fullScreenVideo,
+    videoInfo
   );
   const {
     streamRef,
@@ -108,29 +90,20 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     volumeOpen,
     setVolumeOpen,
     handleHeart,
-    mirrorVideo,
-    collectVideo,
-    likeVideo,
-    mirrorLoading,
-    collectLoading,
-    likeLoading,
+    mirror,
+    like,
+    collect,
     wrapperRef,
     progressRef,
     handleSeek,
+    controlInteractionsLoading,
   } = useControls(
     dispatch,
     address,
     publicClient,
-    purchase,
-    seek,
-    approvalArgs,
-    mainVideo,
-    videoSync,
-    lensProfile,
     fullScreenVideo,
-    commentId,
-    index,
-    router
+    channels,
+    postCollectGif
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -285,9 +258,13 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           />
         </Head>
         <Bar
+          interactionsLoading={controlInteractionsLoading}
+          videoSync={fullScreenVideo}
+          allVideos={channels}
           router={router}
           openConnectModal={openConnectModal}
-          connected={connected}
+          connected={walletConnected}
+          handleLogout={handleLogout}
           handleLensSignIn={handleLensSignIn}
           lensProfile={lensProfile}
           handleSearch={handleSearch}
@@ -295,8 +272,7 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           searchResults={searchResults}
           handleSearchChoose={handleSearchChoose}
           isLargeScreen={isLargeScreen}
-          hasMore={hasMore}
-          reactions={reactions}
+          hasMore={videoInfo?.hasMore}
           streamRef={streamRef}
           formatTime={formatTime}
           volume={volume}
@@ -304,31 +280,27 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           volumeOpen={volumeOpen}
           setVolumeOpen={setVolumeOpen}
           handleHeart={handleHeart}
-          mirrorVideo={mirrorVideo}
-          collectVideo={collectVideo}
-          likeVideo={likeVideo}
-          mirrorLoading={mirrorLoading}
-          collectLoading={collectLoading}
-          likeLoading={likeLoading}
-          mainVideo={mainVideo}
+          mirror={mirror}
+          collect={collect}
+          like={like}
           wrapperRef={wrapperRef}
           progressRef={progressRef}
           handleSeek={handleSeek}
-          videoSync={videoSync}
           fetchMoreVideos={fetchMoreVideos}
           videosLoading={videosLoading}
           setVideosLoading={setVideosLoading}
           dispatch={dispatch}
-          dispatchVideos={dispatchVideos}
         />
-        {dropData?.collections?.length > 0 && (
-          <div className="relative flex flex-col w-full h-fit gap-10 px-8 sm:px-20 py-10">
+        {dropData?.collections?.length > 0 ? (
+          <div className="relative flex flex-col w-full h-fit gap-10 px-3 sm:px-8 lg:px-20 py-10">
             <AllDrops
               collections={dropData?.collections}
               autoProfile={dropData?.profile}
               router={router}
             />
           </div>
+        ) : (
+          <NotFound router={router} />
         )}
       </div>
     );

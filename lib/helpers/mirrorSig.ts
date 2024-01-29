@@ -1,92 +1,95 @@
-import { mirror } from "@/graphql/lens/mutations/mirror";
 import { omit } from "lodash";
 import LensHubProxy from "./../../abis/LensHubProxy.json";
 import { AnyAction, Dispatch } from "redux";
-import { WalletClient } from "viem";
 import { polygon } from "viem/chains";
-import { PublicClient } from "wagmi";
-import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../constants";
-import handleIndexCheck from "./handleIndexCheck";
-import { setIndexModal } from "@/redux/reducers/indexModalSlice";
-import { RelaySuccess } from "@/components/Home/types/generated";
+import { PublicClient, WalletClient } from "viem";
+import { mirror } from "@/graphql/lens/mutations/mirror";
 import broadcast from "@/graphql/lens/mutations/broadcast";
+import { setIndexModal } from "@/redux/reducers/indexModalSlice";
+import handleIndexCheck from "./handleIndexCheck";
+import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../constants";
 
 const mirrorSig = async (
   mirrorOn: string,
-  clientWallet: WalletClient,
-  publicClient: PublicClient,
+  dispatch: Dispatch<AnyAction>,
   address: `0x${string}`,
-  dispatch: Dispatch<AnyAction>
-) => {
-  try {
-    const mirrorPost = await mirror({
-      mirrorOn,
+  clientWallet: WalletClient,
+  publicClient: PublicClient
+): Promise<void> => {
+  const data = await mirror({
+    mirrorOn,
+  });
+
+  const typedData = data?.data?.createOnchainMirrorTypedData?.typedData;
+
+  const signature = await clientWallet.signTypedData({
+    domain: omit(typedData?.domain, ["__typename"]),
+    types: omit(typedData?.types, ["__typename"]),
+    primaryType: "Mirror",
+    message: omit(typedData?.value, ["__typename"]),
+    account: address as `0x${string}`,
+  });
+
+  const broadcastResult = await broadcast({
+    id: data?.data?.createOnchainMirrorTypedData?.id,
+    signature,
+  });
+
+  if (broadcastResult?.data?.broadcastOnchain?.__typename === "RelaySuccess") {
+    dispatch(
+      setIndexModal({
+        actionValue: true,
+        actionMessage: "Indexing Interaction",
+      })
+    );
+    await handleIndexCheck(
+      {
+        forTxId: broadcastResult?.data?.broadcastOnchain?.txId,
+      },
+      dispatch
+    );
+  } else {
+    const { request } = await publicClient.simulateContract({
+      address: LENS_HUB_PROXY_ADDRESS_MATIC,
+      abi: LensHubProxy,
+      functionName: "mirror",
+      chain: polygon,
+      args: [
+        {
+          profileId: typedData?.value.profileId,
+          metadataURI: typedData?.value.metadataURI,
+          pointedProfileId: typedData?.value.pointedProfileId,
+          pointedPubId: typedData?.value.pointedPubId,
+          referrerProfileIds: typedData?.value.referrerProfileIds,
+          referrerPubIds: typedData?.value.referrerPubIds,
+          referenceModuleData: typedData?.value.referenceModuleData,
+        },
+      ],
+      account: address,
     });
-
-    const typedData = mirrorPost?.data?.createOnchainMirrorTypedData.typedData;
-
-    const signature = await clientWallet.signTypedData({
-      domain: omit(typedData?.domain, ["__typename"]),
-      types: omit(typedData?.types, ["__typename"]),
-      primaryType: "Mirror",
-      message: omit(typedData?.value, ["__typename"]),
-      account: address as `0x${string}`,
-    });
-
-    const broadcastResult = await broadcast({
-      id: mirrorPost?.data?.createOnchainMirrorTypedData?.id,
-      signature,
-    });
-
-    if (broadcastResult?.data?.broadcastOnchain?.__typename == "RelayError") {
-      const { request } = await publicClient.simulateContract({
-        address: LENS_HUB_PROXY_ADDRESS_MATIC,
-        abi: LensHubProxy,
-        functionName: "mirror",
-        chain: polygon,
-        args: [
-          {
-            profileId: typedData?.value.profileId,
-            metadataURI: typedData?.value.metadataURI,
-            pointedProfileId: typedData?.value.pointedProfileId,
-            pointedPubId: typedData?.value.pointedPubId,
-            referrerProfileIds: typedData?.value.referrerProfileIds,
-            referrerPubIds: typedData?.value.referrerPubIds,
-            referenceModuleData: typedData?.value.referenceModuleData,
-          },
-        ],
-        account: address,
-      });
-      const res = await clientWallet.writeContract(request);
-      await publicClient.waitForTransactionReceipt({ hash: res });
-      dispatch(
-        setIndexModal({
-          actionValue: true,
-          actionMessage: "Indexing Interaction",
-        })
-      );
-      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
-
-      await handleIndexCheck({
+    const res = await clientWallet.writeContract(request);
+    dispatch(
+      setIndexModal({
+        actionValue: true,
+        actionMessage: "Indexing Interaction",
+      })
+    );
+    const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+    await handleIndexCheck(
+      {
         forTxHash: tx.transactionHash,
-      }, dispatch);
-    } else {
-      dispatch(
-        setIndexModal({
-          actionValue: true,
-          actionMessage: "Indexing Interaction",
-        })
-      );
-      setTimeout(async () => {
-        await handleIndexCheck(
-          (broadcastResult?.data?.broadcastOnchain as RelaySuccess).txHash,
-          dispatch
-        );
-      }, 7000);
-    }
-  } catch (err: any) {
-    console.error(err.message);
+      },
+      dispatch
+    );
   }
+  setTimeout(() => {
+    dispatch(
+      setIndexModal({
+        actionValue: false,
+        actionMessage: undefined,
+      })
+    );
+  }, 3000);
 };
 
 export default mirrorSig;

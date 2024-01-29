@@ -1,11 +1,23 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface FullScreenVideoState {
-  value: boolean;
+  open: boolean;
+  duration: number;
+  currentTime: number;
+  heart: boolean;
+  isPlaying: boolean;
+  videosLoading: boolean;
+  seek: number;
 }
 
 const initialFullScreenVideoState: FullScreenVideoState = {
-  value: false,
+  open: false,
+  duration: 0,
+  currentTime: 0,
+  heart: false,
+  isPlaying: false,
+  videosLoading: false,
+  seek: 0,
 };
 
 export const fullScreenVideoSlice = createSlice({
@@ -14,9 +26,25 @@ export const fullScreenVideoSlice = createSlice({
   reducers: {
     setFullScreenVideo: (
       state: FullScreenVideoState,
-      action: PayloadAction<boolean>
+      {
+        payload: {
+          actionDuration,
+          actionCurrentTime,
+          actionHeart,
+          actionIsPlaying,
+          actionVideosLoading,
+          actionSeek,
+          actionOpen,
+        },
+      }
     ) => {
-      state.value = action.payload;
+      state.open = actionOpen;
+      state.duration = actionDuration;
+      state.currentTime = actionCurrentTime;
+      state.heart = actionHeart;
+      state.isPlaying = actionIsPlaying;
+      state.videosLoading = actionVideosLoading;
+      state.seek = actionSeek;
     },
   },
 });

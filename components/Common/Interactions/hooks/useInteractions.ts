@@ -1,26 +1,39 @@
-import { LimitType, Comment, Profile } from "@/components/Home/types/generated";
+import {
+  LimitType,
+  Comment,
+  Profile,
+  Post,
+} from "@/components/Home/types/generated";
 import { getPublications } from "@/graphql/lens/queries/getVideos";
 import { whoActed } from "@/graphql/lens/queries/whoActed";
-import { IndexModalState } from "@/redux/reducers/indexModalSlice";
-import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
-import { NextRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const useInteractions = (
-  router: NextRouter,
-  profile: Profile | undefined,
-  mainVideo: MainVideoState,
-  commentId: string | undefined,
-  index: IndexModalState
+  lensProfile: Profile | undefined,
+  mainVideo: {
+    video: Post;
+    local: string;
+  }
 ) => {
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
-  const [paginated, setPaginated] = useState<any>();
+  const [collectsLoading, setCollectsLoading] = useState<boolean>(false);
+  const [secondaryComment, setSecondaryComment] = useState<string>("");
   const [commentors, setCommentors] = useState<Comment[]>([]);
   const [collectors, setCollectors] = useState<any[]>([]);
-  const [collectPageInfo, setCollectPageInfo] = useState<any>();
-  const [collectLoading, setCollectLoading] = useState<boolean>(false);
-  const [hasMoreCollects, setHasMoreCollects] = useState<boolean>(true);
-  const [hasMoreComments, setHasMoreComments] = useState<boolean>(true);
+  const [collectInfo, setCollectInfo] = useState<{
+    hasMore: boolean;
+    paginated: string | undefined;
+  }>({
+    hasMore: true,
+    paginated: undefined,
+  });
+  const [commentInfo, setCommentInfo] = useState<{
+    hasMore: boolean;
+    paginated: string | undefined;
+  }>({
+    hasMore: true,
+    paginated: undefined,
+  });
 
   const getPostComments = async (): Promise<void> => {
     setCommentsLoading(true);
@@ -29,12 +42,15 @@ const useInteractions = (
         {
           where: {
             commentOn: {
-              id: commentId !== "" ? commentId : mainVideo.id,
+              id:
+                secondaryComment !== ""
+                  ? secondaryComment
+                  : mainVideo?.video?.id,
             },
           },
           limit: LimitType.TwentyFive,
         },
-        profile?.id
+        lensProfile?.id
       );
 
       if (!comments || !comments?.data || !comments?.data?.publications) {
@@ -44,13 +60,11 @@ const useInteractions = (
       const sortedArr: Comment[] = [
         ...comments?.data?.publications?.items,
       ] as Comment[];
-      if (sortedArr?.length < 25) {
-        setHasMoreComments(false);
-      } else {
-        setHasMoreComments(true);
-      }
       setCommentors(sortedArr);
-      setPaginated(comments?.data?.publications?.pageInfo);
+      setCommentInfo({
+        hasMore: sortedArr?.length < 25 ? false : true,
+        paginated: comments?.data?.publications?.pageInfo?.next,
+      });
     } catch (err: any) {
       console.error(err.message);
     }
@@ -59,53 +73,42 @@ const useInteractions = (
 
   const getMorePostComments = async (): Promise<void> => {
     try {
-      if (!paginated?.next) {
-        // fix apollo duplications on null next
-        setHasMoreComments(false);
-        return;
-      }
+      if (!commentInfo?.hasMore) return;
 
       const comments = await getPublications(
         {
           where: {
             commentOn: {
-              id: commentId !== "" ? commentId : mainVideo.id,
+              id:
+                secondaryComment !== ""
+                  ? secondaryComment
+                  : mainVideo.video?.id,
             },
           },
           limit: LimitType.TwentyFive,
-          cursor: paginated?.next,
+          cursor: commentInfo?.paginated,
         },
-        profile?.id
+        lensProfile?.id
       );
 
-      if (
-        !comments ||
-        !comments?.data ||
-        !comments?.data?.publications ||
-        comments?.data?.publications?.items?.length < 1
-      ) {
-        setHasMoreComments(false);
-        setCommentsLoading(false);
-        return;
-      }
       const sortedArr: Comment[] = [
-        ...comments?.data?.publications?.items,
+        ...(comments?.data?.publications?.items || []),
       ] as Comment[];
-      if (sortedArr?.length < 25) {
-        setHasMoreComments(false);
-      }
       setCommentors([...commentors, ...sortedArr]);
-      setPaginated(comments?.data?.publications?.pageInfo);
+      setCommentInfo({
+        hasMore: sortedArr?.length < 25 ? false : true,
+        paginated: comments?.data?.publications?.pageInfo?.next,
+      });
     } catch (err: any) {
       console.error(err.message);
     }
   };
 
   const getPostCollects = async (): Promise<void> => {
-    setCollectLoading(true);
+    setCollectsLoading(true);
     try {
       const collects = await whoActed({
-        on: mainVideo?.id,
+        on: mainVideo?.video?.id,
         limit: LimitType.TwentyFive,
       });
 
@@ -113,76 +116,66 @@ const useInteractions = (
         ...(collects?.data?.whoActedOnPublication.items || []),
       ] as Profile[];
       setCollectors(arr);
-      setCollectPageInfo(collects?.data?.whoActedOnPublication?.pageInfo);
-      if (arr?.length < 25) {
-        setHasMoreCollects(false);
-      } else {
-        setHasMoreCollects(true);
-      }
+
+      setCollectInfo({
+        hasMore: arr?.length < 25 ? false : true,
+        paginated: collects?.data?.whoActedOnPublication?.pageInfo?.next,
+      });
     } catch (err: any) {
       console.error(err.message);
     }
-    setCollectLoading(false);
+    setCollectsLoading(false);
   };
 
   const getMorePostCollects = async (): Promise<void> => {
-    if (!collectPageInfo?.next) {
-      setHasMoreCollects(false);
-      return;
-    }
+    if (!collectInfo?.hasMore) return;
     try {
       const collects = await whoActed({
-        on: mainVideo?.id,
+        on: mainVideo?.video?.id,
         limit: LimitType.TwentyFive,
-        cursor: collectPageInfo?.next,
+        cursor: collectInfo?.paginated,
       });
 
       const arr: Profile[] = [
         ...(collects.data?.whoActedOnPublication?.items || []),
       ] as Profile[];
-      if (arr?.length < 25) {
-        setHasMoreCollects(false);
-      }
+
       setCollectors([...collectors, ...arr]);
-      setCollectPageInfo(collects?.data?.whoActedOnPublication?.pageInfo);
+
+      setCollectInfo({
+        hasMore: arr?.length < 25 ? false : true,
+        paginated: collects?.data?.whoActedOnPublication?.pageInfo?.next,
+      });
     } catch (err: any) {
       console.error(err.message);
     }
   };
 
   useEffect(() => {
-    if (mainVideo.id) {
+    if (mainVideo?.video?.id) {
       getPostCollects();
     }
-  }, [mainVideo.id, profile?.id]);
+  }, [mainVideo?.video?.id, lensProfile?.id]);
 
   useEffect(() => {
-    if (mainVideo.id) {
+    if (mainVideo?.video?.id || secondaryComment !== "") {
       getPostComments();
     }
-  }, [mainVideo.id, profile?.id, commentId]);
-
-  useEffect(() => {
-    if (
-      index.message === "Successfully Indexed" &&
-      !router.asPath?.includes("#chat") &&
-      !router.asPath?.includes("#collect") &&
-      !router.asPath?.includes("#sampler")
-    ) {
-      getPostComments();
-      getPostCollects();
-    }
-  }, [index.message]);
+  }, [mainVideo?.video?.id, lensProfile?.id, secondaryComment]);
 
   return {
     commentors,
     getMorePostComments,
     commentsLoading,
     collectors,
-    collectLoading,
+    collectsLoading,
     getMorePostCollects,
-    hasMoreCollects,
-    hasMoreComments,
+    collectInfo,
+    commentInfo,
+    secondaryComment,
+    setSecondaryComment,
+    setCommentors,
+    getPostComments
   };
 };
 

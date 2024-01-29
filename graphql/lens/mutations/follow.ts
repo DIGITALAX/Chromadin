@@ -1,12 +1,13 @@
-import {
-  FollowRequest,
-  CreateFollowTypedDataDocument,
-  CreateFollowTypedDataMutation,
-} from "@/components/Home/types/generated";
-import { apolloClient } from "@/lib/lens/client";
 import { FetchResult } from "@apollo/client";
 
-const createFollowTypedData = async (
+import { apolloClient } from "../../../lib/lens/client";
+import {
+  CreateFollowTypedDataDocument,
+  CreateFollowTypedDataMutation,
+  FollowRequest,
+} from "@/components/Home/types/generated";
+
+const follow = async (
   request: FollowRequest
 ): Promise<FetchResult<CreateFollowTypedDataMutation>> => {
   return await apolloClient.mutate({
@@ -18,4 +19,4 @@ const createFollowTypedData = async (
   });
 };
 
-export default createFollowTypedData;
+export default follow;

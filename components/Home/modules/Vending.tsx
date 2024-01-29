@@ -1,17 +1,17 @@
 import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "@/lib/constants";
-import { setMainNFT } from "@/redux/reducers/mainNFTSlice";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { Collection, VendingProps } from "../types/home.types";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import SearchVending from "@/components/Common/Buttons/SearchVending";
 import FilterVending from "@/components/Common/Buttons/FilterVending";
-import { setPriceFilter } from "@/redux/reducers/priceFilterSlice";
-import { setDateFilter } from "@/redux/reducers/dateFilterSlice";
 import lodash from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Link from "next/link";
 import WaveformComponent from "./Waveform";
+import { setCollectionInfo } from "@/redux/reducers/collectionInfoSlice";
+import { setFilter } from "@/redux/reducers/filterSlice";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const Vending: FunctionComponent<VendingProps> = ({
   dispatch,
@@ -25,24 +25,16 @@ const Vending: FunctionComponent<VendingProps> = ({
   searchResults,
   handleSearchChoose,
   collectionsLoading,
-  error,
   moreCollectionsLoading,
   handleGetMoreCollections,
-  dateFilter,
-  priceFilter,
-  dispatchCollections,
-  hasMoreCollections,
+  filters,
+  collectionInfo,
 }): JSX.Element => {
   return (
     <div
       className={`relative w-full overflow-y-scroll gap-3 h-[28.6rem] p-4 flex flex-col`}
     >
-      {error ? (
-        <div className="relative w-full h-full flex flex-col items-center justify-center font-earl text-moda text-center">
-          Unfortunately the subgraph isn&apos;t responding right now :/, tune in
-          again soon to browse collections
-        </div>
-      ) : collectionsLoading ? (
+      {collectionsLoading || collectionInfo?.collections?.length < 1 ? (
         <div className="relative w-full h-full grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4">
           {Array.from({ length: 8 }).map((_, index: number) => {
             return (
@@ -74,18 +66,34 @@ const Vending: FunctionComponent<VendingProps> = ({
               <FilterVending
                 handleOpenDropdown={setDropDownPriceSort}
                 openDropdown={dropDownPriceSort}
-                values={priceFilter.values}
-                setDispatchFilter={setPriceFilter}
-                selectorValue={priceFilter.selected}
-                dispatch={dispatch}
+                values={filters?.priceValues}
+                selectorValue={filters?.priceSelected}
+                filterUpdate={(selected) =>
+                  dispatch(
+                    setFilter({
+                      actionPriceValues: filters?.priceValues,
+                      actionPriceSelected: selected,
+                      actionDateValues: filters?.dateValues,
+                      actionDateSelected: filters?.dateSelected,
+                    })
+                  )
+                }
               />
               <FilterVending
                 handleOpenDropdown={setDropDownDateSort}
                 openDropdown={dropDownDateSort}
-                values={dateFilter.values}
-                setDispatchFilter={setDateFilter}
-                selectorValue={dateFilter.selected}
-                dispatch={dispatch}
+                values={filters?.dateValues}
+                selectorValue={filters?.dateSelected}
+                filterUpdate={(selected) =>
+                  dispatch(
+                    setFilter({
+                      actionPriceValues: filters?.priceValues,
+                      actionPriceSelected: filters?.priceSelected,
+                      actionDateValues: filters?.dateValues,
+                      actionDateSelected: selected,
+                    })
+                  )
+                }
               />
             </div>
             <SearchVending
@@ -95,19 +103,19 @@ const Vending: FunctionComponent<VendingProps> = ({
               handleSearchChoose={handleSearchChoose}
             />
           </div>
-          <InfiniteScroll
-            hasMore={hasMoreCollections}
-            height={"40rem"}
-            loader={""}
-            dataLength={dispatchCollections?.length}
-            next={handleGetMoreCollections}
-            className={`relative row-start-1 w-full h-full overflow-y-scroll flex flex-col`}
-          >
-            <div className="relative w-full h-full grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4">
-              {dispatchCollections?.length > 0 &&
-                lodash(dispatchCollections)
-                  .filter((collection: Collection) => {
-                    if (priceFilter.selected === "ALL") {
+          {collectionInfo?.collections?.length > 0 && (
+            <InfiniteScroll
+              hasMore={collectionInfo?.hasMore}
+              height={"40rem"}
+              loader={""}
+              dataLength={collectionInfo?.collections?.length}
+              next={handleGetMoreCollections}
+              className={`relative row-start-1 w-full h-full overflow-y-scroll flex flex-col`}
+            >
+              <div className="relative w-full h-full grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4">
+                {lodash(collectionInfo?.collections)
+                  ?.filter((collection: Collection) => {
+                    if (filters.priceSelected === "ALL") {
                       return true;
                     } else {
                       const matchingAddress = lodash
@@ -115,7 +123,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                           ACCEPTED_TOKENS,
                           ([token]) =>
                             token.toLowerCase() ===
-                            priceFilter.selected.toLowerCase()
+                            filters.priceSelected.toLowerCase()
                         )?.[1]
                         ?.toLowerCase();
                       return collection.acceptedTokens.includes(
@@ -124,7 +132,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                     }
                   })
                   .map((collection: Collection) => {
-                    if (priceFilter.selected === "ALL") {
+                    if (filters.priceSelected === "ALL") {
                       return collection;
                     } else {
                       const matchingAddress = lodash
@@ -132,7 +140,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                           ACCEPTED_TOKENS,
                           ([token]) =>
                             token.toLowerCase() ===
-                            priceFilter.selected.toLowerCase()
+                            filters.priceSelected.toLowerCase()
                         )?.[1]
                         ?.toLowerCase();
                       const matchingIndex = collection.acceptedTokens.indexOf(
@@ -145,25 +153,25 @@ const Vending: FunctionComponent<VendingProps> = ({
                     }
                   })
                   .filter((collection: any) => {
-                    if (priceFilter.selected === "ALL") {
+                    if (filters.priceSelected === "ALL") {
                       return true;
                     } else {
                       return collection.matchingPrice !== undefined;
                     }
                   })
                   .sortBy((collection: any) => {
-                    if (priceFilter.selected === "ALL") {
+                    if (filters.priceSelected === "ALL") {
                       return 0;
                     } else {
                       return -collection.matchingPrice;
                     }
                   })
                   .sortBy((collection: any) => {
-                    if (priceFilter.selected === "ALL") {
-                      if (dateFilter.selected !== "random") {
-                        if (dateFilter.selected === "earliest") {
+                    if (filters.priceSelected === "ALL") {
+                      if (filters.dateSelected !== "random") {
+                        if (filters.dateSelected === "earliest") {
                           return collection.blockTimestamp;
-                        } else if (dateFilter.selected === "latest") {
+                        } else if (filters.dateSelected === "latest") {
                           return -collection.blockTimestamp;
                         }
                       }
@@ -185,69 +193,44 @@ const Vending: FunctionComponent<VendingProps> = ({
                           id={"staticLoad"}
                           onClick={() => {
                             dispatch(
-                              setMainNFT({
-                                title: collection?.collectionMetadata?.title,
-                                image:
-                                  collection?.collectionMetadata?.images?.[0]
-                                    ?.split("ipfs://")[1]
-                                    ?.replace(/"/g, "")
-                                    ?.trim(),
-                                audio: collection?.collectionMetadata?.audio
-                                  ?.split("ipfs://")[1]
-                                  ?.replace(/"/g, "")
-                                  ?.trim(),
-                                video: collection?.collectionMetadata?.video
-                                  ?.split("ipfs://")[1]
-                                  ?.replace(/"/g, "")
-                                  ?.trim(),
-                                mediaCover:
-                                  collection?.collectionMetadata?.mediaCover
-                                    ?.split("ipfs://")[1]
-                                    ?.replace(/"/g, "")
-                                    ?.trim(),
-                                description:
-                                  collection?.collectionMetadata?.description,
-                                type: collection?.collectionMetadata
-                                  ?.mediaTypes,
-                                drop: collection?.dropMetadata,
-                                prices: collection?.prices,
-                                acceptedTokens: collection?.acceptedTokens,
-                                amount: collection?.amount,
-                                soldTokens: collection?.soldTokens,
-                                publication: collection?.publication,
+                              setCollectionInfo({
+                                actionSkip: collectionInfo?.skip,
+                                actionCollections: collectionInfo?.collections,
+                                actionHasMore: collectionInfo?.hasMore,
+                                actionMain: collection,
                               })
                             );
-                            router.asPath.includes("&profile=")
-                              ? router.asPath.includes("?option=")
+                            router?.asPath?.includes("&profile=")
+                              ? router?.asPath?.includes("?option=")
                                 ? router.push(
-                                    router.asPath.split("?option=")[0] +
+                                    router?.asPath.split("?option=")[0] +
                                       "?option=fulfillment&profile=" +
-                                      router.asPath.split("&profile=")[1]
+                                      router?.asPath.split("&profile=")[1]
                                   )
                                 : router.push(
-                                    router.asPath.split("&profile=")[0] +
+                                    router?.asPath.split("&profile=")[0] +
                                       "?option=fulfillment&profile=" +
-                                      router.asPath.split("&profile=")[1]
+                                      router?.asPath.split("&profile=")[1]
                                   )
-                              : router.asPath.includes("&post=")
-                              ? router.asPath.includes("?option=")
+                              : router?.asPath?.includes("&post=")
+                              ? router?.asPath?.includes("?option=")
                                 ? router.push(
-                                    router.asPath.split("?option=")[0] +
+                                    router?.asPath.split("?option=")[0] +
                                       "?option=fulfillment&post=" +
-                                      router.asPath.split("&post=")[1]
+                                      router?.asPath.split("&post=")[1]
                                   )
                                 : router.push(
-                                    router.asPath.split("&post=")[0] +
+                                    router?.asPath.split("&post=")[0] +
                                       "?option=fulfillment&post=" +
-                                      router.asPath.split("&post=")[1]
+                                      router?.asPath.split("&post=")[1]
                                   )
-                              : router.asPath.includes("?option=")
+                              : router?.asPath?.includes("?option=")
                               ? router.push(
-                                  router.asPath.split("?option=")[0] +
+                                  router?.asPath.split("?option=")[0] +
                                     "?option=fulfillment"
                                 )
                               : router.push(
-                                  router.asPath + "?option=fulfillment"
+                                  router?.asPath + "?option=fulfillment"
                                 );
                           }}
                         >
@@ -344,6 +327,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                               <Image
                                 src={profilePicture}
                                 layout="fill"
+                                onError={(e) => handleImageError(e)}
                                 alt="pfp"
                                 className="rounded-full w-full h-full flex"
                                 draggable={false}
@@ -360,31 +344,35 @@ const Vending: FunctionComponent<VendingProps> = ({
                       </div>
                     );
                   })}
-              {moreCollectionsLoading &&
-                Array.from({ length: 8 }).map((_, index: number) => {
-                  return (
-                    <div
-                      className="relative w-full h-[12.5rem] flex flex-col items-center justify-center opacity-30 animate-pulse p-2 gap-2"
-                      key={index}
-                    >
-                      <div
-                        className="rounded-tr-2xl w-full h-full"
-                        id="staticLoad"
-                      ></div>
-                      <div className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3">
+                <>
+                  {" "}
+                  {moreCollectionsLoading &&
+                    Array.from({ length: 8 }).map((_, index: number) => {
+                      return (
                         <div
-                          className="relative w-6 h-6 cursor-pointer border border-ama rounded-full"
-                          id="vending"
-                        ></div>
-                        <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
-                          @!245%rXmes
+                          className="relative w-full h-[12.5rem] flex flex-col items-center justify-center opacity-30 animate-pulse p-2 gap-2"
+                          key={index}
+                        >
+                          <div
+                            className="rounded-tr-2xl w-full h-full"
+                            id="staticLoad"
+                          ></div>
+                          <div className="relative flex flex-row w-fit h-fit gap-3 items-center pt-3">
+                            <div
+                              className="relative w-6 h-6 cursor-pointer border border-ama rounded-full"
+                              id="vending"
+                            ></div>
+                            <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
+                              @!245%rXmes
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
-          </InfiniteScroll>
+                      );
+                    })}
+                </>
+              </div>
+            </InfiniteScroll>
+          )}
         </div>
       )}
     </div>

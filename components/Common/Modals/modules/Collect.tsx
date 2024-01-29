@@ -21,7 +21,7 @@ const Collect: FunctionComponent<CollectModalProps> = ({
                 <div className="relative w-fit h-fit row-start-1 self-center justify-self-end pr-3 pt-3 cursor-pointer">
                   <ImCross
                     color="white"
-                    size={15}
+                    size={10}
                     onClick={() =>
                       dispatch(
                         setModal({

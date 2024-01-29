@@ -2,25 +2,26 @@ import {
   Erc20,
   Profile,
   ProfileWhoReactedResult,
-  Quote,
   Post,
-  Comment,
+  SimpleCollectOpenActionModuleInput,
+  SimpleCollectOpenActionSettings,
+  MultirecipientFeeCollectOpenActionSettings,
 } from "@/components/Home/types/generated";
-import { FollowerOnlyState } from "@/redux/reducers/followerOnlySlice";
-import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
-import { PostCollectValuesState } from "@/redux/reducers/postCollectSlice";
-import { VideoSyncState } from "@/redux/reducers/videoSyncSlice";
 import { NextRouter } from "next/router";
 import {
-  ClipboardEvent,
   FormEvent,
   KeyboardEvent,
   Ref,
   RefObject,
+  SetStateAction,
 } from "react";
 import ReactPlayer from "react-player";
 import { AnyAction, Dispatch } from "redux";
-import { Collection, UploadedMedia } from "@/components/Home/types/home.types";
+import { Viewer } from "../../Interactions/types/interactions.types";
+import { ChannelsState } from "@/redux/reducers/channelsSlice";
+import { FullScreenVideoState } from "@/redux/reducers/fullScreenVideoSlice";
+import { PostCollectGifState } from "@/redux/reducers/postCollectGifSlice";
+import { UploadedMedia } from "@/components/Home/types/home.types";
 
 export type IndexingModalProps = {
   message: string | undefined;
@@ -28,52 +29,6 @@ export type IndexingModalProps = {
 
 export type CollectModalProps = {
   message: string;
-};
-
-export type CollectInfoProps = {
-  buttonText: string;
-  symbol?: string;
-  value?: string;
-  limit?: string;
-  time?: string;
-  totalCollected?: number;
-  canClick?: boolean;
-  isApproved?: boolean;
-  lensProfile: Profile | undefined;
-  address: `0x${string}` | undefined;
-  openConnectModal: (() => void) | undefined;
-  approveCurrency?: () => Promise<void>;
-  handleCollect?: (id?: string) => Promise<void>;
-  collectLoading: boolean;
-  approvalLoading?: boolean;
-  handleLensSignIn: () => Promise<void>;
-  commentId: string;
-};
-
-export type PurchaseProps = {
-  collectInfoLoading: boolean;
-  openConnectModal: (() => void) | undefined;
-  approvalLoading: boolean;
-  address: `0x${string}` | undefined;
-  collectModuleValues: PostCollectValuesState;
-  lensProfile: Profile | undefined;
-  collectComment: (id?: any) => Promise<void>;
-  collectLoading: boolean;
-  approveCurrency: () => Promise<void>;
-  handleLensSignIn: () => Promise<void>;
-  commentId: string;
-  dispatch: Dispatch<AnyAction>;
-};
-
-export type FollowerOnlyProps = {
-  profile: Profile | undefined;
-  followProfile: () => Promise<void>;
-  followLoading: boolean;
-  approved: boolean;
-  approveCurrency: () => Promise<void>;
-  dispatch: Dispatch<AnyAction>;
-  followDetails: FollowerOnlyState;
-  unfollowProfile: () => Promise<void>;
 };
 
 export type ImageLargeProps = {
@@ -105,18 +60,14 @@ export type WhoProps = {
 
 export type FullScreenVideoProps = {
   dispatch: Dispatch<AnyAction>;
-  mainVideo: MainVideoState;
+  allVideos: ChannelsState;
   videoRef: Ref<HTMLDivElement>;
   streamRef: Ref<ReactPlayer>;
   wrapperRef: Ref<HTMLDivElement>;
-  dispatchVideos: Post[];
-  videoSync: VideoSyncState;
-  viewer: string;
+  videoSync: FullScreenVideoState;
+  viewer: Viewer;
   hasMore: boolean;
-  fetchMoreVideos: () => Promise<
-    | { videos: any[]; mirrors: any[]; collects: boolean[]; likes: any[] }
-    | undefined
-  >;
+  fetchMoreVideos: () => Promise<Post[] | undefined>;
   videosLoading: boolean;
   setVideosLoading: (e: boolean) => void;
 };
@@ -138,56 +89,21 @@ export type PostProps = {
   mentionProfiles: Profile[];
   profilesOpen: boolean;
   handleMentionClick: (user: Profile) => void;
-  gifOpen: boolean;
   lensProfile: Profile | undefined;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
-  handleGifSubmit: () => Promise<void>;
-  handleGif: (e: FormEvent) => void;
-  results: any[];
-  handleSetGif: (result: any) => void;
-  setGifOpen: (e: boolean) => void;
-  videoLoading: boolean;
-  imageLoading: boolean;
-  uploadImages: (e: FormEvent) => Promise<void>;
-  uploadVideo: (e: FormEvent) => Promise<void>;
-  handleRemoveImage: (e: UploadedMedia) => void;
-  postImagesDispatched: UploadedMedia[];
-  mappedFeaturedFiles: UploadedMedia[];
-  collectOpen: boolean;
-  enabledCurrencies: Erc20[];
-  audienceTypes: string[];
-  setAudienceType: (e: string) => void;
-  audienceType: string;
-  setEnabledCurrency: (e: string) => void;
-  enabledCurrency: string | undefined;
-  setChargeCollectDropDown: (e: boolean) => void;
-  setAudienceDropDown: (e: boolean) => void;
-  setCurrencyDropDown: (e: boolean) => void;
-  chargeCollectDropDown: boolean;
-  quote: Post | Quote | Comment | undefined;
-  audienceDropDown: boolean;
-  currencyDropDown: boolean;
-  referral: number;
-  setReferral: (e: number) => void;
-  limit: number;
-  setLimit: (e: number) => void;
-  value: number;
-  setValue: (e: number) => void;
-  collectibleDropDown: boolean;
-  setCollectibleDropDown: (e: boolean) => void;
-  collectible: string;
-  setCollectible: (e: string) => void;
-  chargeCollect: string;
-  setChargeCollect: (e: string) => void;
-  limitedDropDown: boolean;
-  setLimitedDropDown: (e: boolean) => void;
-  limitedEdition: string;
-  setLimitedEdition: (e: string) => void;
-  setTimeLimit: (e: string) => void;
-  timeLimit: string;
-  timeLimitDropDown: boolean;
-  setTimeLimitDropDown: (e: boolean) => void;
-  collectNotif: string;
+  mediaLoading: {
+    image: boolean;
+    video: boolean;
+  }[];
+  setMediaLoading: (
+    e: SetStateAction<
+      {
+        image: boolean;
+        video: boolean;
+      }[]
+    >
+  ) => void;
+  postCollectGif: PostCollectGifState;
   handleLensSignIn: () => Promise<void>;
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
@@ -195,12 +111,11 @@ export type PostProps = {
   postDescription: string;
   textElement: RefObject<HTMLTextAreaElement>;
   preElement: RefObject<HTMLPreElement>;
-  clientRendered: boolean;
   caretCoord: {
     x: number;
     y: number;
   };
-  handleImagePaste: (e: ClipboardEvent<HTMLTextAreaElement>) => void;
+  quote: Post;
 };
 
 export type ClaimProps = {
@@ -217,4 +132,111 @@ export type LoginProps = {
   dispatch: Dispatch<AnyAction>;
   loginWithWeb2Auth: () => Promise<void>;
   loginLoading: boolean;
+};
+
+export type CollectOptionsProps = {
+  id: string;
+  type: string;
+  dispatch: Dispatch<AnyAction>;
+  collectTypes:
+    | {
+        [key: string]: SimpleCollectOpenActionModuleInput | undefined;
+      }
+    | undefined;
+  gifs:
+    | {
+        [key: string]: UploadedMedia[] | undefined;
+      }
+    | undefined;
+  openMeasure: {
+    searchedGifs: string[];
+    search: string;
+    collectibleOpen: boolean;
+    award: string;
+    whoCollectsOpen: boolean;
+    creatorAwardOpen: boolean;
+    currencyOpen: boolean;
+    editionOpen: boolean;
+    edition: string;
+    timeOpen: boolean;
+    time: string;
+  };
+  setOpenMeasure: (
+    e: SetStateAction<{
+      searchedGifs: string[];
+      search: string;
+      collectibleOpen: boolean;
+      collectible: string;
+      award: string;
+      whoCollectsOpen: boolean;
+      creatorAwardOpen: boolean;
+      currencyOpen: boolean;
+      editionOpen: boolean;
+      edition: string;
+      timeOpen: boolean;
+      time: string;
+    }>
+  ) => void;
+  availableCurrencies: Erc20[];
+};
+
+export type PostCollectGifProps = {
+  dispatch: Dispatch<AnyAction>;
+  postCollectGif: PostCollectGifState;
+  handleGif: (e: string) => Promise<void>;
+  openMeasure: {
+    searchedGifs: string[];
+    search: string;
+    collectibleOpen: boolean;
+    collectible: string;
+    award: string;
+    whoCollectsOpen: boolean;
+    creatorAwardOpen: boolean;
+    currencyOpen: boolean;
+    editionOpen: boolean;
+    edition: string;
+    timeOpen: boolean;
+    time: string;
+  };
+  setOpenMeasure: (
+    e: SetStateAction<{
+      searchedGifs: string[];
+      search: string;
+      collectibleOpen: boolean;
+      collectible: string;
+      award: string;
+      whoCollectsOpen: boolean;
+      creatorAwardOpen: boolean;
+      currencyOpen: boolean;
+      editionOpen: boolean;
+      edition: string;
+      timeOpen: boolean;
+      time: string;
+    }>
+  ) => void;
+  availableCurrencies: Erc20[];
+  searchGifLoading: boolean;
+};
+
+export type FollowCollectProps = {
+  dispatch: Dispatch<AnyAction>;
+  type: string;
+  collect:
+    | {
+        item:
+          | SimpleCollectOpenActionSettings
+          | MultirecipientFeeCollectOpenActionSettings
+          | undefined;
+        stats: number | undefined;
+        id: string;
+      }
+    | undefined;
+  follower: Profile | undefined;
+  handleFollow: () => Promise<void>;
+  handleCollect: () => Promise<void>;
+  handleUnfollow: () => Promise<void>;
+  approveSpend: () => Promise<void>;
+  transactionLoading: boolean;
+  informationLoading: boolean;
+  approved: boolean;
 };

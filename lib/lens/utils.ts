@@ -1,9 +1,7 @@
 import refresh from "../../graphql/lens/mutations/refresh";
 
 const AUTH_STORAGE_KEY = "LH_STORAGE_KEY";
-const COMMENT_STORAGE_KEY = "COMMENT_STORAGE";
 const ADDRESS_CHROMADIN = "ADDRESS_CHROMADIN";
-const POST_STORAGE_KEY = "POST_STORAGE";
 
 interface authToken {
   token: {
@@ -82,27 +80,6 @@ export const refreshAuth = async (): Promise<string | undefined | null> => {
   }
 };
 
-export const setCommentData = (post: string) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(COMMENT_STORAGE_KEY, post);
-    return;
-  }
-};
-
-export const getCommentData = () => {
-  if (typeof window !== "undefined") {
-    const data = localStorage.getItem(COMMENT_STORAGE_KEY);
-    if (!data) return null;
-    return data;
-  }
-};
-
-export const removeCommentData = () => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(COMMENT_STORAGE_KEY);
-  }
-};
-
 export const setAddress = (value: string) => {
   if (typeof window !== "undefined") {
     localStorage.setItem(ADDRESS_CHROMADIN, JSON.stringify(value));
@@ -119,26 +96,5 @@ export const getAddress = () => {
     }
 
     return data;
-  }
-};
-
-export const setPostData = (post: string) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(POST_STORAGE_KEY, post);
-    return;
-  }
-};
-
-export const getPostData = () => {
-  if (typeof window !== "undefined") {
-    const data = localStorage.getItem(POST_STORAGE_KEY);
-    if (!data) return null;
-    return data;
-  }
-};
-
-export const removePostData = () => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(POST_STORAGE_KEY);
   }
 };

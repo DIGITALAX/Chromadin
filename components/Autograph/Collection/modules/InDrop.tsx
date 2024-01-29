@@ -46,6 +46,7 @@ const InDrop: FunctionComponent<InDropProps> = ({
                       coll.collectionMetadata?.images?.[0]?.split("ipfs://")[1]
                     }`}
                     draggable={false}
+                    
                   />
                 ) : (
                   <video

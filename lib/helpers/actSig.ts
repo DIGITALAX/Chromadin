@@ -1,34 +1,31 @@
-import {
-  RelaySuccess,
-  ActOnOpenActionInput,
-} from "@/components/Home/types/generated";
-import broadcast from "@/graphql/lens/mutations/broadcast";
-import LensHubProxy from "./../../abis/LensHubProxy.json";
-import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../constants";
-import { omit } from "lodash";
 import { AnyAction, Dispatch } from "redux";
-import collect from "@/graphql/lens/mutations/collect";
-import { PublicClient, WalletClient } from "viem";
+import { omit } from "lodash";
+import { WalletClient, PublicClient } from "viem";
 import { polygon } from "viem/chains";
+import broadcast from "@/graphql/lens/mutations/broadcast";
 import handleIndexCheck from "./handleIndexCheck";
+import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../constants";
+import LensHubProxy from "../../abis/LensHubProxy.json";
+import { setError } from "@/redux/reducers/errorSlice";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
-import { setPurchase } from "@/redux/reducers/purchaseSlice";
+import collect from "@/graphql/lens/mutations/collect";
+import { ActOnOpenActionInput } from "@/components/Home/types/generated";
 
 const actSig = async (
-  forId: string,
+  pubId: string,
   actOn: ActOnOpenActionInput,
-  clientWallet: WalletClient,
-  publicClient: PublicClient,
+  dispatch: Dispatch<AnyAction>,
   address: `0x${string}`,
-  dispatch: Dispatch<AnyAction>
-) => {
+  clientWallet: WalletClient,
+  publicClient: PublicClient
+): Promise<boolean | void> => {
   try {
-    const collectPost = await collect({
-      for: forId,
+    const { data } = await collect({
+      for: pubId,
       actOn,
     });
-    const typedData =
-      collectPost.data?.createActOnOpenActionTypedData.typedData;
+
+    const typedData = data?.createActOnOpenActionTypedData.typedData;
 
     const signature = await clientWallet.signTypedData({
       domain: omit(typedData?.domain, ["__typename"]),
@@ -39,10 +36,20 @@ const actSig = async (
     });
 
     const broadcastResult = await broadcast({
-      id: collectPost?.data?.createActOnOpenActionTypedData?.id,
+      id: data?.createActOnOpenActionTypedData?.id,
       signature,
     });
-    if (broadcastResult?.data?.broadcastOnchain?.__typename == "RelayError") {
+
+    if (
+      broadcastResult?.data?.broadcastOnchain?.__typename === "RelaySuccess"
+    ) {
+      await handleIndexCheck(
+        {
+          forTxId: broadcastResult?.data?.broadcastOnchain.txId,
+        },
+        dispatch
+      );
+    } else {
       const { request } = await publicClient.simulateContract({
         address: LENS_HUB_PROXY_ADDRESS_MATIC,
         abi: LensHubProxy,
@@ -50,10 +57,15 @@ const actSig = async (
         chain: polygon,
         args: [
           {
-            publicationActedProfileId:
+            publicationActedProfileId: parseInt(
               typedData?.value.publicationActedProfileId,
-            publicationActedId: typedData?.value.publicationActedId,
-            actorProfileId: typedData?.value.actorProfileId,
+              16
+            ),
+            publicationActedId: parseInt(
+              typedData?.value.publicationActedId,
+              16
+            ),
+            actorProfileId: parseInt(typedData?.value.actorProfileId, 16),
             referrerProfileIds: typedData?.value.referrerProfileIds,
             referrerPubIds: typedData?.value.referrerPubIds,
             actionModuleAddress: typedData?.value.actionModuleAddress,
@@ -62,22 +74,16 @@ const actSig = async (
         ],
         account: address,
       });
+
       const res = await clientWallet.writeContract(request);
-      dispatch(
-        setPurchase({
-          actionOpen: false,
-          actionId: "",
-          actionIndex: undefined,
-        })
-      );
-      await publicClient.waitForTransactionReceipt({ hash: res });
+      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+
       dispatch(
         setIndexModal({
-          actionValue: true,
+          actionOpen: true,
           actionMessage: "Indexing Interaction",
         })
       );
-      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
 
       await handleIndexCheck(
         {
@@ -85,21 +91,17 @@ const actSig = async (
         },
         dispatch
       );
-    } else {
+
       dispatch(
         setIndexModal({
-          actionValue: true,
-          actionMessage: "Indexing Interaction",
+          actionOpen: false,
+          actionMessage: undefined,
         })
       );
-      setTimeout(async () => {
-        await handleIndexCheck(
-          (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-          dispatch
-        );
-      }, 7000);
     }
+    return true;
   } catch (err: any) {
+    dispatch(setError(true));
     console.error(err.message);
   }
 };

@@ -4,6 +4,7 @@ import { Profile } from "@/components/Home/types/generated";
 import Image from "next/legacy/image";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import InfiniteScroll from "react-infinite-scroll-component";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const Search: FunctionComponent<SearchProps> = ({
   searchProfiles,
@@ -41,10 +42,10 @@ const Search: FunctionComponent<SearchProps> = ({
                 className={`relative w-full h-10 px-3 py-2 bg-black flex flex-row border-x rounded-md gap-3 cursor-pointer items-center justify-center hover:bg-offBlack border-b`}
                 onClick={() => {
                   router.push(
-                    router.asPath.includes("?option=")
-                      ? router.asPath +
+                    router?.asPath?.includes("?option=")
+                      ? router?.asPath +
                           `&profile=${profile.handle?.suggestedFormatted?.localName?.split("@")[1]}`
-                      : router.asPath +
+                      : router?.asPath +
                           "?option=history" +
                           `&profile=${profile.handle?.suggestedFormatted?.localName?.split("@")[1]}`
                   );
@@ -60,6 +61,7 @@ const Search: FunctionComponent<SearchProps> = ({
                     {profileImage && (
                       <Image
                         src={profileImage}
+                        onError={(e) => handleImageError(e)}
                         objectFit="cover"
                         alt="pfp"
                         layout="fill"

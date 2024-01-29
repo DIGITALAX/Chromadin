@@ -63,15 +63,19 @@ const useAutograph = (autograph: string, lensProfile: Profile | undefined) => {
             accumulator: {
               seenDropIds: Set<string>;
               uniqueMetadata: {
-                dropTitle: string;
-                dropCover: string;
+                dropDetails: {
+                  dropTitle: string;
+                  dropCover: string;
+                };
               }[];
             },
             item: Collection
           ) => {
             if (item?.dropId && !accumulator.seenDropIds.has(item.dropId)) {
               accumulator.seenDropIds.add(item.dropId);
-              accumulator.uniqueMetadata.push(item.dropMetadata);
+              accumulator.uniqueMetadata.push({
+                dropDetails: item.dropMetadata,
+              });
             }
             return accumulator;
           },

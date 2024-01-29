@@ -70,12 +70,12 @@ export const metadataMedia = (
 
     case "PublicationMetadataMediaVideo":
       return {
-        url: media.video.optimized?.uri
-          ? media.video.optimized?.uri
-          : media.video?.raw?.uri?.includes("ipfs://")
-          ? `${INFURA_GATEWAY}/ipfs/${
-              media.video?.raw?.uri?.split("ipfs://")[1]
-            }`
+        url: media.video?.raw?.uri
+          ? media.video?.raw?.uri?.includes("ipfs://")
+            ? `${INFURA_GATEWAY}/ipfs/${
+                media.video?.raw?.uri?.split("ipfs://")[1]
+              }`
+            : media.video.optimized?.uri
           : media.video?.raw?.uri,
         type: "Video",
       };

@@ -1,33 +1,42 @@
 import { Profile, Comment, Post } from "@/components/Home/types/generated";
 import { AnyAction, Dispatch } from "redux";
-import { MainNFT } from "../../NFT/types/nft.types";
 import { Collection } from "@/components/Home/types/home.types";
 import { NextRouter } from "next/router";
-import { MainVideoState } from "@/redux/reducers/mainVideoSlice";
-import { HistoryDataState } from "@/redux/reducers/hasMoreHistoryReducer";
+import { HistoryDataState } from "@/redux/reducers/historyDataReducer";
+import { SetStateAction } from "react";
+import { ChannelsState } from "@/redux/reducers/channelsSlice";
+import { CollectionInfoState } from "@/redux/reducers/collectionInfoSlice";
+
+export enum Viewer {
+  Collect = "collect",
+  Sampler = "sampler",
+  Autograph = "autograph",
+  Chat = "chat",
+  Stream = "stream",
+}
 
 export type InteractionProps = {
-  viewer: string;
+  viewer: Viewer;
   commentors: Comment[];
   getMorePostComments: () => Promise<void>;
   commentsLoading: boolean;
   hasMoreComments: boolean;
-  mirrorCommentLoading: boolean[];
-  likeCommentLoading: boolean[];
-  collectCommentLoading: boolean[];
-  likeVideo: (id?: string) => Promise<void>;
-  collectVideo: (id?: string) => Promise<void>;
-  mirrorVideo: (id?: string) => Promise<void>;
+  like: (id: string, hasReacted: boolean, index: number,main?: boolean) => Promise<void>;
+  collect: (
+    id: string,
+    type: string,
+    index: number,
+    main?: boolean
+  ) => Promise<void>;
+  mirror: (id: string, index: number, main?: boolean) => Promise<void>;
   dispatch: Dispatch<AnyAction>;
   lensProfile: Profile | undefined;
-  commentId: string;
   collectors: any[];
   collectLoading: boolean;
   getMorePostCollects: () => Promise<void>;
   hasMoreCollects: boolean;
   router: NextRouter;
-  dispatchVideos: Post[];
-  mainVideo: MainVideoState;
+  allVideos: ChannelsState;
   historyLoading: boolean;
   historySwitch: boolean;
   historyData: HistoryDataState;
@@ -39,31 +48,47 @@ export type InteractionProps = {
   setCurrency: (e: string) => void;
   totalAmount: number;
   approved: boolean;
-  mainNFT: MainNFT | undefined;
   approveSpend: () => Promise<void>;
   buyNFT: () => void;
   purchaseLoading: boolean;
   isCreator: boolean;
-  action: string;
-  collections: Collection[];
+  setSecondaryComment: (e: SetStateAction<string>) => void;
+  secondaryComment: string;
+  collectionInfo: CollectionInfoState;
+  interactionsLoading: {
+    comment: boolean;
+    like: boolean;
+    mirror: boolean;
+    collect: boolean;
+  }[];
+  action: Options;
 };
 
 export type CommentsProps = {
   commentors: Comment[];
   video: Post;
+  interactionsLoading: {
+    comment: boolean;
+    like: boolean;
+    mirror: boolean;
+    collect: boolean;
+  }[];
   getMorePostComments: () => Promise<void>;
   commentsLoading: boolean;
   hasMoreComments: boolean;
-  mirrorCommentLoading: boolean[];
-  likeCommentLoading: boolean[];
-  collectCommentLoading: boolean[];
-  likeComment: (id?: string) => Promise<void>;
-  collectComment: (id?: string) => Promise<void>;
-  mirrorComment: (id?: string) => Promise<void>;
+  like: (id: string, hasReacted: boolean, index: number,main?: boolean) => Promise<void>;
+  collect: (
+    id: string,
+    type: string,
+    index: number,
+    main?: boolean
+  ) => Promise<void>;
+  mirror: (id: string, index: number, main?: boolean) => Promise<void>;
   dispatch: Dispatch<AnyAction>;
   lensProfile: Profile | undefined;
-  commentId: string;
   router: NextRouter;
+  setSecondaryComment: (e: SetStateAction<string>) => void;
+  secondaryComment: string;
 };
 
 export type AccountProps = {
@@ -76,11 +101,10 @@ export type FulfillmentProps = {
   setCurrency: (e: string) => void;
   totalAmount: number;
   approved: boolean;
-  mainNFT: MainNFT | undefined;
   approveSpend: () => Promise<void>;
   buyNFT: () => void;
   purchaseLoading: boolean;
-  collections: Collection[];
+  collectionInfo: CollectionInfoState;
   dispatch: Dispatch<AnyAction>;
   router: NextRouter;
   address: `0x${string}` | undefined;
@@ -93,24 +117,12 @@ export type CollectorsProps = {
   hasMoreCollects: boolean;
 };
 
-export interface FollowArgs {
-  follower: string;
-  profileIds: [string];
-  datas: [any];
-  sig: {
-    v: any;
-    r: any;
-    s: any;
-    deadline: any;
-  };
-}
-
 export type PurchaseProps = {
   approved: boolean;
   currency: string;
   setCurrency: (e: string) => void;
   totalAmount: number;
-  mainNFT: MainNFT | undefined | Collection;
+  mainNFT: Collection;
   approveSpend: () => Promise<void>;
   buyNFT: () => void;
   purchaseLoading: boolean;
@@ -144,14 +156,6 @@ export interface Sub {
   amount: string;
 }
 
-export type useHistoryResults = {
-  historyLoading: boolean;
-  historySwitch: boolean;
-  setHistorySwitch: (e: boolean) => void;
-  getMoreUserHistory: () => Promise<void>;
-  getMoreBuyerHistory: () => Promise<void>;
-};
-
 export type HistoryProps = {
   historyData: HistoryDataState;
   historyLoading: boolean;
@@ -160,7 +164,6 @@ export type HistoryProps = {
   getMoreUserHistory: () => Promise<void>;
   getMoreBuyerHistory: () => Promise<void>;
 };
-
 
 export type SwitchProps = {
   historyData: HistoryDataState;
@@ -176,16 +179,21 @@ export type SwitchProps = {
   setCurrency: (e: string) => void;
   totalAmount: number;
   approved: boolean;
-  mainNFT: MainNFT | undefined;
   approveSpend: () => Promise<void>;
   buyNFT: () => void;
   purchaseLoading: boolean;
   profile: Profile | undefined;
   isCreator: boolean;
-  action: string;
-  collections: Collection[];
+  action: Options;
+  collectionInfo: CollectionInfoState;
 };
 
 export type OptionsProps = {
   router: NextRouter;
 };
+
+export enum Options {
+  Account = "account",
+  Fulfillment = "fulfillment",
+  History = "history",
+}

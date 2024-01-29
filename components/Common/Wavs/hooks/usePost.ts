@@ -1,18 +1,10 @@
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "@/lib/constants";
-import {
-  ClipboardEvent,
-  FormEvent,
-  KeyboardEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import LensHubProxy from "../../../../abis/LensHubProxy.json";
 import handleIndexCheck from "@/lib/helpers/handleIndexCheck";
 import broadcast from "@/graphql/lens/mutations/broadcast";
 import { omit } from "lodash";
 import uploadPostContent from "@/lib/helpers/uploadPostContent";
-import { getPostData, removePostData, setPostData } from "@/lib/lens/utils";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import getPostHTML from "@/lib/helpers/commentHTML";
 import {
@@ -24,17 +16,11 @@ import {
   LimitType,
   Profile,
   RelaySuccess,
-  SimpleCollectOpenActionModuleInput,
 } from "@/components/Home/types/generated";
 import getCaretPos from "@/lib/helpers/getCaretPos";
 import { createPostTypedData } from "@/graphql/lens/mutations/post";
-import { MediaType, UploadedMedia } from "../types/wavs.types";
 import { searchProfile } from "@/graphql/lens/queries/search";
-import { setCollectOpen } from "@/redux/reducers/collectOpenSlice";
-import { setPublicationImages } from "@/redux/reducers/publicationImageSlice";
 import { setMakePost } from "@/redux/reducers/makePostSlice";
-import { setPostSent } from "@/redux/reducers/postSentSlice";
-import { setImageLoadingRedux } from "@/redux/reducers/imageLoadingSlice";
 import {
   PublicClient,
   SignTypedDataParameters,
@@ -44,81 +30,44 @@ import {
 import { polygon } from "viem/chains";
 import { createQuoteTypedData } from "@/graphql/lens/mutations/quote";
 import { AnyAction, Dispatch } from "redux";
+import {
+  PostCollectGifState,
+  setPostCollectGif,
+} from "@/redux/reducers/postCollectGifSlice";
+import cleanCollect from "@/lib/helpers/cleanCollect";
 
 const useMakePost = (
   address: `0x${string}` | undefined,
   publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
-  collectOpen: boolean,
-  collectModuleType: SimpleCollectOpenActionModuleInput | undefined,
-  imagesUploaded: UploadedMedia[],
-  uploadImage: (
-    e: FormEvent<Element> | File[],
-    pasted?: boolean | undefined,
-    feed?: boolean | undefined
-  ) => Promise<void>
+  postCollectGif: PostCollectGifState
 ) => {
+  const [mediaLoading, setMediaLoading] = useState<
+    {
+      image: boolean;
+      video: boolean;
+    }[]
+  >([
+    {
+      image: false,
+      video: false,
+    },
+  ]);
   const [postLoading, setPostLoading] = useState<boolean>(false);
   const [postDescription, setPostDescription] = useState<string>("");
   const [caretCoord, setCaretCoord] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
   });
-  const [gifOpen, setGifOpen] = useState<boolean>(false);
   const [profilesOpen, setProfilesOpen] = useState<boolean>(false);
   const textElement = useRef<HTMLTextAreaElement>(null);
   const preElement = useRef<HTMLPreElement>(null);
   const [mentionProfiles, setMentionProfiles] = useState<Profile[]>([]);
-  const [results, setResults] = useState<any>([]);
-  const [gifs, setGifs] = useState<UploadedMedia[]>(
-    JSON.parse(getPostData() || "{}").images || []
-  );
-  const [searchGif, setSearchGif] = useState<string>("");
   const [postHTML, setPostHTML] = useState<string>("");
-  const [contentURI, setContentURI] = useState<string>();
-
-  const handleGif = (e: FormEvent): void => {
-    setSearchGif((e.target as HTMLFormElement).value);
-  };
-
-  const handleGifSubmit = async (): Promise<void> => {
-    const getGifs = await fetch("/api/giphy", {
-      method: "POST",
-      body: JSON.stringify(searchGif),
-    });
-    const allGifs = await getGifs.json();
-    setResults(allGifs?.json?.results);
-  };
-
-  const handleSetGif = (result: any): void => {
-    if ((imagesUploaded as any)?.length < 4) {
-      setGifs([
-        ...(imagesUploaded as any),
-        {
-          cid: result,
-          type: MediaType.Gif,
-        },
-      ]);
-      const postStorage = JSON.parse(getPostData() || "{}");
-      setPostData(
-        JSON.stringify({
-          ...postStorage,
-          images: [
-            ...(imagesUploaded as any),
-            {
-              cid: result,
-              type: MediaType.Gif,
-            },
-          ],
-        })
-      );
-    }
-  };
 
   const handleKeyDownDelete = (e: KeyboardEvent<Element>) => {
     const highlightedContent = document.querySelector("#highlighted-content3")!;
     const selection = window.getSelection();
-    const postStorage = JSON.parse(getPostData() || "{}");
     if (e.key === "Backspace" && selection?.toString() !== "") {
       const start = textElement.current!.selectionStart;
       const end = textElement.current!.selectionEnd;
@@ -126,13 +75,6 @@ const useMakePost = (
       if (start === 0 && end === textElement.current!.value?.length) {
         setPostDescription("");
         setPostHTML("");
-        // highlightedContent.innerHTML = "";
-        setPostData(
-          JSON.stringify({
-            ...postStorage,
-            post: "",
-          })
-        );
       } else {
         const selectedText = selection!.toString();
         const selectedHtml = highlightedContent.innerHTML.substring(start, end);
@@ -152,13 +94,6 @@ const useMakePost = (
         setPostHTML(newHTML);
         setPostDescription(newDescription);
         (e.currentTarget! as any).value = newDescription;
-        // highlightedContent.innerHTML = newHTML;
-        setPostData(
-          JSON.stringify({
-            ...postStorage,
-            post: newDescription,
-          })
-        );
       }
     } else if (
       e.key === "Backspace" &&
@@ -166,13 +101,7 @@ const useMakePost = (
       postHTML?.length === 0
     ) {
       (e.currentTarget! as any).value = "";
-      // highlightedContent.innerHTML = "";
-      setPostData(
-        JSON.stringify({
-          ...postStorage,
-          post: "",
-        })
-      );
+
       e.preventDefault();
     }
   };
@@ -184,13 +113,6 @@ const useMakePost = (
       : e.target.value;
     setPostHTML(getPostHTML(e, resultElement as Element));
     setPostDescription(newValue);
-    const postStorage = JSON.parse(getPostData() || "{}");
-    setPostData(
-      JSON.stringify({
-        ...postStorage,
-        post: e.target.value,
-      })
-    );
     if (
       e.target.value.split(" ")[e.target.value.split(" ")?.length - 1][0] ===
         "@" &&
@@ -225,16 +147,21 @@ const useMakePost = (
     setPostLoading(false);
     setPostDescription("");
     setPostHTML("");
-    setGifs([]);
-    dispatch(setPublicationImages([]));
-    dispatch(setCollectOpen(false));
-    setGifOpen(false);
-    // (document as any).querySelector("#highlighted-content").innerHTML = "";
-    removePostData();
     dispatch(
       setIndexModal({
         actionValue: true,
         actionMessage: "Indexing Interaction",
+      })
+    );
+
+    const newMedia = { ...postCollectGif?.media };
+    delete newMedia?.[postCollectGif?.id!];
+    const newTypes = { ...postCollectGif?.collectTypes };
+    delete newTypes?.[postCollectGif?.id!];
+    dispatch(
+      setPostCollectGif({
+        actionCollectTypes: newTypes,
+        actionMedia: newMedia,
       })
     );
   };
@@ -244,7 +171,8 @@ const useMakePost = (
       (!postDescription ||
         postDescription === "" ||
         postDescription.trim()?.length < 0) &&
-      (!imagesUploaded?.length || imagesUploaded?.length < 1)
+      (!postCollectGif?.media?.[postCollectGif?.id!]?.length ||
+        postCollectGif?.media?.[postCollectGif?.id!]?.length < 1)
     ) {
       return;
     }
@@ -266,24 +194,34 @@ const useMakePost = (
       id: string;
     try {
       const contentURIValue = await uploadPostContent(
-        imagesUploaded,
         postDescription,
-        setContentURI,
-        contentURI,
-        dispatch
+        postCollectGif?.media?.[postCollectGif?.id!] || []
       );
+
+      const cleanedAction = postCollectGif?.collectTypes?.[postCollectGif?.id!]
+        ? cleanCollect([
+            {
+              collectOpenAction: {
+                simpleCollectOpenAction:
+                  postCollectGif?.collectTypes?.[postCollectGif?.id!],
+              },
+            },
+          ])
+        : [
+            {
+              collectOpenAction: {
+                simpleCollectOpenAction: {
+                  followerOnly: false,
+                },
+              },
+            },
+          ];
 
       if (quote) {
         const data = await createQuoteTypedData({
           quoteOn: quote,
-          contentURI: "ipfs://" + contentURIValue,
-          openActionModules: [
-            {
-              collectOpenAction: {
-                simpleCollectOpenAction: collectModuleType,
-              },
-            },
-          ],
+          contentURI: contentURIValue,
+          openActionModules: cleanedAction,
         });
         typedData = data.data?.createOnchainQuoteTypedData
           ?.typedData as CreateOnchainQuoteEip712TypedData;
@@ -298,13 +236,7 @@ const useMakePost = (
       } else {
         const data = await createPostTypedData({
           contentURI: "ipfs://" + contentURIValue,
-          openActionModules: [
-            {
-              collectOpenAction: {
-                simpleCollectOpenAction: collectModuleType,
-              },
-            },
-          ],
+          openActionModules: cleanedAction,
         });
 
         typedData = data.data?.createOnchainPostTypedData
@@ -399,7 +331,6 @@ const useMakePost = (
           },
           dispatch
         );
-        dispatch(setPostSent(true));
       } else {
         clearPost();
         setTimeout(async () => {
@@ -417,7 +348,6 @@ const useMakePost = (
 
   const handleMentionClick = (user: Profile) => {
     setProfilesOpen(false);
-    let resultElement = document.querySelector("#highlighted-content3");
     const newHTMLPost =
       postHTML?.substring(0, postHTML.lastIndexOf("@")) +
       `@${user?.handle?.localName}</span>`;
@@ -426,72 +356,15 @@ const useMakePost = (
       `@${user?.handle?.localName}`;
     setPostDescription(newElementPost);
 
-    const postStorage = JSON.parse(getPostData() || "{}");
-    setPostData(
-      JSON.stringify({
-        ...postStorage,
-        post: newElementPost,
-      })
-    );
-
-    // if (newHTMLPost) (resultElement as any).innerHTML = newHTMLPost;
     setPostHTML(newHTMLPost);
   };
-
-  const handleImagePaste = async (e: ClipboardEvent<HTMLTextAreaElement>) => {
-    dispatch(setImageLoadingRedux(true));
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    let files: File[] = [];
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf("image") !== -1) {
-        e.preventDefault();
-        e.stopPropagation();
-        const file = items[i].getAsFile();
-        files.push(file as File); // Add the File to the array.
-      }
-    }
-    if (files.length > 0) {
-      await uploadImage(files, true);
-      dispatch(setImageLoadingRedux(false));
-    } else {
-      dispatch(setImageLoadingRedux(false));
-    }
-  };
-
-  useEffect(() => {
-    const savedData = getPostData();
-    if (savedData && JSON.parse(savedData)?.post) {
-      setPostDescription(JSON.parse(savedData).post);
-      let resultElement = document.querySelector("#highlighted-content3");
-      if (
-        JSON.parse(savedData)?.post[JSON.parse(savedData).post?.length - 1] ==
-        "\n"
-      ) {
-        JSON.parse(savedData).post += " ";
-      }
-      setPostHTML(
-        getPostHTML(JSON.parse(savedData).post, resultElement as Element, true)
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    dispatch(setPublicationImages(gifs));
-  }, [gifs]);
-
-  useEffect(() => {
-    if (searchGif === "" || searchGif === " ") {
-      setResults([]);
-    }
-  }, [searchGif]);
 
   useEffect(() => {
     if (document.querySelector("#highlighted-content3")) {
       document.querySelector("#highlighted-content3")!.innerHTML =
         postHTML.length === 0 ? "Have something to say?" : postHTML;
     }
-  }, [postHTML, gifOpen, collectOpen]);
+  }, [postHTML]);
 
   return {
     postDescription,
@@ -502,18 +375,11 @@ const useMakePost = (
     mentionProfiles,
     profilesOpen,
     handleMentionClick,
-    handleGifSubmit,
-    handleGif,
-    results,
-    gifs,
-    handleSetGif,
     handleKeyDownDelete,
-    gifOpen,
-    setGifOpen,
-    collectOpen,
     handlePost,
     preElement,
-    handleImagePaste,
+    mediaLoading,
+    setMediaLoading,
   };
 };
 

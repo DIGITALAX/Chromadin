@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import Comments from "./Comments";
 import Collectors from "./Collectors";
-import { InteractionProps } from "../types/interactions.types";
+import { InteractionProps, Viewer } from "../types/interactions.types";
 import Image from "next/image";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import lodash from "lodash";
@@ -18,18 +18,13 @@ const Interactions: FunctionComponent<InteractionProps> = ({
   getMorePostCollects,
   hasMoreCollects,
   hasMoreComments,
-  mirrorVideo,
-  collectVideo,
-  likeVideo,
-  mirrorCommentLoading,
-  likeCommentLoading,
-  collectCommentLoading,
+  mirror,
+  collect,
+  like,
   router,
   dispatch,
   lensProfile,
-  commentId,
-  dispatchVideos,
-  mainVideo,
+  allVideos,
   address,
   currency,
   setCurrency,
@@ -43,18 +38,20 @@ const Interactions: FunctionComponent<InteractionProps> = ({
   setHistorySwitch,
   getMoreBuyerHistory,
   getMoreUserHistory,
-  action,
-  mainNFT,
-  collections,
   isCreator,
   historyData,
+  interactionsLoading,
+  action,
+  collectionInfo,
+  secondaryComment,
+  setSecondaryComment,
 }): JSX.Element => {
   return (
     <div className="relative w-full lg:w-80 lg:shrink-0 xl:h-full flex-col border border-white h-100 lg:h-128 xl:min-h-[55rem] flex overflow-y-scroll">
       <div className="relative w-full h-full flex flex-col bg-verde">
         <div className="relative w-full h-fit flex flex-row py-2 bg-black rounded-tl-xl border-b border-white">
           <div className="relative w-full h-fit font-arcade text-white flex justify-center text-sm uppercase">
-            {viewer !== "collect" ? "STREAM CHAT" : "EMBRACE THE DIN"}
+            {viewer !== Viewer.Collect ? "STREAM CHAT" : "EMBRACE THE DIN"}
           </div>
           <div className="relative w-fit h-full align-center flex pl-2 rotate-180">
             <Image
@@ -66,32 +63,31 @@ const Interactions: FunctionComponent<InteractionProps> = ({
             />
           </div>
         </div>
-        {viewer !== "collect" ? (
+        {viewer !== Viewer.Collect ? (
           <Comments
             commentors={commentors}
             getMorePostComments={getMorePostComments}
             commentsLoading={commentsLoading}
             video={
-              lodash.find(dispatchVideos, {
-                id: mainVideo.id,
+              lodash.find(allVideos?.channels, {
+                id: allVideos?.main?.video?.id,
               })!
             }
+            secondaryComment={secondaryComment}
+            setSecondaryComment={setSecondaryComment}
             hasMoreComments={hasMoreComments}
-            mirrorComment={mirrorVideo}
-            collectComment={collectVideo}
-            likeComment={likeVideo}
-            likeCommentLoading={likeCommentLoading}
-            mirrorCommentLoading={mirrorCommentLoading}
-            collectCommentLoading={collectCommentLoading}
+            mirror={mirror}
+            collect={collect}
+            like={like}
             dispatch={dispatch}
             lensProfile={lensProfile}
-            commentId={commentId}
             router={router}
+            interactionsLoading={interactionsLoading}
           />
         ) : (
           <Options router={router} />
         )}
-        {viewer !== "collect" ? (
+        {viewer !== Viewer.Collect ? (
           <Collectors
             collectors={collectors}
             collectLoading={collectLoading}
@@ -105,11 +101,10 @@ const Interactions: FunctionComponent<InteractionProps> = ({
             profile={lensProfile}
             totalAmount={totalAmount}
             approved={approved}
-            mainNFT={mainNFT}
+            collectionInfo={collectionInfo}
             buyNFT={buyNFT}
             approveSpend={approveSpend}
             purchaseLoading={purchaseLoading}
-            collections={collections}
             dispatch={dispatch}
             router={router}
             address={address}

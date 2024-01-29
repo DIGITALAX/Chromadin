@@ -1,4 +1,3 @@
-import { UseConnectResults } from "../types/sidebar.types";
 import { useSignMessage } from "wagmi";
 import { setLensProfile } from "@/redux/reducers/lensProfileSlice";
 import {
@@ -18,13 +17,14 @@ import { setNoHandle } from "@/redux/reducers/noHandleSlice";
 import { setIsCreator } from "@/redux/reducers/isCreatorSlice";
 import { NextRouter } from "next/router";
 import { PublicClient } from "viem";
-import { Profile } from "@/components/Home/types/generated";
-import { setConnectedRedux } from "@/redux/reducers/connectedSlice";
+import { Erc20, Profile } from "@/components/Home/types/generated";
+import { setWalletConnectedRedux } from "@/redux/reducers/walletConnectedSlice";
 import { Dispatch } from "redux";
 import { PRINT_ACCESS_CONTROL } from "@/lib/constants";
 import { OracleData } from "../../Wavs/types/wavs.types";
 import { setOracleData } from "@/redux/reducers/oracleDataSlice";
 import { getOracleData } from "@/graphql/subgraph/queries/getOracleData";
+import availableCurrencies from "@/lib/helpers/availableCurrencies";
 
 const useConnect = (
   router: NextRouter,
@@ -33,8 +33,10 @@ const useConnect = (
   dispatch: Dispatch,
   connectModalOpen: boolean,
   publicClient: PublicClient,
-  oracleData: OracleData[]
-): UseConnectResults => {
+  oracleData: OracleData[],
+  openAccountModal: (() => void) | undefined,
+  enabledCurrencies: Erc20[]
+) => {
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
 
   const getWriter = async () => {
@@ -138,9 +140,21 @@ const useConnect = (
     }
   };
 
+  const handleLogout = async (): Promise<void> => {
+    try {
+      if (openAccountModal) {
+        openAccountModal();
+      }
+      dispatch(setLensProfile(undefined));
+      removeAuthenticationToken();
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
   useEffect(() => {
     const handleAuthentication = async () => {
-      dispatch(setConnectedRedux(isConnected));
+      dispatch(setWalletConnectedRedux(isConnected));
       const newAddress = getAddress();
 
       if (
@@ -192,10 +206,17 @@ const useConnect = (
     }
   }, [address, isConnected]);
 
+  useEffect(() => {
+    if (enabledCurrencies?.length < 1) {
+      availableCurrencies(dispatch);
+    }
+  }, []);
+
   return {
     handleLensSignIn,
     handleRefreshProfile,
     signInLoading,
+    handleLogout,
   };
 };
 

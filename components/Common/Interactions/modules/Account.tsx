@@ -4,6 +4,7 @@ import Image from "next/legacy/image";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Link from "next/link";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const Account: FunctionComponent<AccountProps> = ({
   profile,
@@ -38,6 +39,7 @@ const Account: FunctionComponent<AccountProps> = ({
                   objectFit="cover"
                   className="rounded-full flex"
                   draggable={false}
+                  onError={(e) => handleImageError(e)}
                 />
               )}
             </div>
@@ -79,7 +81,7 @@ const Account: FunctionComponent<AccountProps> = ({
           Connect to Lens to View Your Account
         </div>
       )}
-      {isCreator && (
+      {isCreator && profile?.id && (
         <div className="relative w-full h-fit flex flex-col items-center justify-center p-3">
           <Link
             className="relative w-fit h-fit py-2 px-3 rounded-br-lg  rounded-tl-lg bg-offBlack border-white border font-earl text-white text-xs word-break cursor-pointer flex items-center justify-center active:scale-95 hover:opacity-70"

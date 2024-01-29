@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import Account from "./Account";
 import History from "./History";
 import Fulfillment from "./Fulfillment";
-import { SwitchProps } from "../types/interactions.types";
+import { Options, SwitchProps } from "../types/interactions.types";
 
 const Switch: FunctionComponent<SwitchProps> = ({
   dispatch,
@@ -22,27 +22,25 @@ const Switch: FunctionComponent<SwitchProps> = ({
   getMoreUserHistory,
   action,
   profile,
-  mainNFT,
-  collections,
   isCreator,
   historyData,
+  collectionInfo
 }): JSX.Element => {
   switch (action) {
-    case "account":
+    case Options.Account:
       return <Account profile={profile} isCreator={isCreator} />;
 
-    case "fulfillment":
+    case Options.Fulfillment:
       return (
         <Fulfillment
           currency={currency}
           setCurrency={setCurrency}
           totalAmount={totalAmount}
           approved={approved}
-          mainNFT={mainNFT}
           buyNFT={buyNFT}
           approveSpend={approveSpend}
           purchaseLoading={purchaseLoading}
-          collections={collections}
+          collectionInfo={collectionInfo}
           dispatch={dispatch}
           router={router}
           address={address}

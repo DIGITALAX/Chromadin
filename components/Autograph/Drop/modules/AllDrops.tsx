@@ -5,6 +5,7 @@ import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Link from "next/link";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const AllDrops: FunctionComponent<AllDropsProps> = ({
   collections,
@@ -35,6 +36,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
                 alt="pfp"
                 className="rounded-full w-full h-full flex"
                 draggable={false}
+                onError={(e) => handleImageError(e)}
               />
             )}
           </div>
@@ -43,12 +45,12 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
           </div>
         </Link>
       )}
-      <div className="relative inline-flex flex-wrap gap-5">
+      <div className="relative h-fit w-full flex flex-row flex-wrap gap-5">
         {collections?.map((collection: Collection, index: number) => {
           return (
             <div
               key={index}
-              className="flex flex-col relative w-fit h-fit pb-2 cursor-pointer hover:opacity-70"
+              className="flex flex-col relative w-full preG:w-60 h-60 pb-2 cursor-pointer hover:opacity-70"
               onClick={() =>
                 router?.push(
                   `/autograph/${
@@ -61,19 +63,22 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
                 )
               }
             >
-              <div className="relative w-60 h-60 rounded-md" id="staticLoad">
-                {collection?.collectionMetadata?.mediaTypes?.toLowerCase()?.includes(
-                  "video"
-                ) ? (
+              <div
+                className="relative w-full h-full rounded-md flex w-full"
+                id="staticLoad"
+              >
+                {collection?.collectionMetadata?.mediaTypes
+                  ?.toLowerCase()
+                  ?.includes("video") ? (
                   <video
                     muted
                     autoPlay
                     playsInline
-                    className="w-full h-full object-cover rounded-md"
+                    className="relative w-full h-full object-cover rounded-md"
                   >
                     <source
                       src={`${INFURA_GATEWAY}/ipfs/${
-                        collection?.collectionMetadata?.images?.[0]?.split(
+                        collection?.collectionMetadata?.video?.split(
                           "ipfs://"
                         )[1]
                       }`}
@@ -91,6 +96,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
                     objectFit="cover"
                     className="rounded-md"
                     draggable={false}
+                    onError={(e) => handleImageError(e)}
                   />
                 )}
                 <div className="absolute w-full h-fit flex flex-col gap-2 justify-end ml-auto items-end right-0 top-4">

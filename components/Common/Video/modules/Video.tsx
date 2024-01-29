@@ -2,11 +2,11 @@ import { FunctionComponent } from "react";
 import Controls from "@/components/Common/Video/modules/Controls";
 import { VideoProps } from "../types/controls.types";
 import Player from "./Player";
+import { Viewer } from "../../Interactions/types/interactions.types";
 
 const Video: FunctionComponent<VideoProps> = ({
   viewer,
   hasMore,
-  reactions,
   streamRef,
   formatTime,
   volume,
@@ -14,13 +14,9 @@ const Video: FunctionComponent<VideoProps> = ({
   volumeOpen,
   setVolumeOpen,
   handleHeart,
-  mirrorVideo,
-  collectVideo,
-  likeVideo,
-  mirrorLoading,
-  collectLoading,
-  likeLoading,
-  mainVideo,
+  mirror,
+  collect,
+  like,
   wrapperRef,
   progressRef,
   handleSeek,
@@ -30,25 +26,26 @@ const Video: FunctionComponent<VideoProps> = ({
   setVideosLoading,
   dispatch,
   lensProfile,
-  dispatchVideos,
+  allVideos,
+  interactionsLoading,
 }): JSX.Element => {
   return (
     <div
       className={`${
-        viewer === "autograph"
+        viewer === Viewer.Autograph
           ? "h-fit preG:h-20 z-0 relative w-full bg-offBlack"
-          : viewer === "sampler"
+          : viewer === Viewer.Sampler
           ? "absolute top-0 z-2 w-0 h-0"
-          : viewer === "collect" || viewer === "chat"
-          ? "h-28 bg-chroma bg-cover z-0 relative w-full"
+          : viewer === Viewer.Collect || viewer === Viewer.Chat
+          ? "h-fit preG:h-28 bg-chroma bg-cover z-0 relative w-full"
           : "h-[15rem] galaxy:h-[20rem] preG:h-[25rem] sm:h-[30rem] mid:h-[35.8rem] z-0 relative w-full"
       } flex gap-2 justify-center items-center`}
     >
       <div
         className={`relative w-full h-full flex gap-2 items-center justify-center ${
-          viewer === "collect" || viewer === "chat"
-            ? "flex-row bg-black/50 p-2"
-            : viewer === "autograph"
+          viewer === Viewer.Collect || viewer === Viewer.Chat
+            ? "flex-col preG:flex-row bg-black/50 p-2"
+            : viewer === Viewer.Autograph
             ? "flex-col preG:flex-row bg-offBlack p-2"
             : "flex-col"
         }`}
@@ -56,10 +53,9 @@ const Video: FunctionComponent<VideoProps> = ({
         <Player
           viewer={viewer}
           streamRef={streamRef}
-          mainVideo={mainVideo}
           volume={volume}
           wrapperRef={wrapperRef}
-          dispatchVideos={dispatchVideos}
+          allVideos={allVideos}
           fullScreen={false}
           videoSync={videoSync}
           muted={false}
@@ -69,7 +65,7 @@ const Video: FunctionComponent<VideoProps> = ({
           videosLoading={videosLoading}
           setVideosLoading={setVideosLoading}
         />
-        {viewer !== "sampler" && (
+        {viewer !== Viewer.Sampler && (
           <Controls
             formatTime={formatTime}
             volume={volume}
@@ -78,22 +74,13 @@ const Video: FunctionComponent<VideoProps> = ({
             volumeOpen={volumeOpen}
             setVolumeOpen={setVolumeOpen}
             handleHeart={handleHeart}
-            collected={mainVideo.collected}
-            mirrored={mainVideo.mirrored}
-            liked={mainVideo.liked}
-            mirrorVideo={mirrorVideo}
-            collectVideo={collectVideo}
-            likeVideo={likeVideo}
-            likeLoading={likeLoading}
-            collectLoading={collectLoading}
-            mirrorLoading={mirrorLoading}
-            mainVideo={mainVideo}
+            mirror={mirror}
+            collect={collect}
+            like={like}
+            interactionsLoading={interactionsLoading}
             progressRef={progressRef}
             handleSeek={handleSeek}
-            dispatchVideos={dispatchVideos}
-            collectAmount={reactions.collect}
-            mirrorAmount={reactions.mirror}
-            likeAmount={reactions.like}
+            allVideos={allVideos}
             videoSync={videoSync}
             dispatch={dispatch}
             hasMore={hasMore}

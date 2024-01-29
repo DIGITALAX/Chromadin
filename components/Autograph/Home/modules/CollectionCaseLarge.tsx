@@ -4,12 +4,12 @@ import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { CollectionCaseProps } from "../types/autograph.types";
 import { setMakePost } from "@/redux/reducers/makePostSlice";
+import handleImageError from "@/lib/helpers/handleImageError";
 
 const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
   router,
   collection,
   autoProfile,
-  imageLoading,
   address,
   lensProfile,
   openConnectModal,
@@ -22,7 +22,9 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
       className={`relative flex rounded-md w-full h-[40rem]`}
       id="staticLoad"
     >
-      {!collection?.collectionMetadata?.mediaTypes?.toLowerCase()?.includes("video") ? (
+      {!collection?.collectionMetadata?.mediaTypes
+        ?.toLowerCase()
+        ?.includes("video") ? (
         <Image
           src={`${INFURA_GATEWAY}/ipfs/${
             collection?.collectionMetadata?.images?.[0]?.split("ipfs://")[1]
@@ -87,6 +89,7 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
                   alt="pfp"
                   className="rounded-full w-full h-full flex"
                   draggable={false}
+                  onError={(e) => handleImageError(e)}
                 />
               )}
             </div>
@@ -135,8 +138,6 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
                   ? openConnectModal
                   : address && !lensProfile?.id
                   ? () => handleLensSignIn()
-                  : imageLoading
-                  ? () => {}
                   : () =>
                       dispatch(
                         setMakePost({

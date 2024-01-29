@@ -1,8 +1,11 @@
 import { LimitType, Profile } from "@/components/Home/types/generated";
 import { searchProfile } from "@/graphql/lens/queries/search";
-import { useState } from "react";
+import { setHistoryURLRedux } from "@/redux/reducers/historyURLSlice";
+import { NextRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { AnyAction, Dispatch } from "redux";
 
-const useSearch = () => {
+const useSearch = (router: NextRouter, dispatch: Dispatch<AnyAction>) => {
   const [profilesFound, setProfilesFound] = useState<Profile[]>([]);
   const [profilesOpenSearch, setProfilesOpenSearch] = useState<boolean>(false);
   const [searchTarget, setSearchTarget] = useState<string>("");
@@ -67,6 +70,10 @@ const useSearch = () => {
       console.error(err.message);
     }
   };
+
+  useEffect(() => {
+    dispatch(setHistoryURLRedux(router?.asPath));
+  }, []);
 
   return {
     searchProfiles,

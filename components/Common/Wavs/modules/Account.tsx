@@ -6,8 +6,10 @@ import descriptionRegex from "@/lib/helpers/descriptionRegex";
 import { IoGlobeOutline } from "react-icons/io5";
 import { MdOutlineShareLocation } from "react-icons/md";
 import { Collection } from "@/components/Home/types/home.types";
-import { setFollowerOnly } from "@/redux/reducers/followerOnlySlice";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
+import { setFollowCollect } from "@/redux/reducers/followCollectSlice";
+import handleImageError from "@/lib/helpers/handleImageError";
+
 const Account: FunctionComponent<AccountProps> = ({
   profile,
   profileCollections,
@@ -50,20 +52,16 @@ const Account: FunctionComponent<AccountProps> = ({
             className="relative w-fit h-fit flex bg-black/30 p-1 rounded-md cursor-pointer active:scale-95"
             onClick={() =>
               dispatch(
-                setFollowerOnly({
-                  actionOpen: true,
-                  actionFollowerId: profile?.id,
-                  actionId: "",
-                  actionIndex: "",
+                setFollowCollect({
+                  actionType: "follow",
+                  actionFollower: profile,
                 })
               )
             }
           >
-            {profile?.operations.isFollowedByMe?.isFinalisedOnchain
-              ? "Unfollow"
-              : "Follow"}
+            {profile?.operations?.isFollowedByMe?.value ? "Unfollow" : "Follow"}
           </div>
-          {profile?.operations.isFollowingMe?.isFinalisedOnchain && (
+          {profile?.operations.isFollowingMe?.value && (
             <div className="relative w-fit h-fit flex bg-gray-400/30 p-1 rounded-md">
               Follows You
             </div>
@@ -79,6 +77,7 @@ const Account: FunctionComponent<AccountProps> = ({
             {pfp && (
               <Image
                 src={pfp}
+                onError={(e) => handleImageError(e)}
                 className="rounded-full flex w-full h-full"
                 layout="fill"
                 objectFit="cover"
@@ -150,7 +149,7 @@ const Account: FunctionComponent<AccountProps> = ({
                   <IoGlobeOutline color="white" size={10} />
                 </div>
                 <div
-                  className="relative flex w-fit h-fit justify-center items-center cursor-pointer text-bird"
+                  className="relative flex w-fit h-fit justify-center items-center cursor-pointer text-bird break-all"
                   onClick={() =>
                     window.open(
                       profile?.metadata?.attributes
@@ -176,7 +175,7 @@ const Account: FunctionComponent<AccountProps> = ({
               </div>
             )}
           </div>
-          <div className="relative w-full h-fit flex flex-row gap-2 items-start justify-start sm:justify-end text-gray-400">
+          <div className="relative w-full h-fit flex flex-row gap-2 items-start justify-start sm:justify-end text-gray-400 flex-wrap">
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 Collects
