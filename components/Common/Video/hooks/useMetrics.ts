@@ -9,7 +9,10 @@ import { Post, Profile } from "@/components/Home/types/generated";
 import { KINORA_METRICS, KINORA_QUEST_DATA } from "@/lib/constants";
 import { getPublications } from "@/graphql/lens/queries/getVideos";
 import { getPublication } from "@/graphql/lens/queries/getPublication";
-import { getVideoActivity } from "@/graphql/subgraph/queries/getQuests";
+import {
+  getPlayerData,
+  getVideoActivity,
+} from "@/graphql/subgraph/queries/getQuests";
 
 const useMetrics = (
   dispatch: Dispatch,
@@ -28,7 +31,14 @@ const useMetrics = (
   >();
   const kinora = Kinora.getInstance(apolloClient);
   const handleMetricsAdd = async () => {
-    if (!lensProfile?.id || !address || !currentVideo) setMetricsLoading(true);
+    if (!lensProfile?.id || !address || !currentVideo) return;
+
+    const data = await getPlayerData(parseInt(lensProfile?.id, 16));
+    if (data?.data?.players?.length > 0) {
+      return;
+    }
+
+    setMetricsLoading(true);
     try {
       await (window as any).ethereum.request({ method: "eth_requestAccounts" });
       const provider = new ethers.providers.Web3Provider(
