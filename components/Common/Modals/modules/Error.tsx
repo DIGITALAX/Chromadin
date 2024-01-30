@@ -1,10 +1,9 @@
 import { setError } from "@/redux/reducers/errorSlice";
 import { FunctionComponent } from "react";
 import { ImCross } from "react-icons/im";
-import { useDispatch } from "react-redux";
+import { ErrorProps } from "../types/modals.types";
 
-const Error: FunctionComponent = (): JSX.Element => {
-  const dispatch = useDispatch();
+const Error: FunctionComponent<ErrorProps> = ({ dispatch }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
       <div className="relative w-full md:w-[30vw] h-fit col-start-1 place-self-center bg-offBlack rounded-lg">

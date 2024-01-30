@@ -61,9 +61,6 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   const postCollectGif = useSelector(
     (state: RootState) => state.app.postCollectGifReducer
   );
-  const fullScreenVideo = useSelector(
-    (state: RootState) => state.app.fullScreenVideoReducer
-  );
   const viewer = useSelector(
     (state: RootState) => state.app.viewReducer?.value
   );
@@ -90,16 +87,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   );
   const { isLargeScreen } = useBar();
 
-  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
-    dispatch,
-    lensProfile,
-    allVideos,
-    fullScreenVideo,
-    videoInfo
-  );
   const {
-    streamRef,
-    formatTime,
     volume,
     handleVolumeChange,
     volumeOpen,
@@ -112,13 +100,15 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     progressRef,
     handleSeek,
     controlInteractionsLoading,
-  } = useControls(
+    setVideoControlsInfo,
+    videoControlsInfo,
+  } = useControls(dispatch, address, publicClient, allVideos, postCollectGif);
+  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
-    address,
-    publicClient,
-    fullScreenVideo,
+    lensProfile,
     allVideos,
-    postCollectGif
+    videoInfo,
+    setVideoControlsInfo
   );
   const {
     fetchMore,
@@ -303,8 +293,9 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
           />
         </Head>
         <Bar
+          setVideoControlsInfo={setVideoControlsInfo}
           interactionsLoading={controlInteractionsLoading}
-          videoSync={fullScreenVideo}
+          videoSync={videoControlsInfo}
           allVideos={allVideos}
           router={router}
           openConnectModal={openConnectModal}
@@ -318,8 +309,6 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
           handleSearchChoose={handleSearchChoose}
           isLargeScreen={isLargeScreen}
           hasMore={videoInfo?.hasMore}
-          streamRef={streamRef}
-          formatTime={formatTime}
           volume={volume}
           handleVolumeChange={handleVolumeChange}
           volumeOpen={volumeOpen}

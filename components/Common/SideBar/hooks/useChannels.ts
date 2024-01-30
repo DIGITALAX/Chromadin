@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { getPublications } from "@/graphql/lens/queries/getVideos";
-import json from "./../../../../public/videos/local.json";
 import {
   ChannelsState,
   setChannelsRedux,
@@ -13,37 +12,29 @@ import {
 } from "@/components/Home/types/generated";
 import { AnyAction, Dispatch } from "redux";
 import { setVideoInfoRedux } from "@/redux/reducers/videoInfoSlice";
-import { CHROMADIN_ID } from "@/lib/constants";
-import {
-  FullScreenVideoState,
-  setFullScreenVideo,
-} from "@/redux/reducers/fullScreenVideoSlice";
+import { CHROMADIN_ID, VIDEO_COVERS } from "@/lib/constants";
+import { VideoMetadataV3 } from "kinora-sdk/dist/@types/generated";
+import { VideoControls } from "../../Video/types/controls.types";
 
 const useChannels = (
   dispatch: Dispatch<AnyAction>,
   profile: Profile | undefined,
   allVideos: ChannelsState,
-  videoSync: FullScreenVideoState,
   videoInfo: {
     hasMore: boolean;
     paginated: string | undefined;
-  }
+  },
+  setVideoControlsInfo: (e: SetStateAction<VideoControls>) => void
 ) => {
   const [tab, setTab] = useState<number>(0);
   const [videosLoading, setVideosLoading] = useState<boolean>(false);
 
   const getVideos = async (): Promise<void> => {
-    dispatch(
-      setFullScreenVideo({
-        actionOpen: videoSync?.open,
-        actionHeart: videoSync.heart,
-        actionDuration: videoSync.duration,
-        actionCurrentTime: videoSync.currentTime,
-        actionIsPlaying: videoSync.isPlaying,
-        actionVideosLoading: true,
-        actionSeek: videoSync.seek,
-      })
-    );
+    setVideoControlsInfo((prev) => ({
+      ...prev,
+      videosLoading: true,
+    }));
+
     try {
       const data = await getPublications(
         {
@@ -59,7 +50,34 @@ const useChannels = (
       if (!data || !data?.data || data?.data.publications?.items?.length < 1) {
         return;
       }
-      const sortedArr: Post[] = [...data?.data.publications?.items] as Post[];
+
+      const sortedArr: Post[] = (data?.data?.publications?.items || [])?.map(
+        (item) =>
+          VIDEO_COVERS?.some((cov) => cov.id == (item as Post)?.id)
+            ? {
+                ...item,
+                metadata: {
+                  ...(item as Post).metadata,
+                  asset: {
+                    ...((item as Post)?.metadata as VideoMetadataV3)?.asset,
+                    cover: {
+                      ...((item as Post)?.metadata as VideoMetadataV3)?.asset
+                        ?.cover,
+                      raw: {
+                        ...((item as Post)?.metadata as VideoMetadataV3)?.asset
+                          ?.cover?.raw,
+                        uri:
+                          "ipfs://" +
+                          VIDEO_COVERS?.find(
+                            (cov) => cov.id == (item as Post)?.id
+                          )?.poster,
+                      },
+                    },
+                  },
+                },
+              }
+            : item
+      ) as Post[];
       dispatch(
         setVideoInfoRedux({
           actionHasMore: sortedArr?.length < 10 ? false : true,
@@ -69,26 +87,16 @@ const useChannels = (
       dispatch(
         setChannelsRedux({
           actionChannels: sortedArr,
-          actionMain: {
-            video: sortedArr[0],
-            local: `${json[0].link}`,
-          },
+          actionMain: sortedArr[0],
         })
       );
     } catch (err: any) {
       console.error(err.message);
     }
-    dispatch(
-      setFullScreenVideo({
-        actionOpen: videoSync.open,
-        actionHeart: videoSync.heart,
-        actionDuration: videoSync.duration,
-        actionCurrentTime: videoSync.currentTime,
-        actionIsPlaying: videoSync.isPlaying,
-        actionVideosLoading: false,
-        actionSeek: videoSync.seek,
-      })
-    );
+    setVideoControlsInfo((prev) => ({
+      ...prev,
+      videosLoading: false,
+    }));
   };
 
   const fetchMoreVideos = async (): Promise<Post[] | undefined> => {
@@ -106,10 +114,33 @@ const useChannels = (
         profile?.id
       );
 
-      const sortedArr: Post[] = [
-        ...(data?.data?.publications?.items || []),
-      ] as Post[];
-
+      const sortedArr: Post[] = (data?.data?.publications?.items || [])?.map(
+        (item) =>
+          VIDEO_COVERS?.some((cov) => cov.id == (item as Post)?.id)
+            ? {
+                ...item,
+                metadata: {
+                  ...(item as Post).metadata,
+                  asset: {
+                    ...((item as Post)?.metadata as VideoMetadataV3)?.asset,
+                    cover: {
+                      ...((item as Post)?.metadata as VideoMetadataV3)?.asset
+                        ?.cover,
+                      raw: {
+                        ...((item as Post)?.metadata as VideoMetadataV3)?.asset
+                          ?.cover?.raw,
+                        uri:
+                          "ipfs://" +
+                          VIDEO_COVERS?.find(
+                            (cov) => cov.id == (item as Post)?.id
+                          )?.poster,
+                      },
+                    },
+                  },
+                },
+              }
+            : item
+      ) as Post[];
       dispatch(
         setVideoInfoRedux({
           actionHasMore: sortedArr?.length < 10 ? false : true,

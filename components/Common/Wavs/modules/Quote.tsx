@@ -8,7 +8,6 @@ import {
 import descriptionRegex from "@/lib/helpers/descriptionRegex";
 import Image from "next/legacy/image";
 import { metadataMedia, postMetadata } from "@/lib/helpers/postMetadata";
-import ReactPlayer from "react-player";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import moment from "moment";
@@ -193,20 +192,14 @@ const Quote: FunctionComponent<QuoteProps> = ({ publication }): JSX.Element => {
                         </audio>
                       ) : media?.url?.includes("index") ? (
                         <div className="rounded-md absolute w-full h-full object-cover">
-                          <ReactPlayer
-                            url={media?.url}
+                          <video
+                            className="rounded-md w-full h-full relative object-cover"
                             controls={true}
                             muted={true}
-                            playsinline
-                            loop
-                            style={{
-                              borderRadius: "0.375rem",
-                              objectFit: "cover",
-                            }}
-                            width="100%"
-                            height="100%"
-                            className="rounded-md"
-                          />
+                            playsInline
+                          >
+                            <source src={media?.url} />
+                          </video>
                         </div>
                       ) : (
                         <video

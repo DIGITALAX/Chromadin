@@ -7,6 +7,7 @@ import moment from "moment";
 import { FeeFollowModuleSettings } from "@/components/Home/types/generated";
 import { setFollowCollect } from "@/redux/reducers/followCollectSlice";
 import { FollowCollectProps } from "../types/modals.types";
+import createProfilePicture from "@/lib/helpers/createProfilePicture";
 
 const FollowCollect: FunctionComponent<FollowCollectProps> = ({
   dispatch,
@@ -21,9 +22,23 @@ const FollowCollect: FunctionComponent<FollowCollectProps> = ({
   approved,
   approveSpend,
 }): JSX.Element => {
+  const pfp =
+    (type == "follow" ||
+      (type == "collect" &&
+        collect?.item?.followerOnly &&
+        !follower?.operations?.isFollowedByMe?.value)) &&
+    createProfilePicture(follower?.metadata?.picture);
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
-      <div className="relative w-[80vw] sm:w-[35vw] tablet:w-[20vw] h-fit max-h-[90vh] min-h-[27vh] place-self-center bg-black border border-white overflow-y-scroll rounded-lg">
+      <div
+        className={`relative w-[80vw] sm:w-[35vw] tablet:w-[20vw] h-fit max-h-[90vh]  place-self-center bg-offBlack overflow-y-scroll rounded-lg ${
+          ((type == "collect" && !collect?.item?.followerOnly) ||
+            (type == "collect" &&
+              collect?.item?.followerOnly &&
+              follower?.operations?.isFollowedByMe?.value)) &&
+          "min-h-[27vh]"
+        }`}
+      >
         <div className="relative w-full h-full flex flex-col gap-3 px-2 pt-2 pb-4 items-center justify-start">
           <div className="relative w-fit h-fit items-end justify-end ml-auto cursor-pointer flex">
             <ImCross
@@ -43,7 +58,7 @@ const FollowCollect: FunctionComponent<FollowCollectProps> = ({
             collect?.item?.followerOnly &&
             follower?.operations?.isFollowedByMe?.value) ? (
             <div
-              className={`relative rounded-md flex flex-col gap-5 w-5/6 p-2 items-center justify-center w-full h-fit font-earl text-white text-sm`}
+              className={`relative rounded-md flex flex-col gap-5 w-5/6 p-2 items-center justify-center w-full h-fit font-dosis text-white text-sm`}
             >
               <div className="relative w-fit h-fit flex items-center justify-center">
                 Ready to Collect?
@@ -95,7 +110,7 @@ const FollowCollect: FunctionComponent<FollowCollectProps> = ({
             </div>
           ) : (
             <div
-              className={`relative rounded-md flex flex-col gap-5 w-5/6 p-2 items-center justify-center w-full h-fit font-earl text-white text-sm`}
+              className={`relative rounded-md flex flex-col gap-5 w-5/6 p-2 items-center justify-center w-full h-fit font-dosis text-white text-sm`}
             >
               <div className="relative w-fit h-fit flex items-center justify-center">
                 Follow {follower?.handle?.suggestedFormatted?.localName}{" "}
@@ -104,14 +119,16 @@ const FollowCollect: FunctionComponent<FollowCollectProps> = ({
                   !follower?.operations?.isFollowedByMe?.value &&
                   "to collect"}
               </div>
-              <div className="relative w-3/4 items-center justify-center rounded-md border border-white h-40 flex">
-                <Image
-                  src={`${INFURA_GATEWAY}/ipfs/QmURwPJTVGHUmczxT37BtZ5Tkreo9spH3TUd2qXxicY3Mc`}
-                  objectFit="cover"
-                  layout="fill"
-                  className="rounded-md"
-                  draggable={false}
-                />
+              <div className="relative items-center justify-center rounded-full h-12 w-12 border border-white flex">
+                {pfp && (
+                  <Image
+                    src={pfp}
+                    objectFit="cover"
+                    layout="fill"
+                    className="rounded-full"
+                    draggable={false}
+                  />
+                )}
               </div>
               {follower?.followModule &&
                 Number(

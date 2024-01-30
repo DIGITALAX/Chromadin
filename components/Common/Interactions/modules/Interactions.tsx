@@ -70,7 +70,7 @@ const Interactions: FunctionComponent<InteractionProps> = ({
             commentsLoading={commentsLoading}
             video={
               lodash.find(allVideos?.channels, {
-                id: allVideos?.main?.video?.id,
+                id: allVideos?.main?.id,
               })!
             }
             secondaryComment={secondaryComment}

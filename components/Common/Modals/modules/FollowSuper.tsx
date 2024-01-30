@@ -13,8 +13,7 @@ const FollowSuper: FunctionComponent<SuperFollowProps> = ({
   quickProfiles,
   router,
   superCreatorLoading,
-  rain,
-  canvasRef,
+  followedSuper,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto overflow-x-scroll">
@@ -66,7 +65,7 @@ const FollowSuper: FunctionComponent<SuperFollowProps> = ({
                   >
                     {superCreatorLoading ? (
                       <AiOutlineLoading color={"white"} size={15} />
-                    ) : rain ? (
+                    ) : followedSuper ? (
                       "Followed!"
                     ) : (
                       "Super Follow"

@@ -30,9 +30,6 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const { address, isConnected } = useAccount();
   const { openAccountModal } = useAccountModal();
   const { openConnectModal, connectModalOpen } = useConnectModal();
-  const fullScreenVideo = useSelector(
-    (state: RootState) => state.app.fullScreenVideoReducer
-  );
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
@@ -75,16 +72,8 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     drop as string,
     lensProfile
   );
-  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
-    dispatch,
-    lensProfile,
-    channels,
-    fullScreenVideo,
-    videoInfo
-  );
+
   const {
-    streamRef,
-    formatTime,
     volume,
     handleVolumeChange,
     volumeOpen,
@@ -97,13 +86,15 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     progressRef,
     handleSeek,
     controlInteractionsLoading,
-  } = useControls(
+    setVideoControlsInfo,
+    videoControlsInfo,
+  } = useControls(dispatch, address, publicClient, channels, postCollectGif);
+  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
-    address,
-    publicClient,
-    fullScreenVideo,
+    lensProfile,
     channels,
-    postCollectGif
+    videoInfo,
+    setVideoControlsInfo
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -258,8 +249,9 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           />
         </Head>
         <Bar
+          setVideoControlsInfo={setVideoControlsInfo}
           interactionsLoading={controlInteractionsLoading}
-          videoSync={fullScreenVideo}
+          videoSync={videoControlsInfo}
           allVideos={channels}
           router={router}
           openConnectModal={openConnectModal}
@@ -273,8 +265,6 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           handleSearchChoose={handleSearchChoose}
           isLargeScreen={isLargeScreen}
           hasMore={videoInfo?.hasMore}
-          streamRef={streamRef}
-          formatTime={formatTime}
           volume={volume}
           handleVolumeChange={handleVolumeChange}
           volumeOpen={volumeOpen}

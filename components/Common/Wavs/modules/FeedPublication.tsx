@@ -5,7 +5,6 @@ import { FunctionComponent } from "react";
 import { FeedPublicationProps } from "../types/wavs.types";
 import descriptionRegex from "@/lib/helpers/descriptionRegex";
 import { FaRegCommentDots } from "react-icons/fa";
-import ReactPlayer from "react-player";
 import {
   Comment,
   Post,
@@ -205,23 +204,6 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
                         >
                           <source src={media?.url} />
                         </audio>
-                      ) : media?.url?.includes("index") ? (
-                        <div className="rounded-md absolute w-full h-full object-cover">
-                          <ReactPlayer
-                            url={media?.url}
-                            controls={true}
-                            muted={true}
-                            playsinline
-                            loop
-                            style={{
-                              borderRadius: "0.375rem",
-                              objectFit: "cover",
-                            }}
-                            width="100%"
-                            height="100%"
-                            className="rounded-md"
-                          />
-                        </div>
                       ) : (
                         <video
                           muted

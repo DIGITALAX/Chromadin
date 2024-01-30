@@ -1,13 +1,12 @@
 import { FunctionComponent } from "react";
 import { ImCross } from "react-icons/im";
-import { useDispatch } from "react-redux";
 import { CollectModalProps } from "../types/modals.types";
 import { setModal } from "@/redux/reducers/modalSlice";
 
 const Collect: FunctionComponent<CollectModalProps> = ({
   message,
+  dispatch,
 }): JSX.Element => {
-  const dispatch = useDispatch();
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
       <div

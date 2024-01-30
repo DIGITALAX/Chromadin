@@ -1,29 +1,25 @@
 import { LENS_CREATORS } from "@/lib/constants";
 import createFollowModule from "@/lib/helpers/createFollowModule";
 import { setModal } from "@/redux/reducers/modalSlice";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import { Profile } from "@/components/Home/types/generated";
 import followSig from "@/lib/helpers/followSig";
 import { AnyAction, Dispatch } from "redux";
-import { setRainRedux } from "@/redux/reducers/rainSlice";
 import refetchProfile from "@/lib/helpers/refetchProfile";
 
 const useSuperCreator = (
   publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
-  rain: boolean,
   quickProfiles: Profile[],
   lensProfile: Profile | undefined
 ) => {
   const [superCreatorLoading, setSuperCreatorLoading] =
     useState<boolean>(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<MutableRefObject<number | null>>(null);
-
+  const [followedSuper, setFollowedSuper] = useState<boolean>(false);
   const followSuper = async () => {
     setSuperCreatorLoading(true);
 
@@ -52,6 +48,12 @@ const useSuperCreator = (
         }
       }
 
+      if (followers?.length < 1) {
+        setFollowedSuper(true);
+        setSuperCreatorLoading(false);
+        return;
+      }
+
       try {
         const clientWallet = createWalletClient({
           chain: polygon,
@@ -67,7 +69,7 @@ const useSuperCreator = (
         );
 
         await refetchProfile(dispatch, lensProfile?.id);
-        dispatch(setRainRedux(true));
+        setFollowedSuper(true);
       } catch (err: any) {
         if (err.message.includes("You do not have enough")) {
           dispatch(
@@ -84,88 +86,7 @@ const useSuperCreator = (
     }
     setSuperCreatorLoading(false);
   };
-
-  useEffect(() => {
-    if (rain) {
-      const canvas = canvasRef.current;
-      const context = canvas?.getContext("2d");
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const particles: any[] = [];
-
-      if (canvas && context) {
-        canvas.width = width;
-        canvas.height = height;
-
-        class Particle {
-          constructor() {
-            (this as any).x = Math.random() * width;
-            (this as any).y = 0;
-            (this as any).speed = 3 + Math.random() * 7;
-            (this as any).length = 30 + Math.random() * 60;
-            (this as any).opacity = Math.random();
-          }
-
-          update() {
-            (this as any).y += (this as any).speed;
-            if ((this as any).y > height) {
-              (this as any).y = 0;
-              (this as any).x = Math.random() * width;
-            }
-          }
-
-          draw() {
-            context?.beginPath();
-            context?.moveTo((this as any).x, (this as any).y);
-            context?.lineTo(
-              (this as any).x,
-              (this as any).y + (this as any).length
-            );
-            context!.strokeStyle = `rgba(255, 215, 0, ${
-              (this as any).opacity
-            })`;
-            context?.stroke();
-          }
-        }
-        const createParticles = (count: number) => {
-          for (let i = 0; i < count; i++) {
-            particles.push(new Particle());
-          }
-        };
-
-        const updateParticles = () => {
-          context.clearRect(0, 0, width, height);
-          particles.forEach((particle) => {
-            particle.update();
-            particle.draw();
-          });
-
-          (animationRef.current as any) =
-            requestAnimationFrame(updateParticles);
-        };
-
-        createParticles(200);
-
-        (animationRef.current as any) = requestAnimationFrame(updateParticles);
-
-        const fadeOut = () => {
-          context.fillStyle = "rgba(0, 0, 0, 0.1)";
-          context.fillRect(0, 0, width, height);
-          setTimeout(() => {
-            cancelAnimationFrame(animationRef.current as any);
-          }, 4000);
-        };
-
-        fadeOut();
-
-        return () => {
-          cancelAnimationFrame(animationRef.current as any);
-        };
-      }
-    }
-  }, [rain]);
-
-  return { superCreatorLoading, followSuper, canvasRef };
+  return { superCreatorLoading, followSuper, followedSuper };
 };
 
 export default useSuperCreator;

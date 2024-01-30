@@ -38,6 +38,7 @@ module.exports = {
         shame: "#F6F5F0",
         offWhite: "#F2F2F2",
         bird: "#81A8F8",
+        cost: "#847FF2",
       },
       backgroundImage: {
         chroma:
@@ -66,6 +67,7 @@ module.exports = {
       screens: {
         galaxy: "300px",
         preG: "480px",
+        wickra: "520px",
         mid: "950px",
         tablet: "1260px",
         wrap: "1360px",

@@ -17,3 +17,12 @@ export const graphClientDash = new ApolloClient({
   link: httpLinkDash,
   cache: new InMemoryCache(),
 });
+
+const httpLinkQuest = new HttpLink({
+  uri: "https://api.thegraph.com/subgraphs/name/digitalax/kinora",
+});
+
+export const graphKinoraClient = new ApolloClient({
+  link: httpLinkQuest,
+  cache: new InMemoryCache(),
+});

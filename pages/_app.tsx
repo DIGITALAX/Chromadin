@@ -13,6 +13,13 @@ import { useRouter } from "next/router";
 import RouterChange from "@/components/Common/Loading/RouterChange";
 import Frequency from "@/components/Common/Frequency/modules/Frequency";
 import Marquee from "@/components/Common/Marquee/Marquee";
+import {
+  createReactClient,
+  LivepeerConfig,
+  studioProvider,
+} from "@livepeer/react";
+import { KinoraProvider } from "kinora-sdk";
+import { apolloClient } from "@/lib/lens/client";
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(
   [polygon],
@@ -26,6 +33,12 @@ const { connectors } = getDefaultWallets({
   appName: "Chromadin",
   chains,
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string,
+});
+
+const livepeerClient = createReactClient({
+  provider: studioProvider({
+    apiKey: process.env.NEXT_PUBLIC_LIVEPEER_STUDIO_KEY!,
+  }),
 });
 
 const config = createConfig({
@@ -84,12 +97,16 @@ export default function App({ Component, pageProps }: AppProps) {
     <Provider store={store}>
       <WagmiConfig config={config}>
         <RainbowKitProvider chains={chains}>
-          <div className="relative w-full h-full flex flex-col overflow-x-hidden">
-            <Component {...pageProps} router={router} />
-            <Frequency router={router} />
-            <Marquee />
-            <Modals router={router} />
-          </div>
+          <LivepeerConfig client={livepeerClient}>
+            <KinoraProvider playerAuthedApolloClient={apolloClient}>
+              <div className="relative w-full h-full flex flex-col overflow-x-hidden">
+                <Component {...pageProps} router={router} />
+                <Frequency router={router} />
+                <Marquee />
+                <Modals router={router} />
+              </div>
+            </KinoraProvider>
+          </LivepeerConfig>
         </RainbowKitProvider>
       </WagmiConfig>
     </Provider>

@@ -1,18 +1,14 @@
+import { Quest } from "@/components/Common/Video/types/controls.types";
 import { Post } from "@/components/Home/types/generated";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface ChannelsState {
   channels: Post[];
-  main:
-    | {
-        video: Post;
-        local: string;
-      }
-    | undefined;
+  main: Post | undefined;
 }
 
 const initialChannelsState: ChannelsState = {
-  channels: [], 
+  channels: [],
   main: undefined,
 };
 

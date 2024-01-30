@@ -8,7 +8,6 @@ import FetchMoreLoading from "../../Loading/FetchMoreLoading";
 import { CommentsProps } from "../types/interactions.types";
 import descriptionRegex from "@/lib/helpers/descriptionRegex";
 import { AiFillFastBackward, AiOutlineLoading } from "react-icons/ai";
-import ReactPlayer from "react-player";
 import {
   Comment,
   ImageMetadataV3,
@@ -241,25 +240,6 @@ const Comments: FunctionComponent<CommentsProps> = ({
                                           className="rounded-lg"
                                           onError={(e) => handleImageError(e)}
                                         />
-                                      ) : formattedImageURL.includes(
-                                          "index"
-                                        ) ? (
-                                        <div className="rounded-md absolute w-full h-full object-cover">
-                                          <ReactPlayer
-                                            url={formattedImageURL}
-                                            controls={true}
-                                            muted={true}
-                                            playsinline
-                                            loop
-                                            style={{
-                                              borderRadius: "0.375rem",
-                                              objectFit: "cover",
-                                            }}
-                                            width="100%"
-                                            height="100%"
-                                            className="rounded-md"
-                                          />
-                                        </div>
                                       ) : (
                                         <video
                                           muted

@@ -593,13 +593,19 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
+.metrics {
+  position: relative;
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+  padding-bottom: 0.5rem;
+}
+
 .close {
   position: relative;
   display: flex;
-  justify-items: end;
   width: fit-content;
   height: fit-content;
-  margin-left: auto;
   padding-bottom: 0.5rem;
 }
 

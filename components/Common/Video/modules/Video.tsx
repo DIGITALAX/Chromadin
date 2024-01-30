@@ -7,8 +7,7 @@ import { Viewer } from "../../Interactions/types/interactions.types";
 const Video: FunctionComponent<VideoProps> = ({
   viewer,
   hasMore,
-  streamRef,
-  formatTime,
+  setVideoControlsInfo,
   volume,
   handleVolumeChange,
   volumeOpen,
@@ -33,26 +32,26 @@ const Video: FunctionComponent<VideoProps> = ({
     <div
       className={`${
         viewer === Viewer.Autograph
-          ? "h-fit preG:h-20 z-0 relative w-full bg-offBlack"
+          ? "h-fit sm:h-20 z-0 relative w-full bg-offBlack"
           : viewer === Viewer.Sampler
           ? "absolute top-0 z-2 w-0 h-0"
           : viewer === Viewer.Collect || viewer === Viewer.Chat
-          ? "h-fit preG:h-28 bg-chroma bg-cover z-0 relative w-full"
-          : "h-[15rem] galaxy:h-[20rem] preG:h-[25rem] sm:h-[30rem] mid:h-[35.8rem] z-0 relative w-full"
+          ? "h-fit sm:h-28 bg-chroma bg-cover z-0 relative w-full"
+          : "h-[15rem] galaxy:h-[20rem] sm:h-[25rem] sm:h-[30rem] mid:h-[35.8rem] z-0 relative w-full"
       } flex gap-2 justify-center items-center`}
     >
       <div
         className={`relative w-full h-full flex gap-2 items-center justify-center ${
           viewer === Viewer.Collect || viewer === Viewer.Chat
-            ? "flex-col preG:flex-row bg-black/50 p-2"
+            ? "flex-col sm:flex-row bg-black/50 p-2"
             : viewer === Viewer.Autograph
-            ? "flex-col preG:flex-row bg-offBlack p-2"
+            ? "flex-col sm:flex-row bg-offBlack p-2"
             : "flex-col"
         }`}
       >
         <Player
+          setVideoControlsInfo={setVideoControlsInfo}
           viewer={viewer}
-          streamRef={streamRef}
           volume={volume}
           wrapperRef={wrapperRef}
           allVideos={allVideos}
@@ -67,7 +66,7 @@ const Video: FunctionComponent<VideoProps> = ({
         />
         {viewer !== Viewer.Sampler && (
           <Controls
-            formatTime={formatTime}
+            setVideoControlsInfo={setVideoControlsInfo}
             volume={volume}
             lensProfile={lensProfile}
             handleVolumeChange={handleVolumeChange}

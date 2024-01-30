@@ -86,9 +86,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const historyData = useSelector(
     (state: RootState) => state.app.historyDataReducer
   );
-  const fullScreenVideo = useSelector(
-    (state: RootState) => state.app.fullScreenVideoReducer
-  );
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer.data
   );
@@ -105,8 +102,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     enabledCurrencies
   );
   const { openConnectModal } = useConnectModal();
-  const { tab, setTab, fetchMoreVideos, videosLoading, setVideosLoading } =
-    useChannels(dispatch, lensProfile, allVideos, fullScreenVideo, videoInfo);
   const {
     setDropDownPriceSort,
     dropDownPriceSort,
@@ -218,8 +213,6 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     getPostComments,
   } = useInteractions(lensProfile, allVideos?.main!);
   const {
-    streamRef,
-    formatTime,
     volume,
     volumeOpen,
     setVolumeOpen,
@@ -245,11 +238,12 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     controlInteractionsLoading,
     controlMediaLoading,
     setControlMediaLoading,
+    videoControlsInfo,
+    setVideoControlsInfo,
   } = useControls(
     dispatch,
     address,
     publicClient,
-    fullScreenVideo,
     allVideos,
     postCollectGif,
     commentors,
@@ -257,6 +251,14 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     getPostComments,
     setSecondaryComment
   );
+  const { tab, setTab, fetchMoreVideos, videosLoading, setVideosLoading } =
+    useChannels(
+      dispatch,
+      lensProfile,
+      allVideos,
+      videoInfo,
+      setVideoControlsInfo
+    );
   const {
     searchProfiles,
     profilesFound,
@@ -306,7 +308,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 dispatch={dispatch}
                 allVideos={allVideos}
                 options={options}
-                videoSync={fullScreenVideo}
+                videoSync={videoControlsInfo}
                 fetchMoreVideos={fetchMoreVideos}
                 commentors={commentors}
                 getMorePostComments={getMorePostComments}
@@ -343,9 +345,8 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
               <div className="flex flex-col w-full h-full">
                 <Video
                   viewer={viewer}
+                  setVideoControlsInfo={setVideoControlsInfo}
                   hasMore={videoInfo?.hasMore}
-                  streamRef={streamRef}
-                  formatTime={formatTime}
                   volume={volume}
                   handleVolumeChange={handleVolumeChange}
                   volumeOpen={volumeOpen}
@@ -360,7 +361,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                   wrapperRef={wrapperRef}
                   progressRef={progressRef}
                   handleSeek={handleSeek}
-                  videoSync={fullScreenVideo}
+                  videoSync={videoControlsInfo}
                   fetchMoreVideos={fetchMoreVideos}
                   videosLoading={videosLoading}
                   setVideosLoading={setVideosLoading}
@@ -450,7 +451,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                   lensProfile={lensProfile}
                   mainNFT={collectionInfo?.main}
                   viewer={viewer}
-                  mainVideo={allVideos?.main?.video!}
+                  mainVideo={allVideos?.main!}
                   interactionsLoading={controlInteractionsLoading}
                   connected={walletConnected}
                   comment={comment}
@@ -486,7 +487,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
               <Channels
                 dispatch={dispatch}
                 allVideos={allVideos}
-                videoSync={fullScreenVideo}
+                videoSync={videoControlsInfo}
                 hasMore={videoInfo?.hasMore}
                 fetchMoreVideos={fetchMoreVideos}
               />

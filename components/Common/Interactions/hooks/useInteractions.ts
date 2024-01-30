@@ -8,13 +8,7 @@ import { getPublications } from "@/graphql/lens/queries/getVideos";
 import { whoActed } from "@/graphql/lens/queries/whoActed";
 import { useEffect, useState } from "react";
 
-const useInteractions = (
-  lensProfile: Profile | undefined,
-  mainVideo: {
-    video: Post;
-    local: string;
-  }
-) => {
+const useInteractions = (lensProfile: Profile | undefined, mainVideo: Post) => {
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [collectsLoading, setCollectsLoading] = useState<boolean>(false);
   const [secondaryComment, setSecondaryComment] = useState<string>("");
@@ -45,7 +39,7 @@ const useInteractions = (
               id:
                 secondaryComment !== ""
                   ? secondaryComment
-                  : mainVideo?.video?.id,
+                  : mainVideo?.id,
             },
           },
           limit: LimitType.TwentyFive,
@@ -82,7 +76,7 @@ const useInteractions = (
               id:
                 secondaryComment !== ""
                   ? secondaryComment
-                  : mainVideo.video?.id,
+                  : mainVideo?.id,
             },
           },
           limit: LimitType.TwentyFive,
@@ -108,7 +102,7 @@ const useInteractions = (
     setCollectsLoading(true);
     try {
       const collects = await whoActed({
-        on: mainVideo?.video?.id,
+        on: mainVideo?.id,
         limit: LimitType.TwentyFive,
       });
 
@@ -131,7 +125,7 @@ const useInteractions = (
     if (!collectInfo?.hasMore) return;
     try {
       const collects = await whoActed({
-        on: mainVideo?.video?.id,
+        on: mainVideo?.id,
         limit: LimitType.TwentyFive,
         cursor: collectInfo?.paginated,
       });
@@ -152,16 +146,16 @@ const useInteractions = (
   };
 
   useEffect(() => {
-    if (mainVideo?.video?.id) {
+    if (mainVideo?.id) {
       getPostCollects();
     }
-  }, [mainVideo?.video?.id, lensProfile?.id]);
+  }, [mainVideo?.id, lensProfile?.id]);
 
   useEffect(() => {
-    if (mainVideo?.video?.id || secondaryComment !== "") {
+    if (mainVideo?.id || secondaryComment !== "") {
       getPostComments();
     }
-  }, [mainVideo?.video?.id, lensProfile?.id, secondaryComment]);
+  }, [mainVideo?.id, lensProfile?.id, secondaryComment]);
 
   return {
     commentors,
@@ -175,7 +169,7 @@ const useInteractions = (
     secondaryComment,
     setSecondaryComment,
     setCommentors,
-    getPostComments
+    getPostComments,
   };
 };
 

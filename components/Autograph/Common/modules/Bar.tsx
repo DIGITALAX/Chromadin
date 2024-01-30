@@ -19,8 +19,6 @@ const Bar: FunctionComponent<BarProps> = ({
   handleSearchChoose,
   isLargeScreen,
   hasMore,
-  streamRef,
-  formatTime,
   volume,
   handleVolumeChange,
   volumeOpen,
@@ -40,6 +38,7 @@ const Bar: FunctionComponent<BarProps> = ({
   handleLogout,
   allVideos,
   interactionsLoading,
+  setVideoControlsInfo,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit md:h-24 flex flex-col justify-start items-center bg-offBlack p-3 gap-3">
@@ -57,10 +56,9 @@ const Bar: FunctionComponent<BarProps> = ({
         {isLargeScreen && (
           <div className="relative w-full flex">
             <Video
+              setVideoControlsInfo={setVideoControlsInfo}
               viewer={Viewer.Autograph}
               hasMore={hasMore}
-              streamRef={streamRef}
-              formatTime={formatTime}
               volume={volume}
               lensProfile={lensProfile}
               handleVolumeChange={handleVolumeChange}
@@ -122,10 +120,9 @@ const Bar: FunctionComponent<BarProps> = ({
       {!isLargeScreen && (
         <div className="relative w-full flex">
           <Video
+            setVideoControlsInfo={setVideoControlsInfo}
             viewer={Viewer.Autograph}
             hasMore={hasMore}
-            streamRef={streamRef}
-            formatTime={formatTime}
             volume={volume}
             handleVolumeChange={handleVolumeChange}
             volumeOpen={volumeOpen}

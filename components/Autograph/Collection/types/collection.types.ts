@@ -1,11 +1,10 @@
 import { Collection, Drop } from "@/components/Home/types/home.types";
 import { Post, Profile } from "@/components/Home/types/generated";
 import { NextRouter } from "next/dist/shared/lib/router/router";
-import { FormEvent, MouseEvent, Ref } from "react";
+import { FormEvent, MouseEvent, Ref, SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
-import ReactPlayer from "react-player";
-import { FullScreenVideoState } from "@/redux/reducers/fullScreenVideoSlice";
 import { ChannelsState } from "@/redux/reducers/channelsSlice";
+import { VideoControls } from "@/components/Common/Video/types/controls.types";
 
 export type InDropProps = {
   autoCollection: Collection | undefined;
@@ -25,14 +24,19 @@ export type BarProps = {
   searchResults: (Collection | Drop | Profile)[];
   handleSearchChoose: (chosen: Profile | Drop | Collection) => Promise<void>;
   isLargeScreen: boolean;
-  videoSync: FullScreenVideoState;
-  formatTime: (time: number) => string;
+  videoSync: VideoControls;
+  setVideoControlsInfo: (e: SetStateAction<VideoControls>) => void;
   volume: number;
   volumeOpen: boolean;
   setVolumeOpen: (volumeOpen: boolean) => void;
   handleVolumeChange: (e: FormEvent) => void;
   handleHeart: () => void;
-  like: (id: string, hasReacted: boolean, index: number, main?: boolean) => Promise<void>;
+  like: (
+    id: string,
+    hasReacted: boolean,
+    index: number,
+    main?: boolean
+  ) => Promise<void>;
   collect: (
     id: string,
     type: string,
@@ -55,7 +59,7 @@ export type BarProps = {
   fetchMoreVideos: () => Promise<Post[] | undefined>;
   videosLoading: boolean;
   setVideosLoading: (e: boolean) => void;
-  streamRef: Ref<ReactPlayer>;
+
   wrapperRef: Ref<HTMLDivElement>;
   handleLogout: () => Promise<void>;
   allVideos: ChannelsState;

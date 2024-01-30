@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import IndexingModal from "./Indexer";
 import Collect from "./Collect";
-import useControls from "../../Video/hooks/useControls";
 import { RootState } from "@/redux/store";
 import { useAccount } from "wagmi";
 import useConnect from "../../SideBar/hooks/useConnect";
 import useFollowCollect from "../../Interactions/hooks/useFollowCollect";
+import { Dispatch as KinoraDispatch } from "kinora-sdk";
 import Claim from "./Claim";
 import Error from "./Error";
 import Success from "./Success";
@@ -13,19 +13,22 @@ import ImageViewerModal from "./ImageViewer";
 import Who from "./Who";
 import useWho from "../../Wavs/hooks/useWho";
 import { NextRouter } from "next/router";
-import FullScreenVideo from "./FullScreenVideo";
-import { useRef } from "react";
 import FollowSuper from "./FollowSuper";
 import useSuperCreator from "../../Wavs/hooks/useSuperCreator";
 import Post from "./Post";
 import usePost from "../../Wavs/hooks/usePost";
-import useChannels from "../../SideBar/hooks/useChannels";
 import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
 import PostCollectGif from "./PostCollectGif";
 import FollowCollect from "./FollowCollect";
 import { Post as PostType } from "@/components/Home/types/generated";
+import Quests from "./Quests";
+import useQuests from "../../Video/hooks/useQuests";
+import Metrics from "./Metrics";
+import { apolloClient } from "@/lib/lens/client";
+import QuestGates from "./QuestGates";
+import QuestSuccess from "./QuestSuccess";
 
 const Modals = ({ router }: { router: NextRouter }) => {
   const publicClient = createPublicClient({
@@ -34,16 +37,22 @@ const Modals = ({ router }: { router: NextRouter }) => {
       `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
     ),
   });
+  const kinoraDispatch = new KinoraDispatch({
+    playerAuthedApolloClient: apolloClient,
+  });
   const { address, isConnected } = useAccount();
   const { openAccountModal } = useAccountModal();
   const { openConnectModal, connectModalOpen } = useConnectModal();
   const dispatch = useDispatch();
-  const videoRef = useRef<HTMLDivElement>(null);
   const quickProfiles = useSelector(
     (state: RootState) => state.app.quickProfilesReducer.value
   );
+  const metrics = useSelector((state: RootState) => state.app.metricsReducer);
+  const questSuccess = useSelector(
+    (state: RootState) => state.app.questSuccessReducer
+  );
+  const quests = useSelector((state: RootState) => state.app.questReducer);
   const who = useSelector((state: RootState) => state.app.whoReducer);
-  const rain = useSelector((state: RootState) => state.app.rainReducer.value);
   const indexingModal = useSelector(
     (state: RootState) => state.app.indexModalReducer
   );
@@ -56,6 +65,9 @@ const Modals = ({ router }: { router: NextRouter }) => {
   const errorModal = useSelector((state: RootState) => state.app.errorReducer);
   const lensProfile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
+  );
+  const questGates = useSelector(
+    (state: RootState) => state.app.questGatesReducer
   );
   const allVideos = useSelector(
     (state: RootState) => state.app.channelsReducer
@@ -82,9 +94,6 @@ const Modals = ({ router }: { router: NextRouter }) => {
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer.data
   );
-  const fullScreenVideo = useSelector(
-    (state: RootState) => state.app.fullScreenVideoReducer
-  );
   const superFollow = useSelector(
     (state: RootState) => state.app.superFollowReducer
   );
@@ -109,13 +118,15 @@ const Modals = ({ router }: { router: NextRouter }) => {
     lensProfile,
     followCollect
   );
-  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
-    dispatch,
-    lensProfile,
-    allVideos,
-    fullScreenVideo,
-    videoInfo
-  );
+  const { allVideoQuests, questsLoading, handleJoinQuest, joinLoading } =
+    useQuests(
+      quests,
+      lensProfile,
+      dispatch,
+      publicClient,
+      address,
+      kinoraDispatch
+    );
   const { handleLensSignIn, signInLoading } = useConnect(
     router,
     address,
@@ -127,15 +138,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
     openAccountModal,
     enabledCurrencies
   );
-  const { fullVideoRef, wrapperRef } = useControls(
-    dispatch,
-    address,
-    publicClient,
-    fullScreenVideo,
-    allVideos,
-    postCollectGif,
-    []
-  );
+
   const {
     reacters,
     mirrorers,
@@ -150,11 +153,10 @@ const Modals = ({ router }: { router: NextRouter }) => {
     hasMoreCollect,
     hasMoreMirror,
   } = useWho(who);
-  const { followSuper, superCreatorLoading, canvasRef } = useSuperCreator(
+  const { followSuper, superCreatorLoading, followedSuper } = useSuperCreator(
     publicClient,
     dispatch,
     address,
-    rain,
     quickProfiles,
     lensProfile
   );
@@ -176,19 +178,13 @@ const Modals = ({ router }: { router: NextRouter }) => {
 
   return (
     <>
-      {fullScreenVideo.open && (
-        <FullScreenVideo
+      {metrics?.open && (
+        <Metrics
+          mainVideo={allVideos?.main}
           dispatch={dispatch}
-          allVideos={allVideos}
-          streamRef={fullVideoRef}
-          wrapperRef={wrapperRef}
-          videoSync={fullScreenVideo}
-          videoRef={videoRef}
-          viewer={viewer}
-          fetchMoreVideos={fetchMoreVideos}
-          videosLoading={videosLoading}
-          setVideosLoading={setVideosLoading}
-          hasMore={videoInfo?.hasMore}
+          metricsOpen={metrics?.open}
+          lensProfile={lensProfile}
+          address={address}
         />
       )}
       {who.open && (
@@ -226,17 +222,14 @@ const Modals = ({ router }: { router: NextRouter }) => {
           router={router}
         />
       )}
-
-      {collectModal?.open && <Collect message={collectModal?.message} />}
       {superFollow?.open && (
         <FollowSuper
           dispatch={dispatch}
           followSuper={followSuper}
           quickProfiles={quickProfiles}
           router={router}
-          rain={rain}
+          followedSuper={followedSuper}
           superCreatorLoading={superCreatorLoading}
-          canvasRef={canvasRef}
         />
       )}
       {makePost.value && (
@@ -266,9 +259,6 @@ const Modals = ({ router }: { router: NextRouter }) => {
       {successModal.open && (
         <Success dispatch={dispatch} media={successModal.media} />
       )}
-      {indexingModal?.value && (
-        <IndexingModal message={indexingModal?.message} />
-      )}
       {claimModal?.value && (
         <Claim
           dispatch={dispatch}
@@ -280,13 +270,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
           lensProfile={lensProfile}
         />
       )}
-      {imageViewer?.value && (
-        <ImageViewerModal
-          image={imageViewer.image}
-          type={imageViewer.type}
-          dispatch={dispatch}
-        />
-      )}
+
       {followCollect?.type && (
         <FollowCollect
           handleUnfollow={handleUnfollow}
@@ -313,7 +297,41 @@ const Modals = ({ router }: { router: NextRouter }) => {
           handleGif={handleGif}
         />
       )}
-      {errorModal.value && <Error />}
+      {quests?.open && (
+        <Quests
+          address={address}
+          openConnectModal={openConnectModal}
+          handleLensSignIn={handleLensSignIn}
+          lensProfile={lensProfile}
+          signInLoading={signInLoading}
+          handleJoinQuest={handleJoinQuest}
+          joinLoading={joinLoading}
+          dispatch={dispatch}
+          quests={allVideoQuests}
+          video={quests?.video!}
+          questsLoading={questsLoading}
+        />
+      )}
+      {questGates?.gates && (
+        <QuestGates gates={questGates?.gates} dispatch={dispatch} />
+      )}
+      {indexingModal?.value && (
+        <IndexingModal message={indexingModal?.message} />
+      )}
+      {imageViewer?.value && (
+        <ImageViewerModal
+          image={imageViewer.image}
+          type={imageViewer.type}
+          dispatch={dispatch}
+        />
+      )}
+      {collectModal?.open && (
+        <Collect message={collectModal?.message} dispatch={dispatch} />
+      )}
+      {questSuccess?.open && (
+        <QuestSuccess dispatch={dispatch} image={questSuccess?.image} />
+      )}
+      {errorModal.value && <Error dispatch={dispatch} />}
     </>
   );
 };

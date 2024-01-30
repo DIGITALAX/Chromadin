@@ -42,9 +42,6 @@ const Collection: NextPage<{ router: NextRouter }> = ({
   const { autograph, collection } = router.query;
   const { openAccountModal } = useAccountModal();
   const { openConnectModal, connectModalOpen } = useConnectModal();
-  const fullScreenVideo = useSelector(
-    (state: RootState) => state.app.fullScreenVideoReducer
-  );
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer.data
   );
@@ -88,16 +85,8 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     autoCollection!,
     oracleData
   );
-  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
-    dispatch,
-    lensProfile,
-    channels,
-    fullScreenVideo,
-    videoInfo
-  );
+
   const {
-    streamRef,
-    formatTime,
     volume,
     handleVolumeChange,
     volumeOpen,
@@ -110,13 +99,15 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     progressRef,
     handleSeek,
     controlInteractionsLoading,
-  } = useControls(
+    setVideoControlsInfo,
+    videoControlsInfo,
+  } = useControls(dispatch, address, publicClient, channels, postCollectGif);
+  const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
-    address,
-    publicClient,
-    fullScreenVideo,
+    lensProfile,
     channels,
-    postCollectGif
+    videoInfo,
+    setVideoControlsInfo
   );
   const { isLargeScreen } = useBar();
   const pfp = createProfilePicture(autoCollection?.profile?.metadata?.picture);
@@ -287,6 +278,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
           />
         </Head>
         <Bar
+          setVideoControlsInfo={setVideoControlsInfo}
           router={router}
           interactionsLoading={controlInteractionsLoading}
           handleLogout={handleLogout}
@@ -300,8 +292,6 @@ const Collection: NextPage<{ router: NextRouter }> = ({
           handleSearchChoose={handleSearchChoose}
           isLargeScreen={isLargeScreen}
           hasMore={videoInfo?.hasMore}
-          streamRef={streamRef}
-          formatTime={formatTime}
           volume={volume}
           handleVolumeChange={handleVolumeChange}
           volumeOpen={volumeOpen}
@@ -313,7 +303,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
           wrapperRef={wrapperRef}
           progressRef={progressRef}
           handleSeek={handleSeek}
-          videoSync={fullScreenVideo}
+          videoSync={videoControlsInfo}
           fetchMoreVideos={fetchMoreVideos}
           videosLoading={videosLoading}
           setVideosLoading={setVideosLoading}
@@ -325,7 +315,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
             className={`relative w-full h-full flex flex-col lg:flex-row bg-black items-center lg:items-start justify-center gap-12 lg:gap-8 lg:pl-20 pt-10`}
           >
             <div
-              className={`relative top-10 w-5/6 h-128 flex flex-col items-center justify-center gap-3`}
+              className={`relative w-5/6 h-128 flex flex-col items-center justify-center gap-3`}
             >
               <div className="relative flex flex-col w-full h-full bg-offBlack/50 p-2 items-center justify-center">
                 <div className="relative w-full h-full flex">

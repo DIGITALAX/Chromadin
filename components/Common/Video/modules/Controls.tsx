@@ -4,14 +4,14 @@ import { FormEvent, FunctionComponent } from "react";
 import { ControlsProps } from "../types/controls.types";
 import { AiOutlineLoading } from "react-icons/ai";
 import lodash from "lodash";
-import json from "./../../../../public/videos/local.json";
-import { setFullScreenVideo } from "@/redux/reducers/fullScreenVideoSlice";
 import { Viewer } from "../../Interactions/types/interactions.types";
 import numeral from "numeral";
 import { setChannelsRedux } from "@/redux/reducers/channelsSlice";
+import formatTime from "@/lib/helpers/formatTime";
+import { setQuestRedux } from "@/redux/reducers/questSlice";
+import { setMetrics } from "@/redux/reducers/metricsSlice";
 
 const Controls: FunctionComponent<ControlsProps> = ({
-  formatTime,
   volume,
   handleVolumeChange,
   volumeOpen,
@@ -32,9 +32,10 @@ const Controls: FunctionComponent<ControlsProps> = ({
   viewer,
   lensProfile,
   interactionsLoading,
+  setVideoControlsInfo,
 }): JSX.Element => {
   const currentIndex = lodash.findIndex(allVideos?.channels, {
-    id: allVideos?.main?.video?.id,
+    id: allVideos?.main?.id,
   });
   return (
     <div
@@ -49,19 +50,14 @@ const Controls: FunctionComponent<ControlsProps> = ({
           viewer === Viewer.Autograph ? "stuck3:w-56" : "md:w-56"
         }`}
       >
-        <div className="relative flex flex-row w-full h-full items-center">
+        {/* <div className="relative flex flex-row w-full h-full items-center">
           <div
             className="relative w-4 h-4 cursor-pointer flex"
             onClick={() =>
               dispatch(
                 setFullScreenVideo({
-                  actionOpen: true,
-                  actionHeart: videoSync.heart,
-                  actionDuration: videoSync.duration,
-                  actionCurrentTime: videoSync.currentTime,
-                  actionIsPlaying: videoSync.isPlaying,
-                  actionVideosLoading: videoSync.videosLoading,
-                  actionSeek: videoSync.seek,
+                  ...videoSync,
+                  open: true,
                 })
               )
             }
@@ -74,10 +70,15 @@ const Controls: FunctionComponent<ControlsProps> = ({
               draggable={false}
             />
           </div>
-        </div>
+        </div> */}
         <div className="relative w-fit h-full flex items-center font-digi text-base text-white">
-          <span className="text-rosa">{formatTime(videoSync.currentTime)}</span>
-          /<span className="text-light">{formatTime(videoSync.duration)}</span>
+          <span className="text-rosa">
+            {formatTime(videoSync.currentTime || 0)}
+          </span>
+          /
+          <span className="text-light">
+            {formatTime(videoSync.duration || 0)}
+          </span>
         </div>
       </div>
       <div className="relative w-full h-full flex flex-col items-center justify-center">
@@ -89,16 +90,56 @@ const Controls: FunctionComponent<ControlsProps> = ({
           <div
             className="absolute h-full bg-white/80 rounded-sm"
             style={{
-              width: `${(videoSync.currentTime / videoSync.duration) * 100}%`,
+              width: `${
+                ((videoSync.currentTime || 0) / (videoSync.duration || 0)) * 100
+              }%`,
             }}
           />
         </div>
       </div>
       <div
-        className={`relative w-fit flex flex-row gap-3 items-center justify-center ${
+        className={`relative w-fit flex flex-row gap-3 items-center justify-center sm:flex-nowrap flex-wrap ${
           viewer === Viewer.Autograph ? "stuck3:justify-end" : "md:justify-end"
         }`}
       >
+        <div
+          className={`cursor-pointer relative w-fit items-center justify-center h-fit flex`}
+          title="Quests"
+          onClick={() =>
+            dispatch(
+              setQuestRedux({
+                actionOpen: true,
+                actionVideo: allVideos?.main,
+              })
+            )
+          }
+        >
+          <div className="relative w-5 h-5 flex items-center justify-center">
+            <Image
+              src={`${INFURA_GATEWAY}/ipfs/QmamuRQd93o5RLxs8v94MB17QLs3cwY8UuZEhQxMiiA4uM`}
+              width={20}
+              height={20}
+              alt="heart"
+              draggable={false}
+            />
+          </div>
+        </div>
+        <div
+          className={`cursor-pointer relative w-fit items-center justify-center h-fit flex`}
+          onClick={() => dispatch(setMetrics(true))}
+          title="Metrics"
+        >
+          <div className="relative w-3 h-4 flex items-center justify-center">
+            <Image
+              src={`${INFURA_GATEWAY}/ipfs/Qma1kaB25wsb9MMpGRrfTiWVERsrK3bPLLd5vW7r9M8AvR`}
+              width={20}
+              height={20}
+              alt="heart"
+              draggable={false}
+            />
+          </div>
+        </div>
+
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
           <div
             className={`cursor-pointer relative w-full h-fit ${
@@ -109,8 +150,8 @@ const Controls: FunctionComponent<ControlsProps> = ({
                 ? () => {
                     handleHeart();
                     like(
-                      allVideos?.main?.video?.id,
-                      allVideos?.main?.video?.operations?.hasReacted!,
+                      allVideos?.main?.id,
+                      allVideos?.main?.operations?.hasReacted!,
                       0,
                       true
                     );
@@ -124,7 +165,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
               <div className="relative w-3 h-3 flex items-center justify-center">
                 <Image
                   src={`${INFURA_GATEWAY}/ipfs/${
-                    allVideos?.main?.video?.operations?.hasReacted
+                    allVideos?.main?.operations?.hasReacted
                       ? "Qmc3KCKWRgN8iKwwAPM5pYkAYNeVwWu3moa5RDMDTBV6ZS"
                       : "QmSX1Y5cKp8p53jv2CnfQBuhu3dgLANjZMTyAMKtgFtvV6"
                   }`}
@@ -137,7 +178,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             )}
           </div>
           <div className="relative w-fit h-fit font-earl text-white text-xs">
-            {numeral(allVideos?.main?.video?.stats?.reactions).format("0a")}
+            {numeral(allVideos?.main?.stats?.reactions).format("0a")}
           </div>
         </div>
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
@@ -148,9 +189,10 @@ const Controls: FunctionComponent<ControlsProps> = ({
               interactionsLoading?.collect && "animate-spin"
             }`}
             onClick={() =>
+              lensProfile?.id &&
               collect(
-                allVideos?.main?.video?.id,
-                allVideos?.main?.video?.openActionModules?.[0]?.type!,
+                allVideos?.main?.id,
+                allVideos?.main?.openActionModules?.[0]?.type!,
                 0,
                 true
               )
@@ -162,7 +204,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
               <div className="relative w-3 h-3 flex items-center justify-center">
                 <Image
                   src={`${INFURA_GATEWAY}/ipfs/${
-                    allVideos?.main?.video?.operations?.hasActed?.value
+                    allVideos?.main?.operations?.hasActed?.value
                       ? "QmXG1mnHdBDXMzMZ9t1wE1Tqo8DRXQ1oNLUxpETdUw17HU"
                       : "QmRGf1cz8h9bdw9VKp9zYXZoDfy15nRA1fKc7ARhxnRPwr"
                   }`}
@@ -175,9 +217,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             )}
           </div>
           <div className="relative w-fit h-fit font-earl text-white text-xs">
-            {numeral(allVideos?.main?.video?.stats?.countOpenActions).format(
-              "0a"
-            )}
+            {numeral(allVideos?.main?.stats?.countOpenActions).format("0a")}
           </div>
         </div>
         <div className="relative flex flex-row w-fit h-fit gap-2 items-center justify-center">
@@ -185,7 +225,9 @@ const Controls: FunctionComponent<ControlsProps> = ({
             className={`${lensProfile?.id && "cursor-pointer"} relative w-fit ${
               interactionsLoading?.mirror && "animate-spin"
             }`}
-            onClick={() => mirror(allVideos?.main?.video?.id, 0, true)}
+            onClick={() =>
+              lensProfile?.id && mirror(allVideos?.main?.id, 0, true)
+            }
           >
             {interactionsLoading?.mirror ? (
               <AiOutlineLoading size={12} color="white" />
@@ -193,7 +235,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
               <div className="relative w-3 h-3 flex items-center justify-center">
                 <Image
                   src={`${INFURA_GATEWAY}/ipfs/${
-                    allVideos?.main?.video?.operations?.hasMirrored
+                    allVideos?.main?.operations?.hasMirrored
                       ? "QmcMNSnbKvUfx3B3iHBd9deZCDf7E4J8W6UtyNer3xoMsB"
                       : "QmXZi8e6UQaXm3BMMdsAUTnxoQSEr97nvuc19v7kBAgFsY"
                   }`}
@@ -206,7 +248,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             )}
           </div>
           <div className="relative w-fit h-fit font-earl text-white text-xs">
-            {numeral(allVideos?.main?.video?.stats?.mirrors).format("0a")}
+            {numeral(allVideos?.main?.stats?.mirrors).format("0a")}
           </div>
         </div>
         <div
@@ -215,25 +257,14 @@ const Controls: FunctionComponent<ControlsProps> = ({
             dispatch(
               setChannelsRedux({
                 actionChannels: allVideos?.channels,
-                actionMain: {
-                  video:
-                    allVideos?.channels[
-                      currentIndex === allVideos?.channels?.length - 1
-                        ? 0
-                        : currentIndex === 0
-                        ? allVideos?.channels?.length - 1
-                        : currentIndex - 1
-                    ],
-                  local: `${
-                    json[
-                      currentIndex === allVideos?.channels?.length - 1
-                        ? 0
-                        : currentIndex === 0
-                        ? allVideos?.channels?.length - 1
-                        : currentIndex - 1
-                    ]?.link
-                  }`,
-                },
+                actionMain:
+                  allVideos?.channels[
+                    currentIndex === allVideos?.channels?.length - 1
+                      ? 0
+                      : currentIndex === 0
+                      ? allVideos?.channels?.length - 1
+                      : currentIndex - 1
+                  ],
               })
             )
           }
@@ -249,17 +280,10 @@ const Controls: FunctionComponent<ControlsProps> = ({
         <div
           className="relative cursor-pointer w-3 h-3 flex items-center justify-center"
           onClick={() =>
-            dispatch(
-              setFullScreenVideo({
-                actionOpen: videoSync.open,
-                actionHeart: videoSync.heart,
-                actionDuration: videoSync.duration,
-                actionCurrentTime: videoSync.currentTime,
-                actionIsPlaying: videoSync.isPlaying ? false : true,
-                actionSeek: videoSync.seek,
-                actionVideosLoading: videoSync.videosLoading,
-              })
-            )
+            setVideoControlsInfo((prev) => ({
+              ...prev,
+              isPlaying: !prev?.isPlaying,
+            }))
           }
         >
           <Image
@@ -289,12 +313,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                   dispatch(
                     setChannelsRedux({
                       actionChannels: allVideos?.channels,
-                      actionMain: {
-                        video: more?.[(currentIndex + 1) % more?.length!],
-                        local: `${
-                          json[(currentIndex + 1) % more?.length!]?.link
-                        }`,
-                      },
+                      actionMain: more?.[(currentIndex + 1) % more?.length!],
                     })
                   );
 
@@ -305,16 +324,10 @@ const Controls: FunctionComponent<ControlsProps> = ({
                   dispatch(
                     setChannelsRedux({
                       actionChannels: allVideos?.channels,
-                      actionMain: {
-                        video:
-                          allVideos?.channels?.[
-                            (currentIndex + 1) % allVideos?.channels?.length
-                          ],
-                        local: `${
-                          json[(currentIndex + 1) % allVideos?.channels?.length]
-                            ?.link
-                        }`,
-                      },
+                      actionMain:
+                        allVideos?.channels?.[
+                          (currentIndex + 1) % allVideos?.channels?.length
+                        ],
                     })
                   )
           }

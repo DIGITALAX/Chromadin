@@ -3,7 +3,6 @@ import { ChannelsProps } from "../types/sidebar.types";
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
 import { Post, VideoMetadataV3 } from "@/components/Home/types/generated";
-import json from "./../../../../public/videos/local.json";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { setChannelsRedux } from "@/redux/reducers/channelsSlice";
 
@@ -85,20 +84,22 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                     dispatch(
                       setChannelsRedux({
                         actionChannels: allVideos?.channels,
-                        actionMain: {
-                          video: content,
-                          local: `${json[index].link}`,
-                        },
+                        actionMain: content,
                       })
                     )
                   }
                 >
-                  {json[index]?.poster && (
+                  {(content?.metadata as VideoMetadataV3)?.asset?.cover?.raw
+                    ?.uri && (
                     <div className="relative w-full h-32">
                       <Image
                         layout="fill"
                         objectFit="cover"
-                        src={`${INFURA_GATEWAY}/ipfs/${json[index]?.poster}`}
+                        src={`${INFURA_GATEWAY}/ipfs/${
+                          (
+                            content?.metadata as VideoMetadataV3
+                          )?.asset?.cover?.raw?.uri?.split("ipfs://")?.[1]
+                        }`}
                       />
                     </div>
                   )}

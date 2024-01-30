@@ -15,13 +15,10 @@ import {
   RefObject,
   SetStateAction,
 } from "react";
-import ReactPlayer from "react-player";
-import { AnyAction, Dispatch } from "redux";
-import { Viewer } from "../../Interactions/types/interactions.types";
-import { ChannelsState } from "@/redux/reducers/channelsSlice";
-import { FullScreenVideoState } from "@/redux/reducers/fullScreenVideoSlice";
+import { Action, AnyAction, Dispatch } from "redux";
 import { PostCollectGifState } from "@/redux/reducers/postCollectGifSlice";
-import { UploadedMedia } from "@/components/Home/types/home.types";
+import { Collection, UploadedMedia } from "@/components/Home/types/home.types";
+import { Quest } from "../../Video/types/controls.types";
 
 export type IndexingModalProps = {
   message: string | undefined;
@@ -29,6 +26,11 @@ export type IndexingModalProps = {
 
 export type CollectModalProps = {
   message: string;
+  dispatch: Dispatch<AnyAction>;
+};
+
+export type ErrorProps = {
+  dispatch: Dispatch<AnyAction>;
 };
 
 export type ImageLargeProps = {
@@ -58,29 +60,37 @@ export type WhoProps = {
   type: number;
 };
 
-export type FullScreenVideoProps = {
-  dispatch: Dispatch<AnyAction>;
-  allVideos: ChannelsState;
-  videoRef: Ref<HTMLDivElement>;
-  streamRef: Ref<ReactPlayer>;
-  wrapperRef: Ref<HTMLDivElement>;
-  videoSync: FullScreenVideoState;
-  viewer: Viewer;
-  hasMore: boolean;
-  fetchMoreVideos: () => Promise<Post[] | undefined>;
-  videosLoading: boolean;
-  setVideosLoading: (e: boolean) => void;
-};
-
 export type SuperFollowProps = {
   dispatch: Dispatch<AnyAction>;
   followSuper: () => Promise<void>;
   quickProfiles: Profile[];
   router: NextRouter;
   superCreatorLoading: boolean;
-  rain: boolean;
-  canvasRef: Ref<HTMLCanvasElement>;
+  followedSuper: boolean;
 };
+
+export type QuestGatesProps = {
+  dispatch: Dispatch<Action>;
+  gates: {
+    erc20?: {
+      address: string;
+      amount: string;
+    }[];
+    erc721?: Collection[];
+    oneOf?: boolean;
+  };
+};
+
+export enum ItemType {
+  CoinOp = "coinop",
+  Chromadin = "chromadin",
+  Legend = "legend",
+  Listener = "listener",
+  F3M = "f3m",
+  Other = "other",
+  Kinora = "kinora",
+  TheDial = "dial",
+}
 
 export type PostProps = {
   dispatch: Dispatch<AnyAction>;
@@ -232,4 +242,31 @@ export type FollowCollectProps = {
   transactionLoading: boolean;
   informationLoading: boolean;
   approved: boolean;
+};
+
+export type QuestsProps = {
+  dispatch: Dispatch<AnyAction>;
+  video: Post;
+  quests: Quest[];
+  signInLoading: boolean;
+  questsLoading: boolean;
+  handleJoinQuest: (quest: Quest) => Promise<void>;
+  joinLoading: boolean[];
+  lensProfile: Profile | undefined;
+  address: `0x${string}` | undefined;
+  openConnectModal: (() => void) | undefined;
+  handleLensSignIn: () => Promise<void>;
+};
+
+export type MetricsProps = {
+  dispatch: Dispatch<AnyAction>;
+  mainVideo: Post | undefined;
+  lensProfile: Profile | undefined;
+  address: `0x${string}` | undefined;
+  metricsOpen: boolean;
+};
+
+export type QuestSuccessProps = {
+  dispatch: Dispatch<AnyAction>;
+  image: string;
 };

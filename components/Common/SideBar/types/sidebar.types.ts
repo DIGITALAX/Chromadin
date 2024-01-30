@@ -1,18 +1,17 @@
 import { Profile, Post, Comment } from "@/components/Home/types/generated";
 import { NextRouter } from "next/router";
 import { AnyAction, Dispatch } from "redux";
-import { Collection } from "@/components/Home/types/home.types";
 import { Options, Viewer } from "../../Interactions/types/interactions.types";
 import { HistoryDataState } from "@/redux/reducers/historyDataReducer";
-import { FullScreenVideoState } from "@/redux/reducers/fullScreenVideoSlice";
 import { ChannelsState } from "@/redux/reducers/channelsSlice";
 import { CollectionInfoState } from "@/redux/reducers/collectionInfoSlice";
 import { SetStateAction } from "react";
+import { VideoControls } from "../../Video/types/controls.types";
 
 export type ChannelsProps = {
   dispatch: Dispatch<AnyAction>;
   allVideos: ChannelsState;
-  videoSync: FullScreenVideoState;
+  videoSync: VideoControls;
   fetchMoreVideos: () => Promise<Post[] | undefined>;
   hasMore: boolean;
 };
@@ -64,7 +63,7 @@ export type SideBarProps = {
   viewer: Viewer;
   allVideos: ChannelsState;
   options: Options;
-  videoSync: FullScreenVideoState;
+  videoSync: VideoControls;
   fetchMoreVideos: () => Promise<Post[] | undefined>;
   hasMoreVideos: boolean;
   collectors: any[];

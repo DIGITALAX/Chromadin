@@ -7,15 +7,10 @@ import {
   useRef,
   useState,
 } from "react";
-import ReactPlayer from "react-player";
 import { createWalletClient, custom, PublicClient } from "viem";
 import { polygon } from "viem/chains";
 import mirrorSig from "@/lib/helpers/mirrorSig";
 import { AnyAction, Dispatch } from "redux";
-import {
-  FullScreenVideoState,
-  setFullScreenVideo,
-} from "@/redux/reducers/fullScreenVideoSlice";
 import likeSig from "@/lib/helpers/likeSig";
 import {
   Comment,
@@ -41,12 +36,13 @@ import {
   PostCollectGifState,
   setPostCollectGif,
 } from "@/redux/reducers/postCollectGifSlice";
+import { VideoControls } from "../types/controls.types";
+
 
 const useControls = (
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
   publicClient: PublicClient,
-  fullScreenVideo: FullScreenVideoState,
   allVideos: ChannelsState,
   postCollectGif: PostCollectGifState,
   currentFeed?: (Post | Mirror | Quote | Comment)[],
@@ -56,12 +52,18 @@ const useControls = (
   getComments?: () => Promise<void>,
   setSecondaryComment?: (e: string) => void
 ) => {
-  const streamRef = useRef<ReactPlayer>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const fullVideoRef = useRef<ReactPlayer>(null);
+  const fullVideoRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const textElement = useRef<HTMLTextAreaElement>(null);
   const preElement = useRef<HTMLPreElement>(null);
+  const [videoControlsInfo, setVideoControlsInfo] = useState<VideoControls>({
+    duration: 0,
+    currentTime: 0,
+    heart: false,
+    isPlaying: false,
+    videosLoading: false,
+  });
   const [volume, setVolume] = useState<number>(1);
   const [profilesOpen, setProfilesOpen] = useState<boolean>(false);
   const [mentionProfiles, setMentionProfiles] = useState<Profile[]>([]);
@@ -112,38 +114,17 @@ const useControls = (
   });
 
   const handleHeart = () => {
-    dispatch(
-      setFullScreenVideo({
-        actionOpen: fullScreenVideo.open,
-        actionHeart: true,
-        actionDuration: fullScreenVideo.duration,
-        actionCurrentTime: fullScreenVideo.currentTime,
-        actionIsPlaying: fullScreenVideo.isPlaying,
-        actionVideosLoading: fullScreenVideo.videosLoading,
-        actionSeek: fullScreenVideo.seek,
-      })
-    );
-    setTimeout(() => {
-      dispatch(
-        setFullScreenVideo({
-          actionOpen: fullScreenVideo.open,
-          actionHeart: false,
-          actionDuration: fullScreenVideo.duration,
-          actionCurrentTime: fullScreenVideo.currentTime,
-          actionIsPlaying: fullScreenVideo.isPlaying,
-          actionVideosLoading: fullScreenVideo.videosLoading,
-          actionSeek: fullScreenVideo.seek,
-        })
-      );
-    }, 3000);
-  };
+    setVideoControlsInfo((prev) => ({
+      ...prev,
+      heart: true,
+    }));
 
-  const formatTime = (time: number): string => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes < 10 ? "0" : ""}${minutes}:${
-      seconds < 10 ? "0" : ""
-    }${seconds}`;
+    setTimeout(() => {
+      setVideoControlsInfo((prev) => ({
+        ...prev,
+        heart: false,
+      }));
+    }, 3000);
   };
 
   const handleVolumeChange = (e: FormEvent) => {
@@ -371,56 +352,11 @@ const useControls = (
     const progressRect = e.currentTarget.getBoundingClientRect();
     const seekPosition = (e.clientX - progressRect.left) / progressRect.width;
 
-    dispatch(
-      setFullScreenVideo({
-        actionOpen: fullScreenVideo.open,
-        actionHeart: fullScreenVideo.heart,
-        actionDuration: fullScreenVideo.duration,
-        actionCurrentTime: fullScreenVideo.currentTime,
-        actionIsPlaying: fullScreenVideo.isPlaying,
-        actionVideosLoading: fullScreenVideo.videosLoading,
-        actionSeek: seekPosition,
-      })
-    );
-    streamRef.current?.seekTo(seekPosition, "fraction");
+    setVideoControlsInfo((prev) => ({
+      ...prev,
+      currentTime: seekPosition * prev.duration,
+    }));
   };
-
-  useEffect(() => {
-    if (fullScreenVideo.seek !== 0) {
-      fullVideoRef?.current?.seekTo(fullScreenVideo.seek, "fraction");
-    }
-  }, [fullScreenVideo.seek]);
-
-  useEffect(() => {
-    if (fullScreenVideo.open) {
-      dispatch(
-        setFullScreenVideo({
-          actionOpen: fullScreenVideo.open,
-          actionHeart: fullScreenVideo.heart,
-          actionDuration: fullScreenVideo.duration,
-          actionCurrentTime: fullScreenVideo.currentTime,
-          actionIsPlaying: false,
-          actionVideosLoading: fullScreenVideo.videosLoading,
-          actionSeek: fullScreenVideo.seek,
-        })
-      );
-      streamRef?.current?.seekTo(fullScreenVideo.currentTime, "seconds");
-      fullVideoRef?.current?.seekTo(fullScreenVideo.currentTime, "seconds");
-      setTimeout(() => {
-        dispatch(
-          setFullScreenVideo({
-            actionOpen: fullScreenVideo.open,
-            actionHeart: fullScreenVideo.heart,
-            actionDuration: fullScreenVideo.duration,
-            actionCurrentTime: fullScreenVideo.currentTime,
-            actionIsPlaying: true,
-            actionVideosLoading: fullScreenVideo.videosLoading,
-            actionSeek: fullScreenVideo.seek,
-          })
-        );
-      }, 1000);
-    }
-  }, [fullScreenVideo.open]);
 
   const updateInteractions = (
     index: number,
@@ -470,8 +406,8 @@ const useControls = (
           setChannelsRedux({
             actionChannels: newItems,
             actionMain:
-              newItems[index]?.id == allVideos?.main?.video?.id
-                ? { video: newItems[index], local: allVideos?.main?.local }
+              newItems[index]?.id == allVideos?.main?.id
+                ? newItems[index]
                 : allVideos?.main,
           })
         )
@@ -712,8 +648,6 @@ const useControls = (
   }, [currentFeed]);
 
   return {
-    streamRef,
-    formatTime,
     volume,
     volumeOpen,
     setVolumeOpen,
@@ -740,6 +674,8 @@ const useControls = (
     controlInteractionsLoading,
     controlMediaLoading,
     setControlMediaLoading,
+    videoControlsInfo,
+    setVideoControlsInfo,
   };
 };
 

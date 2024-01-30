@@ -2,26 +2,28 @@ import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import lensProfileReducer from "./reducers/lensProfileSlice";
 import viewReducer from "./reducers/viewSlice";
+import questSuccessReducer from "./reducers/questSuccessSlice";
+import questGatesReducer from "./reducers/questGatesSlice";
 import indexModalReducer from "./reducers/indexModalSlice";
 import optionsReducer from "./reducers/optionsSlice";
 import oracleDataReducer from "./reducers/oracleDataSlice";
 import followCollectReducer from "./reducers/followCollectSlice";
 import modalReducer from "./reducers/modalSlice";
+import questReducer from "./reducers/questSlice";
 import postCollectGifReducer from "./reducers/postCollectGifSlice";
 import noHandleReducer from "./reducers/noHandleSlice";
 import imageViewerReducer from "./reducers/imageViewerSlice";
 import channelsReducer from "./reducers/channelsSlice";
+import metricsReducer from "./reducers/metricsSlice";
 import errorReducer from "./reducers/errorSlice";
 import successReducer from "./reducers/successSlice";
 import samplerReducer from "./reducers/samplerSlice";
 import isCreatorReducer from "./reducers/isCreatorSlice";
 import filterReducer from "./reducers/filterSlice";
 import whoReducer from "./reducers/whoSlice";
-import fullScreenVideoReducer from "./reducers/fullScreenVideoSlice";
 import quickProfilesReducer from "./reducers/quickProfilesSlice";
 import historyURLReducer from "./reducers/historyURLSlice";
 import superFollowReducer from "./reducers/superFollowSlice";
-import rainReducer from "./reducers/rainSlice";
 import makePostReducer from "./reducers/makePostSlice";
 import collectionInfoReducer from "./reducers/collectionInfoSlice";
 import videoInfoReducer from "./reducers/videoInfoSlice";
@@ -42,11 +44,9 @@ const reducer = combineReducers({
   successReducer,
   samplerReducer,
   isCreatorReducer,
-  fullScreenVideoReducer,
   quickProfilesReducer,
   historyURLReducer,
   superFollowReducer,
-  rainReducer,
   makePostReducer,
   whoReducer,
   collectionInfoReducer,
@@ -58,6 +58,10 @@ const reducer = combineReducers({
   enabledCurrenciesReducer,
   postCollectGifReducer,
   followCollectReducer,
+  questReducer,
+  metricsReducer,
+  questGatesReducer,
+  questSuccessReducer,
 });
 
 export const store = configureStore({
