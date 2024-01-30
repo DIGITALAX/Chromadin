@@ -31,7 +31,7 @@ const Metrics: FunctionComponent<MetricsProps> = ({
     >
       <div
         className={
-          "fixed z-20 w-3/5 xl:w-1/3 preG:w-1/2 w-40 h-52 preG:h-60 sm:h-72 md:h-96 p-2 sm:px-8 sm:pb-8 sm:pt-4 cursor-grab active:cursor-grabbing items-center justify-center border-4 border-black rounded-lg bg-offBlack top-40 left-0 sm:left-10 flex flex-col"
+          "fixed z-20 w-full sm:w-[55vw] tablet:w-[40vw] h-[40rem] sm:h-[20rem] max-h-[90vh] p-4 cursor-grab active:cursor-grabbing items-start border-4 border-black rounded-lg bg-offBlack top-40 left-0 sm:left-10 flex flex-col"
         }
         ref={metricsRef as any}
       >
@@ -70,7 +70,7 @@ const Metrics: FunctionComponent<MetricsProps> = ({
             </div>
           )}
         </div>
-        <div className="relative w-full h-full flex items-center justify-start flex-col gap-4">
+        <div className="relative w-full h-full flex items-center justify-start flex-col gap-4 overflow-y-scroll max-h-[35rem]">
           <div className="relative flex items-center justify-start gap-1.5 flex-col w-full h-full">
             <div className="relative w-fit h-fit flex items-center justify-center font-dosis text-xs text-white">
               On-Chain Video Metrics
