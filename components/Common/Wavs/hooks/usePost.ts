@@ -35,6 +35,8 @@ import {
   setPostCollectGif,
 } from "@/redux/reducers/postCollectGifSlice";
 import cleanCollect from "@/lib/helpers/cleanCollect";
+import { setModal } from "@/redux/reducers/modalSlice";
+import validateMetadata from "@/graphql/lens/mutations/validate";
 
 const useMakePost = (
   address: `0x${string}` | undefined,
@@ -198,6 +200,20 @@ const useMakePost = (
         postCollectGif?.media?.[postCollectGif?.id!] || []
       );
 
+      const metadata = await validateMetadata({
+        rawURI: contentURIValue,
+      });
+
+      if (!metadata?.data?.validatePublicationMetadata.valid) {
+        dispatch(
+          setModal({
+            actionOpen: true,
+            actionMessage: "Something went wrong. Try again?",
+          })
+        );
+        return;
+      }
+
       const cleanedAction = postCollectGif?.collectTypes?.[postCollectGif?.id!]
         ? cleanCollect([
             {
@@ -235,7 +251,7 @@ const useMakePost = (
         };
       } else {
         const data = await createPostTypedData({
-          contentURI: "ipfs://" + contentURIValue,
+          contentURI: contentURIValue,
           openActionModules: cleanedAction,
         });
 
