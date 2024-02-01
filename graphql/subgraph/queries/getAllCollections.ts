@@ -36,6 +36,7 @@ const COLLECTIONS = `
       profileId
       acceptedTokens
       uri
+      dropURI
       printType
       prices
       owner
@@ -89,6 +90,7 @@ query($first: Int, $skip: Int) {
     profileId
     acceptedTokens
     uri
+    dropURI
     printType
     prices
     owner
@@ -141,6 +143,7 @@ query($owner: String) {
     profileId
     acceptedTokens
     uri
+    dropURI
     printType
     prices
     owner
@@ -193,6 +196,7 @@ query($title: String) {
     profileId
     acceptedTokens
     uri
+    dropURI
     printType
     prices
     owner
@@ -245,6 +249,7 @@ query($dropId: String) {
     profileId
     acceptedTokens
     uri
+    dropURI
     printType
     prices
     owner
@@ -296,6 +301,7 @@ const COLLECTION_ID = `query($collectionId: String) {
     profileId
     acceptedTokens
     uri
+    dropURI
     printType
     prices
     owner
@@ -347,6 +353,7 @@ const COLLECTION_ONE = `query($title: String) {
     profileId
     acceptedTokens
     uri
+    dropURI
     printType
     prices
     owner

@@ -33,6 +33,7 @@ import {
 import uploadPostContent from "@/lib/helpers/uploadPostContent";
 import commentSig from "@/lib/helpers/commentSig";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
+import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 
 const useAllPosts = (
   router: NextRouter,
@@ -520,7 +521,41 @@ const useAllPosts = (
         const collections = await getCollectionsProfile(
           data?.profile?.ownedBy?.address
         );
-        setProfileCollections(collections?.data?.collectionCreateds);
+
+        const colls = await Promise.all(
+          collections?.data?.collectionCreateds?.map(
+            async (item: {
+              collectionMetadata: {};
+              dropMetadata: {};
+              dropURI: string;
+              uri: string;
+            }) => {
+              if (!item?.collectionMetadata) {
+                const data = await fetchIPFSJSON(item?.uri);
+                item = {
+                  ...item,
+                  collectionMetadata: {
+                    ...data,
+                  },
+                };
+              }
+
+              if (!item?.dropMetadata) {
+                const data = await fetchIPFSJSON(item?.dropURI);
+                item = {
+                  ...item,
+                  dropMetadata: {
+                    ...data,
+                  },
+                };
+              }
+
+              return item;
+            }
+          )
+        );
+
+        setProfileCollections(colls);
       }
 
       return data?.profile as Profile;

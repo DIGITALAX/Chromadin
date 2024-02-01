@@ -13,6 +13,7 @@ import {
   CollectionInfoState,
   setCollectionInfo,
 } from "@/redux/reducers/collectionInfoSlice";
+import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 
 const useDrop = (
   router: NextRouter,
@@ -94,6 +95,27 @@ const useDrop = (
             },
             lensConnected?.id
           );
+
+          if (!collection?.collectionMetadata) {
+            const data = await fetchIPFSJSON(collection?.uri);
+            collection = {
+              ...collection,
+              collectionMetadata: {
+                ...data,
+              },
+            };
+          }
+
+          if (!collection?.dropMetadata) {
+            const data = await fetchIPFSJSON(collection?.dropURI);
+            collection = {
+              ...collection,
+              dropMetadata: {
+                ...data,
+              },
+            };
+          }
+
 
           return {
             ...collection,

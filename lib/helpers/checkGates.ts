@@ -3,6 +3,7 @@ import { Collection } from "@/components/Home/types/home.types";
 import { getOneCollectionById } from "@/graphql/subgraph/queries/getAllCollections";
 import { getOrders } from "@/graphql/subgraph/queries/getBuyerHistory";
 import { PublicClient } from "viem";
+import fetchIPFSJSON from "./fetchIPFSJSON";
 
 const checkGates = async (
   gates: Gate,
@@ -73,8 +74,30 @@ const checkGates = async (
           (item: { subOrderCollectionIds: string[] }) =>
             item?.subOrderCollectionIds?.map(async (item: string) => {
               const data = await getOneCollectionById(item);
-              if (data?.data?.collectionCreateds?.[0]) {
-                collectionURIs?.push(data?.data?.collectionCreateds?.[0]);
+
+              let collection = data?.data?.collectionCreateds?.[0];
+
+              if (!collection?.collectionMetadata) {
+                const data = await fetchIPFSJSON(collection?.uri);
+                collection = {
+                  ...collection,
+                  collectionMetadata: {
+                    ...data,
+                  },
+                };
+              }
+
+              if (!collection?.dropMetadata) {
+                const data = await fetchIPFSJSON(collection?.dropURI);
+                collection = {
+                  ...collection,
+                  dropMetadata: {
+                    ...data,
+                  },
+                };
+              }
+              if (collection) {
+                collectionURIs?.push(collection);
               }
             })
         );

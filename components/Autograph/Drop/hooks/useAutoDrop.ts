@@ -4,6 +4,7 @@ import { getOneProfile } from "@/graphql/lens/queries/getProfile";
 import { getCollectionsDrop } from "@/graphql/subgraph/queries/getAllCollections";
 import { useEffect, useState } from "react";
 import { getDropByName } from "@/graphql/subgraph/queries/getAllDrops";
+import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 
 const useAutoDrop = (
   autograph: string,
@@ -35,8 +36,41 @@ const useAutoDrop = (
         drop?.data?.dropCreateds?.[0]?.dropId
       );
 
+      const collections = await Promise.all(
+        colls?.data?.collectionCreateds?.map(
+          async (item: {
+            uri: string;
+            dropURI: string;
+            collectionMetadata: {};
+            dropMetadata: {};
+          }) => {
+            if (!item?.collectionMetadata) {
+              const data = await fetchIPFSJSON(item?.uri);
+              item = {
+                ...item,
+                collectionMetadata: {
+                  ...data,
+                },
+              };
+            }
+
+            if (!item?.dropMetadata) {
+              const data = await fetchIPFSJSON(item?.dropURI);
+              item = {
+                ...item,
+                dropMetadata: {
+                  ...data,
+                },
+              };
+            }
+
+            return item;
+          }
+        )
+      );
+
       setDropData({
-        collections: colls?.data?.collectionCreateds,
+        collections,
         profile: prof,
       });
     } catch (err: any) {

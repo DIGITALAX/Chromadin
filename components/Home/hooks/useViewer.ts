@@ -8,7 +8,11 @@ import { AnyAction, Dispatch } from "redux";
 import toHexWithLeadingZero from "@/lib/helpers/leadingZero";
 import { Profile } from "../types/generated";
 import { getOneProfile } from "@/graphql/lens/queries/getProfile";
-import { Options, Viewer } from "@/components/Common/Interactions/types/interactions.types";
+import {
+  Options,
+  Viewer,
+} from "@/components/Common/Interactions/types/interactions.types";
+import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 
 const useViewer = (
   router: NextRouter,
@@ -50,7 +54,14 @@ const useViewer = (
 
       const collections = await Promise.all(
         data?.data?.collectionCreateds?.map(
-          async (collection: { profileId: string; pubId: string }) => {
+          async (collection: {
+            profileId: string;
+            pubId: string;
+            uri: string;
+            dropURI: string;
+            collectionMetadata: {};
+            dropMetadata: {};
+          }) => {
             const publication = await getOneProfile(
               {
                 forProfileId: `${toHexWithLeadingZero(
@@ -59,6 +70,26 @@ const useViewer = (
               },
               profile?.id
             );
+
+            if (!collection?.collectionMetadata) {
+              const data = await fetchIPFSJSON(collection?.uri);
+              collection = {
+                ...collection,
+                collectionMetadata: {
+                  ...data,
+                },
+              };
+            }
+
+            if (!collection?.dropMetadata) {
+              const data = await fetchIPFSJSON(collection?.dropURI);
+              collection = {
+                ...collection,
+                dropMetadata: {
+                  ...data,
+                },
+              };
+            }
 
             return {
               ...collection,

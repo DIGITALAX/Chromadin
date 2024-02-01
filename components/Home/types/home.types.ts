@@ -30,6 +30,7 @@ export interface Collection {
   amount: string;
   pubId: string;
   uri: string;
+  dropURI: string;
   profileId: string;
   printType: string;
   prices: string[];

@@ -5,6 +5,7 @@ import { getCollectionsProfile } from "@/graphql/subgraph/queries/getAllCollecti
 import { Profile } from "@/components/Home/types/generated";
 import { getPublication } from "@/graphql/lens/queries/getPublication";
 import toHexWithLeadingZero from "@/lib/helpers/leadingZero";
+import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 
 const useAutograph = (autograph: string, lensProfile: Profile | undefined) => {
   const [autographLoading, setAutographLoading] = useState<boolean>(false);
@@ -39,7 +40,14 @@ const useAutograph = (autograph: string, lensProfile: Profile | undefined) => {
 
       const collectionPromises = await Promise.all(
         collections?.data?.collectionCreateds?.map(
-          async (item: { profileId: string; pubId: string }) => {
+          async (item: {
+            profileId: string;
+            pubId: string;
+            collectionMetadata: {};
+            dropMetadata: {};
+            dropURI: string;
+            uri: string;
+          }) => {
             const pub = await getPublication(
               {
                 forId: `${toHexWithLeadingZero(
@@ -48,6 +56,26 @@ const useAutograph = (autograph: string, lensProfile: Profile | undefined) => {
               },
               lensProfile?.id
             );
+
+            if (!item?.collectionMetadata) {
+              const data = await fetchIPFSJSON(item?.uri);
+              item = {
+                ...item,
+                collectionMetadata: {
+                  ...data,
+                },
+              };
+            }
+
+            if (!item?.dropMetadata) {
+              const data = await fetchIPFSJSON(item?.dropURI);
+              item = {
+                ...item,
+                dropMetadata: {
+                  ...data,
+                },
+              };
+            }
 
             return {
               ...item,

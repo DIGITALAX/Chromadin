@@ -7,6 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import { getPublication } from "@/graphql/lens/queries/getPublication";
 import toHexWithLeadingZero from "@/lib/helpers/leadingZero";
+import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 
 const useAutoCollection = (
   profile: Profile | undefined,
@@ -39,16 +40,71 @@ const useAutoCollection = (
         allColls?.data?.collectionCreateds[0]?.dropId
       );
 
-      setOtherCollectionsDrop(
-        relatedCollections?.data?.collectionCreateds?.filter(
-          (item: { collectionId: string }) =>
-            item?.collectionId !==
-            allColls?.data?.collectionCreateds[0]?.collectionId
-        )
+      const colls = await Promise.all(
+        relatedCollections?.data?.collectionCreateds
+          ?.filter(
+            (item: { collectionId: string }) =>
+              item?.collectionId !==
+              allColls?.data?.collectionCreateds[0]?.collectionId
+          )
+          ?.map(
+            async (item: {
+              uri: string;
+              dropURI: string;
+              collectionMetadata: {};
+              dropMetadata: {};
+            }) => {
+              if (!item?.collectionMetadata) {
+                const data = await fetchIPFSJSON(item?.uri);
+                item = {
+                  ...item,
+                  collectionMetadata: {
+                    ...data,
+                  },
+                };
+              }
+
+              if (!item?.dropMetadata) {
+                const data = await fetchIPFSJSON(item?.dropURI);
+                item = {
+                  ...item,
+                  dropMetadata: {
+                    ...data,
+                  },
+                };
+              }
+
+              return item;
+            }
+          )
       );
 
+      setOtherCollectionsDrop(colls);
+
+      let collection = allColls?.data?.collectionCreateds?.[0];
+
+      if (!collection?.collectionMetadata) {
+        const data = await fetchIPFSJSON(collection?.uri);
+        collection = {
+          ...collection,
+          collectionMetadata: {
+            ...data,
+          },
+        };
+      }
+
+      if (!collection?.dropMetadata) {
+        const data = await fetchIPFSJSON(collection?.dropURI);
+        collection = {
+          ...collection,
+          dropMetadata: {
+            ...data,
+          },
+        };
+      }
+
       setCollection({
-        ...allColls?.data?.collectionCreateds?.[0],
+        ...collection,
         publication: pub?.data?.publication,
         profile: pub?.data?.publication?.by,
       });

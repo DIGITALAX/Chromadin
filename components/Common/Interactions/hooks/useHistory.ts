@@ -10,6 +10,7 @@ import {
   HistoryDataState,
   setHistoryDataRedux,
 } from "@/redux/reducers/historyDataReducer";
+import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
 
 const useHistory = (
   address: `0x${string}` | undefined,
@@ -34,12 +35,34 @@ const useHistory = (
             const defaultProfile = await getDefaultProfile({
               for: history.buyer,
             });
-            const collection = await getOneCollectionById(
+            const col = await getOneCollectionById(
               history?.subOrderCollectionIds?.[0]
             );
+            let collection = col?.data?.collectionCreateds?.[0];
+
+            if (!collection?.collectionMetadata) {
+              const data = await fetchIPFSJSON(collection?.uri);
+              collection = {
+                ...collection,
+                collectionMetadata: {
+                  ...data,
+                },
+              };
+            }
+
+            if (!collection?.dropMetadata) {
+              const data = await fetchIPFSJSON(collection?.dropURI);
+              collection = {
+                ...collection,
+                dropMetadata: {
+                  ...data,
+                },
+              };
+            }
+
             return {
               ...history,
-              collection: collection?.data?.collectionCreateds?.[0],
+              collection,
               profile: defaultProfile?.data?.defaultProfile,
             };
           })
@@ -75,12 +98,33 @@ const useHistory = (
             const defaultProfile = await getDefaultProfile({
               for: history.buyer,
             });
-            const collection = await getOneCollectionById(
+            const col = await getOneCollectionById(
               history?.subOrderCollectionIds?.[0]
             );
+            let collection = col?.data?.collectionCreateds?.[0];
+
+            if (!collection?.collectionMetadata) {
+              const data = await fetchIPFSJSON(collection?.uri);
+              collection = {
+                ...collection,
+                collectionMetadata: {
+                  ...data,
+                },
+              };
+            }
+
+            if (!collection?.dropMetadata) {
+              const data = await fetchIPFSJSON(collection?.dropURI);
+              collection = {
+                ...collection,
+                dropMetadata: {
+                  ...data,
+                },
+              };
+            }
             return {
               ...history,
-              collection: collection?.data?.collectionCreateds?.[0],
+              collection,
               profile: defaultProfile?.data?.defaultProfile,
             };
           })
@@ -118,12 +162,33 @@ const useHistory = (
             const defaultProfile = await getDefaultProfile({
               for: history.buyer,
             });
-            const collection = await getOneCollectionById(
+            const col = await getOneCollectionById(
               history?.subOrderCollectionIds?.[0]
             );
+            let collection = col?.data?.collectionCreateds?.[0];
+
+            if (!collection?.collectionMetadata) {
+              const data = await fetchIPFSJSON(collection?.uri);
+              collection = {
+                ...collection,
+                collectionMetadata: {
+                  ...data,
+                },
+              };
+            }
+
+            if (!collection?.dropMetadata) {
+              const data = await fetchIPFSJSON(collection?.dropURI);
+              collection = {
+                ...collection,
+                dropMetadata: {
+                  ...data,
+                },
+              };
+            }
             return {
               ...history,
-              collection: collection?.data?.collectionCreateds?.[0],
+              collection,
               profile: defaultProfile?.data?.defaultProfile,
             };
           })
@@ -165,12 +230,33 @@ const useHistory = (
             const defaultProfile = await getDefaultProfile({
               for: history.buyer,
             });
-            const collection = await getOneCollectionById(
+            const col = await getOneCollectionById(
               history?.subOrderCollectionIds?.[0]
             );
+            let collection = col?.data?.collectionCreateds?.[0];
+
+            if (!collection?.collectionMetadata) {
+              const data = await fetchIPFSJSON(collection?.uri);
+              collection = {
+                ...collection,
+                collectionMetadata: {
+                  ...data,
+                },
+              };
+            }
+
+            if (!collection?.dropMetadata) {
+              const data = await fetchIPFSJSON(collection?.dropURI);
+              collection = {
+                ...collection,
+                dropMetadata: {
+                  ...data,
+                },
+              };
+            }
             return {
               ...history,
-              collection: collection?.data?.collectionCreateds?.[0],
+              collection,
               profile: defaultProfile?.data?.defaultProfile,
             };
           })
