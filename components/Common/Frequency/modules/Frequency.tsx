@@ -31,6 +31,8 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
     handleGetMoreCollections,
     moreCollectionsLoading,
   } = useDrop(router, dispatch, collectionInfo, lensProfile);
+
+
   return (
     <div className="relative w-full h-fit preG:h-60 flex flex-row items-center md:pt-0 pt-6">
       <div className="relative w-[80%] h-full flex flex-col">
