@@ -60,6 +60,7 @@ const useAutoCollection = (
                   ...item,
                   collectionMetadata: {
                     ...data,
+                    mediaTypes: data?.mediaTypes?.[0],
                   },
                 };
               }
@@ -89,6 +90,7 @@ const useAutoCollection = (
           ...collection,
           collectionMetadata: {
             ...data,
+            mediaTypes: data?.mediaTypes?.[0],
           },
         };
       }

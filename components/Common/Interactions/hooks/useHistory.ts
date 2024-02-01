@@ -46,6 +46,7 @@ const useHistory = (
                 ...collection,
                 collectionMetadata: {
                   ...data,
+                  mediaTypes: data?.mediaTypes?.[0],
                 },
               };
             }
@@ -109,6 +110,7 @@ const useHistory = (
                 ...collection,
                 collectionMetadata: {
                   ...data,
+                  mediaTypes: data?.mediaTypes?.[0],
                 },
               };
             }
@@ -173,6 +175,7 @@ const useHistory = (
                 ...collection,
                 collectionMetadata: {
                   ...data,
+                  mediaTypes: data?.mediaTypes?.[0],
                 },
               };
             }
@@ -241,6 +244,7 @@ const useHistory = (
                 ...collection,
                 collectionMetadata: {
                   ...data,
+                  mediaTypes: data?.mediaTypes?.[0],
                 },
               };
             }

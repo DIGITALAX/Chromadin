@@ -50,6 +50,7 @@ const useAutoDrop = (
                 ...item,
                 collectionMetadata: {
                   ...data,
+                  mediaTypes: data?.mediaTypes?.[0],
                 },
               };
             }

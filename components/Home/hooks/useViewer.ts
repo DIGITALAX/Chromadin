@@ -77,6 +77,7 @@ const useViewer = (
                 ...collection,
                 collectionMetadata: {
                   ...data,
+                  mediaTypes: data?.mediaTypes?.[0],
                 },
               };
             }

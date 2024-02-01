@@ -63,6 +63,7 @@ const useAutograph = (autograph: string, lensProfile: Profile | undefined) => {
                 ...item,
                 collectionMetadata: {
                   ...data,
+                  mediaTypes: data?.mediaTypes?.[0],
                 },
               };
             }

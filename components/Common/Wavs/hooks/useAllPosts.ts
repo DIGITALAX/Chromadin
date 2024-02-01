@@ -536,6 +536,7 @@ const useAllPosts = (
                   ...item,
                   collectionMetadata: {
                     ...data,
+                    mediaTypes: data?.mediaTypes?.[0],
                   },
                 };
               }

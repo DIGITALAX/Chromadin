@@ -86,7 +86,7 @@ const useDrop = (
   ): Promise<Collection[] | undefined> => {
     try {
       return await Promise.all(
-        validCollections.map(async (collection: Collection) => {
+        validCollections?.map(async (collection: Collection) => {
           const publication = await getPublication(
             {
               forId: `${toHexWithLeadingZero(
@@ -102,6 +102,7 @@ const useDrop = (
               ...collection,
               collectionMetadata: {
                 ...data,
+                mediaTypes: data?.mediaTypes?.[0],
               },
             };
           }
@@ -115,7 +116,6 @@ const useDrop = (
               },
             };
           }
-
 
           return {
             ...collection,

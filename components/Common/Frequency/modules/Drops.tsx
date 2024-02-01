@@ -11,7 +11,7 @@ const Drops: FunctionComponent<DropsProps> = ({
   collectionsLoading,
   router,
   moreCollectionsLoading,
-  currentIndex
+  currentIndex,
 }): JSX.Element => {
   return (
     <div className="relative w-[80%] h-full p-4 flex flex-row gap-4">
@@ -43,6 +43,7 @@ const Drops: FunctionComponent<DropsProps> = ({
             ...collectionInfo?.collections!?.slice(currentIndex),
             ...collectionInfo?.collections!?.slice(0, currentIndex),
           ]?.map((collection: Collection, index: number) => {
+            console.log(collection?.collectionMetadata?.mediaTypes);
             return (
               <div
                 className="relative w-60 h-40 flex flex-col items-center shrink-0 cursor-pointer"
