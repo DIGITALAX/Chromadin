@@ -65,14 +65,15 @@ const Comments: FunctionComponent<CommentsProps> = ({
           <div
             className="relative w-full h-full flex font-arcade text-sm text-white whitespace-preline"
             dangerouslySetInnerHTML={{
-              __html: (video?.metadata as VideoMetadataV3)?.content?.includes(
-                "\n\n"
-              )
-                ? (video?.metadata as VideoMetadataV3)?.content
-                    ?.split("\n\n")
-                    ?.slice(1)
-                    ?.join("<br><br>")
-                : (video?.metadata as VideoMetadataV3)?.content,
+              __html:
+                (video?.metadata as VideoMetadataV3)?.content?.includes(
+                  "\n\n"
+                ) && parseInt(video?.id?.split("-"), 16) < 30
+                  ? (video?.metadata as VideoMetadataV3)?.content
+                      ?.split("\n\n")
+                      ?.slice(1)
+                      ?.join("<br><br>")
+                  : (video?.metadata as VideoMetadataV3)?.content,
             }}
           />
         </div>

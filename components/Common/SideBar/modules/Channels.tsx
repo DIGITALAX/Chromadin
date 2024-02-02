@@ -130,7 +130,8 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                           </div>
                         </div>
                         <div className="relative w-full h-full flex font-earl text-xs preG:text-base lg:text-xs text-white leading-none">
-                          {metadata?.content?.includes("\n\n")
+                          {metadata?.content?.includes("\n\n") &&
+                          parseInt(content?.id?.split("-"), 16) < 30
                             ? metadata?.content
                                 ?.split("\n\n")[1]
                                 ?.slice(0, 55) + "..."
