@@ -293,4 +293,5 @@ export interface VideoControls {
   duration: number;
   isPlaying: boolean;
   videosLoading: boolean;
+  currentIndex: number
 }

@@ -154,7 +154,7 @@ const useChannels = (
         })
       );
 
-      return sortedArr;
+      return [...allVideos?.channels, ...sortedArr];
     } catch (err: any) {
       console.error(err.message);
     }

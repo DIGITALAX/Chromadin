@@ -34,9 +34,6 @@ const Controls: FunctionComponent<ControlsProps> = ({
   interactionsLoading,
   setVideoControlsInfo,
 }): JSX.Element => {
-  const currentIndex = lodash.findIndex(allVideos?.channels, {
-    id: allVideos?.main?.id,
-  });
   return (
     <div
       className={`relative h-fit flex w-full gap-3 items-center galaxy:px-2 justify-center ${
@@ -253,21 +250,30 @@ const Controls: FunctionComponent<ControlsProps> = ({
         </div>
         <div
           className="relative cursor-pointer rotate-180 w-3 h-3 flex items-center justify-center"
-          onClick={() =>
+          onClick={() => {
             dispatch(
               setChannelsRedux({
                 actionChannels: allVideos?.channels,
                 actionMain:
                   allVideos?.channels[
-                    currentIndex === allVideos?.channels?.length - 1
+                    videoSync?.currentIndex === allVideos?.channels?.length - 1
                       ? 0
-                      : currentIndex === 0
+                      : videoSync?.currentIndex === 0
                       ? allVideos?.channels?.length - 1
-                      : currentIndex - 1
+                      : videoSync?.currentIndex - 1
                   ],
               })
-            )
-          }
+            );
+            setVideoControlsInfo((prev) => ({
+              ...prev,
+              currentIndex:
+                videoSync?.currentIndex === allVideos?.channels?.length - 1
+                  ? 0
+                  : videoSync?.currentIndex === 0
+                  ? allVideos?.channels?.length - 1
+                  : videoSync?.currentIndex - 1,
+            }));
+          }}
         >
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmcYHKZJWJjgibox8iLqNozENnkgD4CZQqYsmmVJpoYUyo`}
@@ -304,32 +310,45 @@ const Controls: FunctionComponent<ControlsProps> = ({
           }`}
           onClick={
             hasMore &&
-            (currentIndex + 1) % allVideos?.channels?.length === 0 &&
+            (videoSync?.currentIndex + 1) % allVideos?.channels?.length === 0 &&
             !videosLoading
               ? async () => {
                   setVideosLoading(true);
                   const more = await fetchMoreVideos();
-
                   dispatch(
                     setChannelsRedux({
-                      actionChannels: allVideos?.channels,
-                      actionMain: more?.[(currentIndex + 1) % more?.length!],
+                      actionChannels: more,
+                      actionMain: more?.[videoSync?.currentIndex + 1],
                     })
                   );
 
+                  setVideoControlsInfo((prev) => ({
+                    ...prev,
+                    currentIndex: videoSync?.currentIndex + 1,
+                  }));
+
                   setVideosLoading(false);
                 }
-              : () =>
-                  !videosLoading &&
-                  dispatch(
-                    setChannelsRedux({
-                      actionChannels: allVideos?.channels,
-                      actionMain:
-                        allVideos?.channels?.[
-                          (currentIndex + 1) % allVideos?.channels?.length
-                        ],
-                    })
-                  )
+              : () => {
+                  if (!videosLoading) {
+                    dispatch(
+                      setChannelsRedux({
+                        actionChannels: allVideos?.channels,
+                        actionMain:
+                          allVideos?.channels?.[
+                            (videoSync?.currentIndex + 1) %
+                              allVideos?.channels?.length
+                          ],
+                      })
+                    );
+                    setVideoControlsInfo((prev) => ({
+                      ...prev,
+                      currentIndex:
+                        (videoSync?.currentIndex + 1) %
+                        allVideos?.channels?.length,
+                    }));
+                  }
+                }
           }
         >
           {videosLoading ? (

@@ -309,6 +309,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 allVideos={allVideos}
                 options={options}
                 videoSync={videoControlsInfo}
+                setVideoSync={setVideoControlsInfo}
                 fetchMoreVideos={fetchMoreVideos}
                 commentors={commentors}
                 getMorePostComments={getMorePostComments}
@@ -490,6 +491,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 videoSync={videoControlsInfo}
                 hasMore={videoInfo?.hasMore}
                 fetchMoreVideos={fetchMoreVideos}
+                setVideoSync={setVideoControlsInfo}
               />
             ) : (
               <Interactions

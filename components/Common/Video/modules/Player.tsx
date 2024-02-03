@@ -4,7 +4,6 @@ import { FunctionComponent } from "react";
 import { PlayerProps } from "../types/controls.types";
 import FetchMoreLoading from "../../Loading/FetchMoreLoading";
 import { Viewer } from "../../Interactions/types/interactions.types";
-import lodash from "lodash";
 import { KinoraPlayerWrapper } from "kinora-sdk";
 import { setChannelsRedux } from "@/redux/reducers/channelsSlice";
 import { VideoMetadataV3 } from "kinora-sdk/dist/@types/generated";
@@ -25,9 +24,6 @@ const Player: FunctionComponent<PlayerProps> = ({
   videosLoading,
   setVideoControlsInfo,
 }): JSX.Element => {
-  const currentIndex = lodash.findIndex(allVideos?.channels, {
-    id: allVideos?.main?.id,
-  });
   return (
     <div
       className={`relative overflow-hidden justify-center items-center flex ${
@@ -66,8 +62,8 @@ const Player: FunctionComponent<PlayerProps> = ({
             parentId={allVideos?.main?.id}
             key={
               allVideos?.channels?.[
-                (currentIndex + 1) % allVideos?.channels?.length
-              ].id
+                (videoSync?.currentIndex + 1) % allVideos?.channels?.length
+              ]?.id
             }
             customControls={true}
             postId={allVideos?.main?.id}
@@ -96,9 +92,12 @@ const Player: FunctionComponent<PlayerProps> = ({
                 ...prev,
                 isPlaying: false,
               }));
+
+              let nextIndex = videoSync?.currentIndex + 1;
+
               if (
                 hasMore &&
-                (currentIndex + 1) % allVideos?.channels?.length === 0 &&
+                nextIndex % allVideos?.channels?.length === 0 &&
                 !videosLoading
               ) {
                 setVideosLoading(true);
@@ -106,32 +105,37 @@ const Player: FunctionComponent<PlayerProps> = ({
 
                 dispatch(
                   setChannelsRedux({
-                    actionChannels: allVideos?.channels,
-                    actionMain: more?.[(currentIndex + 1) % more?.length!],
+                    actionChannels: more,
+                    actionMain: more?.[nextIndex],
                   })
                 );
 
                 setVideosLoading(false);
-              } else {
+
+                setVideoControlsInfo((prev) => ({
+                  ...prev,
+                  isPlaying: true,
+                  currentTime: 0,
+                  currentIndex: nextIndex,
+                }));
+              } else if (!videoSync?.isPlaying) {
                 dispatch(
                   setChannelsRedux({
                     actionChannels: allVideos?.channels,
                     actionMain:
                       allVideos?.channels?.[
-                        (currentIndex + 1) % allVideos?.channels?.length
+                        nextIndex % allVideos?.channels?.length
                       ],
                   })
                 );
-              }
 
-              setTimeout(
-                () =>
-                  setVideoControlsInfo((prev) => ({
-                    ...prev,
-                    isPlaying: true,
-                  })),
-                1000
-              );
+                setVideoControlsInfo((prev) => ({
+                  ...prev,
+                  isPlaying: true,
+                  currentTime: 0,
+                  currentIndex: nextIndex % allVideos?.channels?.length,
+                }));
+              }
             }}
             onCanPlay={(e) =>
               !muted &&
@@ -153,11 +157,11 @@ const Player: FunctionComponent<PlayerProps> = ({
                 // playbackId={videoPlaying?.playerId}
                 src={
                   (
-                    allVideos?.channels?.[currentIndex]
+                    allVideos?.channels?.[videoSync?.currentIndex]
                       ?.metadata as VideoMetadataV3
                   )?.asset?.video?.optimized?.uri ||
                   (
-                    allVideos?.channels?.[currentIndex]
+                    allVideos?.channels?.[videoSync?.currentIndex]
                       ?.metadata as VideoMetadataV3
                   )?.asset?.video?.raw?.uri
                 }

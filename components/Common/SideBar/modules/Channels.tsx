@@ -12,6 +12,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
   allVideos,
   fetchMoreVideos,
   hasMore,
+  setVideoSync,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 lg:h-full flex flex-col overflow-y-scroll border border-white/80">
@@ -80,14 +81,18 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                 <div
                   className="relative w-full min-w-full h-fit galaxy:h-32 flex flex-col galaxy:flex-row hover:opacity-80 cursor-pointer border-b border-white"
                   key={index}
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
                       setChannelsRedux({
                         actionChannels: allVideos?.channels,
                         actionMain: content,
                       })
-                    )
-                  }
+                    );
+                    setVideoSync((prev) => ({
+                      ...prev,
+                      currentIndex: index,
+                    }));
+                  }}
                 >
                   {(content?.metadata as VideoMetadataV3)?.asset?.cover?.raw
                     ?.uri && (

@@ -14,6 +14,7 @@ export type ChannelsProps = {
   videoSync: VideoControls;
   fetchMoreVideos: () => Promise<Post[] | undefined>;
   hasMore: boolean;
+  setVideoSync: (e: SetStateAction<VideoControls>) => void;
 };
 
 export type ConnectProps = {
@@ -64,6 +65,7 @@ export type SideBarProps = {
   allVideos: ChannelsState;
   options: Options;
   videoSync: VideoControls;
+  setVideoSync: (e: SetStateAction<VideoControls>) => void;
   fetchMoreVideos: () => Promise<Post[] | undefined>;
   hasMoreVideos: boolean;
   collectors: any[];
@@ -99,7 +101,12 @@ export type SideBarProps = {
   action: Options;
   commentsLoading: boolean;
   hasMoreComments: boolean;
-  like: (id: string, hasReacted: boolean, index: number,main?: boolean) => Promise<void>;
+  like: (
+    id: string,
+    hasReacted: boolean,
+    index: number,
+    main?: boolean
+  ) => Promise<void>;
   collect: (
     id: string,
     type: string,

@@ -38,7 +38,6 @@ import {
 } from "@/redux/reducers/postCollectGifSlice";
 import { VideoControls } from "../types/controls.types";
 
-
 const useControls = (
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
@@ -63,6 +62,7 @@ const useControls = (
     heart: false,
     isPlaying: false,
     videosLoading: false,
+    currentIndex: 0,
   });
   const [volume, setVolume] = useState<number>(1);
   const [profilesOpen, setProfilesOpen] = useState<boolean>(false);

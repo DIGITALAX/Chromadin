@@ -16,6 +16,7 @@ const SideBar: FunctionComponent<SideBarProps> = ({
   viewer,
   options,
   videoSync,
+  setVideoSync,
   fetchMoreVideos,
   hasMoreVideos,
   collectors,
@@ -65,6 +66,7 @@ const SideBar: FunctionComponent<SideBarProps> = ({
           videoSync={videoSync}
           fetchMoreVideos={fetchMoreVideos}
           hasMore={hasMoreVideos}
+          setVideoSync={setVideoSync}
         />
       ) : (
         <Interactions
