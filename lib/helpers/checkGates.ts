@@ -1,6 +1,9 @@
 import { Gate } from "@/components/Common/Video/types/controls.types";
 import { Collection } from "@/components/Home/types/home.types";
-import { getOneCollectionById } from "@/graphql/subgraph/queries/getAllCollections";
+import {
+  getCollectionByUri,
+  getOneCollectionById,
+} from "@/graphql/subgraph/queries/getAllCollections";
 import { getOrders } from "@/graphql/subgraph/queries/getBuyerHistory";
 import { PublicClient } from "viem";
 import fetchIPFSJSON from "./fetchIPFSJSON";
@@ -68,39 +71,44 @@ const checkGates = async (
     if (gates?.erc721Logic?.length > 0) {
       const orders = await getOrders(address);
 
-      if (orders?.data?.orderCreateds?.length > 0) {
+      if (
+        orders?.data?.orderCreateds?.length > 0 ||
+        orders?.data?.nftonlyOrderCreateds?.length > 0
+      ) {
         let collectionURIs: Collection[] = [];
-        const promises = orders?.data?.orderCreateds?.map(
-          (item: { subOrderCollectionIds: string[] }) =>
-            item?.subOrderCollectionIds?.map(async (item: string) => {
-              const data = await getOneCollectionById(item);
+        const promises = [
+          ...(orders?.data?.orderCreateds || []),
+          ...(orders?.data?.nftonlyOrderCreateds?.length || []),
+        ]?.map((item: { subOrderCollectionIds: string[] }) =>
+          item?.subOrderCollectionIds?.map(async (item: string) => {
+            const data = await getOneCollectionById(item);
 
-              let collection = data?.data?.collectionCreateds?.[0];
+            let collection = data?.data?.collectionCreateds?.[0];
 
-              if (!collection?.collectionMetadata) {
-                const data = await fetchIPFSJSON(collection?.uri);
-                collection = {
-                  ...collection,
-                  collectionMetadata: {
-                    ...data,
-                    mediaTypes: data?.mediaTypes?.[0],
-                  },
-                };
-              }
+            if (!collection?.collectionMetadata) {
+              const data = await fetchIPFSJSON(collection?.uri);
+              collection = {
+                ...collection,
+                collectionMetadata: {
+                  ...data,
+                  mediaTypes: data?.mediaTypes?.[0],
+                },
+              };
+            }
 
-              if (!collection?.dropMetadata) {
-                const data = await fetchIPFSJSON(collection?.dropURI);
-                collection = {
-                  ...collection,
-                  dropMetadata: {
-                    ...data,
-                  },
-                };
-              }
-              if (collection) {
-                collectionURIs?.push(collection);
-              }
-            })
+            if (!collection?.dropMetadata) {
+              const data = await fetchIPFSJSON(collection?.dropURI);
+              collection = {
+                ...collection,
+                dropMetadata: {
+                  ...data,
+                },
+              };
+            }
+            if (collection) {
+              collectionURIs?.push(collection);
+            }
+          })
         );
 
         await Promise.all(promises);
@@ -130,9 +138,16 @@ const checkGates = async (
           }
         }
       } else {
+        const promises = await Promise.all(
+          (gates?.erc721Logic as any)?.[0]?.uris?.map(async (item: string) => {
+            const data = await getCollectionByUri(item);
+            return data?.data?.collectionCreateds?.[0];
+          })
+        );
+
         return {
           erc20: erc20s,
-          erc721: gates?.erc721Logic,
+          erc721: promises as Collection[],
         };
       }
     }

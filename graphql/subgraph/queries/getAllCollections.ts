@@ -267,6 +267,18 @@ query($dropId: String) {
   }
 }`;
 
+const COLLECTION_URI = `query($uri: String) {
+  collectionCreateds(first: 1, where: { uri: $uri}, orderDirection: desc, orderBy: blockTimestamp) {
+    collectionMetadata {
+      title
+      mediaCover
+      images
+    }
+    uri
+    origin
+  }
+}`;
+
 const COLLECTION_ID = `query($collectionId: String) {
   collectionCreateds(where: {collectionId: $collectionId}, orderDirection: desc, orderBy: blockTimestamp, first: 1) {
     amount
@@ -492,13 +504,35 @@ export const getCollectionsDrop = async (dropId: string): Promise<any> => {
   }
 };
 
-export const getOneCollection = async (
-  title: string
-): Promise<any> => {
+export const getOneCollection = async (title: string): Promise<any> => {
   const queryPromise = graphClient.query({
     query: gql(COLLECTION_ONE),
     variables: {
       title,
+    },
+    fetchPolicy: "no-cache",
+    errorPolicy: "all",
+  });
+
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ timedOut: true });
+    }, 60000); // 1 minute timeout
+  });
+
+  const result: any = await Promise.race([queryPromise, timeoutPromise]);
+  if (result.timedOut) {
+    return;
+  } else {
+    return result;
+  }
+};
+
+export const getCollectionByUri = async (uri: string): Promise<any> => {
+  const queryPromise = graphClient.query({
+    query: gql(COLLECTION_URI),
+    variables: {
+      uri,
     },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
