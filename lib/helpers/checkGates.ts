@@ -69,7 +69,7 @@ const checkGates = async (
       const orders = await getOrders(address);
 
       if (orders?.data?.orderCreateds?.length > 0) {
-        let collectionURIs: string[] = [];
+        let collectionURIs: Collection[] = [];
         const promises = orders?.data?.orderCreateds?.map(
           (item: { subOrderCollectionIds: string[] }) =>
             item?.subOrderCollectionIds?.map(async (item: string) => {
@@ -113,7 +113,7 @@ const checkGates = async (
         } else {
           gates?.erc721Logic?.map((logic) => {
             const found = collectionURIs?.find(
-              (uri) => uri?.toLowerCase() == logic?.uri?.toLowerCase()
+              (col) => col?.uri?.toLowerCase() == logic?.uri?.toLowerCase()
             );
             if (!found) {
               erc721s.push(logic);
@@ -130,7 +130,10 @@ const checkGates = async (
           }
         }
       } else {
-        return undefined;
+        return {
+          erc20: erc20s,
+          erc721: gates?.erc721Logic,
+        };
       }
     }
   } catch (err: any) {
