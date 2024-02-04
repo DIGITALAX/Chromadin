@@ -140,7 +140,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
           )
         )}
         {!router.asPath?.includes("&post=") ? (
-          postsLoading && allPosts?.length > 0 ? (
+          postsLoading ? (
             <div className="relative w-full h-auto flex flex-col gap-4 overflow-y-scroll">
               {Array.from({ length: 30 }).map((_, index: number) => {
                 return (
@@ -275,7 +275,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                 main={true}
               />
             )}
-            {commentsLoading && commentors?.length > 0 ? (
+            {commentsLoading ? (
               <div className="relative w-full h-auto flex flex-col gap-4 overflow-y-scroll">
                 {Array.from({ length: 1 }).map((_, index: number) => {
                   return (
