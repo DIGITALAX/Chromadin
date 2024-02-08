@@ -110,7 +110,7 @@ const Vending: FunctionComponent<VendingProps> = ({
               loader={""}
               dataLength={collectionInfo?.collections?.length}
               next={handleGetMoreCollections}
-              className={`relative row-start-1 w-full h-full overflow-y-scroll flex flex-col`}
+              className={`relative w-full h-full overflow-y-scroll flex flex-col overflow-x-hidden`}
             >
               <div className="relative w-full h-full grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4">
                 {lodash(collectionInfo?.collections)
