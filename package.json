@@ -22,7 +22,7 @@
     "gql": "^1.1.2",
     "graphql": "^16.6.0",
     "ipfs-http-client": "^60.0.0",
-    "kinora-sdk": "^1.0.6",
+    "kinora-sdk": "^1.0.65",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "next": "13.2.4",
