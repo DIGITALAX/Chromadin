@@ -16,35 +16,36 @@ const MainDrop: FunctionComponent<MainDropProps> = ({
   return (
     <div className="relative w-full h-96 sm:h-full flex">
       <div className="relative w-full h-full flex" id="staticLoad">
-        {!mainNFT?.collectionMetadata?.mediaTypes?.includes("video") ? (
-          <Image
-            src={`${INFURA_GATEWAY}/ipfs/${
-              mainNFT?.collectionMetadata?.images?.[0]?.split("ipfs://")?.[1]
-            }`}
-            layout="fill"
-            objectFit="cover"
-            draggable={false}
-            objectPosition="top"
-            alt="nft"
-            key={mainNFT?.collectionMetadata?.images?.[0]}
-          />
-        ) : (
-          <video
-            muted
-            autoPlay
-            playsInline
-            loop
-            key={mainNFT?.collectionMetadata?.video}
-            className="w-full h-full object-cover"
-          >
-            <source
+        {(mainNFT?.collectionMetadata?.images?.[0] ||
+          mainNFT?.collectionMetadata?.video) &&
+          (!mainNFT?.collectionMetadata?.mediaTypes?.includes("video") ? (
+            <Image
               src={`${INFURA_GATEWAY}/ipfs/${
-                mainNFT?.collectionMetadata?.video?.split("ipfs://")?.[1]
+                mainNFT?.collectionMetadata?.images?.[0]?.split("ipfs://")?.[1]
               }`}
-              type="video/mp4"
+              layout="fill"
+              objectFit="cover"
+              draggable={false}
+              objectPosition="top"
+              key={mainNFT?.collectionMetadata?.images?.[0]}
             />
-          </video>
-        )}
+          ) : (
+            <video
+              muted
+              autoPlay
+              playsInline
+              loop
+              key={mainNFT?.collectionMetadata?.video}
+              className="w-full h-full object-cover"
+            >
+              <source
+                src={`${INFURA_GATEWAY}/ipfs/${
+                  mainNFT?.collectionMetadata?.video?.split("ipfs://")?.[1]
+                }`}
+                type="video/mp4"
+              />
+            </video>
+          ))}
       </div>
       <div className="absolute bottom-0 w-full h-fit flex flex-row pl-1 pr-3 py-1 gap-2 items-center grow">
         <div

@@ -54,7 +54,7 @@ const Bar: FunctionComponent<BarProps> = ({
           </div>
         </div>
         {isLargeScreen && (
-          <div className="relative w-full flex">
+          <div className="relative w-full flex top-0">
             <Video
               setVideoControlsInfo={setVideoControlsInfo}
               viewer={Viewer.Autograph}
