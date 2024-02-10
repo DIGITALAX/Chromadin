@@ -74,7 +74,8 @@ export const LENS_CREATORS: string[] = [
   "0x020ff9",
   "0x02103f",
   "0x0210aa",
-  "0x02116d"
+  "0x02116d",
+  "0x0211f9"
 ];
 
 export const VIDEO_COVERS: {
