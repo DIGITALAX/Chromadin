@@ -32,7 +32,7 @@ const Vending: FunctionComponent<VendingProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className={`relative w-full overflow-y-scroll gap-3 h-[28.6rem] p-4 flex flex-col`}
+      className={`relative w-full overflow-y-scroll gap-3 h-[28.6rem] p-4 flex flex-col mt-0`}
     >
       {collectionsLoading || collectionInfo?.collections?.length < 1 ? (
         <div className="relative w-full h-full grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4">
