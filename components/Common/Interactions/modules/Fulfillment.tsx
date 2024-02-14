@@ -36,7 +36,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
               for more immediate fulfillment.
             </div>
           </div>
-          <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-xl flex text-center">
+          <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-xl flex text-center px-3">
             {collectionInfo?.main?.collectionMetadata?.title}
           </div>
           <div className="relative w-full preG:w-1/2 lg:w-full h-fit items-center justify-center text-white font-earl text-xs flex text-center px-3">
