@@ -75,13 +75,17 @@ export const LENS_CREATORS: string[] = [
   "0x02103f",
   "0x0210aa",
   "0x02116d",
-  "0x0211f9"
+  "0x0211f9",
 ];
 
 export const VIDEO_COVERS: {
   poster: string;
   id: string;
 }[] = [
+  {
+    poster: "QmZUhd8RVwict7UXkfbm9bAcE8fZSZnVHKanorG9jSSaFz",
+    id: "0x01c6a9-0x4a",
+  },
   {
     poster: "Qmcxv5AN2TrpoYFk1rr81Z3Mh2eCD97Xnj5ejSL71DK7k5",
     id: "0x01c6a9-0x49",
