@@ -1,19 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import shuffle from "shuffle-array";
 import { Collection } from "@/components/Home/types/home.types";
+import { MOSH_VIDEOS } from "@/lib/constants";
 
 const useDrops = (collections: Collection[]) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const moshVideoRef = useRef<HTMLVideoElement>(null);
-  const moshArray: string[] = [
-    "/videos/moshOne.mp4",
-    "/videos/moshTwo.mp4",
-    "/videos/moshThree.mp4",
-    "/videos/moshFour.mp4",
-    "/videos/moshFive.mp4",
-    "/videos/moshSix.mp4",
-  ];
 
   const moveForward = (): void => {
     setCurrentIndex((currentIndex + 1) % collections?.length);
@@ -26,14 +18,10 @@ const useDrops = (collections: Collection[]) => {
   };
 
   useEffect(() => {
-    shuffle(moshArray);
-  }, []);
-
-  useEffect(() => {
     if (moshVideoRef.current) {
       const handleVideoEnd = () => {
         setCurrentVideoIndex((currentIndex) => {
-          if (currentIndex === moshArray.length - 1) {
+          if (currentIndex === MOSH_VIDEOS.length - 1) {
             return 0;
           }
           return currentIndex + 1;
@@ -44,7 +32,7 @@ const useDrops = (collections: Collection[]) => {
         moshVideoRef.current?.removeEventListener("ended", handleVideoEnd);
       };
     }
-  }, [moshArray]);
+  }, [MOSH_VIDEOS]);
 
   useEffect(() => {
     if (moshVideoRef.current) {
@@ -59,7 +47,6 @@ const useDrops = (collections: Collection[]) => {
     moveBackward,
     moveForward,
     currentIndex,
-    moshArray,
     moshVideoRef,
     currentVideoIndex,
   };

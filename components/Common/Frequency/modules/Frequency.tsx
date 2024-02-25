@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/lib/constants";
+import { INFURA_GATEWAY, MOSH_VIDEOS } from "@/lib/constants";
 import Image from "next/image";
 import { FunctionComponent } from "react";
 import Drops from "./Drops";
@@ -22,7 +22,6 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
     moveBackward,
     moveForward,
     currentIndex,
-    moshArray,
     moshVideoRef,
     currentVideoIndex,
   } = useDrops(collectionInfo?.collections);
@@ -103,12 +102,12 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
             muted
             playsInline
             autoPlay
-            loop
             className="flex w-full h-full"
             ref={moshVideoRef}
+            key={currentVideoIndex}
           >
             <source
-              src={moshArray[currentVideoIndex]}
+              src={`${INFURA_GATEWAY}/ipfs/${MOSH_VIDEOS[currentVideoIndex]}`}
               type="video/mp4"
               id="staticLoad"
             />

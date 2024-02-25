@@ -24,6 +24,15 @@ export const LENS_HUB_PROXY_ADDRESS_MUMBAI: `0x${string}` =
 export const LENS_HUB_PROXY_ADDRESS_MATIC: `0x${string}` =
   "0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d";
 
+export const MOSH_VIDEOS: string[] = [
+  "QmVfPFMoTnLYWXdEfShbN6Mxfhbp8CNEFdNf7g9TEZCfjQ",
+  "QmZARuqZLxqaBbF1tXBBox1tUvVzGo6gqzHgU8SSdUE4Hq",
+  "QmdepEJRDmbxWaQaQzneMeDPEFRvPHy61or5fkfNom873C",
+  "QmfJscBXrRD2QP44hygDusEwpejbhGGJ8jx11CQu9s4eTc",
+  "QmXGSCuFDWTtaDJKgT1wg8VLooa6nLkt6sEjYqMrNpjGKW",
+  "QmTH3frz1VHaUvuj1H6ve77tXWBvC2WPjiutTBbZjaFZEu",
+];
+
 export const ACCEPTED_TOKENS: string[][] = [
   [
     "WMATIC",
