@@ -21,6 +21,7 @@ const Quests: FunctionComponent<QuestsProps> = ({
   address,
   openConnectModal,
   handleLensSignIn,
+  t,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto overflow-x-scroll">
@@ -44,7 +45,7 @@ const Quests: FunctionComponent<QuestsProps> = ({
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-10 overflow-x-scroll">
                 <div className="relative w-full h-fit flex items-center w-full h-fit gap-6 flex-col justify-center text-white font-dosis">
                   <div className="relative w-full h-fit justify-center items-center text-lg text-center">
-                    Kinora Video Quests. Ready to Join?
+                    {t("kinora")}
                   </div>
                   <div className="relative w-5/6 h-fit flex items-center justify-start gap-3">
                     <div className="relative w-16 h-10 flex items-center justify-center rounded-sm border border-cost">
@@ -82,7 +83,7 @@ const Quests: FunctionComponent<QuestsProps> = ({
                   </div>
                   {quests?.length > 0 && (
                     <div className="relative w-full h-fit justify-center items-center text-lg text-center">
-                      All Quests
+                      {t("all")}
                     </div>
                   )}
                   <div className="relative w-full justify-center items-center flex h-full max-h-[60vh] overflow-y-scroll flex-col">
@@ -195,9 +196,9 @@ const Quests: FunctionComponent<QuestsProps> = ({
                                                 Number(item?.profileId)
                                               ) == lensProfile?.id
                                           ) ? (
-                                          "Joined"
+                                          t("join")
                                         ) : (
-                                          "Join Quest"
+                                          t("quest")
                                         )}
                                       </div>
                                     </div>
@@ -207,7 +208,7 @@ const Quests: FunctionComponent<QuestsProps> = ({
                               <div className="relative w-fit h-fit flex items-start justify-start text-xs flex-col gap-1">
                                 <div className="relative w-fit h-fit flex flex-row items-center justify-start text-white font-bit gap-3">
                                   <div className="relative w-fit h-fit flex items-center justify-center">
-                                    Milestone Count:
+                                    {t("mil")}
                                   </div>
                                   <div className="relative w-fit h-fit flex items-center justify-center text-cost break-words">
                                     {quest?.milestoneCount}
@@ -225,7 +226,7 @@ const Quests: FunctionComponent<QuestsProps> = ({
                                 </div>
                                 <div className="relative w-full h-fit flex flex-row items-center justify-start gap-1 break-words">
                                   <div className="relative w-fit h-fit flex items-center justify-center">
-                                    Reward Mix:
+                                    {t("mix")}
                                   </div>
                                   <div className="relative w-fit h-fit flex items-center justify-center text-cost break-words">
                                     {(quest?.milestones
@@ -275,7 +276,7 @@ const Quests: FunctionComponent<QuestsProps> = ({
                       ) : (
                         <div className="relative w-full h-fit flex items-center justify-center flex-col gap-5">
                           <div className="relative w-fit h-fit flex items-center justify-center text-xs font-dosis text-white">
-                            No Quests for this Video yet...
+                            {t("noQ")}
                           </div>
                           <div
                             className="relative w-fit h-7 flex items-center px-2 py-1 justify-center rounded-sm bg-black border border-cost cursor-pointer"
@@ -288,7 +289,7 @@ const Quests: FunctionComponent<QuestsProps> = ({
                             <div
                               className={`relative w-fit h-fit flex items-center justify-center text-xs`}
                             >
-                              Envoke?
+                              {t("env")}
                             </div>
                           </div>
                         </div>

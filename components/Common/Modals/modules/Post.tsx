@@ -16,6 +16,7 @@ import handleImageError from "@/lib/helpers/handleImageError";
 const Post: FunctionComponent<PostProps> = ({
   dispatch,
   postLoading,
+  t,
   handlePostDescription,
   handleKeyDownDelete,
   postDescription,
@@ -99,7 +100,7 @@ const Post: FunctionComponent<PostProps> = ({
                           id="highlighted-content3"
                           className={`w-full h-full place-self-center text-left whitespace-pre-wrap break-words overflow-y-auto z-0`}
                         >
-                          Have Something to Say?
+                          {t("say")}
                         </code>
                       </pre>
                       {mentionProfiles?.length > 0 && profilesOpen && (
@@ -194,13 +195,13 @@ const Post: FunctionComponent<PostProps> = ({
                           }`}
                         >
                           {!address && !lensProfile?.id ? (
-                            "CONNECT"
+                            t("con")
                           ) : address && !lensProfile?.id ? (
-                            "SIGN IN"
+                            t("sig")
                           ) : postLoading ? (
                             <AiOutlineLoading size={10} color="white" />
                           ) : (
-                            "SEND IT"
+                            t("send")
                           )}
                         </div>
                       </div>

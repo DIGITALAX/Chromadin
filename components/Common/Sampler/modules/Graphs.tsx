@@ -8,15 +8,16 @@ const Graphs: FunctionComponent<GraphsProps> = ({
   setCanvas,
   canvas,
   graphsRedux,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full sm:h-100 xl:h-full flex bg-black/60 rounded-lg flex-col p-4 font-arcade gap-5">
       <div className="relative w-fit h-fit flex items-center justify-center">
         <div className="absolute w-full h-fit -top-1" id={"graphBack"}>
-          {`Leading ${canvas}`}
+          {`${t("lead")} ${canvas}`}
         </div>
         <div className="relative w-full h-fit text-white">
-          {`Leading ${canvas}`}
+          {`${t("lead")} ${canvas}`}
         </div>
       </div>
       <div className="relative w-full h-full flex flex-col sm:flex-row gap-3 items-center justify-center">

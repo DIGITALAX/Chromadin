@@ -16,6 +16,7 @@ import { setImageViewer } from "@/redux/reducers/imageViewerSlice";
 
 const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
   publication,
+  t,
   dispatch,
   height,
   address,
@@ -288,8 +289,8 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
             >
               <div className="relative w-fit h-fit flex  self-center  text-sm">
                 {publication?.__typename !== "Comment"
-                  ? "View Post"
-                  : "View Comment"}
+                  ? t("pos")
+                  : t("com")}
               </div>
               <div className={`relative w-fit h-fit self-center flex`}>
                 <AiFillEye color={"white"} size={20} />

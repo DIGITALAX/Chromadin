@@ -7,6 +7,7 @@ import { Options } from "../../Interactions/types/interactions.types";
 
 const Switcher: FunctionComponent<SwitcherProps> = ({
   options,
+  t,
   router,
 }): JSX.Element => {
   return (
@@ -35,7 +36,7 @@ const Switcher: FunctionComponent<SwitcherProps> = ({
             </div>
             <div className="relative w-full h-fit font-geom flex text-white flex flex-col">
               <div className="relative w-full h-fit flex justify-end text-xxs lg:text-sm text-right">
-                LIVE TRANSMISSION
+                {t("trans")}
               </div>
               <div className="relative w-full h-fit flex justify-end text-xxs lg:text-sm">
                 24 - 7 - 365
@@ -44,10 +45,10 @@ const Switcher: FunctionComponent<SwitcherProps> = ({
           </div>
           <div className="relative w-full h-fit flex flex-row gap-1 items-center justify-end lg:flex-nowrap flex-wrap lg:pb-0 pb-2">
             {Array.from([
-              ["QmZxFboSxnP4AL4YgYVrRLri2JrvGTn3fEHjbYB5gVBuTA", "sampler"],
-              ["QmeE6aepU7wpHdjH8L3tpFwtV5jBhoytE3NhHWmi3qGDjo", "stream"],
-              ["QmTZ5Rj837exSGmt4FxEcth8uJMZFaYYDv9h6C67xx1yDg", "collect"],
-              ["QmNpdJ2nak6TTb452swiUuQWMoFqhm3kqoYxH4er2zh6s4", "chat"],
+              ["QmZxFboSxnP4AL4YgYVrRLri2JrvGTn3fEHjbYB5gVBuTA", t("sampler")],
+              ["QmeE6aepU7wpHdjH8L3tpFwtV5jBhoytE3NhHWmi3qGDjo", t("stream")],
+              ["QmTZ5Rj837exSGmt4FxEcth8uJMZFaYYDv9h6C67xx1yDg", t("collect")],
+              ["QmNpdJ2nak6TTb452swiUuQWMoFqhm3kqoYxH4er2zh6s4", t("chat")],
             ]).map((values: string[], index: number) => {
               return (
                 <div
@@ -119,12 +120,7 @@ const Switcher: FunctionComponent<SwitcherProps> = ({
           className="z-0"
         >
           <div className="relative w-full h-fit text-white font-arcade font-digiB uppercase text-xxs lg:text-base py-px lg:py-2">
-            There are whispers of new apps that can&apos;t be taken away from
-            you. Stirrings of resistance decentralized in code. Where users own
-            the network, direct messages are reliably private, and the channels
-            we see the world through can be counted on to stay fully
-            independent. Engagement and influence flow back to you. Like it was
-            always meant to be.{" "}
+            {t("whis")}{" "}
           </div>
         </MarqueeText>
       </div>

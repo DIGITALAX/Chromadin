@@ -34,6 +34,7 @@ import uploadPostContent from "@/lib/helpers/uploadPostContent";
 import commentSig from "@/lib/helpers/commentSig";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import fetchIPFSJSON from "@/lib/helpers/fetchIPFSJSON";
+import { TFunction } from "i18next";
 
 const useAllPosts = (
   router: NextRouter,
@@ -43,6 +44,7 @@ const useAllPosts = (
   address: `0x${string}` | undefined,
   publicClient: PublicClient,
   postCollectGif: PostCollectGifState,
+  t: TFunction<"common", undefined>,
   profileId?: string
 ) => {
   const textElementPost = useRef<HTMLTextAreaElement>(null);
@@ -158,7 +160,7 @@ const useAllPosts = (
     }
 
     try {
-      await likeSig(id, dispatch, hasReacted);
+      await likeSig(id, dispatch, hasReacted, t);
 
       updateInteractions(
         index,
@@ -224,7 +226,8 @@ const useAllPosts = (
         dispatch,
         address as `0x${string}`,
         clientWallet,
-        publicClient
+        publicClient,
+        t
       );
 
       updateInteractions(
@@ -715,7 +718,7 @@ const useAllPosts = (
     dispatch(
       setIndexModal({
         actionValue: true,
-        actionMessage: "Indexing Interaction",
+        actionMessage: t("index"),
       })
     );
     setOpenComment(undefined);

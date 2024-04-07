@@ -5,6 +5,7 @@ import NFT from "@/components/Common/NFT/modules/NFT";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Interactions from "@/components/Common/Interactions/modules/Interactions";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Switcher from "@/components/Common/SideBar/modules/Switcher";
 import Connect from "@/components/Common/SideBar/modules/Connect";
 import useConnect from "@/components/Common/SideBar/hooks/useConnect";
@@ -30,8 +31,10 @@ import useAllPosts from "@/components/Common/Wavs/hooks/useAllPosts";
 import { Viewer } from "@/components/Common/Interactions/types/interactions.types";
 import Video from "@/components/Common/Video/modules/Video";
 import SwitchView from "@/components/Home/SwitchView";
+import { useTranslation } from "next-i18next";
 
 const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
+  const { t, i18n } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -90,17 +93,20 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     (state: RootState) => state.app.oracleDataReducer.data
   );
   const dispatch = useDispatch();
-  const { handleLensSignIn, handleLogout } = useConnect(
-    router,
-    address,
-    isConnected,
-    dispatch,
-    connectModalOpen,
-    publicClient,
-    oracleData,
-    openAccountModal,
-    enabledCurrencies
-  );
+  const { handleLensSignIn, handleLogout, chosenLanguage, setChosenLanguage } =
+    useConnect(
+      router,
+      address,
+      isConnected,
+      dispatch,
+      connectModalOpen,
+      publicClient,
+      oracleData,
+      openAccountModal,
+      enabledCurrencies,
+      t,
+      i18n
+    );
   const { openConnectModal } = useConnectModal();
   const {
     setDropDownPriceSort,
@@ -130,7 +136,8 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     dispatch,
     address,
     collectionInfo?.main!,
-    oracleData
+    oracleData,
+    t
   );
   const {
     historyLoading,
@@ -196,7 +203,8 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     dispatch,
     address,
     publicClient,
-    postCollectGif
+    postCollectGif,
+    t
   );
   const {
     commentors,
@@ -246,6 +254,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     publicClient,
     allVideos,
     postCollectGif,
+    t,
     commentors,
     setCommentors,
     getPostComments,
@@ -288,11 +297,15 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
         </Head>
         <div className="relative w-full h-full flex flex-row xl:flex-nowrap flex-wrap">
           <div className="relative w-full h-fit flex lg:hidden">
-            <Switcher router={router} options={options} />
+            <Switcher t={t} router={router} options={options} />
           </div>
           <div className="relative w-full h-full flex flex-row items-center">
             <div className="relative w-fit h-full hidden lg:flex">
               <SideBar
+                t={t}
+                i18n={i18n}
+                chosenLanguage={chosenLanguage}
+                setChosenLanguage={setChosenLanguage}
                 hasMoreVideos={videoInfo?.hasMore}
                 secondaryComment={secondaryComment}
                 setSecondaryComment={setSecondaryComment}
@@ -370,6 +383,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 />
                 <SwitchView
                   like={likePost}
+                  t={t}
                   mirror={mirrorPost}
                   allPosts={allPosts}
                   mediaLoading={postMediaLoading}
@@ -446,6 +460,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
               </div>
               {viewer !== Viewer.Sampler && viewer !== Viewer.Chat && (
                 <NFT
+                  t={t}
                   postCollectGif={postCollectGif}
                   setMediaLoading={setControlMediaLoading}
                   mediaLoading={controlMediaLoading}
@@ -477,11 +492,15 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           </div>
           <div className="w-full h-fit flex flex-col lg:hidden">
             <Connect
+              i18n={i18n}
+              chosenLanguage={chosenLanguage}
+              setChosenLanguage={setChosenLanguage}
               handleLogout={handleLogout}
               openConnectModal={openConnectModal}
               connected={walletConnected}
               handleLensSignIn={handleLensSignIn}
               profile={lensProfile}
+              t={t}
             />
             <Tabs tab={tab} setTab={setTab} viewer={viewer} />
             {tab === 0 ? (
@@ -502,6 +521,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
                 viewer={viewer}
                 historyData={historyData}
                 commentors={commentors}
+                t={t}
                 getMorePostComments={getMorePostComments}
                 commentsLoading={commentsLoading}
                 allVideos={allVideos}
@@ -537,6 +557,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           {viewer !== Viewer.Sampler && viewer !== Viewer.Chat && (
             <div className="w-fit h-full hidden xl:flex">
               <Interactions
+                t={t}
                 interactionsLoading={interactionsLoading}
                 collectionInfo={collectionInfo}
                 secondaryComment={secondaryComment}
@@ -585,3 +606,9 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
 };
 
 export default Home;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});

@@ -54,10 +54,14 @@ const SideBar: FunctionComponent<SideBarProps> = ({
   collectionInfo,
   setSecondaryComment,
   secondaryComment,
+  t,
+  chosenLanguage,
+  setChosenLanguage,
+  i18n,
 }): JSX.Element => {
   return (
     <div className="relative w-full lg:w-80 h-fit lg:h-full flex flex-col">
-      <Switcher router={router} options={options} />
+      <Switcher t={t} router={router} options={options} />
       <Tabs tab={tab} setTab={setTab} viewer={viewer} />
       {tab === 0 ? (
         <Channels
@@ -77,6 +81,7 @@ const SideBar: FunctionComponent<SideBarProps> = ({
           getMorePostComments={getMorePostComments}
           commentsLoading={commentsLoading}
           allVideos={allVideos}
+          t={t}
           hasMoreComments={hasMoreComments}
           mirror={mirror}
           collect={collect}
@@ -109,6 +114,10 @@ const SideBar: FunctionComponent<SideBarProps> = ({
         />
       )}
       <Connect
+        t={t}
+        i18n={i18n}
+        chosenLanguage={chosenLanguage}
+        setChosenLanguage={setChosenLanguage}
         handleLogout={handleLogout}
         connected={connected}
         handleLensSignIn={handleLensSignIn}

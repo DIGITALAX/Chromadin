@@ -25,6 +25,7 @@ import { OracleData } from "../../Wavs/types/wavs.types";
 import { setOracleData } from "@/redux/reducers/oracleDataSlice";
 import { getOracleData } from "@/graphql/subgraph/queries/getOracleData";
 import availableCurrencies from "@/lib/helpers/availableCurrencies";
+import { TFunction, i18n } from "i18next";
 
 const useConnect = (
   router: NextRouter,
@@ -35,9 +36,12 @@ const useConnect = (
   publicClient: PublicClient,
   oracleData: OracleData[],
   openAccountModal: (() => void) | undefined,
-  enabledCurrencies: Erc20[]
+  enabledCurrencies: Erc20[],
+  t: TFunction<"common", undefined>,
+  i18n: i18n
 ) => {
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
+  const [chosenLanguage, setChosenLanguage] = useState<string>(i18n?.language);
 
   const getWriter = async () => {
     try {
@@ -113,8 +117,7 @@ const useConnect = (
           dispatch(
             setNoHandle({
               actionValue: true,
-              actionMessage:
-                "Own Your Digital Roots. Claim A Lens Handle to Sign In & Collect.",
+              actionMessage: t("roots"),
             })
           );
         }
@@ -217,6 +220,8 @@ const useConnect = (
     handleRefreshProfile,
     signInLoading,
     handleLogout,
+    chosenLanguage,
+    setChosenLanguage,
   };
 };
 

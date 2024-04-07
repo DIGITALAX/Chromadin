@@ -11,12 +11,14 @@ import { NextRouter } from "next/router";
 import { FormEvent, KeyboardEvent, RefObject, SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
 import { PostCollectGifState } from "@/redux/reducers/postCollectGifSlice";
+import { TFunction } from "i18next";
 
 export type FeedPublicationProps = {
   router: NextRouter;
   publication: Post | Mirror | Quote | Comment;
   dispatch: Dispatch<AnyAction>;
   height?: string;
+  t: TFunction<"common", undefined>;
   address: `0x${string}` | undefined;
   like: (
     id: string,
@@ -243,6 +245,7 @@ export interface CollectValueType {
 
 export type MakeCommentProps = {
   address: `0x${string}` | undefined;
+  t: TFunction<"common", undefined>;
   comment: (id: string, index: number, main?: boolean) => Promise<void>;
   handleLensSignIn: () => Promise<void>;
   commentDescription: string;
@@ -365,6 +368,7 @@ export type SwitchProps = {
 
 export type AllPostsProps = {
   router: NextRouter;
+  t: TFunction<"common", undefined>;
   dispatch: Dispatch<AnyAction>;
   openMirrorChoice: boolean[];
   history: string;
@@ -474,6 +478,7 @@ export type AccountProps = {
   profileCollections?: Collection[];
   dispatch: Dispatch<AnyAction>;
   router?: NextRouter;
+  t: TFunction<"common", undefined>;
 };
 
 export type SearchProps = {
@@ -485,6 +490,7 @@ export type SearchProps = {
   fetchMoreSearch: () => Promise<void>;
   setProfilesOpenSearch: (e: boolean) => void;
   setProfilesFound: (e: Profile[]) => void;
+  t: TFunction<"common", undefined>;
 };
 
 export type SuperCreatorProps = {
@@ -492,12 +498,14 @@ export type SuperCreatorProps = {
   openConnectModal: (() => void) | undefined;
   address: `0x${string}` | undefined;
   lensProfile: Profile | undefined;
+  t: TFunction<"common", undefined>;
 };
 
 export type MakePostProps = {
   dispatch: Dispatch<AnyAction>;
   lensProfile: Profile | undefined;
   address: `0x${string}` | undefined;
+  t: TFunction<"common", undefined>;
 };
 
 export type QuoteProps = {

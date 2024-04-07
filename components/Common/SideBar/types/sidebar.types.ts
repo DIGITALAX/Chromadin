@@ -7,6 +7,7 @@ import { ChannelsState } from "@/redux/reducers/channelsSlice";
 import { CollectionInfoState } from "@/redux/reducers/collectionInfoSlice";
 import { SetStateAction } from "react";
 import { VideoControls } from "../../Video/types/controls.types";
+import { TFunction, i18n } from "i18next";
 
 export type ChannelsProps = {
   dispatch: Dispatch<AnyAction>;
@@ -22,13 +23,18 @@ export type ConnectProps = {
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   connected: boolean;
+  t: TFunction<"common", undefined>;
   profile: Profile | undefined;
+  i18n: i18n;
+  chosenLanguage: string;
+  setChosenLanguage: (e: SetStateAction<string>) => void;
 };
 
 export type AuthProps = {
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   connected: boolean;
+  t: TFunction<"common", undefined>;
   profile: Profile | undefined;
   mainPage?: boolean;
   handleLogout: () => Promise<void>;
@@ -83,8 +89,12 @@ export type SideBarProps = {
   secondaryComment: string;
   hasMoreCollects: boolean;
   router: NextRouter;
+  chosenLanguage: string;
+  setChosenLanguage: (e: SetStateAction<string>) => void;
+  i18n: i18n;
   historyData: HistoryDataState;
   historyLoading: boolean;
+  t: TFunction<"common", undefined>;
   historySwitch: boolean;
   setHistorySwitch: (e: boolean) => void;
   getMoreUserHistory: () => Promise<void>;
@@ -121,4 +131,5 @@ export type SideBarProps = {
 export type SwitcherProps = {
   options: Options;
   router: NextRouter;
+  t: TFunction<"common", undefined>;
 };

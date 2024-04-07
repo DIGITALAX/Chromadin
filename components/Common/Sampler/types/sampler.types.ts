@@ -1,3 +1,4 @@
+import { TFunction } from "i18next";
 
 export type TopBarProps = {
   totalCollects: number;
@@ -14,6 +15,7 @@ export type StatsProps = {
 };
 
 export type GraphsProps = {
+  t: TFunction<"common", undefined>;
   graphLoading: boolean;
   setCanvas: (e: string) => void;
   canvas: string;
@@ -21,6 +23,7 @@ export type GraphsProps = {
 };
 
 export type PiesProps = {
+  t: TFunction<"common", undefined>;
   piesRedux: {
     handle: string;
     percentage: string;
@@ -30,5 +33,6 @@ export type PiesProps = {
 
 export type RatesProps = {
   ratesRedux: number[];
+  t: TFunction<"common", undefined>;
   ratesLoading: boolean;
 };

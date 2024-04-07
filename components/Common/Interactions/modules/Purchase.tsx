@@ -16,6 +16,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
   buyNFT,
   purchaseLoading,
   router,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col">
@@ -164,11 +165,11 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
               <AiOutlineLoading size={10} color="white" />
             ) : Number((mainNFT as Collection)?.soldTokens) ==
               Number((mainNFT as Collection)?.amount) ? (
-              "SOLD OUT"
+              t("sold")
             ) : !approved ? (
-              "APPROVE"
+              t("app")
             ) : (
-              "COLLECT"
+              t("col")
             )}
           </div>
         </div>

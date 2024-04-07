@@ -10,6 +10,7 @@ import broadcast from "@/graphql/lens/mutations/broadcast";
 import handleIndexCheck from "./handleIndexCheck";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../constants";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
+import { TFunction } from "i18next";
 
 const collectSig = async (
   id: string,
@@ -17,7 +18,8 @@ const collectSig = async (
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}`,
   clientWallet: WalletClient,
-  publicClient: PublicClient
+  publicClient: PublicClient,
+  t: TFunction<"common", undefined>
 ): Promise<void> => {
   let broadcastResult: FetchResult<BroadcastOnchainMutation>,
     functionName: string,
@@ -110,7 +112,8 @@ const collectSig = async (
       {
         forTxId: broadcastResult?.data?.broadcastOnchain.txId,
       },
-      dispatch
+      dispatch,
+      t
     );
   } else {
     const { request } = await publicClient.simulateContract({
@@ -126,7 +129,7 @@ const collectSig = async (
     dispatch(
       setIndexModal({
         actionValue: true,
-        actionMessage: "Indexing Interaction",
+        actionMessage: t("index"),
       })
     );
 
@@ -134,7 +137,8 @@ const collectSig = async (
       {
         forTxHash: tx.transactionHash,
       },
-      dispatch
+      dispatch,
+      t
     );
   }
 

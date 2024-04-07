@@ -10,6 +10,7 @@ import { setImageViewer } from "@/redux/reducers/imageViewerSlice";
 import { RootState } from "@/redux/store";
 import { NextPage } from "next";
 import Head from "next/head";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import { NextRouter } from "next/router";
@@ -19,6 +20,7 @@ import { useAccount } from "wagmi";
 import useBar from "@/components/Autograph/Common/hooks/useBar";
 import WaveformComponent from "@/components/Home/modules/Waveform";
 import Checkout from "@/components/Autograph/Collection/modules/Checkout";
+import { useTranslation } from "next-i18next";
 import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
@@ -31,6 +33,7 @@ import NotFound from "@/components/Common/Loading/NotFound";
 const Collection: NextPage<{ router: NextRouter }> = ({
   router,
 }): JSX.Element => {
+  const { t } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -83,7 +86,8 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     dispatch,
     address,
     autoCollection!,
-    oracleData
+    oracleData,
+    t
   );
 
   const {
@@ -101,7 +105,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     controlInteractionsLoading,
     setVideoControlsInfo,
     videoControlsInfo,
-  } = useControls(dispatch, address, publicClient, channels, postCollectGif);
+  } = useControls(dispatch, address, publicClient, channels, postCollectGif, t);
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
     lensProfile,
@@ -122,7 +126,8 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     publicClient,
     oracleData,
     openAccountModal,
-    enabledCurrencies
+    enabledCurrencies,
+    t
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
 
@@ -280,6 +285,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
         <Bar
           setVideoControlsInfo={setVideoControlsInfo}
           router={router}
+          t={t}
           interactionsLoading={controlInteractionsLoading}
           handleLogout={handleLogout}
           openConnectModal={openConnectModal}
@@ -449,7 +455,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
                   <div className="relative w-fit h-fit text-white font-earl text-2xl">
                     {Number(autoCollection?.soldTokens) ===
                     Number(autoCollection?.amount)
-                      ? "SOLD OUT"
+                      ? t("sold")
                       : `${Number(autoCollection?.soldTokens)} /
                   ${Number(autoCollection?.amount)}`}
                   </div>
@@ -491,6 +497,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
                 </div>
               </div>
               <Checkout
+                t={t}
                 router={router}
                 collection={autoCollection}
                 purchaseLoading={purchaseLoading}
@@ -503,6 +510,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
               />
               {otherCollectionsDrop?.length > 0 && (
                 <InDrop
+                  t={t}
                   autoCollection={autoCollection}
                   otherCollectionsDrop={otherCollectionsDrop}
                   router={router}
@@ -512,7 +520,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
             </div>
           </div>
         ) : (
-          <NotFound router={router} />
+          <NotFound t={t} router={router} />
         )}
       </div>
     );
@@ -521,3 +529,16 @@ const Collection: NextPage<{ router: NextRouter }> = ({
 };
 
 export default Collection;
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});

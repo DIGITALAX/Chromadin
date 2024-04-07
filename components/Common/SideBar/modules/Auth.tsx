@@ -10,6 +10,7 @@ const Auth: FunctionComponent<AuthProps> = ({
   profile,
   mainPage,
   handleLogout,
+  t
 }): JSX.Element => {
   let action: string;
   const decideStringAction = () => {
@@ -33,7 +34,7 @@ const Auth: FunctionComponent<AuthProps> = ({
       return (
         <Wallet
           handleTransaction={connected ? handleLensSignIn : openConnectModal}
-          buttonText={connected ? "SOCIAL" : "CONNECT"}
+          buttonText={connected ? t("soc") : t("con")}
           isConnected={connected}
           mainPage={mainPage}
         />

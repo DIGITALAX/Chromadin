@@ -3,7 +3,7 @@ import { FunctionComponent } from "react";
 import { ImCross } from "react-icons/im";
 import { ErrorProps } from "../types/modals.types";
 
-const Error: FunctionComponent<ErrorProps> = ({ dispatch }): JSX.Element => {
+const Error: FunctionComponent<ErrorProps> = ({ dispatch, t }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
       <div className="relative w-full md:w-[30vw] h-fit col-start-1 place-self-center bg-offBlack rounded-lg">
@@ -19,9 +19,9 @@ const Error: FunctionComponent<ErrorProps> = ({ dispatch }): JSX.Element => {
               </div>
               <div className="relative w-full h-fit row-start-2 grid grid-flow-col auto-cols-auto px-4">
                 <div className="relative w-fit h-fit font-earl text-white text-xl place-self-center text-center">
-                  Pockets empty? <br />
+                  {t("pocket")} <br />
                   <br />
-                  ...Check your wallet
+                  {t("wallet")}
                 </div>
               </div>
             </div>

@@ -8,6 +8,7 @@ import useFollowCollect from "../../Interactions/hooks/useFollowCollect";
 import { Dispatch as KinoraDispatch } from "kinora-sdk";
 import Claim from "./Claim";
 import Error from "./Error";
+import { useTranslation } from "next-i18next";
 import Success from "./Success";
 import ImageViewerModal from "./ImageViewer";
 import Who from "./Who";
@@ -31,6 +32,7 @@ import QuestGates from "./QuestGates";
 import QuestSuccess from "./QuestSuccess";
 
 const Modals = ({ router }: { router: NextRouter }) => {
+  const { t } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -83,9 +85,6 @@ const Modals = ({ router }: { router: NextRouter }) => {
   );
   const claimModal = useSelector(
     (state: RootState) => state.app.noHandleReducer
-  );
-  const videoInfo = useSelector(
-    (state: RootState) => state.app.videoInfoReducer
   );
   const imageViewer = useSelector(
     (state: RootState) => state.app.imageViewerReducer
@@ -158,7 +157,8 @@ const Modals = ({ router }: { router: NextRouter }) => {
     dispatch,
     address,
     quickProfiles,
-    lensProfile
+    lensProfile,
+    t
   );
   const {
     postDescription,
@@ -174,7 +174,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
     preElement,
     mediaLoading,
     setMediaLoading,
-  } = usePost(address, publicClient, dispatch, postCollectGif);
+  } = usePost(address, publicClient, dispatch, postCollectGif, t);
 
   return (
     <>
@@ -236,6 +236,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
         <Post
           handlePost={handlePost}
           dispatch={dispatch}
+          t={t}
           openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
           postDescription={postDescription}
@@ -261,6 +262,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
       )}
       {claimModal?.value && (
         <Claim
+          t={t}
           dispatch={dispatch}
           message={claimModal.message}
           signInLoading={signInLoading}
@@ -289,6 +291,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
       {postCollectGif?.type !== undefined && (
         <PostCollectGif
           dispatch={dispatch}
+          t={t}
           postCollectGif={postCollectGif}
           openMeasure={openMeasure}
           setOpenMeasure={setOpenMeasure}

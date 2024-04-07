@@ -7,6 +7,7 @@ import { FilterState } from "@/redux/reducers/filterSlice";
 import { CollectionInfoState } from "@/redux/reducers/collectionInfoSlice";
 import { SamplerState } from "@/redux/reducers/samplerSlice";
 import { PostCollectGifState } from "@/redux/reducers/postCollectGifSlice";
+import { TFunction } from "i18next";
 
 export type VendingProps = {
   dispatch: Dispatch<AnyAction>;
@@ -24,6 +25,7 @@ export type VendingProps = {
   handleGetMoreCollections: () => Promise<void>;
   filters: FilterState;
   collectionInfo: CollectionInfoState;
+  t: TFunction<"common", undefined>;
 };
 
 export interface Collection {
@@ -215,6 +217,8 @@ export type SwitchViewProps = {
     like: boolean;
     mirror: boolean;
   };
+
+  t: TFunction<"common", undefined>;
   setMainMediaLoading: (
     e: SetStateAction<
       {
@@ -228,6 +232,7 @@ export type SwitchViewProps = {
 export type SamplerProps = {
   statsLoading: boolean;
   graphData: SamplerState;
+  t: TFunction<"common", undefined>;
   setCanvas: (e: string) => void;
   canvas: string;
 };

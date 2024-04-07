@@ -12,12 +12,14 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   approveSpend,
   currency,
   setCurrency,
+  t
 }): JSX.Element => {
   return (
     <>
       {collection && (
         <div className="relative w-full h-fit flex justify-center items-center lg:justify-end lg:items-end py-10">
           <Purchase
+            t={t}
             approved={approved}
             currency={currency}
             setCurrency={setCurrency}

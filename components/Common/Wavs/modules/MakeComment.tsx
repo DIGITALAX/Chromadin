@@ -32,7 +32,8 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
   id,
   setMediaLoading,
   index,
-  main
+  main,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-full h-60 flex flex-col">
@@ -70,7 +71,7 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                 id="highlighted-content2"
                 className={`w-full h-full place-self-center text-left whitespace-pre-wrap overflow-y-auto z-0`}
               >
-                {"Have Something to Say?"}
+                {t("say")}
               </code>
             </pre>
             {mentionProfiles?.length > 0 && profilesOpen && (
@@ -154,13 +155,13 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                 }`}
               >
                 {!address && !lensProfile?.id ? (
-                  "CONNECT"
+                  t("con")
                 ) : address && !lensProfile?.id ? (
-                  "SIGN IN"
+                  t("sig")
                 ) : commentLoading ? (
                   <AiOutlineLoading size={10} color="white" />
                 ) : (
-                  "SEND IT"
+                  t("send")
                 )}
               </div>
             </div>

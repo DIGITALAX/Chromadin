@@ -1,17 +1,57 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface FilterState {
-  priceValues: string[];
-  priceSelected: string;
-  dateValues: string[];
-  dateSelected: string;
+  priceValues: { en: string; es: string }[];
+  priceSelected: { en: string; es: string };
+  dateValues: { en: string; es: string }[];
+  dateSelected: { en: string; es: string };
 }
 
 const initialFilterState: FilterState = {
-  priceValues: ["ALL", "WETH", "WMATIC", "MONA", "USDT"],
-  priceSelected: "ALL",
-  dateValues: ["random", "latest", "earliest"],
-  dateSelected: "random",
+  priceValues: [
+    {
+      en: "ALL",
+      es: "TODO",
+    },
+    {
+      en: "WETH",
+      es: "WETH",
+    },
+    {
+      en: "WMATIC",
+      es: "WMATIC",
+    },
+    {
+      en: "MONA",
+      es: "MONA",
+    },
+    {
+      en: "USDT",
+      es: "USDT",
+    },
+  ],
+  priceSelected: {
+    en: "ALL",
+    es: "TODO",
+  },
+  dateValues: [
+    {
+      en: "random",
+      es: "aleatorio",
+    },
+    {
+      en: "latest",
+      es: "último",
+    },
+    {
+      en: "earliest",
+      es: "primero",
+    },
+  ],
+  dateSelected: {
+    en: "random",
+    es: "aleatorio",
+  },
 };
 
 export const filterSlice = createSlice({

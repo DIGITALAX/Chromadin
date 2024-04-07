@@ -39,6 +39,7 @@ const Bar: FunctionComponent<BarProps> = ({
   allVideos,
   interactionsLoading,
   setVideoControlsInfo,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit md:h-24 flex flex-col justify-start items-center bg-offBlack p-3 gap-3">
@@ -88,6 +89,7 @@ const Bar: FunctionComponent<BarProps> = ({
             searchResults={searchResults}
             handleSearchChoose={handleSearchChoose}
             mainPage={true}
+            t={t}
           />
           <Auth
             handleLogout={handleLogout}
@@ -96,6 +98,7 @@ const Bar: FunctionComponent<BarProps> = ({
             handleLensSignIn={handleLensSignIn}
             profile={lensProfile}
             mainPage={true}
+            t={t}
           />
         </div>
         <div className="relative w-fit h-full flex flex-col items-end justify-center gap-2 ml-auto">
@@ -109,7 +112,7 @@ const Bar: FunctionComponent<BarProps> = ({
           </div>
           <div className="relative w-full h-fit font-geom flex text-white flex flex-col">
             <div className="relative w-full h-fit flex justify-end text-xxs text-right">
-              LIVE TRANSMISSION
+              {t("trans")}
             </div>
             <div className="relative w-full h-fit flex justify-end text-xxs ">
               24 - 7 - 365
@@ -152,8 +155,10 @@ const Bar: FunctionComponent<BarProps> = ({
           searchResults={searchResults}
           handleSearchChoose={handleSearchChoose}
           mainPage={true}
+          t={t}
         />
         <Auth
+          t={t}
           connected={connected}
           openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}

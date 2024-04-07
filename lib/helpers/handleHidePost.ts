@@ -1,10 +1,12 @@
 import hidePublication from "@/graphql/lens/mutations/hidePublication";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
+import { TFunction } from "i18next";
 import { AnyAction, Dispatch } from "redux";
 
 const handleHidePost = async (
   id: string,
-  dispatch: Dispatch<AnyAction>
+  dispatch: Dispatch<AnyAction>,
+  t: TFunction<"common", undefined>
 ): Promise<void> => {
   try {
     const hidden = await hidePublication({
@@ -14,7 +16,7 @@ const handleHidePost = async (
       dispatch(
         setIndexModal({
           actionValue: true,
-          actionMessage: "Post Successfully Hidden",
+          actionMessage: t("hideT"),
         })
       );
     }
@@ -22,7 +24,7 @@ const handleHidePost = async (
     dispatch(
       setIndexModal({
         actionValue: true,
-        actionMessage: "Hide Unsuccessful, Please Try Again",
+        actionMessage: t("hide"),
       })
     );
     console.error(err?.message);

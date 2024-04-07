@@ -45,13 +45,14 @@ const Interactions: FunctionComponent<InteractionProps> = ({
   collectionInfo,
   secondaryComment,
   setSecondaryComment,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full lg:w-80 lg:shrink-0 xl:h-full flex-col border border-white h-100 lg:h-128 xl:min-h-[55rem] flex overflow-y-scroll">
       <div className="relative w-full h-full flex flex-col bg-verde">
         <div className="relative w-full h-fit flex flex-row py-2 bg-black rounded-tl-xl border-b border-white">
           <div className="relative w-full h-fit font-arcade text-white flex justify-center text-sm uppercase">
-            {viewer !== Viewer.Collect ? "STREAM CHAT" : "EMBRACE THE DIN"}
+            {viewer !== Viewer.Collect ? t("str") : t("din")}
           </div>
           <div className="relative w-fit h-full align-center flex pl-2 rotate-180">
             <Image
@@ -89,6 +90,7 @@ const Interactions: FunctionComponent<InteractionProps> = ({
         )}
         {viewer !== Viewer.Collect ? (
           <Collectors
+            t={t}
             collectors={collectors}
             collectLoading={collectLoading}
             getMorePostCollects={getMorePostCollects}
@@ -96,6 +98,7 @@ const Interactions: FunctionComponent<InteractionProps> = ({
           />
         ) : (
           <Switch
+            t={t}
             currency={currency}
             setCurrency={setCurrency}
             profile={lensProfile}

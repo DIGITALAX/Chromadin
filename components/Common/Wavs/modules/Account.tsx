@@ -15,6 +15,7 @@ const Account: FunctionComponent<AccountProps> = ({
   profileCollections,
   dispatch,
   router,
+  t
 }): JSX.Element => {
   const pfp = createProfilePicture(profile?.metadata?.picture);
   return (
@@ -63,7 +64,7 @@ const Account: FunctionComponent<AccountProps> = ({
           </div>
           {profile?.operations.isFollowingMe?.value && (
             <div className="relative w-fit h-fit flex bg-gray-400/30 p-1 rounded-md">
-              Follows You
+              {t("you")}
             </div>
           )}
         </div>
@@ -98,7 +99,7 @@ const Account: FunctionComponent<AccountProps> = ({
                 className="relative w-full h-fit items-center justify-end"
                 id="username1"
               >
-                Followers
+                {t("followers")}
               </div>
               <div className="relative w-full h-fit items-center justify-end">
                 {profile?.stats?.followers}
@@ -109,7 +110,7 @@ const Account: FunctionComponent<AccountProps> = ({
                 className="relative w-full h-fit items-center justify-end"
                 id="username1"
               >
-                Following
+                {t("following")}
               </div>
               <div className="relative w-full h-fit items-center justify-end">
                 {profile?.stats?.following}
@@ -178,7 +179,7 @@ const Account: FunctionComponent<AccountProps> = ({
           <div className="relative w-full h-fit flex flex-row gap-2 items-start justify-start sm:justify-end text-gray-400 flex-wrap">
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
-                Collects
+                {t("collects")}
               </div>
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 {profile?.stats?.countOpenActions}
@@ -186,7 +187,7 @@ const Account: FunctionComponent<AccountProps> = ({
             </div>
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
-                Comments
+                {t("comments")}
               </div>
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 {profile?.stats?.comments}
@@ -194,7 +195,7 @@ const Account: FunctionComponent<AccountProps> = ({
             </div>
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
-                Posts
+                {t("posts")}
               </div>
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 {profile?.stats?.posts}
@@ -202,7 +203,7 @@ const Account: FunctionComponent<AccountProps> = ({
             </div>
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
-                Mirrors
+               {t("mirrors")}
               </div>
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 {profile?.stats?.mirrors}

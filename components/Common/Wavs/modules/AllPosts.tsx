@@ -26,6 +26,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
   commentDescription,
   textElement,
   caretCoord,
+  t,
   handleCommentDescription,
   openConnectModal,
   mentionProfiles,
@@ -110,6 +111,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
             profile={profile}
             profileCollections={profileCollections}
             router={router}
+            t={t}
           />
         ) : (
           !router?.asPath?.includes("&profile=") &&
@@ -124,8 +126,10 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                   openConnectModal={openConnectModal}
                   address={address}
                   lensProfile={lensProfile}
+                  t={t}
                 />
                 <Search
+                  t={t}
                   searchProfiles={searchProfiles}
                   profilesFound={profilesFound}
                   profilesOpenSearch={profilesOpenSearch}
@@ -173,6 +177,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                         key={index}
                       >
                         <FeedPublication
+                          t={t}
                           main={false}
                           setOpenComment={setOpenComment}
                           dispatch={dispatch}
@@ -189,6 +194,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                         />
                         {index === commentOpen && (
                           <MakeComment
+                            t={t}
                             id={
                               publication?.__typename === "Mirror"
                                 ? publication?.mirrorOn?.id
@@ -235,6 +241,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
           <>
             <FeedPublication
               dispatch={dispatch}
+              t={t}
               openMirrorChoice={openMainMirrorChoice}
               setOpenMirrorChoice={setMainOpenMirrorChoice}
               publication={mainPost!}
@@ -250,6 +257,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
             />
             {0 === commentOpen && (
               <MakeComment
+                t={t}
                 id={mainPost?.id}
                 index={0}
                 postCollectGif={postCollectGif}
@@ -311,6 +319,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                           openMirrorChoice={openMirrorChoice}
                           setOpenMirrorChoice={setOpenMirrorChoice}
                           publication={publication}
+                          t={t}
                           collect={collect}
                           mirror={mirror}
                           like={like}
@@ -323,6 +332,7 @@ const AllPosts: FunctionComponent<AllPostsProps> = ({
                         />
                         {index + 1 === Number(commentOpen) + 1 && (
                           <MakeComment
+                            t={t}
                             id={publication?.id}
                             index={index}
                             mediaLoading={mediaLoading}

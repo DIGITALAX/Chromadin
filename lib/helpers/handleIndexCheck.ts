@@ -10,24 +10,26 @@ import { FetchResult } from "@apollo/client";
 import { AnyAction, Dispatch } from "redux";
 import { apolloClient } from "../lens/client";
 import { setModal } from "@/redux/reducers/modalSlice";
+import { TFunction } from "i18next";
 
 const handleIndexCheck = async (
   tx: LensTransactionStatusRequest,
-  dispatch: Dispatch<AnyAction>
+  dispatch: Dispatch<AnyAction>,
+  t: TFunction<"common", undefined>,
 ) => {
   const indexedStatus = await pollUntilIndexed(tx);
   if (indexedStatus) {
     dispatch(
       setIndexModal({
         actionValue: true,
-        actionMessage: "Successfully Indexed",
+        actionMessage: t("succ"),
       })
     );
   } else {
     dispatch(
       setModal({
         actionValue: true,
-        actionMessage: "Something went wrong. Try again?",
+        actionMessage: t("wrong"),
       })
     );
   }

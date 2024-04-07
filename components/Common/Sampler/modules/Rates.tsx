@@ -7,12 +7,13 @@ import FetchMoreLoading from "../../Loading/FetchMoreLoading";
 const Rates: FunctionComponent<RatesProps> = ({
   ratesRedux,
   ratesLoading,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-full h-2/3 flex bg-black/60 rounded-lg flex-col preG:flex-row gap-3 font-arcade p-2">
       {Array.from([
-        [ratesRedux?.[0], "Δ 48 HR PUB REVENUE"],
-        [ratesRedux?.[1], "Δ 48 HR PUB AMOUNT"],
+        [ratesRedux?.[0], t("rev")],
+        [ratesRedux?.[1], t("am")],
       ]).map((value: any[], index: number) => {
         return (
           <div

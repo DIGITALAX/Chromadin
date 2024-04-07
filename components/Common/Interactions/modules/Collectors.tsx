@@ -12,6 +12,7 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
   collectLoading,
   getMorePostCollects,
   hasMoreCollects,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full bg-offBlack flex flex-col">
@@ -84,7 +85,7 @@ const Collectors: FunctionComponent<CollectorsProps> = ({
         )}
       </div>
       <div className="relative w-full h-full py-2 border-t border-white text-white font-arcade uppercase items-end justify-center flex">
-        COLLECTED BY
+        {t("collected")}
       </div>
     </div>
   );

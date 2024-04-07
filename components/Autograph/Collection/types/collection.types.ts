@@ -5,12 +5,14 @@ import { FormEvent, MouseEvent, Ref, SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
 import { ChannelsState } from "@/redux/reducers/channelsSlice";
 import { VideoControls } from "@/components/Common/Video/types/controls.types";
+import { TFunction } from "i18next";
 
 export type InDropProps = {
   autoCollection: Collection | undefined;
   otherCollectionsDrop: Collection[];
   router: NextRouter;
   autoProfile: Profile | undefined;
+  t: TFunction<"common", undefined>;
 };
 
 export type BarProps = {
@@ -18,6 +20,7 @@ export type BarProps = {
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   connected: boolean;
+  t: TFunction<"common", undefined>;
   lensProfile: Profile | undefined;
   handleSearch: (e: FormEvent<Element>) => Promise<void>;
   searchOpen: boolean;
@@ -68,6 +71,7 @@ export type BarProps = {
 export type CheckoutProps = {
   router: NextRouter;
   collection: Collection;
+  t: TFunction<"common", undefined>;
   currency: string;
   setCurrency: (e: string) => void;
   totalAmount: number;

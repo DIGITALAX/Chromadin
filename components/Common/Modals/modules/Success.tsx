@@ -8,6 +8,7 @@ import { SuccessProps } from "../types/modals.types";
 const Success: FunctionComponent<SuccessProps> = ({
   media,
   dispatch,
+  t,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -32,8 +33,7 @@ const Success: FunctionComponent<SuccessProps> = ({
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
                 <div className="relative w-3/4 h-fit justify-center items-center text-white font-earl text-sm text-center">
-                  It’s all yours now. <br /> <br /> Return like a blast from the
-                  past for token gated access & fulfillment updates.
+                  {t("yours")} <br /> <br /> {t("return")}
                 </div>
 
                 <div

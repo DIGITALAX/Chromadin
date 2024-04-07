@@ -8,6 +8,7 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 const QuestSuccess: FunctionComponent<QuestSuccessProps> = ({
   dispatch,
   image,
+  t,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -28,12 +29,16 @@ const QuestSuccess: FunctionComponent<QuestSuccessProps> = ({
           </div>
           <div className="relative w-full h-fit items-center justify-center flex flex-col gap-3 pb-4 text-white font-dosis">
             <div className="relative w-2/3 h-fit items-center justify-center text-center break-words text-sm">
-              Quest Joined! <br />
+              {t("joined")} <br />
               <br />
-              Keep up with your stats in every video and claim awards at
-              Kinora.
+              {t("keep")}
             </div>
-            <div className="relative flex items-center justify-center h-24 w-40 rounded-sm border border-cost cursor-pointer active:scale-95" onClick={() => window.open(`https://kinora.irrevocable.dev/awards`)}>
+            <div
+              className="relative flex items-center justify-center h-24 w-40 rounded-sm border border-cost cursor-pointer active:scale-95"
+              onClick={() =>
+                window.open(`https://kinora.irrevocable.dev/awards`)
+              }
+            >
               <Image
                 layout="fill"
                 className="rounded-sm"

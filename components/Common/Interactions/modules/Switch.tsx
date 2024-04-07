@@ -24,7 +24,8 @@ const Switch: FunctionComponent<SwitchProps> = ({
   profile,
   isCreator,
   historyData,
-  collectionInfo
+  collectionInfo,
+  t,
 }): JSX.Element => {
   switch (action) {
     case Options.Account:
@@ -33,6 +34,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
     case Options.Fulfillment:
       return (
         <Fulfillment
+          t={t}
           currency={currency}
           setCurrency={setCurrency}
           totalAmount={totalAmount}
@@ -50,6 +52,7 @@ const Switch: FunctionComponent<SwitchProps> = ({
     default:
       return (
         <History
+          t={t}
           historyLoading={historyLoading}
           historySwitch={historySwitch}
           setHistorySwitch={setHistorySwitch}

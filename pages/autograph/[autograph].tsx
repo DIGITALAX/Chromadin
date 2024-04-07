@@ -2,6 +2,7 @@ import useBar from "@/components/Autograph/Common/hooks/useBar";
 import Bar from "@/components/Autograph/Common/modules/Bar";
 import useAutograph from "@/components/Autograph/Home/hooks/useAutograph";
 import Collections from "@/components/Autograph/Home/modules/Collections";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Drops from "@/components/Autograph/Home/modules/Drops";
 import NotFound from "@/components/Common/Loading/NotFound";
 import RouterChange from "@/components/Common/Loading/RouterChange";
@@ -25,10 +26,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
 import { useAccount } from "wagmi";
+import { useTranslation } from "next-i18next";
 
 const Autograph: NextPage<{ router: NextRouter }> = ({
   router,
 }): JSX.Element => {
+  const { t } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -79,7 +82,8 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     publicClient,
     oracleData,
     openAccountModal,
-    enabledCurrencies
+    enabledCurrencies,
+    t
   );
   const { autographLoading, autographData } = useAutograph(
     autograph as string,
@@ -102,7 +106,14 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     controlInteractionsLoading,
     setVideoControlsInfo,
     videoControlsInfo,
-  } = useControls(dispatch, address, publicClient, allVideos, postCollectGif);
+  } = useControls(
+    dispatch,
+    address,
+    publicClient,
+    allVideos,
+    postCollectGif,
+    t
+  );
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
     lensProfile,
@@ -324,6 +335,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
           videosLoading={videosLoading}
           setVideosLoading={setVideosLoading}
           dispatch={dispatch}
+          t={t}
         />
         {quickProfiles &&
         !globalLoading &&
@@ -333,12 +345,16 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
               ?.split("@")?.[1]
               ?.toLowerCase() === (autograph as string).toLowerCase()
         ) ? (
-          <NotFound router={router} />
+          <NotFound router={router} t={t} />
         ) : (
           autographData?.profile &&
           allPosts?.length > 0 && (
             <div className="relative flex flex-col w-full h-fit gap-20 justify-start px-2 preG:px-8 md:px-20 py-10">
-              <Account dispatch={dispatch} profile={autographData?.profile} />
+              <Account
+                t={t}
+                dispatch={dispatch}
+                profile={autographData?.profile}
+              />
               <div className="relative flex flex-col tablet:flex-row gap-10 tablet:gap-3 items-start justify-center w-full h-full">
                 <div className="relative w-full h-fit flex flex-col items-start justify-start gap-4 order-2 tablet:order-1">
                   <InfiniteScroll
@@ -362,6 +378,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                             >
                               <FeedPublication
                                 main={false}
+                                t={t}
                                 setOpenComment={setOpenComment}
                                 dispatch={dispatch}
                                 publication={publication}
@@ -379,6 +396,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                               />
                               {index === openComment && (
                                 <MakeComment
+                                  t={t}
                                   id={
                                     publication?.__typename === "Mirror"
                                       ? publication?.mirrorOn?.id
@@ -426,6 +444,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                       dispatch={dispatch}
                       autoCollections={autographData?.collections}
                       router={router}
+                      t={t}
                       autoProfile={autographData?.profile}
                       address={address}
                       lensProfile={lensProfile}
@@ -439,6 +458,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
                 allDrops={autographData?.drops}
                 autoProfile={autographData?.profile}
                 router={router}
+                t={t}
               />
             </div>
           )
@@ -451,3 +471,16 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
 };
 
 export default Autograph;
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});

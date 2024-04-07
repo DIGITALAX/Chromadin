@@ -37,6 +37,7 @@ import {
   setPostCollectGif,
 } from "@/redux/reducers/postCollectGifSlice";
 import { VideoControls } from "../types/controls.types";
+import { TFunction } from "i18next";
 
 const useControls = (
   dispatch: Dispatch<AnyAction>,
@@ -44,6 +45,7 @@ const useControls = (
   publicClient: PublicClient,
   allVideos: ChannelsState,
   postCollectGif: PostCollectGifState,
+  t: TFunction<"common", undefined>,
   currentFeed?: (Post | Mirror | Quote | Comment)[],
   setCurrentFeed?:
     | ((e: SetStateAction<(Post | Mirror | Quote)[]>) => void)
@@ -522,7 +524,7 @@ const useControls = (
     dispatch(
       setIndexModal({
         actionValue: true,
-        actionMessage: "Indexing Interaction",
+        actionMessage: t("index"),
       })
     );
     const newMedia = { ...postCollectGif?.media };
@@ -629,7 +631,7 @@ const useControls = (
     if (document.querySelector("#highlighted-content")) {
       document.querySelector("#highlighted-content")!.innerHTML =
         controlCommentDetails?.html?.length === 0
-          ? "Have something to say?"
+          ? t("say")
           : controlCommentDetails?.html;
     }
   }, [controlCommentDetails?.html]);

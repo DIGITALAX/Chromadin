@@ -11,6 +11,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
   collections,
   autoProfile,
   router,
+  t
 }): JSX.Element => {
   const pfp = createProfilePicture(autoProfile?.metadata?.picture);
   return (
@@ -105,7 +106,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
                   >
                     {Number(collection?.soldTokens) ===
                     Number(collection?.amount)
-                      ? "SOLD OUT"
+                      ? t("sold")
                       : `${Number(collection?.soldTokens)} /
                   ${Number(collection?.amount)}`}
                   </div>

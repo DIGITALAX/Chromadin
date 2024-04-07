@@ -20,6 +20,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
   textElement,
   caretCoord,
   comment,
+  t,
   mentionProfiles,
   profilesOpen,
   handleMentionClick,
@@ -67,9 +68,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                 id="highlighted-content"
                 className={`w-full h-full place-self-center text-left whitespace-pre-wrap overflow-y-auto z-0 break-words`}
               >
-                {secondaryComment !== ""
-                  ? "Reply with a Comment?"
-                  : "Have Something to Say?"}
+                {secondaryComment !== "" ? "Reply with a Comment?" : t("say")}
               </code>
             </pre>
             {mentionProfiles?.length > 0 && profilesOpen && (
@@ -154,13 +153,13 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                 }`}
               >
                 {!connected && !lensProfile?.id ? (
-                  "CONNECT"
+                  t("con")
                 ) : connected && !lensProfile?.id ? (
-                  "SIGN IN"
+                  t("sig")
                 ) : commentLoading ? (
                   <AiOutlineLoading size={10} color="white" />
                 ) : (
-                  "SEND IT"
+                  t("send")
                 )}
               </div>
             </div>

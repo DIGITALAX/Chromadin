@@ -14,12 +14,14 @@ const Collections: FunctionComponent<CollectionsProps> = ({
   lensProfile,
   openConnectModal,
   handleLensSignIn,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col gap-14">
       <div className="relative flex flex-col w-full h-fit gap-3">
         <div className="relative w-full h-full flex flex-col">
           <CollectionCaseLarge
+            t={t}
             router={router}
             collection={autoCollections?.[0]}
             autoProfile={autoProfile}
@@ -55,6 +57,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
                       lensProfile={lensProfile}
                       openConnectModal={openConnectModal}
                       handleLensSignIn={handleLensSignIn}
+                      t={t}
                     />
                   );
                 })}
@@ -88,6 +91,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
                   <CollectionCaseMedium
                     router={router}
                     dispatch={dispatch}
+                    t={t}
                     key={index}
                     collection={collection}
                     autoProfile={autoProfile}

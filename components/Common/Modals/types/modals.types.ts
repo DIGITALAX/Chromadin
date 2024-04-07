@@ -19,6 +19,7 @@ import { Action, AnyAction, Dispatch } from "redux";
 import { PostCollectGifState } from "@/redux/reducers/postCollectGifSlice";
 import { Collection, UploadedMedia } from "@/components/Home/types/home.types";
 import { Quest } from "../../Video/types/controls.types";
+import { TFunction } from "i18next";
 
 export type IndexingModalProps = {
   message: string | undefined;
@@ -30,6 +31,7 @@ export type CollectModalProps = {
 };
 
 export type ErrorProps = {
+  t: TFunction<"common", undefined>;
   dispatch: Dispatch<AnyAction>;
 };
 
@@ -41,6 +43,7 @@ export type ImageLargeProps = {
 
 export type SuccessProps = {
   media: string;
+  t: TFunction<"common", undefined>;
   dispatch: Dispatch<AnyAction>;
 };
 
@@ -67,10 +70,12 @@ export type SuperFollowProps = {
   router: NextRouter;
   superCreatorLoading: boolean;
   followedSuper: boolean;
+  t: TFunction<"common", undefined>;
 };
 
 export type QuestGatesProps = {
   dispatch: Dispatch<Action>;
+  t: TFunction<"common", undefined>;
   gates: {
     erc20?: {
       address: string;
@@ -98,6 +103,7 @@ export type PostProps = {
   handlePostDescription: (e: FormEvent<Element>) => Promise<void>;
   mentionProfiles: Profile[];
   profilesOpen: boolean;
+  t: TFunction<"common", undefined>;
   handleMentionClick: (user: Profile) => void;
   lensProfile: Profile | undefined;
   handleKeyDownDelete: (e: KeyboardEvent<Element>) => void;
@@ -136,6 +142,7 @@ export type ClaimProps = {
   address: `0x${string}` | undefined;
   openConnectModal: (() => void) | undefined;
   lensProfile: Profile | undefined;
+  t: TFunction<"common", undefined>;
 };
 
 export type LoginProps = {
@@ -147,6 +154,7 @@ export type LoginProps = {
 export type CollectOptionsProps = {
   id: string;
   type: string;
+  t: TFunction<"collect", undefined>;
   dispatch: Dispatch<AnyAction>;
   collectTypes:
     | {
@@ -191,6 +199,7 @@ export type PostCollectGifProps = {
   dispatch: Dispatch<AnyAction>;
   postCollectGif: PostCollectGifState;
   handleGif: (e: string) => Promise<void>;
+  t: TFunction<"common", undefined>;
   openMeasure: {
     searchedGifs: string[];
     search: string;
@@ -223,6 +232,7 @@ export type PostCollectGifProps = {
 
 export type FollowCollectProps = {
   dispatch: Dispatch<AnyAction>;
+  t: TFunction<"common", undefined>;
   type: string;
   collect:
     | {
@@ -256,6 +266,7 @@ export type QuestsProps = {
   address: `0x${string}` | undefined;
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
+  t: TFunction<"common", undefined>;
 };
 
 export type MetricsProps = {
@@ -264,9 +275,11 @@ export type MetricsProps = {
   lensProfile: Profile | undefined;
   address: `0x${string}` | undefined;
   metricsOpen: boolean;
+  t: TFunction<"common", undefined>;
 };
 
 export type QuestSuccessProps = {
   dispatch: Dispatch<AnyAction>;
   image: string;
+  t: TFunction<"common", undefined>;
 };

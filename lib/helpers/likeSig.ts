@@ -3,11 +3,13 @@ import addReaction from "@/graphql/lens/mutations/react";
 import { AnyAction, Dispatch } from "redux";
 import handleIndexCheck from "./handleIndexCheck";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
+import { TFunction } from "i18next";
 
 const likeSig = async (
   id: string,
   dispatch: Dispatch<AnyAction>,
-  downvote: boolean
+  downvote: boolean,
+  t: TFunction<"common", undefined>,
 ): Promise<void> => {
   const data = await addReaction({
     for: id,
@@ -31,7 +33,7 @@ const likeSig = async (
       dispatch(
         setIndexModal({
           actionOpen: true,
-          actionMessage: "Successfully Indexed",
+          actionMessage: t("succ"),
         })
       );
       setTimeout(() => {

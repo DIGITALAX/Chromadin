@@ -9,6 +9,7 @@ const MakePost: FunctionComponent<MakePostProps> = ({
   dispatch,
   lensProfile,
   address,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex justify-end ml-auto">
@@ -25,7 +26,7 @@ const MakePost: FunctionComponent<MakePostProps> = ({
             : dispatch(
                 setNoHandle({
                   actionValue: true,
-                  actionMessage: "Sign In to Lens to Make A Post.",
+                  actionMessage: t("lens"),
                 })
               )
         }

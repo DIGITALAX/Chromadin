@@ -14,6 +14,7 @@ const Metrics: FunctionComponent<MetricsProps> = ({
   lensProfile,
   address,
   metricsOpen,
+  t
 }): JSX.Element => {
   const {
     metricsLoading,
@@ -62,7 +63,7 @@ const Metrics: FunctionComponent<MetricsProps> = ({
                     {metricsLoading ? (
                       <AiOutlineLoading size={10} color="#847FF2" />
                     ) : (
-                      "Add Metrics"
+                      t("metA")
                     )}
                   </div>
                 </div>
@@ -73,19 +74,19 @@ const Metrics: FunctionComponent<MetricsProps> = ({
         <div className="relative w-full h-full flex items-center justify-start flex-col gap-4 overflow-y-scroll max-h-[35rem]">
           <div className="relative flex items-center justify-start gap-1.5 flex-col w-full h-full">
             <div className="relative w-fit h-fit flex items-center justify-center font-dosis text-xs text-white">
-              On-Chain Video Metrics
+              {t("mets")}
             </div>
             <div className="relative w-1/2 h-px bg-cost flex"></div>
             <PlayerMetrics
               metrics={onChainMetrics}
               text={
-                "Nothing Logged On Chain Yet for this Video. Start watching!"
+                t("logged")
               }
             />
           </div>
           <div className="relative flex items-center justify-start gap-1.5 flex-col w-full h-full">
             <div className="relative w-fit h-fit flex items-center justify-center font-dosis text-xs text-white">
-              Live Video Metrics
+              {t("live")}
             </div>
             <div className="relative w-1/2 h-px bg-cost flex"></div>
             {currentMetricsLoading ? (
@@ -97,7 +98,7 @@ const Metrics: FunctionComponent<MetricsProps> = ({
             ) : (
               <PlayerMetrics
                 metrics={liveMetrics}
-                text={"No Session Active Yet for this Video. Start watching!"}
+                text={t("session")}
               />
             )}
           </div>

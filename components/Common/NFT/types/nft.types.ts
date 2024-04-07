@@ -5,6 +5,7 @@ import { FormEvent, KeyboardEvent, RefObject, SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
 import { Viewer } from "../../Interactions/types/interactions.types";
 import { PostCollectGifState } from "@/redux/reducers/postCollectGifSlice";
+import { TFunction } from "i18next";
 
 export type NFTProps = {
   mainNFT: Collection | undefined;
@@ -43,6 +44,7 @@ export type NFTProps = {
     video: boolean;
   }[];
   mainVideo: Post;
+  t: TFunction<"common", undefined>;
   setMediaLoading: (
     e: SetStateAction<
       {
@@ -57,6 +59,7 @@ export type NFTProps = {
 
 export type UserCommentProps = {
   connected: boolean;
+  t: TFunction<"common", undefined>;
   lensProfile: Profile | undefined;
   comment: (id: string, index: number, main?: boolean) => Promise<void>;
   handleLensSignIn: () => Promise<void>;

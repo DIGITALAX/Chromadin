@@ -10,13 +10,15 @@ import actPost from "@/lib/helpers/actSig";
 import findBalance from "@/lib/helpers/findBalance";
 import { OracleData } from "../../Wavs/types/wavs.types";
 import { Collection } from "@/components/Home/types/home.types";
+import { TFunction } from "i18next";
 
 const useFulfillment = (
   publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
   mainNFT: Collection,
-  oracleData: OracleData[]
+  oracleData: OracleData[],
+  t: TFunction<"common", undefined>
 ) => {
   const [approved, setApproved] = useState<boolean>(false);
   const [currency, setCurrency] = useState<string>(
@@ -281,7 +283,8 @@ const useFulfillment = (
         dispatch,
         address!,
         clientWallet,
-        publicClient
+        publicClient,
+        t
       );
       if (complete) {
         dispatch(

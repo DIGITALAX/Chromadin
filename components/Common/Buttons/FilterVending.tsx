@@ -9,6 +9,7 @@ const FilterVending: FunctionComponent<FilterVendingProps> = ({
   values,
   selectorValue,
   filterUpdate,
+  router,
 }): JSX.Element => {
   return (
     <div
@@ -32,8 +33,11 @@ const FilterVending: FunctionComponent<FilterVendingProps> = ({
       <div className="absolute flex flex-col items-start justify-start w-24 h-fit cursor-pointer z-1 top-8">
         {openDropdown &&
           lodash
-            .filter(values, (item) => item !== selectorValue)
-            ?.map((item: string, index: number) => {
+            .filter(
+              values,
+              (item) => item?.[router.locale as "en" | "es"] !== selectorValue
+            )
+            ?.map((item: { en: string; es: string }, index: number) => {
               return (
                 <div
                   key={index}
@@ -44,11 +48,13 @@ const FilterVending: FunctionComponent<FilterVendingProps> = ({
                   }`}
                   onClick={() => {
                     handleOpenDropdown(!openDropdown);
-                    filterUpdate(item!);
+                    filterUpdate(item?.[router.locale as "en" | "es"]!);
                   }}
                 >
                   <div className="relative w-fit h-fit flex flex-col items-center justify-center">
-                    {openDropdown ? item : selectorValue}
+                    {openDropdown
+                      ? item?.[router.locale as "en" | "es"]
+                      : selectorValue}
                   </div>
                 </div>
               );

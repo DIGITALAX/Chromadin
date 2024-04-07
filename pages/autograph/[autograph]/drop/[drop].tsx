@@ -10,6 +10,7 @@ import useControls from "@/components/Common/Video/hooks/useControls";
 import useViewer from "@/components/Home/hooks/useViewer";
 import { RootState } from "@/redux/store";
 import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { NextPage } from "next";
 import Head from "next/head";
 import { NextRouter } from "next/router";
@@ -18,8 +19,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
 import { useAccount } from "wagmi";
+import { useTranslation } from "next-i18next";
 
 const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
+  const { t } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -64,7 +67,8 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     publicClient,
     oracleData,
     openAccountModal,
-    enabledCurrencies
+    enabledCurrencies,
+    t
   );
   const { isLargeScreen } = useBar();
   const { dropLoading, dropData } = useAutoDrop(
@@ -88,7 +92,7 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     controlInteractionsLoading,
     setVideoControlsInfo,
     videoControlsInfo,
-  } = useControls(dispatch, address, publicClient, channels, postCollectGif);
+  } = useControls(dispatch, address, publicClient, channels, postCollectGif, t);
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
     lensProfile,
@@ -254,6 +258,7 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           videoSync={videoControlsInfo}
           allVideos={channels}
           router={router}
+          t={t}
           openConnectModal={openConnectModal}
           connected={walletConnected}
           handleLogout={handleLogout}
@@ -284,13 +289,14 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
         {dropData?.collections?.length > 0 ? (
           <div className="relative flex flex-col w-full h-fit gap-10 px-3 sm:px-8 lg:px-20 py-10">
             <AllDrops
+              t={t}
               collections={dropData?.collections}
               autoProfile={dropData?.profile}
               router={router}
             />
           </div>
         ) : (
-          <NotFound router={router} />
+          <NotFound t={t} router={router} />
         )}
       </div>
     );
@@ -300,3 +306,16 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
 };
 
 export default Drop;
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});

@@ -14,6 +14,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
   buyNFT,
   purchaseLoading,
   router,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full xl:h-[45.8rem] flex items-start justify-center bg-black border-t border-white">
@@ -32,8 +33,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
               className="relative w-fit h-fit cursor-pointer flex justify-center items-start"
               onClick={() => window.open("https://coinop.themanufactory.xyz/")}
             >
-              This one&apos;s minted, but not yet printed. Level up on Coin Op
-              for more immediate fulfillment.
+              {t("mint")}
             </div>
           </div>
           <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-xl flex text-center px-3">
@@ -45,11 +45,12 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
           <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-base flex">
             {Number(collectionInfo?.main?.soldTokens) ===
             Number(collectionInfo?.main?.amount)
-              ? "SOLD OUT"
+              ? t("sold")
               : `${Number(collectionInfo?.main?.soldTokens)} /
                   ${Number(collectionInfo?.main?.amount)}`}
           </div>
           <Purchase
+            t={t}
             approved={approved}
             currency={currency}
             setCurrency={setCurrency}

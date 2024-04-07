@@ -8,6 +8,7 @@ const SuperCreator: FunctionComponent<SuperCreatorProps> = ({
   address,
   lensProfile,
   dispatch,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-auto h-fit flex items-start justify-start ml-auto px-3 order-2 sm:order-1 lg:order-2 stuck2:order-1">
@@ -22,16 +23,16 @@ const SuperCreator: FunctionComponent<SuperCreatorProps> = ({
                   dispatch(
                     setNoHandle({
                       actionValue: true,
-                      actionMessage: "Sign In To Lens to Super Creator Follow.",
+                      actionMessage: t("sigM"),
                     })
                   )
               : () => dispatch(setSuperFollow(true))
           }
         >
-          super creator
+          {t("super")}
         </div>
         <div className="relative h-fit w-full justify-end flex text-ama font-dosis text-xxs text-right">
-          {!address || !lensProfile?.id ? "sign in 2 follow" : " follow"}
+          {!address || !lensProfile?.id ? t("sfol") : t("fol")}
         </div>
       </div>
     </div>

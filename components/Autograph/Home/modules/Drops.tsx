@@ -8,11 +8,12 @@ const Drops: FunctionComponent<DropsProps> = ({
   allDrops,
   autoProfile,
   router,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col items-start justify-start gap-2">
       <div className="relative w-fit h-fit items-start justify-start font-earl text-white break-words text-2xl">
-        {`All Drops by ${autoProfile?.handle?.suggestedFormatted?.localName
+        {`${t("more")} ${autoProfile?.handle?.suggestedFormatted?.localName
           ?.split("@")[1]
           ?.toLowerCase()}`}
       </div>

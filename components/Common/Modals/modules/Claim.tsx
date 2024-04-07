@@ -15,6 +15,7 @@ const Claim: FunctionComponent<ClaimProps> = ({
   address,
   lensProfile,
   openConnectModal,
+  t
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -47,7 +48,7 @@ const Claim: FunctionComponent<ClaimProps> = ({
               <div className="relative w-5/6 h-fit flex px-4 text-white text-base items-center justify-center break-words font-earl text-center text-xs">
                 {message}
               </div>
-              {message.includes("Own Your Digital Roots.") ? (
+              {message.includes(t("roots")) ? (
                 <Link
                   target="_blank"
                   rel="noreferrer"
@@ -55,7 +56,7 @@ const Claim: FunctionComponent<ClaimProps> = ({
                   className="relative w-fit h-10 flex px-4 cursor-pointer active:scale-95 bg-lensLight/80 font-earl text-white rounded-md items-center justify-center"
                 >
                   <div className="relative w-fit h-fit items-center justify-center flex text-sm px-3 py-1.5 text-center">
-                    Claim Handle
+                    {t("hand")}
                   </div>
                 </Link>
               ) : (
@@ -75,9 +76,9 @@ const Claim: FunctionComponent<ClaimProps> = ({
                     {signInLoading ? (
                       <AiOutlineLoading />
                     ) : address && !lensProfile?.id ? (
-                      "Sign In"
+                      t("sign")
                     ) : (
-                      "Connect"
+                      t("connect")
                     )}
                   </div>
                 </div>

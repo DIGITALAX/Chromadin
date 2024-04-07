@@ -15,6 +15,7 @@ const PostCollectGif: FunctionComponent<PostCollectGifProps> = ({
   postCollectGif,
   searchGifLoading,
   handleGif,
+  t,
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-50 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
@@ -41,7 +42,7 @@ const PostCollectGif: FunctionComponent<PostCollectGifProps> = ({
               <div className="relative w-full h-fit flex flex-row items-center font-arcade text-white justify-between text-xs rounded-md gap-2">
                 <input
                   className="relative w-full h-10 py-px px-1 border border-white rounded-md bg-black"
-                  placeholder="search for a gif"
+                  placeholder={t("gif")}
                   onChange={(e) =>
                     setOpenMeasure((prev) => ({
                       ...prev,
@@ -72,7 +73,7 @@ const PostCollectGif: FunctionComponent<PostCollectGifProps> = ({
                     {searchGifLoading ? (
                       <AiOutlineLoading size={10} color="white" />
                     ) : (
-                      "search"
+                      t("search")
                     )}
                   </div>
                 </div>
@@ -124,6 +125,7 @@ const PostCollectGif: FunctionComponent<PostCollectGifProps> = ({
               dispatch={dispatch}
               gifs={postCollectGif?.media!}
               type={postCollectGif?.type!}
+              t={t}
             />
           )}
         </div>

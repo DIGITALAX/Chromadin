@@ -1,3 +1,4 @@
+import { TFunction } from "i18next";
 import { NextRouter } from "next/router";
 
 export type LoadingProps = {
@@ -6,4 +7,5 @@ export type LoadingProps = {
 
 export type NotFoundProps = {
   router: NextRouter;
+  t: TFunction<"common", undefined>;
 };

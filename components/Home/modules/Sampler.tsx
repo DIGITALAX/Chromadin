@@ -12,6 +12,7 @@ const Sampler: FunctionComponent<SamplerProps> = ({
   graphData,
   setCanvas,
   canvas,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full mid:h-[57.2rem] xl:h-[54.8rem] gap-3 flex">
@@ -31,16 +32,19 @@ const Sampler: FunctionComponent<SamplerProps> = ({
             graphLoading={statsLoading}
             canvas={canvas}
             setCanvas={setCanvas}
+            t={t}
             graphsRedux={graphData?.values?.graphs}
           />
           <div className="relative w-full xl:w-200 mid:h-fit xl:h-full flex flex-col gap-3">
             <Pies
               piesRedux={graphData?.values?.pies}
               piesLoading={statsLoading}
+              t={t}
             />
             <Rates
               ratesRedux={graphData?.values?.rates}
               ratesLoading={statsLoading}
+              t={t}
             />
           </div>
         </div>

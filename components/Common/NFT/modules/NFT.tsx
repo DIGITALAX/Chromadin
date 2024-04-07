@@ -30,7 +30,8 @@ const NFT: FunctionComponent<NFTProps> = ({
   lensProfile,
   setMediaLoading,
   postCollectGif,
-  mainVideo
+  mainVideo,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full sm:h-80 xl:h-72 flex flex-col sm:flex-row">
@@ -45,13 +46,10 @@ const NFT: FunctionComponent<NFTProps> = ({
           postCollectGif={postCollectGif}
           setMediaLoading={setMediaLoading}
           lensProfile={lensProfile}
+          t={t}
           comment={comment}
           main={secondaryComment !== "" ? false : true}
-          id={
-            secondaryComment !== ""
-              ? secondaryComment
-              : mainVideo?.id
-          }
+          id={secondaryComment !== "" ? secondaryComment : mainVideo?.id}
           handleLensSignIn={handleLensSignIn}
           openConnectModal={openConnectModal}
           connected={connected}

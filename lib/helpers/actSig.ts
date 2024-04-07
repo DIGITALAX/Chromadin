@@ -10,6 +10,7 @@ import { setError } from "@/redux/reducers/errorSlice";
 import { setIndexModal } from "@/redux/reducers/indexModalSlice";
 import collect from "@/graphql/lens/mutations/collect";
 import { ActOnOpenActionInput } from "@/components/Home/types/generated";
+import { TFunction } from "i18next";
 
 const actSig = async (
   pubId: string,
@@ -17,7 +18,8 @@ const actSig = async (
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}`,
   clientWallet: WalletClient,
-  publicClient: PublicClient
+  publicClient: PublicClient,
+  t: TFunction<"common", undefined>
 ): Promise<boolean | void> => {
   try {
     const { data } = await collect({
@@ -47,7 +49,8 @@ const actSig = async (
         {
           forTxId: broadcastResult?.data?.broadcastOnchain.txId,
         },
-        dispatch
+        dispatch,
+        t
       );
     } else {
       const { request } = await publicClient.simulateContract({
@@ -81,7 +84,7 @@ const actSig = async (
       dispatch(
         setIndexModal({
           actionOpen: true,
-          actionMessage: "Indexing Interaction",
+          actionMessage: t("index"),
         })
       );
 
@@ -89,7 +92,8 @@ const actSig = async (
         {
           forTxHash: tx.transactionHash,
         },
-        dispatch
+        dispatch,
+        t
       );
 
       dispatch(

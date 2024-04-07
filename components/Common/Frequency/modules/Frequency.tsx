@@ -7,11 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import useDrop from "@/components/Home/hooks/useDrop";
 import { RootState } from "@/redux/store";
 import { NextRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 
 const Frequency: FunctionComponent<{ router: NextRouter }> = ({
   router,
 }): JSX.Element => {
   const dispatch = useDispatch();
+  const { t } = useTranslation("common");
   const collectionInfo = useSelector(
     (state: RootState) => state.app.collectionInfoReducer
   );
@@ -31,13 +33,12 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
     moreCollectionsLoading,
   } = useDrop(router, dispatch, collectionInfo, lensProfile);
 
-
   return (
     <div className="relative w-full h-fit preG:h-60 flex flex-row items-center md:pt-0 pt-6">
       <div className="relative w-[80%] h-full flex flex-col">
         <div className="relative w-full h-fit flex flex-col preG:flex-row preG:items-center gap-2 preG:gap-4 pb-2 pt-2">
           <div className="relative w-fit h-fit text-white font-geom uppercase whitespace-nowrap justify-start preG:justify-center text-xl px-3">
-            New Frequencies
+            {t("freq")}
           </div>
           <div className="relative w-full h-fit flex flex-row gap-2 items-center preG:px-0 px-3 preG:pb-0 pb-2">
             <Image

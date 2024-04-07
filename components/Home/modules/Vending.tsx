@@ -29,6 +29,7 @@ const Vending: FunctionComponent<VendingProps> = ({
   handleGetMoreCollections,
   filters,
   collectionInfo,
+  t,
 }): JSX.Element => {
   return (
     <div
@@ -64,10 +65,13 @@ const Vending: FunctionComponent<VendingProps> = ({
           <div className="relative w-full h-fit flex items-start justify-start flex-col preG:flex-row gap-3">
             <div className="relative w-fit h-fit flex flex-row gap-3">
               <FilterVending
+                router={router}
                 handleOpenDropdown={setDropDownPriceSort}
                 openDropdown={dropDownPriceSort}
                 values={filters?.priceValues}
-                selectorValue={filters?.priceSelected}
+                selectorValue={
+                  filters?.priceSelected?.[router.locale as "en" | "es"]
+                }
                 filterUpdate={(selected) =>
                   dispatch(
                     setFilter({
@@ -83,7 +87,10 @@ const Vending: FunctionComponent<VendingProps> = ({
                 handleOpenDropdown={setDropDownDateSort}
                 openDropdown={dropDownDateSort}
                 values={filters?.dateValues}
-                selectorValue={filters?.dateSelected}
+                selectorValue={
+                  filters?.dateSelected?.[router.locale as "en" | "es"]
+                }
+                router={router}
                 filterUpdate={(selected) =>
                   dispatch(
                     setFilter({
@@ -97,6 +104,7 @@ const Vending: FunctionComponent<VendingProps> = ({
               />
             </div>
             <SearchVending
+              t={t}
               handleSearch={handleSearch}
               searchOpen={searchOpen}
               searchResults={searchResults}
@@ -115,7 +123,10 @@ const Vending: FunctionComponent<VendingProps> = ({
               <div className="relative w-full h-full grid grid-cols-1 preG:grid-cols-2 sm:grid-cols-3 wrap:grid-cols-4">
                 {lodash(collectionInfo?.collections)
                   ?.filter((collection: Collection) => {
-                    if (filters.priceSelected === "ALL") {
+                    if (
+                      filters.priceSelected?.[router.locale as "en" | "es"] ===
+                      "ALL"
+                    ) {
                       return true;
                     } else {
                       const matchingAddress = lodash
@@ -123,7 +134,9 @@ const Vending: FunctionComponent<VendingProps> = ({
                           ACCEPTED_TOKENS,
                           ([token]) =>
                             token.toLowerCase() ===
-                            filters.priceSelected.toLowerCase()
+                            filters.priceSelected?.[
+                              router.locale as "en" | "es"
+                            ].toLowerCase()
                         )?.[1]
                         ?.toLowerCase();
                       return collection.acceptedTokens.includes(
@@ -132,7 +145,10 @@ const Vending: FunctionComponent<VendingProps> = ({
                     }
                   })
                   .map((collection: Collection) => {
-                    if (filters.priceSelected === "ALL") {
+                    if (
+                      filters.priceSelected?.[router.locale as "en" | "es"] ===
+                      "ALL"
+                    ) {
                       return collection;
                     } else {
                       const matchingAddress = lodash
@@ -140,7 +156,9 @@ const Vending: FunctionComponent<VendingProps> = ({
                           ACCEPTED_TOKENS,
                           ([token]) =>
                             token.toLowerCase() ===
-                            filters.priceSelected.toLowerCase()
+                            filters.priceSelected?.[
+                              router.locale as "en" | "es"
+                            ].toLowerCase()
                         )?.[1]
                         ?.toLowerCase();
                       const matchingIndex = collection.acceptedTokens.indexOf(
@@ -153,25 +171,45 @@ const Vending: FunctionComponent<VendingProps> = ({
                     }
                   })
                   .filter((collection: any) => {
-                    if (filters.priceSelected === "ALL") {
+                    if (
+                      filters.priceSelected?.[router.locale as "en" | "es"] ===
+                      "ALL"
+                    ) {
                       return true;
                     } else {
                       return collection.matchingPrice !== undefined;
                     }
                   })
                   .sortBy((collection: any) => {
-                    if (filters.priceSelected === "ALL") {
+                    if (
+                      filters.priceSelected?.[router.locale as "en" | "es"] ===
+                      "ALL"
+                    ) {
                       return 0;
                     } else {
                       return -collection.matchingPrice;
                     }
                   })
                   .sortBy((collection: any) => {
-                    if (filters.priceSelected === "ALL") {
-                      if (filters.dateSelected !== "random") {
-                        if (filters.dateSelected === "earliest") {
+                    if (
+                      filters.priceSelected?.[router.locale as "en" | "es"] ===
+                      "ALL"
+                    ) {
+                      if (
+                        filters.dateSelected?.[router.locale as "en" | "es"] !==
+                        "random"
+                      ) {
+                        if (
+                          filters.dateSelected?.[
+                            router.locale as "en" | "es"
+                          ] === "earliest"
+                        ) {
                           return collection.blockTimestamp;
-                        } else if (filters.dateSelected === "latest") {
+                        } else if (
+                          filters.dateSelected?.[
+                            router.locale as "en" | "es"
+                          ] === "latest"
+                        ) {
                           return -collection.blockTimestamp;
                         }
                       }

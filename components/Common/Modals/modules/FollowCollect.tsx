@@ -15,6 +15,7 @@ const FollowCollect: FunctionComponent<FollowCollectProps> = ({
   collect,
   follower,
   handleFollow,
+  t,
   handleUnfollow,
   handleCollect,
   transactionLoading,
@@ -61,7 +62,7 @@ const FollowCollect: FunctionComponent<FollowCollectProps> = ({
               className={`relative rounded-md flex flex-col gap-5 w-5/6 p-2 items-center justify-center w-full h-fit font-dosis text-white text-sm`}
             >
               <div className="relative w-fit h-fit flex items-center justify-center">
-                Ready to Collect?
+                {t("ready")}
               </div>
               <div className="relative w-3/4 items-center justify-center rounded-md border border-white h-40 flex">
                 <Image
@@ -75,8 +76,8 @@ const FollowCollect: FunctionComponent<FollowCollectProps> = ({
               {collect?.item?.endsAt && (
                 <div className="relative w-fit h-fit flex items-center justify-center font-arcade break-words px-2 text-center">
                   {collect?.item?.endsAt < Date.now()
-                    ? "Collect Period Over :/"
-                    : `Collect Period Finishes in ${
+                    ? t("over")
+                    : `${t("fin")} ${
                         moment
                           .duration(
                             moment(collect?.item?.endsAt).diff(moment())
@@ -190,21 +191,21 @@ const FollowCollect: FunctionComponent<FollowCollectProps> = ({
                 (!collect?.item?.followerOnly ||
                   (follower?.operations?.isFollowedByMe?.value &&
                     collect?.item?.followerOnly)) ? (
-                "Approve Spend"
+                t("spend")
               ) : type === "collect" &&
                 (!collect?.item?.followerOnly ||
                   (follower?.operations?.isFollowedByMe?.value &&
                     collect?.item?.followerOnly)) ? (
                 Number(collect?.item?.collectLimit) ==
                 Number(collect?.stats) ? (
-                  "Sold Out"
+                  t("spend")
                 ) : (
-                  "Collect"
+                  t("col2")
                 )
               ) : follower?.operations?.isFollowedByMe?.value ? (
-                "Unfollow"
+                t("unfo")
               ) : (
-                "Follow"
+                t("foll")
               )}
             </div>
           </div>

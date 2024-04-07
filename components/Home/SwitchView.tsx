@@ -79,11 +79,13 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
   openMainMirrorChoice,
   mainInteractionsLoading,
   setMainMediaLoading,
+  t,
 }): JSX.Element => {
   switch (viewer) {
     case Viewer.Collect:
       return (
         <Vending
+          t={t}
           collectionInfo={collectionInfo}
           filters={filters}
           setDropDownDateSort={setDropDownDateSort}
@@ -105,6 +107,7 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
     case Viewer.Sampler:
       return (
         <Sampler
+          t={t}
           graphData={graphData}
           statsLoading={statsLoading}
           setCanvas={setCanvas}
@@ -118,11 +121,13 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
           <div className="relative w-3/4 h-fit flex flex-col items-start justify-start gap-4">
             <div className="relative w-full h-full flex flex-col items-start justify-center gap-3">
               <MakePost
+                t={t}
                 dispatch={dispatch}
                 lensProfile={lensProfile}
                 address={address}
               />
               <AllPosts
+                t={t}
                 interactionsLoading={interactionsLoading}
                 enabledCurrencies={enabledCurrencies}
                 hasMoreComments={hasMoreComments}

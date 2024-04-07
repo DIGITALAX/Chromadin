@@ -9,13 +9,15 @@ import { Profile } from "@/components/Home/types/generated";
 import followSig from "@/lib/helpers/followSig";
 import { AnyAction, Dispatch } from "redux";
 import refetchProfile from "@/lib/helpers/refetchProfile";
+import { TFunction } from "i18next";
 
 const useSuperCreator = (
   publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}` | undefined,
   quickProfiles: Profile[],
-  lensProfile: Profile | undefined
+  lensProfile: Profile | undefined,
+  t: TFunction<"common", undefined>
 ) => {
   const [superCreatorLoading, setSuperCreatorLoading] =
     useState<boolean>(false);
@@ -75,11 +77,16 @@ const useSuperCreator = (
           dispatch(
             setModal({
               actionOpen: true,
-              actionMessage: "Insufficient Balance to Follow.",
+              actionMessage: t("bal"),
             })
           );
         } else {
-          dispatch(setIndexModal("Unsuccessful. Please Try Again."));
+          dispatch(
+            setIndexModal({
+              actionValue: true,
+              actionMessage: t("un"),
+            })
+          );
         }
         console.error(err.message);
       }

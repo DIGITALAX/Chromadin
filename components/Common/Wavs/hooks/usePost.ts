@@ -37,12 +37,14 @@ import {
 import cleanCollect from "@/lib/helpers/cleanCollect";
 import { setModal } from "@/redux/reducers/modalSlice";
 import validateMetadata from "@/graphql/lens/mutations/validate";
+import { TFunction } from "i18next";
 
 const useMakePost = (
   address: `0x${string}` | undefined,
   publicClient: PublicClient,
   dispatch: Dispatch<AnyAction>,
-  postCollectGif: PostCollectGifState
+  postCollectGif: PostCollectGifState,
+  t: TFunction<"common", undefined>
 ) => {
   const [mediaLoading, setMediaLoading] = useState<
     {
@@ -152,7 +154,7 @@ const useMakePost = (
     dispatch(
       setIndexModal({
         actionValue: true,
-        actionMessage: "Indexing Interaction",
+        actionMessage: t("index"),
       })
     );
 
@@ -345,14 +347,16 @@ const useMakePost = (
           {
             forTxHash: tx.transactionHash,
           },
-          dispatch
+          dispatch,
+          t
         );
       } else {
         clearPost();
         setTimeout(async () => {
           await handleIndexCheck(
             (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-            dispatch
+            dispatch,
+            t
           );
         }, 7000);
       }
@@ -378,7 +382,7 @@ const useMakePost = (
   useEffect(() => {
     if (document.querySelector("#highlighted-content3")) {
       document.querySelector("#highlighted-content3")!.innerHTML =
-        postHTML.length === 0 ? "Have something to say?" : postHTML;
+        postHTML.length === 0 ? t("say") : postHTML;
     }
   }, [postHTML]);
 

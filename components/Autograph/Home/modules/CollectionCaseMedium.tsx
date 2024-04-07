@@ -15,6 +15,7 @@ const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
   lensProfile,
   openConnectModal,
   handleLensSignIn,
+  t,
 }): JSX.Element => {
   const pfp = createProfilePicture(autoProfile?.metadata?.picture);
   return (
@@ -73,7 +74,7 @@ const CollectionCaseMedium: FunctionComponent<CollectionCaseProps> = ({
           className={`relative flex w-fit p-1 rounded-l-md h-fit text-ama font-mana items-end justify-end whitespace-nowrap text-xs bg-black right-0 border border-ama`}
         >
           {Number(collection?.soldTokens) === Number(collection?.amount)
-            ? "SOLD OUT"
+            ? t("sold")
             : `${Number(collection?.soldTokens)} /
                   ${Number(collection?.amount)}`}
         </div>

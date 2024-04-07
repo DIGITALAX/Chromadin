@@ -8,6 +8,7 @@ import handleIndexCheck from "./handleIndexCheck";
 import createUnfollowTypedData from "@/graphql/lens/mutations/unfollow";
 import broadcast from "@/graphql/lens/mutations/broadcast";
 import { LENS_HUB_PROXY_ADDRESS_MATIC } from "../constants";
+import { TFunction } from "i18next";
 
 const unfollowSig = async (
   id: string,
@@ -15,7 +16,8 @@ const unfollowSig = async (
   address: `0x${string}`,
   clientWallet: WalletClient,
   publicClient: PublicClient,
-  refetchProfile: () => Promise<void>
+  refetchProfile: () => Promise<void>,
+  t: TFunction<"common", undefined>
 ): Promise<void> => {
   const { data } = await createUnfollowTypedData({
     unfollow: [id],
@@ -40,7 +42,7 @@ const unfollowSig = async (
     dispatch(
       setIndexModal({
         actionOpen: true,
-        actionMessage: "Indexing Interaction",
+        actionMessage: t("index"),
       })
     );
 

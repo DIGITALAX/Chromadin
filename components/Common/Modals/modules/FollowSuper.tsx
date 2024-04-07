@@ -14,6 +14,7 @@ const FollowSuper: FunctionComponent<SuperFollowProps> = ({
   router,
   superCreatorLoading,
   followedSuper,
+  t
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto overflow-x-scroll">
@@ -34,7 +35,7 @@ const FollowSuper: FunctionComponent<SuperFollowProps> = ({
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-10 overflow-x-scroll">
                 <div className="relative w-3/4 h-fit flex items-center w-full h-fit gap-1.5 flex-col justify-center text-white font-dosis">
                   <div className="relative w-full h-fit justify-center items-center text-lg text-center">
-                    Sign All Autographs with One Click!
+                    {t("auto")}
                   </div>
                   <div className="relative w-fit justify-center items-center flex text-xs">{`(Well, ${Math.ceil(
                     quickProfiles.length / 15
@@ -66,9 +67,9 @@ const FollowSuper: FunctionComponent<SuperFollowProps> = ({
                     {superCreatorLoading ? (
                       <AiOutlineLoading color={"white"} size={15} />
                     ) : followedSuper ? (
-                      "Followed!"
+                      t("fod")
                     ) : (
-                      "Super Follow"
+                     t("sup")
                     )}
                   </div>
                 </div>

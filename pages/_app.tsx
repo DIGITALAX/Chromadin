@@ -1,8 +1,11 @@
 import "@/styles/globals.css";
+import "./../i18n";
 import type { AppProps } from "next/app";
 import "@rainbow-me/rainbowkit/styles.css";
 import { store } from "./../redux/store";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { useTranslation } from "next-i18next";
+import { appWithTranslation } from "next-i18next";
 import { Provider } from "react-redux";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { polygon } from "wagmi/chains";
@@ -48,7 +51,7 @@ const config = createConfig({
   connectors,
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [routerChangeLoading, setRouterChangeLoading] =
     useState<boolean>(false);
@@ -112,3 +115,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </Provider>
   );
 }
+
+export default appWithTranslation(App);

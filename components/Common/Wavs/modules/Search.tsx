@@ -15,12 +15,13 @@ const Search: FunctionComponent<SearchProps> = ({
   fetchMoreSearch,
   setProfilesOpenSearch,
   setProfilesFound,
+  t,
 }): JSX.Element => {
   return (
     <div className="relative w-full sm:w-44 h-full grid grid-flow-cols ml-auto order-1 sm:order-2 lg:order-1 stuck2:order-2">
       <input
         className={`relative row-start-1 col-start-1 h-10 bg-black border border-white font-dosis text-white p-2 rounded-md w-full text-sm`}
-        placeholder="Explore Profiles"
+        placeholder={t("explore")}
         onChange={(e) => searchProfiles(e)}
       />
       {profilesOpenSearch && profilesFound.length > 0 && (
@@ -44,10 +45,18 @@ const Search: FunctionComponent<SearchProps> = ({
                   router.push(
                     router?.asPath?.includes("?option=")
                       ? router?.asPath +
-                          `&profile=${profile.handle?.suggestedFormatted?.localName?.split("@")[1]}`
+                          `&profile=${
+                            profile.handle?.suggestedFormatted?.localName?.split(
+                              "@"
+                            )[1]
+                          }`
                       : router?.asPath +
                           "?option=history" +
-                          `&profile=${profile.handle?.suggestedFormatted?.localName?.split("@")[1]}`
+                          `&profile=${
+                            profile.handle?.suggestedFormatted?.localName?.split(
+                              "@"
+                            )[1]
+                          }`
                   );
                   setProfilesOpenSearch(false);
                   setProfilesFound([]);

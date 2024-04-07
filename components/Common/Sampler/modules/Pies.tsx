@@ -6,11 +6,12 @@ import { PiesProps } from "../types/sampler.types";
 const Pies: FunctionComponent<PiesProps> = ({
   piesRedux,
   piesLoading,
+  t
 }): JSX.Element => {
   return (
     <div className="relative w-full h-96 flex flex-col bg-black/60 rounded-lg gap-2 items-center justify-center p-3">
       <div className="relative w-full h-fit flex justify-center items-center font-arcade text-white text-sm py-2">
-        Top Followed Profiles (48HRS)
+        {t("follow")}
       </div>
       <div className="relative grid grid-cols-2 galaxy:grid-cols-3 preG:grid-cols-4 gap-3 overflow-y-scroll h-fit w-full place-self-center">
         {Array.from({ length: 12 }).map((_, index: number) => {

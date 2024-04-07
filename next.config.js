@@ -1,4 +1,5 @@
 const webpack = require("webpack");
+const { i18n } = require("./next-i18next.config");
 /** @type {import('next').NextConfig} */
 
 const allowedOrigins = [
@@ -18,6 +19,7 @@ const allowedOrigins = [
 const nextConfig = {
   reactStrictMode: true,
   crossOrigin: "anonymous",
+  i18n,
   images: {
     remotePatterns: [
       {

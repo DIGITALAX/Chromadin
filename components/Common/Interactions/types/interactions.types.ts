@@ -6,6 +6,7 @@ import { HistoryDataState } from "@/redux/reducers/historyDataReducer";
 import { SetStateAction } from "react";
 import { ChannelsState } from "@/redux/reducers/channelsSlice";
 import { CollectionInfoState } from "@/redux/reducers/collectionInfoSlice";
+import { TFunction } from "i18next";
 
 export enum Viewer {
   Collect = "collect",
@@ -18,10 +19,16 @@ export enum Viewer {
 export type InteractionProps = {
   viewer: Viewer;
   commentors: Comment[];
+  t: TFunction<"common", undefined>;
   getMorePostComments: () => Promise<void>;
   commentsLoading: boolean;
   hasMoreComments: boolean;
-  like: (id: string, hasReacted: boolean, index: number,main?: boolean) => Promise<void>;
+  like: (
+    id: string,
+    hasReacted: boolean,
+    index: number,
+    main?: boolean
+  ) => Promise<void>;
   collect: (
     id: string,
     type: string,
@@ -76,7 +83,12 @@ export type CommentsProps = {
   getMorePostComments: () => Promise<void>;
   commentsLoading: boolean;
   hasMoreComments: boolean;
-  like: (id: string, hasReacted: boolean, index: number,main?: boolean) => Promise<void>;
+  like: (
+    id: string,
+    hasReacted: boolean,
+    index: number,
+    main?: boolean
+  ) => Promise<void>;
   collect: (
     id: string,
     type: string,
@@ -98,6 +110,7 @@ export type AccountProps = {
 
 export type FulfillmentProps = {
   currency: string;
+  t: TFunction<"common", undefined>;
   setCurrency: (e: string) => void;
   totalAmount: number;
   approved: boolean;
@@ -115,10 +128,12 @@ export type CollectorsProps = {
   collectLoading: boolean;
   getMorePostCollects: () => Promise<void>;
   hasMoreCollects: boolean;
+  t: TFunction<"common", undefined>;
 };
 
 export type PurchaseProps = {
   approved: boolean;
+  t: TFunction<"common", undefined>;
   currency: string;
   setCurrency: (e: string) => void;
   totalAmount: number;
@@ -163,9 +178,11 @@ export type HistoryProps = {
   setHistorySwitch: (e: boolean) => void;
   getMoreUserHistory: () => Promise<void>;
   getMoreBuyerHistory: () => Promise<void>;
+  t: TFunction<"common", undefined>;
 };
 
 export type SwitchProps = {
+  t: TFunction<"common", undefined>;
   historyData: HistoryDataState;
   historyLoading: boolean;
   historySwitch: boolean;
