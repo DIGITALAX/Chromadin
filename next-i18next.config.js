@@ -1,4 +1,5 @@
 /** @type {import('next-i18next').UserConfig} */
+const path = require("path");
 
 module.exports = {
   i18n: {
@@ -6,4 +7,5 @@ module.exports = {
     locales: ["en", "es", "ar"],
   },
   react: { useSuspense: false },
+  localePath: path.resolve("./public/locales"),
 };
