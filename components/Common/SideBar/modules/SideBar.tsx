@@ -115,6 +115,7 @@ const SideBar: FunctionComponent<SideBarProps> = ({
       )}
       <Connect
         t={t}
+        router={router}
         i18n={i18n}
         chosenLanguage={chosenLanguage}
         setChosenLanguage={setChosenLanguage}

@@ -493,6 +493,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
           <div className="w-full h-fit flex flex-col lg:hidden">
             <Connect
               i18n={i18n}
+              router={router}
               chosenLanguage={chosenLanguage}
               setChosenLanguage={setChosenLanguage}
               handleLogout={handleLogout}
