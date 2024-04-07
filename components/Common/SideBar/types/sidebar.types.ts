@@ -28,6 +28,7 @@ export type ConnectProps = {
   i18n: i18n;
   chosenLanguage: string;
   setChosenLanguage: (e: SetStateAction<string>) => void;
+  router: NextRouter;
 };
 
 export type AuthProps = {

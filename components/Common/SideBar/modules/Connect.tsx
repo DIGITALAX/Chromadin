@@ -18,6 +18,7 @@ const Connect: FunctionComponent<ConnectProps> = ({
   i18n,
   chosenLanguage,
   setChosenLanguage,
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full py-8 lg:py-3 px-3 flex flex-col sm:flex-row lg:flex-col items-center gap-4">
@@ -86,9 +87,15 @@ const Connect: FunctionComponent<ConnectProps> = ({
                 </div>
               </div>
               <div
-                onClick={() =>
-                  chosenLanguage !== "ar" && i18n.changeLanguage(chosenLanguage)
-                }
+                onClick={() => {
+                  if (chosenLanguage !== "ar") {
+                    i18n.changeLanguage(chosenLanguage);
+                    router.push(router.asPath, undefined, {
+                      shallow: true,
+                      locale: chosenLanguage,
+                    });
+                  }
+                }}
                 className={`text-xxs flex items-center justify-center px-2 border border-white rounded-sm h-6 w-full ${
                   chosenLanguage !== "ar" && "cursor-pointer active:scale-95"
                 }`}
