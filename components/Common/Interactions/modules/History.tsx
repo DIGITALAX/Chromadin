@@ -1,7 +1,7 @@
 import { INFURA_GATEWAY } from "@/lib/constants";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
-import { History, HistoryProps } from "../types/interactions.types";
+import { History as HistoryType, HistoryProps } from "../types/interactions.types";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import Link from "next/link";
 import moment from "moment";
@@ -106,7 +106,7 @@ const History: FunctionComponent<HistoryProps> = ({
           {(historySwitch
             ? historyData?.buyerHistory
             : historyData?.allHistory
-          )?.map((value: History, index: number) => {
+          )?.map((value: HistoryType, index: number) => {
             const pfp = createProfilePicture(value.profile?.metadata?.picture);
             return (
               <Link
