@@ -16,7 +16,7 @@ const mirrorSig = async (
   address: `0x${string}`,
   clientWallet: WalletClient,
   publicClient: PublicClient,
-  t: TFunction<"common", undefined>,
+  t: TFunction<"common", undefined>
 ): Promise<void> => {
   const data = await mirror({
     mirrorOn,
@@ -48,7 +48,8 @@ const mirrorSig = async (
       {
         forTxId: broadcastResult?.data?.broadcastOnchain?.txId,
       },
-      dispatch
+      dispatch,
+      t
     );
   } else {
     const { request } = await publicClient.simulateContract({
@@ -81,7 +82,8 @@ const mirrorSig = async (
       {
         forTxHash: tx.transactionHash,
       },
-      dispatch
+      dispatch,
+      t
     );
   }
   setTimeout(() => {

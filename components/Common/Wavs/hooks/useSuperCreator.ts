@@ -63,11 +63,12 @@ const useSuperCreator = (
         });
 
         await followSig(
-          followers,
+          followers as any,
           clientWallet,
           publicClient,
           address as `0x${string}`,
-          dispatch
+          dispatch,
+          t
         );
 
         await refetchProfile(dispatch, lensProfile?.id);

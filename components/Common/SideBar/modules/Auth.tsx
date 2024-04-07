@@ -10,7 +10,7 @@ const Auth: FunctionComponent<AuthProps> = ({
   profile,
   mainPage,
   handleLogout,
-  t
+  t,
 }): JSX.Element => {
   let action: string;
   const decideStringAction = () => {

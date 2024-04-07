@@ -15,6 +15,7 @@ import { AnyAction, Dispatch } from "redux";
 import cleanCollect from "./cleanCollect";
 import validateMetadata from "@/graphql/lens/mutations/validate";
 import { setModal } from "@/redux/reducers/modalSlice";
+import { TFunction } from "i18next";
 
 const commentSig = async (
   commentOn: string,
@@ -24,7 +25,8 @@ const commentSig = async (
   publicClient: PublicClient,
   address: `0x${string}`,
   dispatch: Dispatch<AnyAction>,
-  clearComment: () => void
+  clearComment: () => void,
+  t: TFunction<"common", undefined>
 ) => {
   try {
     if (
@@ -115,14 +117,16 @@ const commentSig = async (
         {
           forTxHash: tx.transactionHash,
         },
-        dispatch
+        dispatch,
+        t
       );
     } else {
       clearComment();
       setTimeout(async () => {
         await handleIndexCheck(
           (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-          dispatch
+          dispatch,
+          t
         );
       }, 7000);
     }

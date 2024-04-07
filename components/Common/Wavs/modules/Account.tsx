@@ -15,7 +15,7 @@ const Account: FunctionComponent<AccountProps> = ({
   profileCollections,
   dispatch,
   router,
-  t
+  t,
 }): JSX.Element => {
   const pfp = createProfilePicture(profile?.metadata?.picture);
   return (
@@ -60,7 +60,7 @@ const Account: FunctionComponent<AccountProps> = ({
               )
             }
           >
-            {profile?.operations?.isFollowedByMe?.value ? "Unfollow" : "Follow"}
+            {profile?.operations?.isFollowedByMe?.value ? t("unfo") : t("foll")}
           </div>
           {profile?.operations.isFollowingMe?.value && (
             <div className="relative w-fit h-fit flex bg-gray-400/30 p-1 rounded-md">
@@ -203,7 +203,7 @@ const Account: FunctionComponent<AccountProps> = ({
             </div>
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
-               {t("mirrors")}
+                {t("mirrors")}
               </div>
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 {profile?.stats?.mirrors}

@@ -114,11 +114,11 @@ const FollowCollect: FunctionComponent<FollowCollectProps> = ({
               className={`relative rounded-md flex flex-col gap-5 w-5/6 p-2 items-center justify-center w-full h-fit font-dosis text-white text-sm`}
             >
               <div className="relative w-fit h-fit flex items-center justify-center">
-                Follow {follower?.handle?.suggestedFormatted?.localName}{" "}
+                {t("foll2")} {follower?.handle?.suggestedFormatted?.localName}{" "}
                 {type == "collect" &&
                   collect?.item?.followerOnly &&
                   !follower?.operations?.isFollowedByMe?.value &&
-                  "to collect"}
+                  t("toC")}
               </div>
               <div className="relative items-center justify-center rounded-full h-12 w-12 border border-white flex">
                 {pfp && (

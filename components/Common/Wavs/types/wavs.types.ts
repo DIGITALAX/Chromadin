@@ -51,6 +51,7 @@ export type ProfileSideBarProps = {
   openMirrorChoice: boolean[];
   setOpenMirrorChoice: (e: SetStateAction<boolean[]>) => void;
   dispatch: Dispatch<AnyAction>;
+  t: TFunction<"common", undefined>;
   index: number;
   address: `0x${string}` | undefined;
   like: (
@@ -107,6 +108,7 @@ export type ReactionProps = {
     like: boolean;
   };
   main: boolean;
+  t: TFunction<"common", undefined>;
 };
 
 export interface ApprovalArgs {

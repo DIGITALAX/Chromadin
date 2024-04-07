@@ -44,66 +44,95 @@ const Switcher: FunctionComponent<SwitcherProps> = ({
             </div>
           </div>
           <div className="relative w-full h-fit flex flex-row gap-1 items-center justify-end lg:flex-nowrap flex-wrap lg:pb-0 pb-2">
-            {Array.from([
-              ["QmZxFboSxnP4AL4YgYVrRLri2JrvGTn3fEHjbYB5gVBuTA", t("sampler")],
-              ["QmeE6aepU7wpHdjH8L3tpFwtV5jBhoytE3NhHWmi3qGDjo", t("stream")],
-              ["QmTZ5Rj837exSGmt4FxEcth8uJMZFaYYDv9h6C67xx1yDg", t("collect")],
-              ["QmNpdJ2nak6TTb452swiUuQWMoFqhm3kqoYxH4er2zh6s4", t("chat")],
-            ]).map((values: string[], index: number) => {
-              return (
-                <div
-                  className="relative w-fit justify-center lg:w-full h-full grid grid-flow-row auto-rows-auto flex items-center"
-                  key={index}
-                  onClick={() => {
-                    if (router?.asPath?.includes("&profile=")) {
-                      router.push(
-                        `#${values[1]}` +
-                          "?option=" +
-                          (options ? options : Options.History) +
-                          "&profile=" +
-                          router?.asPath.split("&profile=")[1]
-                      );
-                    } else if (router?.asPath?.includes("&post=")) {
-                      router.push(
-                        `#${values[1]}` +
-                          "?option=" +
-                          (options ? options : Options.History) +
-                          "&post=" +
-                          router?.asPath.split("&post=")[1]
-                      );
-                    } else {
-                      router.push(
-                        `#${values[1]}` +
-                          "?option=" +
-                          (options ? options : Options.History)
-                      );
-                    }
-                  }}
-                >
+            {[
+              {
+                image: "QmZxFboSxnP4AL4YgYVrRLri2JrvGTn3fEHjbYB5gVBuTA",
+                title: {
+                  en: "sampler",
+                  es: "sampler",
+                },
+              },
+              {
+                image: "QmeE6aepU7wpHdjH8L3tpFwtV5jBhoytE3NhHWmi3qGDjo",
+                title: {
+                  en: "stream",
+                  es: "flujo",
+                },
+              },
+              {
+                image: "QmTZ5Rj837exSGmt4FxEcth8uJMZFaYYDv9h6C67xx1yDg",
+                title: {
+                  en: "collect",
+                  es: "acumular",
+                },
+              },
+              {
+                image: "QmNpdJ2nak6TTb452swiUuQWMoFqhm3kqoYxH4er2zh6s4",
+                title: {
+                  en: "chat",
+                  es: "chat",
+                },
+              },
+            ].map(
+              (
+                values: { image: string; title: { en: string; es: string } },
+                index: number
+              ) => {
+                return (
                   <div
-                    className={`relative w-8 lg:w-12 h-8 lg:h-12 grid grid-flow-col auto-cols-auto justify-self-center items-center  ${"cursor-pointer active:scale-95"}`}
+                    className="relative w-fit justify-center lg:w-full h-full grid grid-flow-row auto-rows-auto flex items-center"
+                    key={index}
+                    onClick={() => {
+                      if (router?.asPath?.includes("&profile=")) {
+                        router.push(
+                          `#${values.title.en}` +
+                            "?option=" +
+                            (options ? options : Options.History) +
+                            "&profile=" +
+                            router?.asPath.split("&profile=")[1]
+                        );
+                      } else if (router?.asPath?.includes("&post=")) {
+                        router.push(
+                          `#${values.title.en}` +
+                            "?option=" +
+                            (options ? options : Options.History) +
+                            "&post=" +
+                            router?.asPath.split("&post=")[1]
+                        );
+                      } else {
+                        router.push(
+                          `#${values.title.en}` +
+                            "?option=" +
+                            (options ? options : Options.History)
+                        );
+                      }
+                    }}
                   >
-                    <Image
-                      src={`${INFURA_GATEWAY}/ipfs/QmPoXfm1VgBsE4eE3UZw6uGoFAVwShnz6zaEuXkHdryoc9`}
-                      alt="border"
-                      layout="fill"
-                      draggable={false}
-                    />
-                    <div className="relative place-self-center col-start-1 w-3 h-3 lg:w-6 lg:h-6 flex">
+                    <div
+                      className={`relative w-8 lg:w-12 h-8 lg:h-12 grid grid-flow-col auto-cols-auto justify-self-center items-center  ${"cursor-pointer active:scale-95"}`}
+                    >
                       <Image
+                        src={`${INFURA_GATEWAY}/ipfs/QmPoXfm1VgBsE4eE3UZw6uGoFAVwShnz6zaEuXkHdryoc9`}
                         alt="border"
-                        src={`${INFURA_GATEWAY}/ipfs/${values[0]}`}
                         layout="fill"
                         draggable={false}
                       />
+                      <div className="relative place-self-center col-start-1 w-3 h-3 lg:w-6 lg:h-6 flex">
+                        <Image
+                          alt="border"
+                          src={`${INFURA_GATEWAY}/ipfs/${values.image}`}
+                          layout="fill"
+                          draggable={false}
+                        />
+                      </div>
+                    </div>
+                    <div className="relative w-fit h-fit justify-self-center font-digi text-white text-xxs lg:text-sm row-start-2 flex">
+                      {values.title[router.locale as "en" | "es"]}
                     </div>
                   </div>
-                  <div className="relative w-fit h-fit justify-self-center font-digi text-white text-xxs lg:text-sm row-start-2 flex">
-                    {values[1]}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              }
+            )}
           </div>
         </div>
         <div className="relative w-fit h-full font-arcade word-break uppercase text-sm lg:text-4xl flex justify-center grid grid-flow-row auto-rows-auto leading-3 pt-2 lg:pt-0">

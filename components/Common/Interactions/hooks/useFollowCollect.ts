@@ -19,6 +19,7 @@ import refetchProfile from "@/lib/helpers/refetchProfile";
 import collectSig from "@/lib/helpers/collectSig";
 import currencyApprove from "@/graphql/lens/mutations/approve";
 import unfollowSig from "@/lib/helpers/unfollowSig";
+import { TFunction } from "i18next";
 
 const useFollowCollect = (
   dispatch: Dispatch<AnyAction>,
@@ -26,7 +27,8 @@ const useFollowCollect = (
   publicClient: PublicClient,
   postCollectGif: PostCollectGifState,
   lensConnected: Profile | undefined,
-  followCollect: FollowCollectState
+  followCollect: FollowCollectState,
+  t: TFunction<"common", undefined>
 ) => {
   const [transactionLoading, setTransactionLoading] = useState<boolean>(false);
   const [informationLoading, setInformationLoading] = useState<boolean>(false);
@@ -89,7 +91,8 @@ const useFollowCollect = (
         address!,
         clientWallet,
         publicClient,
-        () => refetchProfile(dispatch, lensConnected?.id)
+        () => refetchProfile(dispatch, lensConnected?.id),
+        t
       );
 
       if (
@@ -167,6 +170,7 @@ const useFollowCollect = (
         publicClient,
         address!,
         dispatch,
+        t,
         () => refetchProfile(dispatch, lensConnected?.id)
       );
 
@@ -254,7 +258,8 @@ const useFollowCollect = (
         dispatch,
         address as `0x${string}`,
         clientWallet,
-        publicClient
+        publicClient,
+        t
       );
 
       dispatch(

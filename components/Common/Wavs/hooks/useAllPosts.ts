@@ -296,7 +296,8 @@ const useAllPosts = (
         dispatch,
         address as `0x${string}`,
         clientWallet,
-        publicClient
+        publicClient,
+        t
       );
 
       updateInteractions(
@@ -670,7 +671,8 @@ const useAllPosts = (
         publicClient,
         address as `0x${string}`,
         dispatch,
-        () => clearComment(main!, id, index)
+        () => clearComment(main!, id, index),
+        t
       );
     } catch (err: any) {
       console.error(err.message);
@@ -850,6 +852,7 @@ const useAllPosts = (
   };
 
   useEffect(() => {
+
     if (
       viewer == Viewer.Chat ||
       (router.asPath?.includes("/autograph/") && profileId)

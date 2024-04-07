@@ -157,7 +157,7 @@ const useControls = (
     }
 
     try {
-      await likeSig(id, dispatch, hasReacted);
+      await likeSig(id, dispatch, hasReacted, t);
 
       updateInteractions(
         main
@@ -229,7 +229,8 @@ const useControls = (
         dispatch,
         address as `0x${string}`,
         clientWallet,
-        publicClient
+        publicClient,
+        t
       );
 
       updateInteractions(
@@ -304,7 +305,8 @@ const useControls = (
         dispatch,
         address as `0x${string}`,
         clientWallet,
-        publicClient
+        publicClient,
+        t
       );
 
       updateInteractions(
@@ -598,7 +600,8 @@ const useControls = (
         publicClient,
         address as `0x${string}`,
         dispatch,
-        () => clearComment(id, index, main!)
+        () => clearComment(id, index, main!),
+        t
       );
     } catch (err: any) {
       console.error(err.message);

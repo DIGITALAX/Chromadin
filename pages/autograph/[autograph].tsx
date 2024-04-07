@@ -31,7 +31,7 @@ import { useTranslation } from "next-i18next";
 const Autograph: NextPage<{ router: NextRouter }> = ({
   router,
 }): JSX.Element => {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -83,7 +83,8 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     oracleData,
     openAccountModal,
     enabledCurrencies,
-    t
+    t,
+    i18n
   );
   const { autographLoading, autographData } = useAutograph(
     autograph as string,
@@ -154,6 +155,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     address,
     publicClient,
     postCollectGif,
+    t,
     autographData?.profile?.id
   );
   useEffect(() => {

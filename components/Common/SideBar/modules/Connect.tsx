@@ -29,7 +29,7 @@ const Connect: FunctionComponent<ConnectProps> = ({
         openConnectModal={openConnectModal}
         t={t}
       />
-      <div className="relative justify-center sm:justify-end w-full h-full flex flex-row gap-2">
+      <div className="relative justify-center sm:justify-end w-full h-full flex flex-col preG:flex-row gap-2 items-center">
         <div className="relative w-20 sm:w-14 lg:w-full lg:h-28 h-14 flex">
           <Image
             src={`${INFURA_GATEWAY}/ipfs/QmfWD8eQEZUuyqmnzYVj2r4bS2vNWHYibSkHW7N27yJw7a`}
@@ -39,11 +39,11 @@ const Connect: FunctionComponent<ConnectProps> = ({
             priority
           />
         </div>
-        <div className="relative w-fit h-full flex font-earl text-white text-xs">
+        <div className="relative w-fit h-full flex font-earl text-white text-xs text-center preG:text-left">
           {t("scan")}
         </div>
-        <div className="relative justify-end w-full sm:w-40 lg:w-full h-full flex flex-col gap-4 items-center">
-          <div className="relative grid grid-flow-col auto-cols-auto w-1/2 self-end">
+        <div className="relative justify-center preG:justify-end w-full sm:w-40 lg:w-full h-full flex flex-col gap-4 items-center">
+          <div className="relative grid grid-flow-col auto-cols-auto w-1/2 preG:self-end">
             {[...Array(5)].map((_: any, index: number) => (
               <Image
                 key={index}
@@ -55,7 +55,7 @@ const Connect: FunctionComponent<ConnectProps> = ({
               />
             ))}
           </div>
-          <div className="relative w-fit h-fit flex items-center justify-center flex flex-row gap-3">
+          <div className="relative w-fit h-fit flex items-center justify-center flex flex-row gap-3 preG:self-end">
             <div className="relative w-fit h-fit flex items-center justify-center text-white flex-col text-center font-earl uppercase">
               <div className="text-base flex items-center justify-center">
                 {t("select")}

@@ -32,7 +32,7 @@ import QuestGates from "./QuestGates";
 import QuestSuccess from "./QuestSuccess";
 
 const Modals = ({ router }: { router: NextRouter }) => {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -115,7 +115,8 @@ const Modals = ({ router }: { router: NextRouter }) => {
     publicClient,
     postCollectGif,
     lensProfile,
-    followCollect
+    followCollect,
+    t
   );
   const { allVideoQuests, questsLoading, handleJoinQuest, joinLoading } =
     useQuests(
@@ -135,7 +136,9 @@ const Modals = ({ router }: { router: NextRouter }) => {
     publicClient,
     oracleData,
     openAccountModal,
-    enabledCurrencies
+    enabledCurrencies,
+    t,
+    i18n
   );
 
   const {
@@ -185,6 +188,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
           metricsOpen={metrics?.open}
           lensProfile={lensProfile}
           address={address}
+          t={t}
         />
       )}
       {who.open && (
@@ -228,6 +232,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
           followSuper={followSuper}
           quickProfiles={quickProfiles}
           router={router}
+          t={t}
           followedSuper={followedSuper}
           superCreatorLoading={superCreatorLoading}
         />
@@ -258,7 +263,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
         />
       )}
       {successModal.open && (
-        <Success dispatch={dispatch} media={successModal.media} />
+        <Success dispatch={dispatch} media={successModal.media} t={t} />
       )}
       {claimModal?.value && (
         <Claim
@@ -277,6 +282,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
         <FollowCollect
           handleUnfollow={handleUnfollow}
           dispatch={dispatch}
+          t={t}
           type={followCollect?.type!}
           collect={followCollect?.collect}
           follower={followCollect?.follower}
@@ -303,6 +309,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
       {quests?.open && (
         <Quests
           address={address}
+          t={t}
           openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
           lensProfile={lensProfile}
@@ -316,7 +323,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
         />
       )}
       {questGates?.gates && (
-        <QuestGates gates={questGates?.gates} dispatch={dispatch} />
+        <QuestGates gates={questGates?.gates} dispatch={dispatch} t={t} />
       )}
       {indexingModal?.value && (
         <IndexingModal message={indexingModal?.message} />
@@ -332,9 +339,9 @@ const Modals = ({ router }: { router: NextRouter }) => {
         <Collect message={collectModal?.message} dispatch={dispatch} />
       )}
       {questSuccess?.open && (
-        <QuestSuccess dispatch={dispatch} image={questSuccess?.image} />
+        <QuestSuccess t={t} dispatch={dispatch} image={questSuccess?.image} />
       )}
-      {errorModal.value && <Error dispatch={dispatch} />}
+      {errorModal.value && <Error t={t} dispatch={dispatch} />}
     </>
   );
 };

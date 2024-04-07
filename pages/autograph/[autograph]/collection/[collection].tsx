@@ -33,7 +33,7 @@ import NotFound from "@/components/Common/Loading/NotFound";
 const Collection: NextPage<{ router: NextRouter }> = ({
   router,
 }): JSX.Element => {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -127,7 +127,8 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     oracleData,
     openAccountModal,
     enabledCurrencies,
-    t
+    t,
+    i18n
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
 

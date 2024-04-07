@@ -8,6 +8,7 @@ import { PublicClient, WalletClient } from "viem";
 import { polygon } from "viem/chains";
 import handleIndexCheck from "./handleIndexCheck";
 import createFollowTypedData from "@/graphql/lens/mutations/follow";
+import { TFunction } from "i18next";
 
 const followSig = async (
   follow: Follow[],
@@ -15,9 +16,10 @@ const followSig = async (
   publicClient: PublicClient,
   address: `0x${string}`,
   dispatch: Dispatch<AnyAction>,
+  t: TFunction<"common", undefined>,
+  setFollowLoading?: (e: boolean) => void,
   clearFollow?: () => void,
-  refetchProfile?: () => Promise<void>,
-  setFollowLoading?: (e: boolean) => void
+  refetchProfile?: () => Promise<void>
 ) => {
   try {
     const response = await createFollowTypedData({
@@ -61,7 +63,8 @@ const followSig = async (
         {
           forTxHash: tx.transactionHash,
         },
-        dispatch
+        dispatch,
+        t
       );
       refetchProfile && (await refetchProfile());
     } else {
@@ -70,7 +73,8 @@ const followSig = async (
       setTimeout(async () => {
         await handleIndexCheck(
           (broadcastResult?.data?.broadcastOnchain as RelaySuccess)?.txHash,
-          dispatch
+          dispatch,
+          t
         );
         refetchProfile && (await refetchProfile());
       }, 7000);

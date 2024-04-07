@@ -22,6 +22,7 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
   router,
   openMirrorChoice,
   setOpenMirrorChoice,
+  t
 }): JSX.Element => {
   const profileImage = createProfilePicture(
     publication?.__typename === "Mirror"
@@ -188,6 +189,7 @@ const Profile: FunctionComponent<ProfileSideBarProps> = ({
         </div>
         <div className="relative w-full h-full grid grid-flow-col auto-cols-auto items-end pt-3">
           <Reactions
+            t={t}
             id={publication?.id}
             dispatch={dispatch}
             address={address!}

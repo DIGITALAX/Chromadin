@@ -10,7 +10,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Link from "next/link";
 import WaveformComponent from "./Waveform";
 import { setCollectionInfo } from "@/redux/reducers/collectionInfoSlice";
-import { setFilter } from "@/redux/reducers/filterSlice";
+import { initialFilterState, setFilter } from "@/redux/reducers/filterSlice";
 import handleImageError from "@/lib/helpers/handleImageError";
 
 const Vending: FunctionComponent<VendingProps> = ({
@@ -125,7 +125,9 @@ const Vending: FunctionComponent<VendingProps> = ({
                   ?.filter((collection: Collection) => {
                     if (
                       filters.priceSelected?.[router.locale as "en" | "es"] ===
-                      "ALL"
+                      initialFilterState.priceSelected?.[
+                        router.locale as "en" | "es"
+                      ]
                     ) {
                       return true;
                     } else {
@@ -136,7 +138,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                             token.toLowerCase() ===
                             filters.priceSelected?.[
                               router.locale as "en" | "es"
-                            ].toLowerCase()
+                            ]?.toLowerCase()
                         )?.[1]
                         ?.toLowerCase();
                       return collection.acceptedTokens.includes(
@@ -147,7 +149,9 @@ const Vending: FunctionComponent<VendingProps> = ({
                   .map((collection: Collection) => {
                     if (
                       filters.priceSelected?.[router.locale as "en" | "es"] ===
-                      "ALL"
+                      initialFilterState.priceSelected?.[
+                        router.locale as "en" | "es"
+                      ]
                     ) {
                       return collection;
                     } else {
@@ -158,7 +162,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                             token.toLowerCase() ===
                             filters.priceSelected?.[
                               router.locale as "en" | "es"
-                            ].toLowerCase()
+                            ]?.toLowerCase()
                         )?.[1]
                         ?.toLowerCase();
                       const matchingIndex = collection.acceptedTokens.indexOf(
@@ -173,7 +177,9 @@ const Vending: FunctionComponent<VendingProps> = ({
                   .filter((collection: any) => {
                     if (
                       filters.priceSelected?.[router.locale as "en" | "es"] ===
-                      "ALL"
+                      initialFilterState.priceSelected?.[
+                        router.locale as "en" | "es"
+                      ]
                     ) {
                       return true;
                     } else {
@@ -183,7 +189,9 @@ const Vending: FunctionComponent<VendingProps> = ({
                   .sortBy((collection: any) => {
                     if (
                       filters.priceSelected?.[router.locale as "en" | "es"] ===
-                      "ALL"
+                      initialFilterState.priceSelected?.[
+                        router.locale as "en" | "es"
+                      ]
                     ) {
                       return 0;
                     } else {
@@ -193,22 +201,32 @@ const Vending: FunctionComponent<VendingProps> = ({
                   .sortBy((collection: any) => {
                     if (
                       filters.priceSelected?.[router.locale as "en" | "es"] ===
-                      "ALL"
+                      initialFilterState.priceSelected?.[
+                        router.locale as "en" | "es"
+                      ]
                     ) {
                       if (
                         filters.dateSelected?.[router.locale as "en" | "es"] !==
-                        "random"
+                        initialFilterState.dateValues?.[0]?.[
+                          router.locale as "en" | "es"
+                        ]
                       ) {
                         if (
                           filters.dateSelected?.[
                             router.locale as "en" | "es"
-                          ] === "earliest"
+                          ] ===
+                          initialFilterState.dateValues?.[2]?.[
+                            router.locale as "en" | "es"
+                          ]
                         ) {
                           return collection.blockTimestamp;
                         } else if (
                           filters.dateSelected?.[
                             router.locale as "en" | "es"
-                          ] === "latest"
+                          ] ===
+                          initialFilterState.dateValues?.[1]?.[
+                            router.locale as "en" | "es"
+                          ]
                         ) {
                           return -collection.blockTimestamp;
                         }

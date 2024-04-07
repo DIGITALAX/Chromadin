@@ -9,7 +9,7 @@ const likeSig = async (
   id: string,
   dispatch: Dispatch<AnyAction>,
   downvote: boolean,
-  t: TFunction<"common", undefined>,
+  t: TFunction<"common", undefined>
 ): Promise<void> => {
   const data = await addReaction({
     for: id,
@@ -27,7 +27,8 @@ const likeSig = async (
         {
           forTxId: data?.data?.addReaction?.txId,
         },
-        dispatch
+        dispatch,
+        t
       );
     } else {
       dispatch(

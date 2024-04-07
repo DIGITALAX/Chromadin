@@ -37,6 +37,7 @@ const Reactions: FunctionComponent<ReactionProps> = ({
   openMirrorChoice,
   setOpenMirrorChoice,
   main,
+  t
 }): JSX.Element => {
   return (
     <div
@@ -356,7 +357,7 @@ const Reactions: FunctionComponent<ReactionProps> = ({
       {(publication?.by?.ownedBy?.address === address ? true : false) && (
         <div
           className={`relative w-fit h-fit row-start-3 col-start-1 col-span-2 grid grid-flow-col auto-cols-auto gap-2 place-self-center cursor-pointer active:scale-95`}
-          onClick={() => handleHidePost(publication.id as string, dispatch)}
+          onClick={() => handleHidePost(publication.id as string, dispatch, t)}
         >
           <AiOutlineMinusCircle color={"black"} size={15} />
         </div>

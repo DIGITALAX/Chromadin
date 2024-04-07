@@ -7,7 +7,7 @@ export interface FilterState {
   dateSelected: { en: string; es: string };
 }
 
-const initialFilterState: FilterState = {
+export const initialFilterState: FilterState = {
   priceValues: [
     {
       en: "ALL",

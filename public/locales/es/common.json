@@ -27,11 +27,11 @@
   "collected": "COLECCIONADO POR",
   "gif": "buscar un gif",
   "search": "buscar",
-  "collect": "coleccionar",
+  "collect": "acumular",
   "sampler": "sampler",
   "autograph": "autógrafo",
   "chat": "chat",
-  "stream": "corriente",
+  "stream": "flujo",
   "his": "Toda Historia",
   "min": "Mi Historia",
   "mint": "Esto se ha minteado, pero aún no se ha imprimido. Elévate en Coin Op para cumplimiento más inmediato.",
@@ -95,5 +95,7 @@
   "you": "Te Sigue",
   "more": "Más Colecciones en",
   "drops": "Todos Los Drops por",
-  "select": "elige idioma"
+  "select": "elige idioma",
+  "toc": "para coleccionar",
+  "foll2": "Sigue a"
 }

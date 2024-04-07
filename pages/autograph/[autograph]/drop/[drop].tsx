@@ -22,7 +22,7 @@ import { useAccount } from "wagmi";
 import { useTranslation } from "next-i18next";
 
 const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const publicClient = createPublicClient({
     chain: polygon,
     transport: http(
@@ -68,7 +68,9 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     oracleData,
     openAccountModal,
     enabledCurrencies,
-    t
+
+    t,
+    i18n
   );
   const { isLargeScreen } = useBar();
   const { dropLoading, dropData } = useAutoDrop(

@@ -41,6 +41,7 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
       id={publication?.id}
     >
       <Profile
+        t={t}
         publication={publication}
         dispatch={dispatch}
         address={address}
@@ -288,9 +289,7 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               }
             >
               <div className="relative w-fit h-fit flex  self-center  text-sm">
-                {publication?.__typename !== "Comment"
-                  ? t("pos")
-                  : t("com")}
+                {publication?.__typename !== "Comment" ? t("pos") : t("com")}
               </div>
               <div className={`relative w-fit h-fit self-center flex`}>
                 <AiFillEye color={"white"} size={20} />
