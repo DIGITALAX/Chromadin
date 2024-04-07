@@ -8,8 +8,8 @@ export type FilterVendingProps = {
   handleOpenDropdown: (e?: any) => void;
   openDropdown: boolean;
   values: { en: string; es: string }[];
-  selectorValue: string | undefined;
-  filterUpdate: (selected: string) => void;
+  selectorValue: { en: string; es: string } | undefined;
+  filterUpdate: (selected: { en: string; es: string }) => void;
   router: NextRouter;
 };
 

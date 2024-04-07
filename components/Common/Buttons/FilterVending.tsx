@@ -23,7 +23,7 @@ const FilterVending: FunctionComponent<FilterVendingProps> = ({
       >
         <div className="relative w-full h-fit items-center justify-center flex">
           <div className="relative justify-center items-center w-fit h-fit">
-            {selectorValue}
+            {selectorValue?.[router.locale as "en" | "es"]}
           </div>
         </div>
         <div className="relative w-fit h-fit flex items-center justify-center">
@@ -35,7 +35,9 @@ const FilterVending: FunctionComponent<FilterVendingProps> = ({
           lodash
             .filter(
               values,
-              (item) => item?.[router.locale as "en" | "es"] !== selectorValue
+              (item) =>
+                item?.[router.locale as "en" | "es"] !==
+                selectorValue?.[router.locale as "en" | "es"]
             )
             ?.map((item: { en: string; es: string }, index: number) => {
               return (
@@ -48,13 +50,13 @@ const FilterVending: FunctionComponent<FilterVendingProps> = ({
                   }`}
                   onClick={() => {
                     handleOpenDropdown(!openDropdown);
-                    filterUpdate(item?.[router.locale as "en" | "es"]!);
+                    filterUpdate(item!);
                   }}
                 >
                   <div className="relative w-fit h-fit flex flex-col items-center justify-center">
                     {openDropdown
                       ? item?.[router.locale as "en" | "es"]
-                      : selectorValue}
+                      : selectorValue?.[router.locale as "en" | "es"]}
                   </div>
                 </div>
               );

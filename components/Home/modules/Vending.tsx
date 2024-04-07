@@ -69,9 +69,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                 handleOpenDropdown={setDropDownPriceSort}
                 openDropdown={dropDownPriceSort}
                 values={filters?.priceValues}
-                selectorValue={
-                  filters?.priceSelected?.[router.locale as "en" | "es"]
-                }
+                selectorValue={filters?.priceSelected}
                 filterUpdate={(selected) =>
                   dispatch(
                     setFilter({
@@ -87,9 +85,7 @@ const Vending: FunctionComponent<VendingProps> = ({
                 handleOpenDropdown={setDropDownDateSort}
                 openDropdown={dropDownDateSort}
                 values={filters?.dateValues}
-                selectorValue={
-                  filters?.dateSelected?.[router.locale as "en" | "es"]
-                }
+                selectorValue={filters?.dateSelected}
                 router={router}
                 filterUpdate={(selected) =>
                   dispatch(
@@ -199,39 +195,35 @@ const Vending: FunctionComponent<VendingProps> = ({
                     }
                   })
                   .sortBy((collection: any) => {
+                    // if (
+                    //   filters.priceSelected?.[router.locale as "en" | "es"] ===
+                    //   initialFilterState.priceSelected?.[
+                    //     router.locale as "en" | "es"
+                    //   ]
+                    // ) {
                     if (
-                      filters.priceSelected?.[router.locale as "en" | "es"] ===
-                      initialFilterState.priceSelected?.[
+                      filters.dateSelected?.[router.locale as "en" | "es"] !==
+                      initialFilterState.dateValues?.[0]?.[
                         router.locale as "en" | "es"
                       ]
                     ) {
                       if (
-                        filters.dateSelected?.[router.locale as "en" | "es"] !==
-                        initialFilterState.dateValues?.[0]?.[
+                        filters.dateSelected?.[router.locale as "en" | "es"] ===
+                        initialFilterState.dateValues?.[2]?.[
                           router.locale as "en" | "es"
                         ]
                       ) {
-                        if (
-                          filters.dateSelected?.[
-                            router.locale as "en" | "es"
-                          ] ===
-                          initialFilterState.dateValues?.[2]?.[
-                            router.locale as "en" | "es"
-                          ]
-                        ) {
-                          return collection.blockTimestamp;
-                        } else if (
-                          filters.dateSelected?.[
-                            router.locale as "en" | "es"
-                          ] ===
-                          initialFilterState.dateValues?.[1]?.[
-                            router.locale as "en" | "es"
-                          ]
-                        ) {
-                          return -collection.blockTimestamp;
-                        }
+                        return collection.blockTimestamp;
+                      } else if (
+                        filters.dateSelected?.[router.locale as "en" | "es"] ===
+                        initialFilterState.dateValues?.[1]?.[
+                          router.locale as "en" | "es"
+                        ]
+                      ) {
+                        return -collection.blockTimestamp;
                       }
                     }
+                    // }
                   })
                   .value()
                   ?.map((collection: Collection, index: number) => {
