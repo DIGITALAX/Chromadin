@@ -36,10 +36,10 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
               {t("mint")}
             </div>
           </div>
-          <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-xl flex text-center px-3">
+          <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-xl flex text-center px-3 break-all">
             {collectionInfo?.main?.collectionMetadata?.title}
           </div>
-          <div className="relative w-full preG:w-1/2 lg:w-full h-fit items-center justify-center text-white font-earl text-xs flex text-center px-3">
+          <div className="relative w-full preG:w-1/2 lg:w-full h-fit items-center justify-center text-white font-earl text-xs flex text-center px-3 break-all">
             {collectionInfo?.main?.collectionMetadata?.description}
           </div>
           <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-base flex">
