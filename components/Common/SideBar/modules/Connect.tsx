@@ -91,7 +91,7 @@ const Connect: FunctionComponent<ConnectProps> = ({
                   if (chosenLanguage !== "ar") {
                     i18n.changeLanguage(chosenLanguage);
                     router.push(router.asPath, undefined, {
-                      shallow: true,
+                      // shallow: true,
                       locale: chosenLanguage,
                     });
                   }
