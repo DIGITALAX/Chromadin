@@ -11,7 +11,7 @@ const CollectOptions: FunctionComponent<CollectOptionsProps> = ({
   dispatch,
   gifs,
   type,
-  t
+  t,
 }): JSX.Element => {
   return (
     <div
@@ -166,7 +166,9 @@ const CollectOptions: FunctionComponent<CollectOptionsProps> = ({
                   ...(newCTs[id] || {}),
                   amount: {
                     ...(newCTs[id]?.amount || {}),
-                    currency: item,
+                    currency: availableCurrencies?.find(
+                      (val) => item == val.symbol
+                    )?.contract?.address,
                   },
                 } as any;
 
