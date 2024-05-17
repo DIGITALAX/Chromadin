@@ -56,6 +56,7 @@ export type ProfileProps = {
 
 export type TabProps = {
   tab: number;
+  t: TFunction<"common", undefined>;
   setTab: (e: number) => void;
   viewer: Viewer;
 };

@@ -62,7 +62,7 @@ const SideBar: FunctionComponent<SideBarProps> = ({
   return (
     <div className="relative w-full lg:w-80 h-fit lg:h-full flex flex-col">
       <Switcher t={t} router={router} options={options} />
-      <Tabs tab={tab} setTab={setTab} viewer={viewer} />
+      <Tabs t={t} tab={tab} setTab={setTab} viewer={viewer} />
       {tab === 0 ? (
         <Channels
           dispatch={dispatch}

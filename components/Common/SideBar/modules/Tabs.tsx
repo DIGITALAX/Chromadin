@@ -7,6 +7,7 @@ import { Viewer } from "../../Interactions/types/interactions.types";
 const Tabs: FunctionComponent<TabProps> = ({
   tab,
   setTab,
+  t,
   viewer,
 }): JSX.Element => {
   return (
@@ -23,7 +24,7 @@ const Tabs: FunctionComponent<TabProps> = ({
               tab === 1 ? "text-moda" : "text-ama"
             } flex items-center`}
           >
-            {viewer === Viewer.Collect ? "Fulfill Drop" : "Chat"}
+            {viewer === Viewer.Collect ? t("cump") : "Chat"}
           </span>
           <span className="relative w-fit h-fit text-white font-earl flex items-center leading-0">
             &lt;-- --&gt;
