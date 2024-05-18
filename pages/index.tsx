@@ -503,7 +503,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
               profile={lensProfile}
               t={t}
             />
-            <Tabs tab={tab} setTab={setTab} viewer={viewer} />
+            <Tabs t={t} tab={tab} setTab={setTab} viewer={viewer} />
             {tab === 0 ? (
               <Channels
                 dispatch={dispatch}
