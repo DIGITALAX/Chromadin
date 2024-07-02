@@ -53,10 +53,10 @@ const Rates: FunctionComponent<RatesProps> = ({
                     className="absolute w-full h-fit text-3xl -top-1"
                     id="percent2Back"
                   >
-                    {value?.[0]?.toFixed(2)}%
+                    {value?.[0]?.toFixed(3)}%
                   </div>
                   <div className={`relative w-full h-fit text-white text-3xl`}>
-                    {value?.[0]?.toFixed(2)}%
+                    {value?.[0]?.toFixed(3)}%
                   </div>
                 </div>
               </div>

@@ -114,7 +114,7 @@ const PlayerMetrics: FunctionComponent<PlayerMetricsProps> = ({
                           <div className="relative w-fit h-fit flex items-center justify-center">
                             {!Number.isNaN(Number(item?.value))
                               ? String(item?.value)?.includes(".")
-                                ? Number(item?.value)?.toFixed(2)
+                                ? Number(item?.value)?.toFixed(3)
                                 : item?.value
                               : item?.value}
                           </div>
@@ -124,7 +124,7 @@ const PlayerMetrics: FunctionComponent<PlayerMetricsProps> = ({
                           <div className="relative w-fit h-fit flex items-center justify-center text-xs text-white font-dosis">
                             {!Number.isNaN(Number(item?.value))
                               ? String(item?.value)?.includes(".")
-                                ? Number(item?.value)?.toFixed(2)
+                                ? Number(item?.value)?.toFixed(3)
                                 : item?.value
                               : String(item?.value)
                                   ?.replaceAll(/00:00:/g, "")

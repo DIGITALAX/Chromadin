@@ -128,7 +128,7 @@ const Purchase: FunctionComponent<PurchaseProps> = ({
           }`}
         >
           Total:{" "}
-          {(totalAmount / (currency == "USDT" ? 10 ** 6 : 10 ** 18)).toFixed(2)}{" "}
+          {(totalAmount / (currency == "USDT" ? 10 ** 6 : 10 ** 18)).toFixed(3)}{" "}
           {currency}
         </div>
       </div>
