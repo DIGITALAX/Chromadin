@@ -5,55 +5,55 @@
 @font-face {
   font-family: "Arcade Classic";
   font-weight: 400;
-  src: url("/fonts/ArcadeClassic.ttf");
+  src: url("https://www.chromadin.xyz/fonts/ArcadeClassic.ttf");
 }
 
 @font-face {
   font-family: "Geometria";
   font-weight: 400;
-  src: url("/fonts/Geometria.ttf");
+  src: url("https://www.chromadin.xyz/fonts/Geometria.ttf");
 }
 
 @font-face {
   font-family: "DS Digital";
   font-weight: 400;
-  src: url("/fonts/DSDigi.ttf");
+  src: url("https://www.chromadin.xyz/fonts/DSDigi.ttf");
 }
 
 @font-face {
   font-family: "Earls Revenge";
   font-weight: 400;
-  src: url("/fonts/EarlsRevenge.ttf");
+  src: url("https://www.chromadin.xyz/fonts/EarlsRevenge.ttf");
 }
 
 @font-face {
   font-family: "Economica R";
   font-weight: 400;
-  src: url("/fonts/EconomicaRegular.ttf");
+  src: url("https://www.chromadin.xyz/fonts/EconomicaRegular.ttf");
 }
 
 @font-face {
   font-family: "Dosis Regular";
   font-weight: 400;
-  src: url("/fonts/DosisRegular.ttf");
+  src: url("https://www.chromadin.xyz/fonts/DosisRegular.ttf");
 }
 
 @font-face {
   font-family: "Clash Display";
   font-weight: 400;
-  src: url("/fonts/ClashDisplay.ttf");
+  src: url("https://www.chromadin.xyz/fonts/ClashDisplay.ttf");
 }
 
 @font-face {
   font-family: "Economica B";
   font-weight: 400;
-  src: url("/fonts/EconomicaBold.ttf");
+  src: url("https://www.chromadin.xyz/fonts/EconomicaBold.ttf");
 }
 
 @font-face {
   font-family: "Manaspace";
   font-weight: 400;
-  src: url("/fonts/Manaspc.ttf");
+  src: url("https://www.chromadin.xyz/fonts/Manaspc.ttf");
 }
 
 html {
