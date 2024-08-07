@@ -23,12 +23,12 @@ const Custom404: FunctionComponent<{
 export default Custom404;
 
 
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
-}
+// export async function getStaticPaths() {
+//   return {
+//     paths: [],
+//     fallback: "blocking",
+//   };
+// }
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
