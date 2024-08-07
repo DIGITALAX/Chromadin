@@ -3,6 +3,7 @@ import Head from "next/head";
 import { NextRouter } from "next/router";
 import { FunctionComponent } from "react";
 import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Custom404: FunctionComponent<{
   router: NextRouter;
@@ -20,3 +21,17 @@ const Custom404: FunctionComponent<{
 };
 
 export default Custom404;
+
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
