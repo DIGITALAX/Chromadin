@@ -474,12 +474,12 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
 
 export default Autograph;
 
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
-}
+// export async function getStaticPaths() {
+//   return {
+//     paths: [],
+//     fallback: "blocking",
+//   };
+// }
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
