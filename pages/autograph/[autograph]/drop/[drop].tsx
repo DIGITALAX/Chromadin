@@ -309,12 +309,12 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
 
 export default Drop;
 
-// export async function getStaticPaths() {
-//   return {
-//     paths: [],
-//     fallback: "blocking",
-//   };
-// }
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
