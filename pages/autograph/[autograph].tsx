@@ -17,7 +17,7 @@ import useViewer from "@/components/Home/hooks/useViewer";
 import { Mirror, Post, Quote } from "@/components/Home/types/generated";
 import { RootState } from "@/redux/store";
 import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
-import { NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { NextRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -481,8 +481,10 @@ export async function getStaticPaths() {
   };
 }
 
-export const getStaticProps = async ({ locale }: { locale: string }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ["common"])),
-  },
-});
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? 'en', ["common"])),
+    },
+  };
+};

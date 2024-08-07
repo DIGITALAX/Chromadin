@@ -8,7 +8,7 @@ import { INFURA_GATEWAY } from "@/lib/constants";
 import createProfilePicture from "@/lib/helpers/createProfilePicture";
 import { setImageViewer } from "@/redux/reducers/imageViewerSlice";
 import { RootState } from "@/redux/store";
-import { NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Image from "next/legacy/image";
@@ -538,8 +538,10 @@ export async function getStaticPaths() {
   };
 }
 
-export const getStaticProps = async ({ locale }: { locale: string }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ["common"])),
-  },
-});
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? 'en', ["common"])),
+    },
+  };
+};
