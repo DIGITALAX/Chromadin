@@ -132,6 +132,14 @@ const Collection: NextPage<{ router: NextRouter }> = ({
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
 
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      await i18n.loadNamespaces("common");
+    };
+    loadTranslations();
+  }, [i18n]);
+  
   useEffect(() => {
     setTimeout(() => {
       if (!collectionLoading) {

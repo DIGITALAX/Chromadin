@@ -166,6 +166,14 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     }, 1000);
   }, [autographLoading]);
 
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      await i18n.loadNamespaces("common");
+    };
+    loadTranslations();
+  }, [i18n]);
+
   if (!autographLoading && !postsLoading && !globalLoading) {
     return (
       <div

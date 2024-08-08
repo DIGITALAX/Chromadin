@@ -79,6 +79,13 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     lensProfile
   );
 
+  useEffect(() => {
+    const loadTranslations = async () => {
+      await i18n.loadNamespaces("common");
+    };
+    loadTranslations();
+  }, [i18n]);
+
   const {
     volume,
     handleVolumeChange,
@@ -307,7 +314,7 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   return <RouterChange />;
 };
 
-export default withTranslation('common')(Drop);
+export default withTranslation("common")(Drop);
 
 export async function getStaticPaths() {
   return {
