@@ -26,7 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
 import { useAccount } from "wagmi";
-import { useTranslation } from "next-i18next";
+import { useTranslation, withTranslation } from "next-i18next";
 
 const Autograph: NextPage<{ router: NextRouter }> = ({
   router,
@@ -472,7 +472,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   return <RouterChange />;
 };
 
-export default Autograph;
+export default withTranslation('common')(Autograph);
 
 export async function getStaticPaths() {
   return {

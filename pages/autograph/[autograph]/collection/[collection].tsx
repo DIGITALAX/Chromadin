@@ -20,7 +20,7 @@ import { useAccount } from "wagmi";
 import useBar from "@/components/Autograph/Common/hooks/useBar";
 import WaveformComponent from "@/components/Home/modules/Waveform";
 import Checkout from "@/components/Autograph/Collection/modules/Checkout";
-import { useTranslation } from "next-i18next";
+import { useTranslation, withTranslation } from "next-i18next";
 import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
@@ -529,7 +529,8 @@ const Collection: NextPage<{ router: NextRouter }> = ({
   return <RouterChange />;
 };
 
-export default Collection;
+export default withTranslation('common')(Collection);
+
 
 export async function getStaticPaths() {
   return {

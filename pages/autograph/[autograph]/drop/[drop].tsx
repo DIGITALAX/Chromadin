@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
 import { useAccount } from "wagmi";
-import { useTranslation } from "next-i18next";
+import { useTranslation, withTranslation } from "next-i18next";
 
 const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   const { t, i18n } = useTranslation("common");
@@ -307,7 +307,7 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
   return <RouterChange />;
 };
 
-export default Drop;
+export default withTranslation('common')(Drop);
 
 export async function getStaticPaths() {
   return {
@@ -319,7 +319,7 @@ export async function getStaticPaths() {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale ?? 'en', ["common"])),
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
     },
   };
 };
