@@ -259,6 +259,7 @@ export type QuestsProps = {
   video: Post;
   quests: Quest[];
   signInLoading: boolean;
+  chosenLanguage: string;
   questsLoading: boolean;
   handleJoinQuest: (quest: Quest) => Promise<void>;
   joinLoading: boolean[];

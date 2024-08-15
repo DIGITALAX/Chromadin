@@ -308,6 +308,7 @@ const Modals = ({ router }: { router: NextRouter }) => {
       )}
       {quests?.open && (
         <Quests
+          chosenLanguage={i18n?.language}
           address={address}
           t={t}
           openConnectModal={openConnectModal}

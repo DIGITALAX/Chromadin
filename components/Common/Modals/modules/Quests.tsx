@@ -22,6 +22,7 @@ const Quests: FunctionComponent<QuestsProps> = ({
   openConnectModal,
   handleLensSignIn,
   t,
+  chosenLanguage
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto overflow-x-scroll">
@@ -178,10 +179,14 @@ const Quests: FunctionComponent<QuestsProps> = ({
                                       }
                                     >
                                       <div
-                                        className={`relative w-fit h-fit flex items-center justify-center text-xs ${
+                                        className={`relative w-fit h-fit flex items-center justify-center${
                                           signInLoading ||
                                           (joinLoading?.[index] &&
                                             "animate-spin")
+                                        } ${
+                                          chosenLanguage == "es"
+                                            ? "text-xxs"
+                                            : "text-xs"
                                         }`}
                                       >
                                         {joinLoading?.[index] ||
