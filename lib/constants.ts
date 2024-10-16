@@ -88,13 +88,21 @@ export const LENS_CREATORS: string[] = [
   "0x069575",
   "0x069581",
   "0x0695A1",
-  "0x0695B0"
+  "0x0695B0",
 ];
 
 export const VIDEO_COVERS: {
   poster: string;
   id: string;
 }[] = [
+  // {
+  //   poster: "QmS7dgntwZKvvBqDqFtij3pBoynFjUjMGBWEePakDnLm8k",
+  //   id: "0x01c6a9-0x4d",
+  // },
+  {
+    poster: "QmVu3BgNHbr3SHuork9hESWD5sNGX8MuKE1fTnUH5bTvBJ",
+    id: "0x01c6a9-0x4c",
+  },
   {
     poster: "QmS7hfXnMVccophqKwGtfVyxUtGCa6a2SLr14iF8X5RFX8",
     id: "0x01c6a9-0x4b",
