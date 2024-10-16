@@ -445,9 +445,9 @@ const useControls = (
             router?.asPath === "/en" ||
             router?.asPath === "/"
           ) {
-            const defaultLang = router?.asPath === "/" ? "/es" : router?.asPath;
-
-            const updatedPath = `${defaultLang}/#stream?option=history&video=${
+            const updatedPath = `${
+              router?.asPath
+            }/#stream?option=history&video=${
               (newItems[index]?.id == allVideos?.main?.id
                 ? newItems[index]
                 : allVideos?.main

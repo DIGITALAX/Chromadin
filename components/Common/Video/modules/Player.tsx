@@ -133,10 +133,7 @@ const Player: FunctionComponent<PlayerProps> = ({
                       router?.asPath === "/en" ||
                       router?.asPath === "/"
                     ) {
-                      const defaultLang =
-                        router?.asPath === "/" ? "/es" : router?.asPath;
-
-                      const updatedPath = `${defaultLang}/#stream?option=history&video=${more?.[nextIndex]?.id}`;
+                      const updatedPath = `${router?.asPath}/#stream?option=history&video=${more?.[nextIndex]?.id}`;
 
                       router.replace(updatedPath);
                     }
@@ -194,10 +191,9 @@ const Player: FunctionComponent<PlayerProps> = ({
                       router?.asPath === "/en" ||
                       router?.asPath === "/"
                     ) {
-                      const defaultLang =
-                        router?.asPath === "/" ? "/es" : router?.asPath;
-
-                      const updatedPath = `${defaultLang}/#stream?option=history&video=${
+                      const updatedPath = `${
+                        router?.asPath
+                      }/#stream?option=history&video=${
                         allVideos?.channels?.[
                           nextIndex % allVideos?.channels?.length
                         ]?.id

@@ -112,10 +112,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                           router?.asPath === "/en" ||
                           router?.asPath === "/"
                         ) {
-                          const defaultLang =
-                            router?.asPath === "/" ? "/es" : router?.asPath;
-
-                          const updatedPath = `${defaultLang}/#stream?option=history&video=${content?.id}`;
+                          const updatedPath = `${router?.asPath}/#stream?option=history&video=${content?.id}`;
 
                           router.replace(updatedPath);
                         }
