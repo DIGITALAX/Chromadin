@@ -289,8 +289,29 @@ const Controls: FunctionComponent<ControlsProps> = ({
             } else {
               const optionRegex =
                 /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+              if (!optionRegex.test(router?.asPath)) {
+                if (
+                  router?.asPath === "/es" ||
+                  router?.asPath === "/en" ||
+                  router?.asPath === "/"
+                ) {
+                  const defaultLang =
+                    router?.asPath === "/" ? "/es" : router?.asPath;
 
-              if (optionRegex.test(router?.asPath)) {
+                  const updatedPath = `${defaultLang}/#stream?option=history&video=${
+                    allVideos?.channels[
+                      videoSync?.currentIndex ===
+                      allVideos?.channels?.length - 1
+                        ? 0
+                        : videoSync?.currentIndex === 0
+                        ? allVideos?.channels?.length - 1
+                        : videoSync?.currentIndex - 1
+                    ]?.id
+                  }`;
+
+                  router.replace(updatedPath);
+                }
+              } else {
                 const updatedPath = router?.asPath.replace(
                   optionRegex,
                   `$&${`&video=${
@@ -381,7 +402,22 @@ const Controls: FunctionComponent<ControlsProps> = ({
                     const optionRegex =
                       /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
 
-                    if (optionRegex.test(router?.asPath)) {
+                    if (!optionRegex.test(router?.asPath)) {
+                      if (
+                        router?.asPath === "/es" ||
+                        router?.asPath === "/en" ||
+                        router?.asPath === "/"
+                      ) {
+                        const defaultLang =
+                          router?.asPath === "/" ? "/es" : router?.asPath;
+
+                        const updatedPath = `${defaultLang}/#stream?option=history&video=${
+                          more?.[videoSync?.currentIndex + 1]?.id
+                        }`;
+
+                        router.replace(updatedPath);
+                      }
+                    } else {
                       const updatedPath = router?.asPath.replace(
                         optionRegex,
                         `$&${`&video=${
@@ -438,8 +474,25 @@ const Controls: FunctionComponent<ControlsProps> = ({
                     } else {
                       const optionRegex =
                         /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+                      if (!optionRegex.test(router?.asPath)) {
+                        if (
+                          router?.asPath === "/es" ||
+                          router?.asPath === "/en" ||
+                          router?.asPath === "/"
+                        ) {
+                          const defaultLang =
+                            router?.asPath === "/" ? "/es" : router?.asPath;
 
-                      if (optionRegex.test(router?.asPath)) {
+                          const updatedPath = `${defaultLang}/#stream?option=history&video=${
+                            allVideos?.channels?.[
+                              (videoSync?.currentIndex + 1) %
+                                allVideos?.channels?.length
+                            ]?.id
+                          }`;
+
+                          router.replace(updatedPath);
+                        }
+                      } else {
                         const updatedPath = router?.asPath.replace(
                           optionRegex,
                           `$&${`&video=${

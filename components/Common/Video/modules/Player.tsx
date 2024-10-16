@@ -127,7 +127,20 @@ const Player: FunctionComponent<PlayerProps> = ({
                   const optionRegex =
                     /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
 
-                  if (optionRegex.test(router?.asPath)) {
+                  if (!optionRegex.test(router?.asPath)) {
+                    if (
+                      router?.asPath === "/es" ||
+                      router?.asPath === "/en" ||
+                      router?.asPath === "/"
+                    ) {
+                      const defaultLang =
+                        router?.asPath === "/" ? "/es" : router?.asPath;
+
+                      const updatedPath = `${defaultLang}/#stream?option=history&video=${more?.[nextIndex]?.id}`;
+
+                      router.replace(updatedPath);
+                    }
+                  } else {
                     const updatedPath = router?.asPath.replace(
                       optionRegex,
                       `$&${`&video=${more?.[nextIndex]?.id}`}`
@@ -175,7 +188,24 @@ const Player: FunctionComponent<PlayerProps> = ({
                   const optionRegex =
                     /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
 
-                  if (optionRegex.test(router?.asPath)) {
+                  if (!optionRegex.test(router?.asPath)) {
+                    if (
+                      router?.asPath === "/es" ||
+                      router?.asPath === "/en" ||
+                      router?.asPath === "/"
+                    ) {
+                      const defaultLang =
+                        router?.asPath === "/" ? "/es" : router?.asPath;
+
+                      const updatedPath = `${defaultLang}/#stream?option=history&video=${
+                        allVideos?.channels?.[
+                          nextIndex % allVideos?.channels?.length
+                        ]?.id
+                      }`;
+
+                      router.replace(updatedPath);
+                    }
+                  } else {
                     const updatedPath = router?.asPath.replace(
                       optionRegex,
                       `$&${`&video=${

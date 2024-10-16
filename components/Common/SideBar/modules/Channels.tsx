@@ -106,7 +106,20 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                       const optionRegex =
                         /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
 
-                      if (optionRegex.test(router?.asPath)) {
+                      if (!optionRegex.test(router?.asPath)) {
+                        if (
+                          router?.asPath === "/es" ||
+                          router?.asPath === "/en" ||
+                          router?.asPath === "/"
+                        ) {
+                          const defaultLang =
+                            router?.asPath === "/" ? "/es" : router?.asPath;
+
+                          const updatedPath = `${defaultLang}/#stream?option=history&video=${content?.id}`;
+
+                          router.replace(updatedPath);
+                        }
+                      } else {
                         const updatedPath = router?.asPath.replace(
                           optionRegex,
                           `$&${`&video=${content?.id}`}`
