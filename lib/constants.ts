@@ -24,6 +24,7 @@ export const LENS_HUB_PROXY_ADDRESS_MUMBAI: `0x${string}` =
 export const LENS_HUB_PROXY_ADDRESS_MATIC: `0x${string}` =
   "0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d";
 
+
 export const MOSH_VIDEOS: string[] = [
   "QmVfPFMoTnLYWXdEfShbN6Mxfhbp8CNEFdNf7g9TEZCfjQ",
   "QmZARuqZLxqaBbF1tXBBox1tUvVzGo6gqzHgU8SSdUE4Hq",

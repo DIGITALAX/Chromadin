@@ -61,6 +61,7 @@ const Bar: FunctionComponent<BarProps> = ({
               viewer={Viewer.Autograph}
               hasMore={hasMore}
               volume={volume}
+              router={router}
               lensProfile={lensProfile}
               handleVolumeChange={handleVolumeChange}
               volumeOpen={volumeOpen}
@@ -123,6 +124,7 @@ const Bar: FunctionComponent<BarProps> = ({
       {!isLargeScreen && (
         <div className="relative w-full flex">
           <Video
+            router={router}
             setVideoControlsInfo={setVideoControlsInfo}
             viewer={Viewer.Autograph}
             hasMore={hasMore}

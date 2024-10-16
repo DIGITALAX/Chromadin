@@ -23,6 +23,7 @@ const Player: FunctionComponent<PlayerProps> = ({
   setVideosLoading,
   videosLoading,
   setVideoControlsInfo,
+  router,
 }): JSX.Element => {
   return (
     <div
@@ -110,6 +111,31 @@ const Player: FunctionComponent<PlayerProps> = ({
                   })
                 );
 
+                if (router?.asPath?.includes("&video=")) {
+                  const videoId = router?.asPath
+                    .split("&video=")?.[1]
+                    ?.split("&")?.[0];
+
+                  if (videoId) {
+                    const updatedPath = router.asPath.replace(
+                      `&video=${videoId}`,
+                      `&video=${more?.[nextIndex]?.id}`
+                    );
+                    router.replace(updatedPath);
+                  }
+                } else {
+                  const optionRegex =
+                    /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+
+                  if (optionRegex.test(router?.asPath)) {
+                    const updatedPath = router?.asPath.replace(
+                      optionRegex,
+                      `$&${`&video=${more?.[nextIndex]?.id}`}`
+                    );
+                    router.replace(updatedPath);
+                  }
+                }
+
                 setVideosLoading(false);
 
                 setVideoControlsInfo((prev) => ({
@@ -128,6 +154,39 @@ const Player: FunctionComponent<PlayerProps> = ({
                       ],
                   })
                 );
+
+                if (router?.asPath?.includes("&video=")) {
+                  const videoId = router?.asPath
+                    .split("&video=")?.[1]
+                    ?.split("&")?.[0];
+
+                  if (videoId) {
+                    const updatedPath = router.asPath.replace(
+                      `&video=${videoId}`,
+                      `&video=${
+                        allVideos?.channels?.[
+                          nextIndex % allVideos?.channels?.length
+                        ]?.id
+                      }`
+                    );
+                    router.replace(updatedPath);
+                  }
+                } else {
+                  const optionRegex =
+                    /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+
+                  if (optionRegex.test(router?.asPath)) {
+                    const updatedPath = router?.asPath.replace(
+                      optionRegex,
+                      `$&${`&video=${
+                        allVideos?.channels?.[
+                          nextIndex % allVideos?.channels?.length
+                        ]?.id
+                      }`}`
+                    );
+                    router.replace(updatedPath);
+                  }
+                }
 
                 setVideoControlsInfo((prev) => ({
                   ...prev,

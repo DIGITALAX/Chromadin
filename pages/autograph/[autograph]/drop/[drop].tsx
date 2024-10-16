@@ -101,13 +101,22 @@ const Drop: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     controlInteractionsLoading,
     setVideoControlsInfo,
     videoControlsInfo,
-  } = useControls(dispatch, address, publicClient, channels, postCollectGif, t);
+  } = useControls(
+    dispatch,
+    address,
+    publicClient,
+    channels,
+    postCollectGif,
+    t,
+    router
+  );
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
     lensProfile,
     channels,
     videoInfo,
-    setVideoControlsInfo
+    setVideoControlsInfo,
+    router
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
   useEffect(() => {

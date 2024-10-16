@@ -105,13 +105,22 @@ const Collection: NextPage<{ router: NextRouter }> = ({
     controlInteractionsLoading,
     setVideoControlsInfo,
     videoControlsInfo,
-  } = useControls(dispatch, address, publicClient, channels, postCollectGif, t);
+  } = useControls(
+    dispatch,
+    address,
+    publicClient,
+    channels,
+    postCollectGif,
+    t,
+    router
+  );
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
     lensProfile,
     channels,
     videoInfo,
-    setVideoControlsInfo
+    setVideoControlsInfo,
+    router
   );
   const { isLargeScreen } = useBar();
   const pfp = createProfilePicture(autoCollection?.profile?.metadata?.picture);
@@ -132,14 +141,13 @@ const Collection: NextPage<{ router: NextRouter }> = ({
   );
   const [globalLoading, setGlobalLoading] = useState<boolean>(true);
 
-
   useEffect(() => {
     const loadTranslations = async () => {
       await i18n.loadNamespaces("common");
     };
     loadTranslations();
   }, [i18n]);
-  
+
   useEffect(() => {
     setTimeout(() => {
       if (!collectionLoading) {
@@ -537,8 +545,7 @@ const Collection: NextPage<{ router: NextRouter }> = ({
   return <RouterChange />;
 };
 
-export default withTranslation('common')(Collection);
-
+export default withTranslation("common")(Collection);
 
 export async function getStaticPaths() {
   return {
@@ -550,7 +557,7 @@ export async function getStaticPaths() {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale ?? 'en', ["common"])),
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
     },
   };
 };

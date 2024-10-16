@@ -27,6 +27,7 @@ const Video: FunctionComponent<VideoProps> = ({
   lensProfile,
   allVideos,
   interactionsLoading,
+  router
 }): JSX.Element => {
   return (
     <div
@@ -53,6 +54,7 @@ const Video: FunctionComponent<VideoProps> = ({
           setVideoControlsInfo={setVideoControlsInfo}
           viewer={viewer}
           volume={volume}
+          router={router}
           wrapperRef={wrapperRef}
           allVideos={allVideos}
           fullScreen={false}
@@ -68,6 +70,7 @@ const Video: FunctionComponent<VideoProps> = ({
           <Controls
             setVideoControlsInfo={setVideoControlsInfo}
             volume={volume}
+            router={router}
             lensProfile={lensProfile}
             handleVolumeChange={handleVolumeChange}
             volumeOpen={volumeOpen}

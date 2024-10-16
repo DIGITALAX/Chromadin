@@ -38,6 +38,7 @@ import {
 } from "@/redux/reducers/postCollectGifSlice";
 import { VideoControls } from "../types/controls.types";
 import { TFunction } from "i18next";
+import { NextRouter } from "next/router";
 
 const useControls = (
   dispatch: Dispatch<AnyAction>,
@@ -46,6 +47,7 @@ const useControls = (
   allVideos: ChannelsState,
   postCollectGif: PostCollectGifState,
   t: TFunction<"common", undefined>,
+  router: NextRouter,
   currentFeed?: (Post | Mirror | Quote | Comment)[],
   setCurrentFeed?:
     | ((e: SetStateAction<(Post | Mirror | Quote)[]>) => void)
@@ -416,6 +418,41 @@ const useControls = (
           })
         )
       : setCurrentFeed!(newItems as any);
+
+    if (main) {
+      if (router?.asPath?.includes("&video=")) {
+        const videoId = router?.asPath.split("&video=")?.[1]?.split("&")?.[0];
+
+        if (videoId) {
+          const updatedPath = router.asPath.replace(
+            `&video=${videoId}`,
+            `&video=${
+              (newItems[index]?.id == allVideos?.main?.id
+                ? newItems[index]
+                : allVideos?.main
+              )?.id
+            }`
+          );
+          router.replace(updatedPath);
+        }
+      } else {
+        const optionRegex =
+          /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+
+        if (optionRegex.test(router?.asPath)) {
+          const updatedPath = router?.asPath.replace(
+            optionRegex,
+            `$&${`&video=${
+              (newItems[index]?.id == allVideos?.main?.id
+                ? newItems[index]
+                : allVideos?.main
+              )?.id
+            }`}`
+          );
+          router.replace(updatedPath);
+        }
+      }
+    }
   };
 
   const handleKeyDownDelete = (e: KeyboardEvent<Element>) => {

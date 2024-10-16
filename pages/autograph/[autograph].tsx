@@ -113,14 +113,16 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
     publicClient,
     allVideos,
     postCollectGif,
-    t
+    t,
+    router
   );
   const { fetchMoreVideos, videosLoading, setVideosLoading } = useChannels(
     dispatch,
     lensProfile,
     allVideos,
     videoInfo,
-    setVideoControlsInfo
+    setVideoControlsInfo,
+    router
   );
   const {
     fetchMore,
@@ -165,7 +167,6 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
       }
     }, 1000);
   }, [autographLoading]);
-
 
   useEffect(() => {
     const loadTranslations = async () => {
@@ -480,7 +481,7 @@ const Autograph: NextPage<{ router: NextRouter }> = ({
   return <RouterChange />;
 };
 
-export default withTranslation('common')(Autograph);
+export default withTranslation("common")(Autograph);
 
 export async function getStaticPaths() {
   return {
@@ -492,7 +493,7 @@ export async function getStaticPaths() {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale ?? 'en', ["common"])),
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
     },
   };
 };

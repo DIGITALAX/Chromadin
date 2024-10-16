@@ -4,11 +4,13 @@ import { AnyAction, Dispatch } from "redux";
 import { Viewer } from "../../Interactions/types/interactions.types";
 import { ChannelsState } from "@/redux/reducers/channelsSlice";
 import { Collection } from "@/components/Home/types/home.types";
+import { NextRouter } from "next/router";
 
 export type ControlsProps = {
   videoSync: VideoControls;
   setVideoControlsInfo: (e: SetStateAction<VideoControls>) => void;
   volume: number;
+  router: NextRouter;
   volumeOpen: boolean;
   setVolumeOpen: (volumeOpen: boolean) => void;
   handleVolumeChange: (e: FormEvent) => void;
@@ -61,6 +63,7 @@ export type VideoProps = {
     collect: boolean;
     comment: boolean;
   };
+  router: NextRouter;
   like: (
     id: string,
     hasReacted: boolean,
@@ -93,6 +96,7 @@ export type PlayerProps = {
   volume: number;
   setVideoControlsInfo: (e: SetStateAction<VideoControls>) => void;
   fullScreen: boolean;
+  router: NextRouter;
   wrapperRef: Ref<HTMLDivElement>;
   muted: boolean;
   videoSync: VideoControls;
@@ -293,5 +297,5 @@ export interface VideoControls {
   duration: number;
   isPlaying: boolean;
   videosLoading: boolean;
-  currentIndex: number
+  currentIndex: number;
 }

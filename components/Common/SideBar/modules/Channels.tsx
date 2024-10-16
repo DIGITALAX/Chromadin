@@ -13,6 +13,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
   fetchMoreVideos,
   hasMore,
   setVideoSync,
+  router,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-100 lg:h-full flex flex-col overflow-y-scroll border border-white/80">
@@ -88,6 +89,31 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                         actionMain: content,
                       })
                     );
+
+                    if (router?.asPath?.includes("&video=")) {
+                      const videoId = router?.asPath
+                        .split("&video=")?.[1]
+                        ?.split("&")?.[0];
+
+                      if (videoId) {
+                        const updatedPath = router.asPath.replace(
+                          `&video=${videoId}`,
+                          `&video=${content?.id}`
+                        );
+                        router.replace(updatedPath);
+                      }
+                    } else {
+                      const optionRegex =
+                        /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+
+                      if (optionRegex.test(router?.asPath)) {
+                        const updatedPath = router?.asPath.replace(
+                          optionRegex,
+                          `$&${`&video=${content?.id}`}`
+                        );
+                        router.replace(updatedPath);
+                      }
+                    }
                     setVideoSync((prev) => ({
                       ...prev,
                       currentIndex: index,

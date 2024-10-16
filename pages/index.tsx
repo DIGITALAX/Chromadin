@@ -255,6 +255,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
     allVideos,
     postCollectGif,
     t,
+    router,
     commentors,
     setCommentors,
     getPostComments,
@@ -266,7 +267,8 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
       lensProfile,
       allVideos,
       videoInfo,
-      setVideoControlsInfo
+      setVideoControlsInfo,
+      router
     );
   const {
     searchProfiles,
@@ -358,6 +360,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
             <div className="relative w-full h-full flex flex-col gap-5 items-center justify-center">
               <div className="flex flex-col w-full h-full">
                 <Video
+                  router={router}
                   viewer={viewer}
                   setVideoControlsInfo={setVideoControlsInfo}
                   hasMore={videoInfo?.hasMore}
@@ -506,6 +509,7 @@ const Home: NextPage<{ router: NextRouter }> = ({ router }): JSX.Element => {
             <Tabs t={t} tab={tab} setTab={setTab} viewer={viewer} />
             {tab === 0 ? (
               <Channels
+                router={router}
                 dispatch={dispatch}
                 allVideos={allVideos}
                 videoSync={videoControlsInfo}

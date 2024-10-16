@@ -16,6 +16,7 @@ export type ChannelsProps = {
   fetchMoreVideos: () => Promise<Post[] | undefined>;
   hasMore: boolean;
   setVideoSync: (e: SetStateAction<VideoControls>) => void;
+  router: NextRouter;
 };
 
 export type ConnectProps = {

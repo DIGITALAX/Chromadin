@@ -71,6 +71,7 @@ const SideBar: FunctionComponent<SideBarProps> = ({
           fetchMoreVideos={fetchMoreVideos}
           hasMore={hasMoreVideos}
           setVideoSync={setVideoSync}
+          router={router}
         />
       ) : (
         <Interactions
