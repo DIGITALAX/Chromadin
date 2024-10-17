@@ -95,10 +95,10 @@ export const VIDEO_COVERS: {
   poster: string;
   id: string;
 }[] = [
-  // {
-  //   poster: "QmVN2r3Zth8iWFhx1azEXX6FKuEsypeUwoP7bkp2ksoFDH",
-  //   id: "0x01c6a9-0x4h",
-  // },
+  {
+    poster: "QmUZh4LMBkehYHuzAAnXPNECj6odLKSA9hcugXrMBr6j6v",
+    id: "0x01c6a9-0x51",
+  },
   {
     poster: "QmazTWbRvoKgTPMYhGQTXpzUuUWQLVsVApfvBKLz8LDnPa",
     id: "0x01c6a9-0x50",
