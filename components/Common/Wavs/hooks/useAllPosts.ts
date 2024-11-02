@@ -512,18 +512,18 @@ const useAllPosts = (
 
   const getProfile = async (): Promise<Profile | undefined> => {
     try {
-      const { data } = await getOneProfile(
+      const respuesta = await getOneProfile(
         {
           forHandle: "lens/" + router?.asPath?.split("&profile=")?.[1],
         },
         lensProfile?.id
       );
 
-      setDispatchProfile(data?.profile as Profile);
+      setDispatchProfile(respuesta?.data?.profile as Profile);
 
-      if (LENS_CREATORS?.includes(data?.profile?.id)) {
+      if (LENS_CREATORS?.includes(respuesta?.data?.profile?.id)) {
         const collections = await getCollectionsProfile(
-          data?.profile?.ownedBy?.address
+          respuesta?.data?.profile?.ownedBy?.address
         );
 
         const colls = await Promise.all(
@@ -563,7 +563,7 @@ const useAllPosts = (
         setProfileCollections(colls);
       }
 
-      return data?.profile as Profile;
+      return respuesta?.data?.profile as Profile;
     } catch (err: any) {
       console.error(err.message);
     }
