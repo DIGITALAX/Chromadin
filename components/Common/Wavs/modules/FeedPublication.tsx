@@ -132,7 +132,7 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
           } relative w-full h-fit text-left font-dosis grid grid-flow-row auto-rows-auto gap-6`}
         >
           <div
-            className={`relative w-full h-fit row-start-1 relative h-fit text-white font-dosis self-center justify-self-start break-all preG:break-words`}
+            className={`relative w-fit h-fit row-start-1 relative h-fit text-white font-dosis self-center justify-self-start break-all preG:break-words`}
           >
             <div
               dangerouslySetInnerHTML={{
