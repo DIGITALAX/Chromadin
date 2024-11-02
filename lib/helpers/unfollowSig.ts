@@ -19,11 +19,11 @@ const unfollowSig = async (
   refetchProfile: () => Promise<void>,
   t: TFunction<"common", undefined>
 ): Promise<void> => {
-  const { data } = await createUnfollowTypedData({
+  const datos = await createUnfollowTypedData({
     unfollow: [id],
   });
 
-  const typedData = data?.createUnfollowTypedData.typedData;
+  const typedData = datos?.data?.createUnfollowTypedData.typedData;
 
   const signature = await clientWallet.signTypedData({
     domain: omit(typedData?.domain, ["__typename"]),
@@ -34,7 +34,7 @@ const unfollowSig = async (
   });
 
   const broadcastResult = await broadcast({
-    id: data?.createUnfollowTypedData?.id,
+    id: datos?.data?.createUnfollowTypedData?.id,
     signature,
   });
 

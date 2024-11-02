@@ -22,12 +22,12 @@ const actSig = async (
   t: TFunction<"common", undefined>
 ): Promise<boolean | void> => {
   try {
-    const { data } = await collect({
+    const datos = await collect({
       for: pubId,
       actOn,
     });
 
-    const typedData = data?.createActOnOpenActionTypedData.typedData;
+    const typedData = datos?.data?.createActOnOpenActionTypedData.typedData;
 
     const signature = await clientWallet.signTypedData({
       domain: omit(typedData?.domain, ["__typename"]),
@@ -38,7 +38,7 @@ const actSig = async (
     });
 
     const broadcastResult = await broadcast({
-      id: data?.createActOnOpenActionTypedData?.id,
+      id: datos?.data?.createActOnOpenActionTypedData?.id,
       signature,
     });
 

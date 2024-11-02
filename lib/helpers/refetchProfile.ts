@@ -8,14 +8,14 @@ const refetchProfile = async (
   id: string,
 ) => {
   try {
-    const { data } = await getOneProfile(
+    const datos = await getOneProfile(
       {
         forProfileId: id,
       },
       true
     );
 
-    dispatch(setLensProfile(data?.profile as Profile));
+    dispatch(setLensProfile(datos?.data?.profile as Profile));
   } catch (err: any) {
     console.error(err.message);
   }

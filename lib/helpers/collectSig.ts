@@ -31,7 +31,7 @@ const collectSig = async (
     type === "SimpleCollectOpenActionModule" ||
     type === "MultirecipientFeeCollectOpenActionModule"
   ) {
-    const { data } = await collect({
+    const datos = await collect({
       for: id,
       actOn: {
         simpleCollectOpenAction:
@@ -47,7 +47,7 @@ const collectSig = async (
       },
     });
 
-    const typedData = data?.createActOnOpenActionTypedData.typedData;
+    const typedData = datos?.data?.createActOnOpenActionTypedData.typedData;
 
     const signature = await clientWallet.signTypedData({
       domain: omit(typedData?.domain, ["__typename"]),
@@ -58,7 +58,7 @@ const collectSig = async (
     });
 
     broadcastResult = await broadcast({
-      id: data?.createActOnOpenActionTypedData?.id,
+      id: datos?.data?.createActOnOpenActionTypedData?.id,
       signature,
     });
     functionName = "act";
@@ -74,11 +74,11 @@ const collectSig = async (
       },
     ];
   } else {
-    const { data } = await legacyCollectPost({
+    const datos = await legacyCollectPost({
       on: id,
     });
 
-    const typedData = data?.createLegacyCollectTypedData.typedData;
+    const typedData = datos?.data?.createLegacyCollectTypedData.typedData;
 
     const signature = await clientWallet.signTypedData({
       domain: omit(typedData?.domain, ["__typename"]),
@@ -89,7 +89,7 @@ const collectSig = async (
     });
 
     broadcastResult = await broadcast({
-      id: data?.createLegacyCollectTypedData?.id,
+      id: datos?.data?.createLegacyCollectTypedData?.id,
       signature,
     });
 

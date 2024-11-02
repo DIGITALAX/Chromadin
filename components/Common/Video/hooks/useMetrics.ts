@@ -90,7 +90,7 @@ const useMetrics = (
     try {
       let currentActivity = {};
       if (!chainMetrics?.hasCommented && lensProfile?.id) {
-        const { data } = await getPublications(
+        const datos = await getPublications(
           {
             where: {
               commentOn: {
@@ -104,7 +104,7 @@ const useMetrics = (
         currentActivity = {
           ...currentActivity,
           hasCommented:
-            data?.publications?.items && data?.publications?.items?.length > 0
+          datos?.data?.publications?.items && datos?.data?.publications?.items?.length > 0
               ? true
               : false,
         };

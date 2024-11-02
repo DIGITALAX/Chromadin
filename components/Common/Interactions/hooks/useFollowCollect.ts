@@ -276,7 +276,7 @@ const useFollowCollect = (
   const approveSpend = async () => {
     setTransactionLoading(true);
     try {
-      const { data } = await currencyApprove({
+      const datos = await currencyApprove({
         allowance: {
           currency:
             followCollect?.type === "collect"
@@ -318,10 +318,10 @@ const useFollowCollect = (
       });
 
       const res = await clientWallet.sendTransaction({
-        to: data?.generateModuleCurrencyApprovalData?.to as `0x${string}`,
-        account: data?.generateModuleCurrencyApprovalData
+        to: datos?.data?.generateModuleCurrencyApprovalData?.to as `0x${string}`,
+        account: datos?.data?.generateModuleCurrencyApprovalData
           ?.from as `0x${string}`,
-        data: data?.generateModuleCurrencyApprovalData?.data,
+        data: datos?.data?.generateModuleCurrencyApprovalData?.data,
         value: BigInt("0"),
       });
       await publicClient.waitForTransactionReceipt({ hash: res });
@@ -336,7 +336,7 @@ const useFollowCollect = (
     if (!lensConnected?.id) return;
     setInformationLoading(true);
     try {
-      const { data } = await isApprovedData({
+      const datos = await isApprovedData({
         currencies:
           followCollect?.type === "collect"
             ? [followCollect?.collect?.item?.amount?.asset.contract.address]
@@ -347,8 +347,8 @@ const useFollowCollect = (
                 )?.amount.asset.contract.address,
               ],
       });
-      if (data && data.approvedModuleAllowanceAmount?.[0]) {
-        parseInt(data.approvedModuleAllowanceAmount?.[0].allowance.value) >
+      if (datos?.data && datos?.data.approvedModuleAllowanceAmount?.[0]) {
+        parseInt(datos?.data.approvedModuleAllowanceAmount?.[0].allowance.value) >
         (followCollect?.type === "collect"
           ? parseInt(followCollect?.collect?.item?.amount?.value || "")
           : parseInt(
