@@ -56,7 +56,7 @@ const Metrics: FunctionComponent<MetricsProps> = ({
                   onClick={() => !metricsLoading && handleMetricsAdd()}
                 >
                   <div
-                    className={`relative w-fit h-fit flex items-center justify-center text-xs ${
+                    className={`relative w-fit h-fit flex items-center justify-center text-xxs ${
                       metricsLoading && "animate-spin"
                     }`}
                   >
