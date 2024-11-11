@@ -5,7 +5,10 @@ import { PlayerProps } from "../types/controls.types";
 import FetchMoreLoading from "../../Loading/FetchMoreLoading";
 import { Viewer } from "../../Interactions/types/interactions.types";
 import { KinoraPlayerWrapper } from "kinora-sdk";
-import { setChannelsRedux } from "@/redux/reducers/channelsSlice";
+import {
+
+  setChannelsRedux,
+} from "@/redux/reducers/channelsSlice";
 import { VideoMetadataV3 } from "kinora-sdk/dist/@types/generated";
 import { Player as LivePeerPlayer } from "@livepeer/react";
 
@@ -25,6 +28,7 @@ const Player: FunctionComponent<PlayerProps> = ({
   setVideoControlsInfo,
   router,
 }): JSX.Element => {
+  
   return (
     <div
       className={`relative overflow-hidden justify-center items-center flex ${
@@ -94,132 +98,88 @@ const Player: FunctionComponent<PlayerProps> = ({
                 isPlaying: false,
               }));
 
-              let nextIndex = videoSync?.currentIndex + 1;
+              let nextIndex = (videoSync?.currentIndex + 1) % allVideos?.channels?.length;
 
-              if (
-                hasMore &&
-                nextIndex % allVideos?.channels?.length === 0 &&
-                !videosLoading
-              ) {
-                setVideosLoading(true);
-                const more = await fetchMoreVideos();
+              try {
+                if (hasMore && nextIndex === 0 && !videosLoading) {
+                  setVideosLoading(true);
 
-                dispatch(
-                  setChannelsRedux({
-                    actionChannels: more,
-                    actionMain: more?.[nextIndex],
-                  })
-                );
+                  const more = await fetchMoreVideos();
 
-                if (router?.asPath?.includes("&video=")) {
-                  const videoId = router?.asPath
-                    .split("&video=")?.[1]
-                    ?.split("&")?.[0];
+                  dispatch(
+                    setChannelsRedux({
+                      actionChannels: more,
+                      actionMain: more?.[nextIndex],
+                    })
+                  );
 
-                  if (videoId) {
-                    const updatedPath = router.asPath.replace(
-                      `&video=${videoId}`,
-                      `&video=${more?.[nextIndex]?.id}`
-                    );
-                    router.replace(updatedPath);
-                  }
-                } else {
-                  const optionRegex =
-                    /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+                  let updatedPath;
 
-                  if (!optionRegex.test(router?.asPath)) {
-                    if (
-                      router?.asPath === "/es" ||
-                      router?.asPath === "/en" ||
-                      router?.asPath === "/"
-                    ) {
-                      const updatedPath = `${router?.asPath}/#stream?option=history&video=${more?.[nextIndex]?.id}`;
-
-                      router.replace(updatedPath);
+                  if (router?.asPath?.includes("&video=")) {
+                    const videoId = router?.asPath.split("&video=")?.[1]?.split("&")?.[0];
+                    if (videoId) {
+                      updatedPath = router.asPath.replace(
+                        `&video=${videoId}`,
+                        `&video=${more?.[nextIndex]?.id}`
+                      );
                     }
                   } else {
-                    const updatedPath = router?.asPath.replace(
-                      optionRegex,
-                      `$&${`&video=${more?.[nextIndex]?.id}`}`
-                    );
-                    router.replace(updatedPath);
+                    const optionRegex = /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+                    if (!optionRegex.test(router?.asPath)) {
+                      updatedPath = `${router?.asPath}#stream?option=history&video=${more?.[nextIndex]?.id}`;
+                    } else {
+                      updatedPath = router?.asPath.replace(optionRegex, `$&video=${more?.[nextIndex]?.id}`);
+                    }
                   }
-                }
 
-                setVideosLoading(false);
+                  if (updatedPath) router.replace(updatedPath);
 
-                setVideoControlsInfo((prev) => ({
-                  ...prev,
-                  isPlaying: true,
-                  currentTime: 0,
-                  currentIndex: nextIndex,
-                }));
-              } else if (!videoSync?.isPlaying) {
-                dispatch(
-                  setChannelsRedux({
-                    actionChannels: allVideos?.channels,
-                    actionMain:
-                      allVideos?.channels?.[
-                        nextIndex % allVideos?.channels?.length
-                      ],
-                  })
-                );
+                  setVideosLoading(false);
 
-                if (router?.asPath?.includes("&video=")) {
-                  const videoId = router?.asPath
-                    .split("&video=")?.[1]
-                    ?.split("&")?.[0];
+                  setVideoControlsInfo((prev) => ({
+                    ...prev,
+                    isPlaying: true, 
+                    currentTime: 0,
+                    currentIndex: nextIndex,
+                  }));
+                } else if (!videoSync?.isPlaying) {
+                  dispatch(
+                    setChannelsRedux({
+                      actionChannels: allVideos?.channels,
+                      actionMain: allVideos?.channels?.[nextIndex],
+                    })
+                  );
 
-                  if (videoId) {
-                    const updatedPath = router.asPath.replace(
-                      `&video=${videoId}`,
-                      `&video=${
-                        allVideos?.channels?.[
-                          nextIndex % allVideos?.channels?.length
-                        ]?.id
-                      }`
-                    );
-                    router.replace(updatedPath);
-                  }
-                } else {
-                  const optionRegex =
-                    /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+                  let updatedPath;
 
-                  if (!optionRegex.test(router?.asPath)) {
-                    if (
-                      router?.asPath === "/es" ||
-                      router?.asPath === "/en" ||
-                      router?.asPath === "/"
-                    ) {
-                      const updatedPath = `${
-                        router?.asPath
-                      }/#stream?option=history&video=${
-                        allVideos?.channels?.[
-                          nextIndex % allVideos?.channels?.length
-                        ]?.id
-                      }`;
-
-                      router.replace(updatedPath);
+                  if (router?.asPath?.includes("&video=")) {
+                    const videoId = router?.asPath.split("&video=")?.[1]?.split("&")?.[0];
+                    if (videoId) {
+                      updatedPath = router.asPath.replace(
+                        `&video=${videoId}`,
+                        `&video=${allVideos?.channels?.[nextIndex]?.id}`
+                      );
                     }
                   } else {
-                    const updatedPath = router?.asPath.replace(
-                      optionRegex,
-                      `$&${`&video=${
-                        allVideos?.channels?.[
-                          nextIndex % allVideos?.channels?.length
-                        ]?.id
-                      }`}`
-                    );
-                    router.replace(updatedPath);
+                    const optionRegex = /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
+                    if (!optionRegex.test(router?.asPath)) {
+                      updatedPath = `${router?.asPath}/#stream?option=history&video=${allVideos?.channels?.[nextIndex]?.id}`;
+                    } else {
+                      updatedPath = router?.asPath.replace(optionRegex, `$&video=${allVideos?.channels?.[nextIndex]?.id}`);
+                    }
                   }
-                }
 
-                setVideoControlsInfo((prev) => ({
-                  ...prev,
-                  isPlaying: true,
-                  currentTime: 0,
-                  currentIndex: nextIndex % allVideos?.channels?.length,
-                }));
+                  if (updatedPath) router.replace(updatedPath);
+
+                  setVideoControlsInfo((prev) => ({
+                    ...prev,
+                    isPlaying: true,
+                    currentTime: 0,
+                    currentIndex: nextIndex,
+                  }));
+                }
+              } catch (error) {
+                console.error("Error al cambiar al siguiente video:", error);
               }
             }}
             onCanPlay={(e) =>

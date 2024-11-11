@@ -27,7 +27,7 @@ const useHistory = (
     setHistoryLoading(true);
     try {
       const res = await getBuyerHistory(12, 0);
-      const data = res.data.tokensBoughts || [];
+      const data = res?.data?.tokensBoughts || [];
 
       if (data.length > 0) {
         const history = await Promise.all(
