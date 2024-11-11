@@ -32,14 +32,15 @@ const useDrops = (collections: Collection[]) => {
         moshVideoRef.current?.removeEventListener("ended", handleVideoEnd);
       };
     }
-  }, [MOSH_VIDEOS]);
+  }, [MOSH_VIDEOS, currentVideoIndex]); 
 
   useEffect(() => {
     if (moshVideoRef.current) {
-      moshVideoRef.current.addEventListener("canplay", () => {
-        moshVideoRef.current?.play();
-      });
+      moshVideoRef.current.pause();
       moshVideoRef.current.load();
+      moshVideoRef.current.play().catch((error) => {
+        console.error("Error reproduciendo el video:", error);
+      });
     }
   }, [currentVideoIndex]);
 

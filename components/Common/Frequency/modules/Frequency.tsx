@@ -111,6 +111,7 @@ const Frequency: FunctionComponent<{ router: NextRouter }> = ({
               src={`${INFURA_GATEWAY}/ipfs/${MOSH_VIDEOS[currentVideoIndex]}`}
               type="video/mp4"
               id="staticLoad"
+              key={currentVideoIndex}
             />
           </video>
         </div>
