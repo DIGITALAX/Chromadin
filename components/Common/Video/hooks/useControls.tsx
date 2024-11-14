@@ -447,7 +447,7 @@ const useControls = (
           ) {
             const updatedPath = `${
               router?.asPath
-            }/#stream?option=history&video=${
+            }#stream?option=history&video=${
               (newItems[index]?.id == allVideos?.main?.id
                 ? newItems[index]
                 : allVideos?.main

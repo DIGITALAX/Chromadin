@@ -163,7 +163,7 @@ const Player: FunctionComponent<PlayerProps> = ({
                   } else {
                     const optionRegex = /(sampler|chat|stream|collect)\?option=(history|account|fulfillment)/;
                     if (!optionRegex.test(router?.asPath)) {
-                      updatedPath = `${router?.asPath}/#stream?option=history&video=${allVideos?.channels?.[nextIndex]?.id}`;
+                      updatedPath = `${router?.asPath}#stream?option=history&video=${allVideos?.channels?.[nextIndex]?.id}`;
                     } else {
                       updatedPath = router?.asPath.replace(optionRegex, `$&video=${allVideos?.channels?.[nextIndex]?.id}`);
                     }

@@ -297,7 +297,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                 ) {
                   const updatedPath = `${
                     router?.asPath
-                  }/#stream?option=history&video=${
+                  }#stream?option=history&video=${
                     allVideos?.channels[
                       videoSync?.currentIndex ===
                       allVideos?.channels?.length - 1
@@ -409,7 +409,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                       ) {
                         const updatedPath = `${
                           router?.asPath
-                        }/#stream?option=history&video=${
+                        }#stream?option=history&video=${
                           more?.[videoSync?.currentIndex + 1]?.id
                         }`;
 
@@ -480,7 +480,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
                         ) {
                           const updatedPath = `${
                             router?.asPath
-                          }/#stream?option=history&video=${
+                          }#stream?option=history&video=${
                             allVideos?.channels?.[
                               (videoSync?.currentIndex + 1) %
                                 allVideos?.channels?.length

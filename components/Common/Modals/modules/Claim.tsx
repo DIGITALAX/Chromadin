@@ -52,7 +52,7 @@ const Claim: FunctionComponent<ClaimProps> = ({
                 <Link
                   target="_blank"
                   rel="noreferrer"
-                  href={"https://claim.lens.xyz"}
+                  href={"https://onboarding.lens.xyz/"}
                   className="relative w-fit h-10 flex px-4 cursor-pointer active:scale-95 bg-lensLight/80 font-earl text-white rounded-md items-center justify-center"
                 >
                   <div className="relative w-fit h-fit items-center justify-center flex text-sm px-3 py-1.5 text-center">

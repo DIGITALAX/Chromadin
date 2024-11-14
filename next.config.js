@@ -23,7 +23,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "chromadin.infura-ipfs.io",
+        hostname: "*.infura-ipfs.io",
         pathname: "/ipfs/**",
       },
       {
@@ -51,30 +51,25 @@ const nextConfig = {
     return config;
   },
   async headers() {
-    let headersConfig = [];
-
-    allowedOrigins.forEach((origin) => {
-      headersConfig.push({
+    return [
+      {
         source: "/(.*)",
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: origin,
+            value: "*", 
           },
           {
             key: "Access-Control-Allow-Headers",
-            value:
-              "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+            value: "Origin, X-Requested-With, Content-Type, Accept, Authorization",
           },
           {
             key: "Access-Control-Allow-Methods",
             value: "GET, POST, PUT, DELETE, OPTIONS",
           },
         ],
-      });
-    });
-
-    return headersConfig;
+      },
+    ];
   },
 };
 

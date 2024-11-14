@@ -73,6 +73,7 @@ export const refreshAuth = async (): Promise<string | undefined | null> => {
     const response = await refresh({
       refreshToken: currentRefreshToken,
     });
+
     setAuthenticationToken({ token: response?.data?.refresh! });
     return response?.data?.refresh?.accessToken;
   } catch (err: any) {
