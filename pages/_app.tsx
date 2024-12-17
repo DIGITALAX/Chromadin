@@ -24,6 +24,12 @@ import {
 import { KinoraProvider } from "kinora-sdk";
 import { apolloClient } from "@/lib/lens/client";
 import Head from "next/head";
+import { getDefaultProvider, Network } from "@lens-network/sdk/ethers";
+import { ethers } from "ethers";
+
+export const lensProvider = getDefaultProvider(Network.Testnet);
+
+export const ethProvider = ethers.getDefaultProvider("sepolia");
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(
   [polygon],
