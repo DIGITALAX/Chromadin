@@ -120,7 +120,9 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                             : {};
 
                           let followerOnGraph =
-                            item === dict.Common.seguidor
+                          contexto?.postInfo?.collectTypes?.[
+                            contexto?.collectOptions?.id!
+                          ]?.followerOnGraph === dict.Common.seguidor
                               ? {
                                   followerOnGraph: {
                                     globalGraph: true as true,
@@ -389,7 +391,7 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                       chosenValue: String(
                         contexto?.postInfo?.collectTypes?.[
                           contexto?.collectOptions?.id!
-                        ]?.collectLimit || "0"
+                        ]?.collectLimit || "1"
                       ),
                       showObject:
                         drops?.edition === dict.Common.yes ? true : false,
