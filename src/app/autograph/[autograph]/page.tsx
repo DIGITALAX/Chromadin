@@ -1,0 +1,41 @@
+import { Suspense } from "react";
+import RouterChange from "../../components/Autograph/modules/RouterChange";
+import AutographEntry from "../../components/Autograph/modules/AutographEntry";
+import { getDictionary } from "../../[lang]/dictionaries";
+import Wrapper from "../../components/Common/modules/Wrapper";
+import { Metadata } from "next";
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{
+    autograph: string;
+  }>;
+}): Promise<Metadata> => {
+  const { autograph } = await params;
+
+  return {
+    title: `Autograph | ${autograph}`,
+  };
+};
+
+export default async function Autograph({
+  params,
+}: {
+  params: Promise<{
+    autograph: string;
+  }>;
+}) {
+  const { autograph } = await params;
+  const dict = await (getDictionary as (locale: any) => Promise<any>)("en");
+  return (
+    <Wrapper
+      dict={dict}
+      page={
+        <Suspense fallback={<RouterChange />}>
+          <AutographEntry name={autograph} dict={dict} />
+        </Suspense>
+      }
+    ></Wrapper>
+  );
+}

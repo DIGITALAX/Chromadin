@@ -1,26 +1,767 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: "Arcade Classic";
+  font-weight: 400;
+  src: url("/fonts/ArcadeClassic.ttf");
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@font-face {
+  font-family: "Geometria";
+  font-weight: 400;
+  src: url("/fonts/Geometria.ttf");
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@font-face {
+  font-family: "DS Digital";
+  font-weight: 400;
+  src: url("/fonts/DSDigi.ttf");
+}
+
+@font-face {
+  font-family: "Earls Revenge";
+  font-weight: 400;
+  src: url("/fonts/EarlsRevenge.ttf");
+}
+
+@font-face {
+  font-family: "Economica R";
+  font-weight: 400;
+  src: url("/fonts/EconomicaRegular.ttf");
+}
+
+@font-face {
+  font-family: "Dosis Regular";
+  font-weight: 400;
+  src: url("/fonts/DosisRegular.ttf");
+}
+
+@font-face {
+  font-family: "Clash Display";
+  font-weight: 400;
+  src: url("/fonts/ClashDisplay.ttf");
+}
+
+@font-face {
+  font-family: "Economica B";
+  font-weight: 400;
+  src: url("/fonts/EconomicaBold.ttf");
+}
+
+@font-face {
+  font-family: "Manaspace";
+  font-weight: 400;
+  src: url("/fonts/Manaspc.ttf");
+}
+
+@theme {
+  --font-xxs: 0.5rem;
+
+  --font-arcade: Arcade Classic;
+  --font-geom: Geometria;
+  --font-digi: DS Digital;
+  --font-earl: Earls Revenge;
+  --font-dosis: Dosis Regular;
+  --font-clash: Clash Display;
+  --font-economicaB: Economica B;
+  --font-economica: Economica R;
+  --font-mana: Manaspace;
+
+  --color-verde: #25ec68;
+  --color-rosa: #f62ada;
+  --color-light: #ddc2de;
+  --color-azul: #b9d9ff;
+  --color-lensLight: #abfe2c;
+  --color-offBlack: #131313;
+  --color-pink: #f06aaf;
+  --color-pesa: #c9d8e4;
+  --color-ama: #fbdb86;
+  --color-moda: #cfb0fa;
+  --color-playa: #0d3dff;
+  --color-rojo: #dd3950;
+  --color-leche: #fffff2;
+  --color-cit: #f7b500;
+  --color-b1: #6bd6fc;
+  --color-b2: #1696fc;
+  --color-shame: #f6f5f0;
+  --color-offWhite: #f2f2f2;
+  --color-bird: #81a8f8;
+  --color-cost: #847ff2;
+
+  --breakpoint-galaxy: 300px;
+  --breakpoint-preG: 480px;
+  --breakpoint-wickra: 520px;
+  --breakpoint-mid: 950px;
+  --breakpoint-tablet: 1260px;
+  --breakpoint-wrap: 1360px;
+  --breakpoint-alto: 1950px;
+  --breakpoint-stuck1: 1120px;
+  --breakpoint-stuck2: 1440px;
+  --breakpoint-stuck3: 1507px;
+
+  --z-05: 0.5;
+  --z-1: 1;
+  --z-2: 2;
+
+  --height-100: 27rem;
+  --height-128: 32rem;
+  --height-132: 40rem;
+  --height-142: 44rem;
+
+  --width-100: 27rem;
+  --width-128: 32rem;
+  --width-132: 40rem;
+  --width-200: 54rem;
+
+  --bg-chroma: url("https://chromadin.infura-ipfs.io/ipfs/QmbfVYvza1xVqGRWiremt4LVKkTPDA8bnURdu39cgP71gd");
+}
+
+/* === CUSTOM UTILITIES === */
+@layer utilities {
+  .text-xxs {
+    font-size: var(--font-xxs);
+  }
+
+  .font-arcade {
+    font-family: var(--font-arcade);
+  }
+  .font-geom {
+    font-family: var(--font-geom);
+  }
+  .font-digi {
+    font-family: var(--font-digi);
+  }
+  .font-earl {
+    font-family: var(--font-earl);
+  }
+  .font-dosis {
+    font-family: var(--font-dosis);
+  }
+  .font-clash {
+    font-family: var(--font-clash);
+  }
+  .font-economicaB {
+    font-family: var(--font-economicaB);
+  }
+  .font-economica {
+    font-family: var(--font-economica);
+  }
+  .front-mana {
+    font-family: var(--font-mana);
+  }
+
+  .bg-chroma {
+    background-image: var(--bg-chroma);
+  }
+
+  .z-05 {
+    z-index: var(--z-05);
+  }
+  .z-1 {
+    z-index: var(--z-1);
+  }
+  .z-2 {
+    z-index: var(--z-2);
+  }
+
+  .h-100 {
+    height: var(--height-100);
+  }
+
+  .h-128 {
+    height: var(--height-128);
+  }
+
+  .h-132 {
+    height: var(--height-132);
+  }
+
+  .h-142 {
+    height: var(--height-142);
+  }
+
+  .w-100 {
+    width: var(--width-100);
+  }
+
+  .w-128 {
+    width: var(--width-128);
+  }
+
+  .w-132 {
+    width: var(--width-132);
+  }
+
+  .w-200 {
+    width: var(--width-200);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html {
+  background-color: black;
+}
+
+.rainbow {
+  background: radial-gradient(
+    #e02020,
+    #fa6400,
+    #f7b500,
+    #6dd400,
+    #0091ff,
+    #6236ff,
+    #b620e0
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.static {
+  background-size: 100px 100px;
+  background-image: url(https://chromadin.infura-ipfs.io/ipfs/QmQ6BdizFgMCVM6kESs6ocSQvnNaYjngHyGw6rtQNZiTma);
+
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+  animation: anim 1s steps(2, end) infinite both;
+
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+}
+
+@keyframes anim {
+  0% {
+    background-position: 0% 0%;
+  }
+  10% {
+    background-position: -25% 25%;
+  }
+  20% {
+    background-position: 30%, -25%;
+  }
+  30% {
+    background-position: -25% 25%;
+  }
+  40% {
+    background-position: 40% -50%;
+  }
+  50% {
+    background-position: 25% 70%;
+  }
+  60% {
+    background-position: 60% 80%;
+  }
+  70% {
+    background-position: 30% 50%;
+  }
+  80% {
+    background-position: 30%, -25%;
+  }
+  90% {
+    background-position: 0% 70%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+div::-webkit-scrollbar {
+  width: 0.01rem;
+  height: 0.1rem;
+}
+
+div::-webkit-scrollbar {
+  width: 0.01rem;
+}
+
+div::-webkit-scrollbar-track:active {
+  background-color: #f3f6f7 !important;
+  opacity: 80%;
+  border-radius: 200px;
+}
+
+div::-webkit-scrollbar-thumb:active {
+  background-color: #f62ada !important;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: white;
+  opacity: 80%;
+  height: 0.3rem;
+  border-radius: 200px;
+}
+
+/******** Firefox ********/
+input[type="range"]::-moz-range-track {
+  background: white;
+  opacity: 80%;
+  height: 0.3rem;
+  border-radius: 200px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  margin-top: -4px; /* Centers thumb on the track */
+  background-color: #f62ada;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 9999px;
+}
+
+/***** Thumb Styles *****/
+/***** Firefox *****/
+input[type="range"]::-moz-range-thumb {
+  border: none; /*Removes extra border that FF applies*/
+  border-radius: 0; /*Removes default border-radius that FF applies*/
+  background-color: #f62ada;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 9999px;
+}
+
+#raincode {
+  background: linear-gradient(#fc9cf3, #b9d9ff, #0091ff, #fd99dc) !important;
+}
+
+#record1 {
+  background: radial-gradient(#fc9cf3, #b9d9ff, #0091ff, #99fdc1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#record2 {
+  background: radial-gradient(#f6dd71, #c7c20a, #f6f42a, #d6b407);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#record3 {
+  background: radial-gradient(
+    #e02020,
+    #fa6400,
+    #f7b500,
+    #6dd400,
+    #0091ff,
+    #6236ff,
+    #b620e0
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#chrome {
+  background: conic-gradient(
+    #f7f7f3,
+    #dbdfb2,
+    #aeeccf,
+    #cedfde,
+    #f1d2ef,
+    #f6ebf7,
+    #f0ecf6,
+    #ffffff,
+    #f6f7e6
+  );
+}
+
+#glow {
+  text-shadow: 0px 0px 5px #0091ff;
+}
+
+#highlighted-content {
+  font-family: "Arcade Classic";
+  font-size: 1rem;
+  line-height: 1.5rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  white-space: pre-wrap;
+}
+
+#highlighted-content::-webkit-scrollbar {
+  display: none;
+}
+
+#post {
+  color: transparent;
+  background: transparent;
+  caret-color: white;
+}
+
+#post #highlighting * {
+  font-family: "Arcade Classic";
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+#crt {
+  background: linear-gradient(to right, #fc9cf3, #b9d9ff, #0091ff, #fd99dc);
+}
+
+#base0 {
+  background-color: #131313;
+}
+
+#base1 {
+  background-color: #0d3dff;
+}
+
+#base2 {
+  background-color: #dd3950;
+}
+
+#base3 {
+  background-color: #fffff2;
+}
+
+#vending {
+  background: linear-gradient(-45deg, #fbdb86, #cfb0fa, #0d3dff, #fffff2);
+}
+
+#staticLoad {
+  background-image: repeating-radial-gradient(
+    circle at 18% 36%,
+    #409dfe,
+    #e4e1fd 1.8px
+  );
+  animation: back 2s linear infinite;
+}
+
+@keyframes back {
+  from {
+    background-size: 100% 100%;
+  }
+  to {
+    background-size: 200% 200%;
+  }
+}
+
+#termBack {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 1px #fc9cf3;
+  color: transparent;
+}
+
+#term {
+  background: conic-gradient(
+    #f7f7f3,
+    #dbdfb2,
+    #f1d2ef,
+    #f6ebf7,
+    #f0ecf6,
+    #ffffff,
+    #f6f7e6
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#amountBack {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 1px #f7b500;
+  color: transparent;
+}
+
+#volumeBack {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 1px #9806cf;
+  color: transparent;
+}
+
+#graphBack {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 1px #2abdf6;
+  color: transparent;
+}
+
+#percentBack {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 1px #e81e7e;
+  color: transparent;
+}
+
+#percent2Back {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 1px #96cb00;
+  color: transparent;
+}
+
+#borderGraph {
+  border-image: linear-gradient(
+    to bottom,
+    #2abdf6,
+    #078fd6,
+    #06a9cf,
+    #0ac7ab,
+    #1dc2da,
+    #2abcf6
+  );
+  border-width: 2px;
+  border-image-slice: 1;
+  width: 100%;
+  transition: height 0.5s ease-out;
+}
+
+@media (max-width: 640px) {
+  #borderGraph {
+    background: linear-gradient(
+      to bottom,
+      #2abdf6,
+      #078fd6,
+      #06a9cf,
+      #0ac7ab,
+      #1dc2da,
+      #2abcf6
+    );
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1950px) {
+  #sampler {
+    width: calc(100% - 20rem);
+  }
+}
+
+@media (max-width: 1024px) {
+  #sampler {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1950px) and (max-width: 2270px) {
+  #sampler {
+    width: calc(100vw - 20rem);
+  }
+}
+
+@media (min-width: 2270px) {
+  #sampler {
+    width: 100%;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 1;
+  background-color: black;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 8px;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  font-family: "Earls Revenge";
+  display: flex;
+  align-items: center;
+}
+
+.pfp {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(to right, #fc9cf3, #b9d9ff, #0091ff, #fd99dc);
+}
+
+#select {
+  background: conic-gradient(#3b3c4b, #313241, #050513, #131313, #444557);
+}
+
+#username {
+  background: linear-gradient(
+    -86deg,
+    #000000,
+    #8dc6f9,
+    #7b7fe7,
+    #2a42fc,
+    #000000
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#username1 {
+  background: linear-gradient(
+    -86deg,
+    #ffffff,
+    #8dc6f9,
+    #7b7fe7,
+    #2a42fc,
+    #ffffff
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#sideProfile {
+  background: linear-gradient(to right, transparent, white, #44afd3);
+}
+
+#highlighted-content2 {
+  font-family: "Economica B";
+  font-size: 1rem;
+  line-height: 1.5rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  white-space: pre-wrap;
+}
+
+#highlighted-content2::-webkit-scrollbar {
+  display: none;
+}
+
+#post2 {
+  color: transparent;
+  background: transparent;
+  caret-color: white;
+}
+
+#post2 #highlighting2 * {
+  font-family: "Economica B";
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+.infinite-scroll-component__outerdiv {
+  width: 100%;
+}
+
+#videoplayer {
+  background-image: url("https://chromadin.infura-ipfs.io/ipfs/QmekpQQEtQBP1M71SohCHiDRQbV1Sc2bKveVvwEfzAJCPx");
+  background-color: black;
+  background-position: center;
+  background-size: cover;
+}
+
+#videoplayer:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 2000px rgba(255, 255, 255, 0.2);
+  filter: blur(5px);
+}
+
+#username2 {
+  background: linear-gradient(to right, #ffffff, #f7b500, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#backdrop:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 2000px rgba(255, 255, 255, 0.2);
+  filter: blur(5px);
+}
+
+#highlighted-content3 {
+  font-family: "Economica B";
+  font-size: 1rem;
+  line-height: 1.5rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  white-space: pre-wrap;
+}
+
+#highlighted-content3::-webkit-scrollbar {
+  display: none;
+}
+
+#post3 {
+  color: transparent;
+  background: transparent;
+  caret-color: white;
+}
+
+#post3 #highlighting3 * {
+  font-family: "Economica B";
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+#boxBg {
+  background: #111313;
+  border: 1px solid #d1539d;
+  outline: 1px solid #dbac2a;
+  outline-offset: -8px;
+  box-shadow: 0 8px 8px -6px lightblue;
+}
+
+#boxBg1 {
+  background: #111313;
+  border: 1px solid #d1539d;
+  outline: 1px solid #dbac2a;
+  outline-offset: -8px;
+}
+
+#calc {
+  min-height: fit-content;
+
+  @media (min-width: 480px) {
+    min-height: calc(
+      100vh - 17.5rem
+    ); /* Apply the height calculation above 480px */
+  }
+}
+
+.metrics {
+  position: relative;
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+  padding-bottom: 0.5rem;
+}
+
+.close {
+  position: relative;
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+  padding-bottom: 0.5rem;
+}
+
+#fadedQuote {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #1f2937 0%,
+    #1f2937 50%,
+    transparent 95%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    to bottom,
+    #1f2937 0%,
+    #1f2937 50%,
+    transparent 100%
+  );
 }
