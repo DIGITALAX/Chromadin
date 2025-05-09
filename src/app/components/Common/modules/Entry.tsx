@@ -20,6 +20,7 @@ export default function Entry({ dict }: { dict: any }) {
   } = useChannels();
 
   if (
+    context &&
     Number(context?.videoInfo?.channels?.length || 0) > 0 &&
     Number(context?.designerProfiles?.length || 0) > 0 &&
     Number(context?.collectionInfo?.collections?.length || 0) > 0
