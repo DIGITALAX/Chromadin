@@ -20,40 +20,41 @@ export default function Entry({ dict }: { dict: any }) {
   } = useChannels();
 
   if (
-    Number(context?.videoInfo?.channels?.length || 0) < 1 ||
-    Number(context?.designerProfiles?.length || 0) < 1 ||
-    Number(context?.collectionInfo?.collections?.length || 0) < 1
+    Number(context?.videoInfo?.channels?.length || 0) > 0 &&
+    Number(context?.designerProfiles?.length || 0) > 0 &&
+    Number(context?.collectionInfo?.collections?.length || 0) > 0
   ) {
-    return <RouterChange />;
-  }
-  return (
-    <div className="relative w-full h-full flex flex-col overflow-x-hidden selection:bg-ama selection:text-moda">
-      <div className="relative w-full flex flex-row xl:flex-nowrap flex-wrap h-fit xl:h-[55rem] overflow-y-hidden">
-        <div className="relative flex flex-col xl:flex-row items-start justify-start w-full h-full">
-          <SideBar fetchMoreVideos={fetchMoreVideos} dict={dict} />
-          <div className="relative w-full h-full flex flex-col gap-5 items-start justify-start overflow-y-scroll">
-            <SwitchView
-              commentsLoading={commentLoading}
-              secondaryComment={secondaryComment}
-              setCommentsLoading={setCommentsLoading}
-              setSecondaryComment={setSecondaryComment}
-              dict={dict}
-              fetchMoreVideos={fetchMoreVideos}
-            />
-          </div>
-        </div>
-        {context?.viewer !== Viewer.Sampler &&
-          context?.viewer !== Viewer.Chat && (
-            <div className="w-full xl:w-fit h-full flex">
-              <Interactions
-                dict={dict}
+    return (
+      <div className="relative w-full h-full flex flex-col overflow-x-hidden selection:bg-ama selection:text-moda">
+        <div className="relative w-full flex flex-row xl:flex-nowrap flex-wrap h-fit xl:h-[55rem] overflow-y-hidden">
+          <div className="relative flex flex-col xl:flex-row items-start justify-start w-full h-full">
+            <SideBar fetchMoreVideos={fetchMoreVideos} dict={dict} />
+            <div className="relative w-full h-full flex flex-col gap-5 items-start justify-start overflow-y-scroll">
+              <SwitchView
+                commentsLoading={commentLoading}
                 secondaryComment={secondaryComment}
+                setCommentsLoading={setCommentsLoading}
                 setSecondaryComment={setSecondaryComment}
-                commentLoading={commentLoading}
+                dict={dict}
+                fetchMoreVideos={fetchMoreVideos}
               />
             </div>
-          )}
+          </div>
+          {context?.viewer !== Viewer.Sampler &&
+            context?.viewer !== Viewer.Chat && (
+              <div className="w-full xl:w-fit h-full flex">
+                <Interactions
+                  dict={dict}
+                  secondaryComment={secondaryComment}
+                  setSecondaryComment={setSecondaryComment}
+                  commentLoading={commentLoading}
+                />
+              </div>
+            )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <RouterChange />;
 }
