@@ -1,7 +1,7 @@
 import { FunctionComponent, JSX, useContext } from "react";
 import Image from "next/legacy/image";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { Post, VideoMetadata } from "@lens-protocol/client";
 import { ModalContext } from "@/app/providers";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -36,7 +36,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                         <div className="relative w-full h-fit flex flex-col sm:flex-row items-center lg:gap-0 gap-4">
                           <div className="relative w-fit h-1/2 flex">
                             <Image
-                              src={`${INFURA_GATEWAY}/ipfs/QmfXzGt2RHdEfwgiLiYqEmdsDdSHm1SBdq1Cpys1gHTe5s`}
+                              src={`${INFURA_GATEWAY_INTERNAL}QmfXzGt2RHdEfwgiLiYqEmdsDdSHm1SBdq1Cpys1gHTe5s`}
                               height={5}
                               width={10}
                               alt="stripes"
@@ -109,7 +109,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                           <Image
                             layout="fill"
                             objectFit="cover"
-                            src={`${INFURA_GATEWAY}/ipfs/${
+                            src={`${INFURA_GATEWAY_INTERNAL}${
                               (
                                 content?.metadata as VideoMetadata
                               )?.video?.cover?.split("ipfs://")?.[1]
@@ -123,7 +123,7 @@ const Channels: FunctionComponent<ChannelsProps> = ({
                             <div className="relative w-full h-fit flex flex-row items-center lg:gap-0 gap-4">
                               <div className="relative w-fit h-1/2 flex">
                                 <Image
-                                  src={`${INFURA_GATEWAY}/ipfs/QmfXzGt2RHdEfwgiLiYqEmdsDdSHm1SBdq1Cpys1gHTe5s`}
+                                  src={`${INFURA_GATEWAY_INTERNAL}QmfXzGt2RHdEfwgiLiYqEmdsDdSHm1SBdq1Cpys1gHTe5s`}
                                   height={5}
                                   width={10}
                                   alt="stripes"

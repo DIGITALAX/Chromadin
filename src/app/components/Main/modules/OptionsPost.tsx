@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
 import Image from "next/image";
 import { FunctionComponent, JSX, useContext, useState } from "react";
@@ -32,7 +32,7 @@ const OptionsPost: FunctionComponent<OptionsPostProps> = ({
         }
       >
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/QmSmqvoqB88FsKruGmZHGg65MZfC4dxHH6KpMBrHrUDxQs`}
+          src={`${INFURA_GATEWAY_INTERNAL}QmSmqvoqB88FsKruGmZHGg65MZfC4dxHH6KpMBrHrUDxQs`}
           alt="opt"
           fill
           draggable={false}
@@ -77,7 +77,7 @@ const OptionsPost: FunctionComponent<OptionsPostProps> = ({
       >
         {!mediaLoading?.image ? (
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/QmR3SNUJj2BNc8iTCAZ1pf6CngJkKwi6vJ36YSroF4N6HE`}
+            src={`${INFURA_GATEWAY_INTERNAL}QmR3SNUJj2BNc8iTCAZ1pf6CngJkKwi6vJ36YSroF4N6HE`}
             alt="opt"
             fill
             draggable={false}
@@ -141,7 +141,7 @@ const OptionsPost: FunctionComponent<OptionsPostProps> = ({
       >
         {!mediaLoading?.video ? (
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/Qme5Ss6at8oXuaUr8ADqTZojr44Sf81P2M5GszNYTB8Mhq`}
+            src={`${INFURA_GATEWAY_INTERNAL}Qme5Ss6at8oXuaUr8ADqTZojr44Sf81P2M5GszNYTB8Mhq`}
             alt="opt"
             fill
             draggable={false}
@@ -177,7 +177,7 @@ const OptionsPost: FunctionComponent<OptionsPostProps> = ({
         }
       >
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/QmeMxvbUP4ryQYdX8c6THtUfnJ3phgvSgbaQScHfVghgpz`}
+          src={`${INFURA_GATEWAY_INTERNAL}QmeMxvbUP4ryQYdX8c6THtUfnJ3phgvSgbaQScHfVghgpz`}
           alt="opt"
           fill
           draggable={false}

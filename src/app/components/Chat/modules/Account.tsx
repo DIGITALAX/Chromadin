@@ -4,7 +4,7 @@ import { IoGlobeOutline } from "react-icons/io5";
 import { MdOutlineShareLocation } from "react-icons/md";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { handleProfilePicture } from "@/app/lib/helpers/handleProfilePicture";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { AccountProps } from "../types/chat.types";
 import descriptionRegex from "@/app/lib/helpers/descriptionRegex";
 import { Collection } from "../../Common/types/common.types";
@@ -215,7 +215,7 @@ const Account: FunctionComponent<AccountProps> = ({
                     className="rounded-md w-full h-full flex"
                     objectFit="cover"
                     objectPosition={"center"}
-                    src={`${INFURA_GATEWAY}/ipfs/${
+                    src={`${INFURA_GATEWAY_INTERNAL}${
                       (coll?.metadata?.video
                         ? coll?.metadata?.mediaCover
                         : coll?.metadata?.images?.[0]

@@ -1,4 +1,4 @@
-import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "@/app/lib/constants";
+import { ACCEPTED_TOKENS, INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
 import Image from "next/legacy/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -66,10 +66,10 @@ const Purchase: FunctionComponent<{ dict: any; collection?: Collection }> = ({
                 key={context?.collectionInfo?.main?.metadata?.video}
                 id={context?.collectionInfo?.main?.metadata?.video}
                 muted
-                poster={`${INFURA_GATEWAY}/ipfs/${context?.collectionInfo?.main?.metadata?.mediaCover}`}
+                poster={`${INFURA_GATEWAY_INTERNAL}${context?.collectionInfo?.main?.metadata?.mediaCover}`}
               >
                 <source
-                  src={`${INFURA_GATEWAY}/ipfs/${
+                  src={`${INFURA_GATEWAY_INTERNAL}${
                     context?.collectionInfo?.main?.metadata?.video?.split(
                       "ipfs://"
                     )?.[1]
@@ -80,7 +80,7 @@ const Purchase: FunctionComponent<{ dict: any; collection?: Collection }> = ({
               </video>
             ) : (
               <Image
-                src={`${INFURA_GATEWAY}/ipfs/${
+                src={`${INFURA_GATEWAY_INTERNAL}${
                   context?.collectionInfo?.main?.metadata?.images?.[0]?.split(
                     "ipfs://"
                   )?.[1] ||
@@ -134,7 +134,7 @@ const Purchase: FunctionComponent<{ dict: any; collection?: Collection }> = ({
                 onClick={() => setCurrency(item[1])}
               >
                 <Image
-                  src={`${INFURA_GATEWAY}/ipfs/${item[2]}`}
+                  src={`${INFURA_GATEWAY_INTERNAL}${item[2]}`}
                   className="flex"
                   draggable={false}
                   width={30}

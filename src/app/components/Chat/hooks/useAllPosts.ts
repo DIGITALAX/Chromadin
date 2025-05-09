@@ -17,7 +17,7 @@ import {
   fetchPostReferences,
   fetchPosts,
 } from "@lens-protocol/client/actions";
-import { INFURA_GATEWAY, LENS_CREATORS } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL, LENS_CREATORS } from "@/app/lib/constants";
 import { getCollectionsProfile } from "../../../../../graph/queries/getAllCollections";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -104,7 +104,7 @@ const useAllPosts = (accountAddress?: string) => {
                   }) => {
                     if (!item?.metadata) {
                       const res = await fetch(
-                        `${INFURA_GATEWAY}/ipfs/${
+                        `${INFURA_GATEWAY_INTERNAL}${
                           item?.uri?.split("ipfs://")?.[1]
                         }`
                       );
@@ -120,7 +120,7 @@ const useAllPosts = (accountAddress?: string) => {
 
                     if (!item?.metadata) {
                       const res = await fetch(
-                        `${INFURA_GATEWAY}/ipfs/${
+                        `${INFURA_GATEWAY_INTERNAL}${
                           item?.drop?.uri?.split("ipfs://")?.[1]
                         }`
                       );

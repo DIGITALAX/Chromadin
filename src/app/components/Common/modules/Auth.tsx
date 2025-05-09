@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { ModalContext } from "@/app/providers";
 import Image from "next/legacy/image";
@@ -34,7 +34,7 @@ const Auth: FunctionComponent<{ mainPage?: boolean; dict: any }> = ({
               "ipfs://"
             )?.[1] && (
               <Image
-                src={`${INFURA_GATEWAY}/ipfs/${
+                src={`${INFURA_GATEWAY_INTERNAL}${
                   context?.lensConectado?.profile?.metadata?.picture?.split(
                     "ipfs://"
                   )?.[1]
@@ -87,7 +87,7 @@ const Auth: FunctionComponent<{ mainPage?: boolean; dict: any }> = ({
             }`}
           >
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/QmSsD6iPFKafxKTE349DPoULssBnfZqbY7DuriT85UbMAv`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmSsD6iPFKafxKTE349DPoULssBnfZqbY7DuriT85UbMAv`}
               layout="fill"
               draggable={false}
             />

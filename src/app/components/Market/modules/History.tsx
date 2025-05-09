@@ -3,7 +3,7 @@ import { FunctionComponent, JSX } from "react";
 import Link from "next/link";
 import moment from "moment";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { useAccount } from "wagmi";
 import useHistory from "../hooks/useHistory";
@@ -120,7 +120,7 @@ const History: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                     id="staticLoad"
                   >
                     <Image
-                      src={`${INFURA_GATEWAY}/ipfs/${
+                      src={`${INFURA_GATEWAY_INTERNAL}${
                         value?.collection?.metadata?.images?.[0].split(
                           "ipfs://"
                         )[1]
@@ -142,7 +142,7 @@ const History: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                           alt="pfp"
                           layout="fill"
                           className="relative w-full h-full flex rounded-full"
-                          src={`${INFURA_GATEWAY}/ipfs/${value}`}
+                          src={`${INFURA_GATEWAY_INTERNAL}${value}`}
                           onError={(e) => handleImageError(e)}
                           draggable={false}
                         />
@@ -176,7 +176,7 @@ const History: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
       )}
       <div className={`relative w-full h-full flex`}>
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/QmPKeuGZU2QZQm8GVhp7X3WvhzELLnmL5VNCFitgzCP6od`}
+          src={`${INFURA_GATEWAY_INTERNAL}QmPKeuGZU2QZQm8GVhp7X3WvhzELLnmL5VNCFitgzCP6od`}
           layout="fill"
           objectFit="cover"
           draggable={false}

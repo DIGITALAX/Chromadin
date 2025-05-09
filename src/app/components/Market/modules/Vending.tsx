@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ModalContext } from "@/app/providers";
 import {
   ACCEPTED_TOKENS,
-  INFURA_GATEWAY,
+  INFURA_GATEWAY_INTERNAL,
   INITIAL_FILTERS,
 } from "@/app/lib/constants";
 import { Collection, Options, Viewer } from "../../Common/types/common.types";
@@ -255,7 +255,7 @@ const Vending: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                               key={collection?.metadata?.video}
                             >
                               <source
-                                src={`${INFURA_GATEWAY}/ipfs/${collection?.metadata?.video
+                                src={`${INFURA_GATEWAY_INTERNAL}${collection?.metadata?.video
                                   ?.split("ipfs://")[1]
                                   ?.replace(/"/g, "")
                                   ?.trim()}`}
@@ -265,7 +265,7 @@ const Vending: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                             </video>
                           ) : (
                             <Image
-                              src={`${INFURA_GATEWAY}/ipfs/${collection?.metadata?.images?.[0]
+                              src={`${INFURA_GATEWAY_INTERNAL}${collection?.metadata?.images?.[0]
                                 ?.split("ipfs://")[1]
                                 ?.replace(/"/g, "")
                                 ?.trim()}`}
@@ -310,7 +310,7 @@ const Vending: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                             >
                               <Image
                                 layout="fill"
-                                src={`${INFURA_GATEWAY}/ipfs/QmRbgQM3Unc2wYYJStNHP4Y2JvVk3HrP5rnrmCNE1u9cWu`}
+                                src={`${INFURA_GATEWAY_INTERNAL}QmRbgQM3Unc2wYYJStNHP4Y2JvVk3HrP5rnrmCNE1u9cWu`}
                                 draggable={false}
                               />
                             </div>

@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
 import Image from "next/legacy/image";
 import { FunctionComponent, JSX, useContext } from "react";
@@ -33,7 +33,7 @@ const MakePost: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
         }
       >
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/QmSRHvHoTZHuEpzaV8apWqubM92QG94a7q6spVgrNkQZbA`}
+          src={`${INFURA_GATEWAY_INTERNAL}QmSRHvHoTZHuEpzaV8apWqubM92QG94a7q6spVgrNkQZbA`}
           className="w-full h-full flex"
           layout="fill"
           draggable={false}

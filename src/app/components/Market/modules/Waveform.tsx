@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { FunctionComponent, JSX, useEffect, useRef } from "react";
 import { HiOutlinePlayPause } from "react-icons/hi2";
 import WaveSurfer from "wavesurfer.js";
@@ -44,7 +44,7 @@ const WaveformComponent: FunctionComponent<{ video: string }> = ({
       });
 
       wavesurfer.current.load(
-        `${INFURA_GATEWAY}/ipfs/${
+        `${INFURA_GATEWAY_INTERNAL}${
           video?.includes("ipfs://") ? video?.split("ipfs://")[1] : video
         }`
       );

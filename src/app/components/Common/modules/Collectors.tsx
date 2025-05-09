@@ -4,7 +4,7 @@ import Image from "next/legacy/image";
 import FetchMoreLoading from "./FetchMoreLoading";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { Account } from "@lens-protocol/client";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import useCollects from "../hooks/useCollects";
 
 const Collectors: FunctionComponent<{ dict: any }> = ({
@@ -54,7 +54,7 @@ const Collectors: FunctionComponent<{ dict: any }> = ({
                       id="crt"
                     >
                       <Image
-                        src={`${INFURA_GATEWAY}/ipfs/${
+                        src={`${INFURA_GATEWAY_INTERNAL}${
                           collector?.metadata?.picture?.split("ipfs://")?.[1]
                         }`}
                         layout="fill"

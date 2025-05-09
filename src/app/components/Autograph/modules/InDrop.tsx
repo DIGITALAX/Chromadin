@@ -2,7 +2,7 @@ import { FunctionComponent, JSX } from "react";
 import Image from "next/legacy/image";
 import { InDropProps } from "../types/autograph.types";
 import { useRouter } from "next/navigation";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 
 const InDrop: FunctionComponent<InDropProps> = ({
   dict,
@@ -40,7 +40,7 @@ const InDrop: FunctionComponent<InDropProps> = ({
                     className="rounded-md w-full h-full flex"
                     objectFit="cover"
                     objectPosition={"center"}
-                    src={`${INFURA_GATEWAY}/ipfs/${
+                    src={`${INFURA_GATEWAY_INTERNAL}${
                       coll.metadata?.images?.[0]?.split("ipfs://")[1]
                     }`}
                     draggable={false}
@@ -55,7 +55,7 @@ const InDrop: FunctionComponent<InDropProps> = ({
                     className="w-full h-full object-cover rounded-md flex"
                   >
                     <source
-                      src={`${INFURA_GATEWAY}/ipfs/${
+                      src={`${INFURA_GATEWAY_INTERNAL}${
                         coll?.metadata?.video?.split("ipfs://")[1]
                       }`}
                       type="video/mp4"

@@ -4,7 +4,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 import numeral from "numeral";
 import { ModalContext } from "@/app/providers";
 import { Viewer } from "../../Common/types/common.types";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import formatTime from "@/app/lib/helpers/formatTime";
 import useControls from "../hooks/useControls";
@@ -58,7 +58,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             }
           >
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/QmVpncAteeF7voaGu1ZV5qP63UpZW2xmiCWVftL1QnL5ja`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmVpncAteeF7voaGu1ZV5qP63UpZW2xmiCWVftL1QnL5ja`}
               alt="expand"
               fill
               className="flex items-center"
@@ -108,7 +108,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
         >
           <div className="relative w-5 h-5 flex items-center justify-center">
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/QmamuRQd93o5RLxs8v94MB17QLs3cwY8UuZEhQxMiiA4uM`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmamuRQd93o5RLxs8v94MB17QLs3cwY8UuZEhQxMiiA4uM`}
               width={20}
               height={20}
               alt="heart"
@@ -123,7 +123,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
         >
           <div className="relative w-3 h-4 flex items-center justify-center">
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/Qma1kaB25wsb9MMpGRrfTiWVERsrK3bPLLd5vW7r9M8AvR`}
+              src={`${INFURA_GATEWAY_INTERNAL}Qma1kaB25wsb9MMpGRrfTiWVERsrK3bPLLd5vW7r9M8AvR`}
               width={20}
               height={20}
               alt="heart"
@@ -151,7 +151,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             ) : (
               <div className="relative w-3 h-3 flex items-center justify-center">
                 <Image
-                  src={`${INFURA_GATEWAY}/ipfs/${
+                  src={`${INFURA_GATEWAY_INTERNAL}${
                     context?.videoInfo?.channels?.[
                       context?.videoInfo?.currentIndex
                     ]?.operations?.hasUpvoted
@@ -187,7 +187,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             ) : (
               <div className="relative w-3 h-3 flex items-center justify-center">
                 <Image
-                  src={`${INFURA_GATEWAY}/ipfs/${
+                  src={`${INFURA_GATEWAY_INTERNAL}${
                     context?.videoInfo?.channels?.[
                       context?.videoInfo?.currentIndex
                     ]?.operations?.hasSimpleCollected
@@ -221,7 +221,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             ) : (
               <div className="relative w-3 h-3 flex items-center justify-center">
                 <Image
-                  src={`${INFURA_GATEWAY}/ipfs/${
+                  src={`${INFURA_GATEWAY_INTERNAL}${
                     context?.videoInfo?.channels?.[
                       context?.videoInfo?.currentIndex
                     ]?.operations?.hasReposted?.optimistic
@@ -288,7 +288,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
           }}
         >
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/QmcYHKZJWJjgibox8iLqNozENnkgD4CZQqYsmmVJpoYUyo`}
+            src={`${INFURA_GATEWAY_INTERNAL}QmcYHKZJWJjgibox8iLqNozENnkgD4CZQqYsmmVJpoYUyo`}
             width={12}
             height={12}
             alt="backward"
@@ -305,7 +305,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
           }
         >
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/${
+            src={`${INFURA_GATEWAY_INTERNAL}${
               context?.videoControlsInfo.isPlaying
                 ? "Qmbg8t4xoNywhtCexD5Ln5YWvcKMXGahfwyK6UHpR3nBip"
                 : "QmXw52mJFnzYXmoK8eExoHKv7YW9RBVEwSFtfvxXgy7sfp"
@@ -393,7 +393,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
             <AiOutlineLoading color="white" size={12} />
           ) : (
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/QmcYHKZJWJjgibox8iLqNozENnkgD4CZQqYsmmVJpoYUyo`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmcYHKZJWJjgibox8iLqNozENnkgD4CZQqYsmmVJpoYUyo`}
               width={12}
               height={12}
               alt="forward"
@@ -406,7 +406,7 @@ const Controls: FunctionComponent<ControlsProps> = ({
           onClick={() => setVolumeOpen(!volumeOpen)}
         >
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/${
+            src={`${INFURA_GATEWAY_INTERNAL}${
               volume === 0
                 ? "QmVVzvq68RwGZFi46yKEthuG6PXQf74BaMW4yCrZCkgtzK"
                 : "Qme1i88Yd1x4SJfgrSCFyXp7GELCZRnnPQeFUt6jbfPbqL"

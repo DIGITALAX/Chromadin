@@ -9,7 +9,7 @@ import {
 import { AiOutlineLoading } from "react-icons/ai";
 import ImageUploads from "../../Main/modules/ImageUploads";
 import { ModalContext } from "@/app/providers";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { MakeCommentProps } from "../types/chat.types";
 import syncScroll from "@/app/lib/helpers/syncScroll";
 import useComment from "../hooks/useComment";
@@ -160,7 +160,7 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
             </div>
             <Image
               alt="gear"
-              src={`${INFURA_GATEWAY}/ipfs/QmY72fgrYJvDrc8iDSYRiyTpdsxbPMbPk7hxT2jrH9jrXJ`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmY72fgrYJvDrc8iDSYRiyTpdsxbPMbPk7hxT2jrH9jrXJ`}
               width={15}
               height={15}
               className="relative w-7 h-7 flex justify-end"

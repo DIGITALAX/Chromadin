@@ -1,7 +1,7 @@
 import { FunctionComponent, JSX, useContext } from "react";
 import Image from "next/legacy/image";
 import Link from "next/link";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 
@@ -11,7 +11,7 @@ const Account: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
     <div className="relative w-full h-[45.8rem] flex flex-col items-start justify-start bg-black border-t border-white">
       <div className="absolute w-full h-full xl:h-[40vw] flex grow top-0">
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/QmUBMaicGmBVTqUr5QXaqEu1AkavAhprwpDXKbMiy74g8p`}
+          src={`${INFURA_GATEWAY_INTERNAL}QmUBMaicGmBVTqUr5QXaqEu1AkavAhprwpDXKbMiy74g8p`}
           layout="fill"
           objectFit="cover"
           draggable={false}
@@ -32,7 +32,7 @@ const Account: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                 "ipfs://"
               )?.[1] && (
                 <Image
-                  src={`${INFURA_GATEWAY}/ipfs/${
+                  src={`${INFURA_GATEWAY_INTERNAL}${
                     context?.lensConectado?.profile?.metadata?.picture?.split(
                       "ipfs://"
                     )?.[1]

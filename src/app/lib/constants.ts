@@ -2,7 +2,7 @@ import { Filter } from "../components/Common/types/common.types";
 
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
 export const GROVE_GATEWAY: string = "https://api.grove.storage/";
-
+export const INFURA_GATEWAY_INTERNAL: string = "https://chromadin.xyz/api/infura/"
 export const CHROMADIN_OPEN_ACTION: `0x${string}` =
   "0x9d92ceD1a44B0B509EC3b3ea13F79C152cdb1876";
 export const MOSH_VIDEOS: string[] = [

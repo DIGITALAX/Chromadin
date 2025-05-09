@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { ModalContext } from "@/app/providers";
 import Image from "next/legacy/image";
@@ -18,7 +18,7 @@ const MainDrop: FunctionComponent = (): JSX.Element => {
             "video"
           ) ? (
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/${
+              src={`${INFURA_GATEWAY_INTERNAL}${
                 context?.collectionInfo?.main?.metadata?.images?.[0]?.split(
                   "ipfs://"
                 )?.[1]
@@ -41,7 +41,7 @@ const MainDrop: FunctionComponent = (): JSX.Element => {
               className="w-full h-full object-cover"
             >
               <source
-                src={`${INFURA_GATEWAY}/ipfs/${
+                src={`${INFURA_GATEWAY_INTERNAL}${
                   context?.collectionInfo?.main?.metadata?.video?.split(
                     "ipfs://"
                   )?.[1]
@@ -65,7 +65,7 @@ const MainDrop: FunctionComponent = (): JSX.Element => {
             "ipfs://"
           )?.[1] && (
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/${
+              src={`${INFURA_GATEWAY_INTERNAL}${
                 context?.collectionInfo?.main?.publication?.author?.metadata?.picture?.split(
                   "ipfs://"
                 )?.[1]
@@ -81,7 +81,7 @@ const MainDrop: FunctionComponent = (): JSX.Element => {
         <div className="relative flex flex-col w-fit h-full">
           <div className="relative w-full h-fit flex justify-start">
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/QmWTqEMUT7gFC76t8FBHRUQZDWbdwwnPKXFzutGf2uc6sx`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmWTqEMUT7gFC76t8FBHRUQZDWbdwwnPKXFzutGf2uc6sx`}
               width={130}
               height={30}
               alt="playing"
@@ -112,7 +112,7 @@ const MainDrop: FunctionComponent = (): JSX.Element => {
           className="relative w-5 h-5 cursor-pointer justify-end items-end flex ml-auto"
           onClick={() =>
             context?.setVerImagen({
-              item: `${INFURA_GATEWAY}/ipfs/${
+              item: `${INFURA_GATEWAY_INTERNAL}${
                 context?.collectionInfo?.main?.metadata?.images?.[0]?.split(
                   "ipfs://"
                 )?.[1] ||
@@ -126,7 +126,7 @@ const MainDrop: FunctionComponent = (): JSX.Element => {
           }
         >
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/QmVpncAteeF7voaGu1ZV5qP63UpZW2xmiCWVftL1QnL5ja`}
+            src={`${INFURA_GATEWAY_INTERNAL}QmVpncAteeF7voaGu1ZV5qP63UpZW2xmiCWVftL1QnL5ja`}
             alt="expand"
             layout="fill"
             className="flex items-center"

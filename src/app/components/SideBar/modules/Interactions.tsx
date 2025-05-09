@@ -2,7 +2,7 @@ import { FunctionComponent, JSX, useContext } from "react";
 import Image from "next/image";
 import { Viewer } from "../../Common/types/common.types";
 import { ModalContext } from "@/app/providers";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import Options from "./Options";
 import Switch from "../../Common/modules/Switch";
 import Collectors from "../../Common/modules/Collectors";
@@ -27,7 +27,7 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
           </div>
           <div className="relative w-fit h-full align-center flex pl-2 rotate-180">
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/QmTXyxVtGPSSyjjLzTfNdLANmc6Wiq8EToEGYefthNsXjw`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmTXyxVtGPSSyjjLzTfNdLANmc6Wiq8EToEGYefthNsXjw`}
               width={20}
               height={20}
               alt="player"

@@ -12,7 +12,7 @@ import { ModalContext } from "@/app/providers";
 import ImageUploads from "../../Main/modules/ImageUploads";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import OptionsPost from "../../Main/modules/OptionsPost";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import Quote from "../../Chat/modules/Quote";
 import { useAccount } from "wagmi";
 import { handleProfilePicture } from "@/app/lib/helpers/handleProfilePicture";
@@ -194,7 +194,7 @@ const MakePost: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                       </div>
                       <Image
                         alt="gear"
-                        src={`${INFURA_GATEWAY}/ipfs/QmY72fgrYJvDrc8iDSYRiyTpdsxbPMbPk7hxT2jrH9jrXJ`}
+                        src={`${INFURA_GATEWAY_INTERNAL}QmY72fgrYJvDrc8iDSYRiyTpdsxbPMbPk7hxT2jrH9jrXJ`}
                         width={15}
                         height={15}
                         className="relative w-7 h-7 flex justify-end"

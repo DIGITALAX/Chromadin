@@ -1,7 +1,7 @@
 import Image from "next/legacy/image";
 import { FunctionComponent, JSX, useContext } from "react";
 import { Viewer } from "../../Common/types/common.types";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import FetchMoreLoading from "../../Common/modules/FetchMoreLoading";
 import { PlayerProps } from "../types/player.types";
 import { ModalContext } from "@/app/providers";
@@ -29,7 +29,7 @@ const Player: FunctionComponent<PlayerProps> = ({
     >
       {context?.videoControlsInfo?.heart && (
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/QmNPPsBttGAxvu6cX3gWT4cnFF8PMF9C55GgJUehGp3nCA`}
+          src={`${INFURA_GATEWAY_INTERNAL}QmNPPsBttGAxvu6cX3gWT4cnFF8PMF9C55GgJUehGp3nCA`}
           layout="fill"
           objectFit="cover"
           className="absolute w-full h-full flex object-cover z-1"

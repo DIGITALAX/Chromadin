@@ -1,6 +1,6 @@
 "use client";
 
-import { INFURA_GATEWAY, MOSH_VIDEOS } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL, MOSH_VIDEOS } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
 import Image from "next/legacy/image";
 import { useContext } from "react";
@@ -28,7 +28,7 @@ export default function FrequencyEntry({ dict }: { dict: any }) {
           <div className="relative w-full h-fit flex flex-row gap-2 items-center preG:px-0 px-3 preG:pb-0 pb-2">
             <Image
               alt="waves"
-              src={`${INFURA_GATEWAY}/ipfs/QmfSx7sos7eWqZ17VcMVPdZj2v6CKqT1dytojWULoLYi7F`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmfSx7sos7eWqZ17VcMVPdZj2v6CKqT1dytojWULoLYi7F`}
               width={20}
               height={20}
               className="flex cursor-pointer active:scale-95"
@@ -43,7 +43,7 @@ export default function FrequencyEntry({ dict }: { dict: any }) {
             />
             <Image
               alt="waves"
-              src={`${INFURA_GATEWAY}/ipfs/QmdQ34Qn4hCdzpZmUoEsaqxGoD2hTVwDFVv2V2MiQiTEPV`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmdQ34Qn4hCdzpZmUoEsaqxGoD2hTVwDFVv2V2MiQiTEPV`}
               width={20}
               height={20}
               className="flex"
@@ -51,7 +51,7 @@ export default function FrequencyEntry({ dict }: { dict: any }) {
             />
             <Image
               alt="waves"
-              src={`${INFURA_GATEWAY}/ipfs/QmZxBo1yBTsikqgeV8EqJBgYxcCzHULDi2R1XphqvmoxaJ`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmZxBo1yBTsikqgeV8EqJBgYxcCzHULDi2R1XphqvmoxaJ`}
               width={20}
               height={20}
               className="flex cursor-pointer active:scale-95"
@@ -132,7 +132,7 @@ export default function FrequencyEntry({ dict }: { dict: any }) {
                           key={collection?.metadata?.video}
                         >
                           <source
-                            src={`${INFURA_GATEWAY}/ipfs/${collection?.metadata?.video
+                            src={`${INFURA_GATEWAY_INTERNAL}${collection?.metadata?.video
                               ?.split("ipfs://")[1]
                               ?.replace(/"/g, "")
                               ?.trim()}`}
@@ -142,7 +142,7 @@ export default function FrequencyEntry({ dict }: { dict: any }) {
                         </video>
                       ) : (
                         <Image
-                          src={`${INFURA_GATEWAY}/ipfs/${
+                          src={`${INFURA_GATEWAY_INTERNAL}${
                             collection?.metadata?.images?.[0]?.split(
                               "ipfs://"
                             )[1]
@@ -192,7 +192,7 @@ export default function FrequencyEntry({ dict }: { dict: any }) {
             key={currentVideoIndex}
           >
             <source
-              src={`${INFURA_GATEWAY}/ipfs/${MOSH_VIDEOS[currentVideoIndex]}`}
+              src={`${INFURA_GATEWAY_INTERNAL}${MOSH_VIDEOS[currentVideoIndex]}`}
               type="video/mp4"
               id="staticLoad"
               key={currentVideoIndex}

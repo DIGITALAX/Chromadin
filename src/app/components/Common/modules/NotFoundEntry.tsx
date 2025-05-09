@@ -1,6 +1,6 @@
 "use client";
 
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import Head from "next/head";
 import Image from "next/legacy/image";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ export default function NotFoundEntry({ dict }: { dict: any }) {
           }}
         >
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/QmQZ8UwjeizDQkbCiZED8Ya4LxpFD5JbVbNeAdowurHkiY`}
+            src={`${INFURA_GATEWAY_INTERNAL}QmQZ8UwjeizDQkbCiZED8Ya4LxpFD5JbVbNeAdowurHkiY`}
             className="relative w-fit h-fit relative cursor-pointer"
             width={100}
             height={100}

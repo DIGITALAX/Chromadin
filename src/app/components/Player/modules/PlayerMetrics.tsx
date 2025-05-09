@@ -137,7 +137,7 @@
 //                             className={`relative w-5 h-5 flex items-center justify-center`}
 //                           >
 //                             <Image
-//                               src={`${INFURA_GATEWAY}/ipfs/${item?.image}`}
+//                               src={`${INFURA_GATEWAY_INTERNAL}${item?.image}`}
 //                               draggable={false}
 //                               layout="fill"
 //                             />
@@ -149,7 +149,7 @@
 //                         className={`relative w-5 h-5 flex items-center justify-center`}
 //                       >
 //                         <Image
-//                           src={`${INFURA_GATEWAY}/ipfs/${item?.image}`}
+//                           src={`${INFURA_GATEWAY_INTERNAL}${item?.image}`}
 //                           draggable={false}
 //                           layout="fill"
 //                         />

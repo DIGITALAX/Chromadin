@@ -1,7 +1,7 @@
 import { FunctionComponent, JSX } from "react";
 import Image from "next/legacy/image";
 import { SearchVendingProps } from "../types/market.types";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { Collection, Drop } from "../../Common/types/common.types";
 import { Account } from "@lens-protocol/client";
@@ -66,7 +66,7 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
                         />
                       ) : (
                         <Image
-                          src={`${INFURA_GATEWAY}/ipfs/${
+                          src={`${INFURA_GATEWAY_INTERNAL}${
                             (result as Collection)?.acceptedTokens?.length > 0
                               ? (
                                   result as Collection

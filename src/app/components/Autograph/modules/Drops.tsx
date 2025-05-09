@@ -3,7 +3,7 @@ import { FunctionComponent, JSX } from "react";
 import { DropsProps } from "../types/autograph.types";
 import { Drop } from "../../Common/types/common.types";
 import { useRouter } from "next/navigation";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 
 const Drops: FunctionComponent<DropsProps> = ({
   drops,
@@ -41,7 +41,7 @@ const Drops: FunctionComponent<DropsProps> = ({
                   {drop?.metadata?.cover && (
                     <Image
                       draggable={false}
-                      src={`${INFURA_GATEWAY}/ipfs/${
+                      src={`${INFURA_GATEWAY_INTERNAL}${
                         drop?.metadata?.cover?.split("ipfs://")[1]
                       }`}
                       layout="fill"

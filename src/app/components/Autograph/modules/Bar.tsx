@@ -1,7 +1,7 @@
 import { FunctionComponent, JSX } from "react";
 import Image from "next/legacy/image";
 import { useRouter } from "next/navigation";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import Auth from "../../Common/modules/Auth";
 import SearchVending from "../../Market/modules/SearchVending";
 import Video from "../../Player/modules/Video";
@@ -48,7 +48,7 @@ const Bar: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
         <div className="relative w-fit h-full flex flex-col items-end justify-center gap-2 ml-auto">
           <div className="relative w-4 h-4">
             <Image
-              src={`${INFURA_GATEWAY}/ipfs/QmTXyxVtGPSSyjjLzTfNdLANmc6Wiq8EToEGYefthNsXjw`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmTXyxVtGPSSyjjLzTfNdLANmc6Wiq8EToEGYefthNsXjw`}
               layout="fill"
               alt="player"
               draggable={false}

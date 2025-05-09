@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
 import Image from "next/legacy/image";
 import { FunctionComponent, JSX, useContext } from "react";
@@ -29,7 +29,7 @@ const Success: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                   id="staticLoad"
                 >
                   <Image
-                    src={`${INFURA_GATEWAY}/ipfs/${
+                    src={`${INFURA_GATEWAY_INTERNAL}${
                       context?.success?.media?.split("ipfs://")?.[1]
                     }`}
                     layout="fill"

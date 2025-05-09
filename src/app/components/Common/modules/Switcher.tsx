@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import Image from "next/legacy/image";
 import { usePathname, useRouter } from "next/navigation";
 import { FunctionComponent, JSX, useContext } from "react";
@@ -17,7 +17,7 @@ const Switcher: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
         loop
         playsInline
         preload="auto"
-        poster={`${INFURA_GATEWAY}/ipfs/QmdAo2VbLNBcso528sGYBKLWdfN7FDBZWqakphLGxXTppU`}
+        poster={`${INFURA_GATEWAY_INTERNAL}QmdAo2VbLNBcso528sGYBKLWdfN7FDBZWqakphLGxXTppU`}
         className="absolute w-full h-full object-cover"
       >
         <source src={"/videos/glitch.mp4"} type="video/mp4" />
@@ -27,7 +27,7 @@ const Switcher: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
           <div className="relative w-full h-fit flex flex-row py-2">
             <div className="relative w-4 lg:w-10 h-4 lg:h-8">
               <Image
-                src={`${INFURA_GATEWAY}/ipfs/QmTXyxVtGPSSyjjLzTfNdLANmc6Wiq8EToEGYefthNsXjw`}
+                src={`${INFURA_GATEWAY_INTERNAL}QmTXyxVtGPSSyjjLzTfNdLANmc6Wiq8EToEGYefthNsXjw`}
                 layout="fill"
                 alt="player"
                 draggable={false}
@@ -89,7 +89,7 @@ const Switcher: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                       className={`relative w-8 lg:w-12 h-8 lg:h-12 grid grid-flow-col auto-cols-auto justify-self-center items-center  ${"cursor-pointer active:scale-95"}`}
                     >
                       <Image
-                        src={`${INFURA_GATEWAY}/ipfs/QmPoXfm1VgBsE4eE3UZw6uGoFAVwShnz6zaEuXkHdryoc9`}
+                        src={`${INFURA_GATEWAY_INTERNAL}QmPoXfm1VgBsE4eE3UZw6uGoFAVwShnz6zaEuXkHdryoc9`}
                         alt="border"
                         layout="fill"
                         draggable={false}
@@ -97,7 +97,7 @@ const Switcher: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                       <div className="relative place-self-center col-start-1 w-3 h-3 lg:w-6 lg:h-6 flex">
                         <Image
                           alt="border"
-                          src={`${INFURA_GATEWAY}/ipfs/${values.image}`}
+                          src={`${INFURA_GATEWAY_INTERNAL}${values.image}`}
                           layout="fill"
                           draggable={false}
                         />

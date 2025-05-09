@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { handleProfilePicture } from "@/app/lib/helpers/handleProfilePicture";
 import Image from "next/legacy/image";
@@ -33,7 +33,7 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
         ?.toLowerCase()
         ?.includes("video") ? (
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/${
+          src={`${INFURA_GATEWAY_INTERNAL}${
             collection?.metadata?.images?.[0]?.split("ipfs://")[1]
           }`}
           layout="fill"
@@ -67,7 +67,7 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
           className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80"
         >
           <source
-            src={`${INFURA_GATEWAY}/ipfs/${
+            src={`${INFURA_GATEWAY_INTERNAL}${
               collection?.metadata?.video?.split("ipfs://")[1]
             }`}
             type="video/mp4"
@@ -148,7 +148,7 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
                 <Image
                   layout="fill"
                   alt="post to lens"
-                  src={`${INFURA_GATEWAY}/ipfs/QmTosnBk8UmFjJQJrTtZwfDHTegNyDmToPSg7N2ewGmg3Z`}
+                  src={`${INFURA_GATEWAY_INTERNAL}QmTosnBk8UmFjJQJrTtZwfDHTegNyDmToPSg7N2ewGmg3Z`}
                   draggable={false}
                 />
               </div>
@@ -156,7 +156,7 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
                 <Image
                   layout="fill"
                   alt="post to lens"
-                  src={`${INFURA_GATEWAY}/ipfs/QmRr4axapEyQwjoGofb3BUwUT2yN115rnr2HYLLq2Awz2P`}
+                  src={`${INFURA_GATEWAY_INTERNAL}QmRr4axapEyQwjoGofb3BUwUT2yN115rnr2HYLLq2Awz2P`}
                   draggable={false}
                 />
               </div>

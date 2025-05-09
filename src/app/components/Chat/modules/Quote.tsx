@@ -2,7 +2,7 @@ import { FunctionComponent, JSX } from "react";
 import { FaRegCommentDots } from "react-icons/fa";
 import Image from "next/legacy/image";
 import moment from "moment";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { handleProfilePicture } from "@/app/lib/helpers/handleProfilePicture";
 import descriptionRegex from "@/app/lib/helpers/descriptionRegex";
@@ -35,7 +35,7 @@ const Quote: FunctionComponent<{ publication: Post | Repost }> = ({
           className={`relative w-full h-full bg-shame rounded-md flex flex-col items-start sm:items-center py-1.5 px-1 gap-3`}
         >
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/QmSjh6dsibg9yDfBwRfC5YSWFTmwpwPxRDTFG8DzLHzFyB`}
+            src={`${INFURA_GATEWAY_INTERNAL}QmSjh6dsibg9yDfBwRfC5YSWFTmwpwPxRDTFG8DzLHzFyB`}
             layout="fill"
             objectFit="cover"
             className="absolute w-full h-full rounded-lg"
@@ -46,7 +46,7 @@ const Quote: FunctionComponent<{ publication: Post | Repost }> = ({
               className={`w-20 relative h-8 rounded-full flex justify-self-center`}
             >
               <Image
-                src={`${INFURA_GATEWAY}/ipfs/QmfDmMCcgcseCFzGam9DbmDk5sQRbt6zrQVhvj4nTeuLGq`}
+                src={`${INFURA_GATEWAY_INTERNAL}QmfDmMCcgcseCFzGam9DbmDk5sQRbt6zrQVhvj4nTeuLGq`}
                 layout="fill"
                 alt="backdrop"
                 priority

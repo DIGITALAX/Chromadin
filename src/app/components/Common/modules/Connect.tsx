@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import Image from "next/legacy/image";
 import { usePathname } from "next/navigation";
 import { FunctionComponent, JSX } from "react";
@@ -26,7 +26,7 @@ const Connect: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                 <div key={index} className="relative w-fit h-fit flex">
                   <div className="relative w-5 h-4 flex">
                     <Image
-                      src={`${INFURA_GATEWAY}/ipfs/QmfXzGt2RHdEfwgiLiYqEmdsDdSHm1SBdq1Cpys1gHTe5s`}
+                      src={`${INFURA_GATEWAY_INTERNAL}QmfXzGt2RHdEfwgiLiYqEmdsDdSHm1SBdq1Cpys1gHTe5s`}
                       layout="fill"
                       alt="stripes"
                       draggable={false}
@@ -64,7 +64,7 @@ const Connect: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
             <div className="relative w-8 h-10 flex items-center justify-center">
               <Image
                 layout="fill"
-                src={`${INFURA_GATEWAY}/ipfs/${
+                src={`${INFURA_GATEWAY_INTERNAL}${
                   path?.includes("/es/")
                     ? "QmY43U5RovVkoGrkLiFyA2VPMnGxf5e3NgYZ95u9aNJdem"
                     : path?.includes("/en/")

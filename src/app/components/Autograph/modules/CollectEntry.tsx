@@ -6,7 +6,7 @@ import { FunctionComponent, JSX, useContext } from "react";
 import RouterChange from "./RouterChange";
 import Bar from "./Bar";
 import NotFoundEntry from "../../Common/modules/NotFoundEntry";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import WaveformComponent from "../../Common/modules/Waveform";
 import { ModalContext } from "@/app/providers";
 import { useAccount } from "wagmi";
@@ -67,7 +67,7 @@ const CollectEntry: FunctionComponent<{
                     key={collection?.metadata?.video}
                   >
                     <source
-                      src={`${INFURA_GATEWAY}/ipfs/${
+                      src={`${INFURA_GATEWAY_INTERNAL}${
                         collection?.metadata?.video?.split("ipfs://")[1]
                       }`}
                       type="video/mp4"
@@ -76,7 +76,7 @@ const CollectEntry: FunctionComponent<{
                   </video>
                 ) : (
                   <Image
-                    src={`${INFURA_GATEWAY}/ipfs/${
+                    src={`${INFURA_GATEWAY_INTERNAL}${
                       collection?.metadata?.images?.[0]?.split("ipfs://")[1] ||
                       collection?.metadata?.mediaCover?.split("ipfs://")[1]
                     }`}
@@ -102,7 +102,7 @@ const CollectEntry: FunctionComponent<{
                 className="relative w-5 h-5 cursor-pointer justify-end items-end flex ml-auto"
                 onClick={() =>
                   context?.setVerImagen({
-                    item: `${INFURA_GATEWAY}/ipfs/${
+                    item: `${INFURA_GATEWAY_INTERNAL}${
                       collection?.metadata?.images?.[0]?.split("ipfs://")[1] ||
                       collection?.metadata?.video?.split("ipfs://")[1]
                     }`,
@@ -111,7 +111,7 @@ const CollectEntry: FunctionComponent<{
                 }
               >
                 <Image
-                  src={`${INFURA_GATEWAY}/ipfs/QmVpncAteeF7voaGu1ZV5qP63UpZW2xmiCWVftL1QnL5ja`}
+                  src={`${INFURA_GATEWAY_INTERNAL}QmVpncAteeF7voaGu1ZV5qP63UpZW2xmiCWVftL1QnL5ja`}
                   alt="expand"
                   layout="fill"
                   className="flex items-center"
@@ -137,7 +137,7 @@ const CollectEntry: FunctionComponent<{
                   <Image
                     layout="fill"
                     alt="post to lens"
-                    src={`${INFURA_GATEWAY}/ipfs/QmTosnBk8UmFjJQJrTtZwfDHTegNyDmToPSg7N2ewGmg3Z`}
+                    src={`${INFURA_GATEWAY_INTERNAL}QmTosnBk8UmFjJQJrTtZwfDHTegNyDmToPSg7N2ewGmg3Z`}
                     draggable={false}
                   />
                 </div>
@@ -145,7 +145,7 @@ const CollectEntry: FunctionComponent<{
                   <Image
                     layout="fill"
                     alt="post to lens"
-                    src={`${INFURA_GATEWAY}/ipfs/QmRr4axapEyQwjoGofb3BUwUT2yN115rnr2HYLLq2Awz2P`}
+                    src={`${INFURA_GATEWAY_INTERNAL}QmRr4axapEyQwjoGofb3BUwUT2yN115rnr2HYLLq2Awz2P`}
                     draggable={false}
                   />
                 </div>

@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
 import Image from "next/legacy/image";
 import { FunctionComponent, JSX, useContext } from "react";
@@ -12,7 +12,7 @@ const Fulfillment: FunctionComponent<{ dict: any }> = ({
     <div className="relative w-full h-[45.8rem] flex items-start justify-center bg-black border-t border-white">
       <div className="absolute w-full h-full justify-stretch flex">
         <Image
-          src={`${INFURA_GATEWAY}/ipfs/QmUFwK9nUrUnAoVm3fhbw2XqtUAdzz2js8ju7LjdGXVQe5`}
+          src={`${INFURA_GATEWAY_INTERNAL}QmUFwK9nUrUnAoVm3fhbw2XqtUAdzz2js8ju7LjdGXVQe5`}
           layout="fill"
           draggable={false}
           objectFit="cover"

@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { ModalContext } from "@/app/providers";
 import { Account } from "@lens-protocol/client";
@@ -107,7 +107,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                         >
                           {user?.metadata?.picture?.split("ipfs://")?.[1] && (
                             <Image
-                              src={`${INFURA_GATEWAY}/ipfs/${
+                              src={`${INFURA_GATEWAY_INTERNAL}${
                                 user?.metadata?.picture?.split("ipfs://")?.[1]
                               }`}
                               onError={(e) => handleImageError(e)}
@@ -178,7 +178,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
             </div>
             <Image
               alt="gear"
-              src={`${INFURA_GATEWAY}/ipfs/QmY72fgrYJvDrc8iDSYRiyTpdsxbPMbPk7hxT2jrH9jrXJ`}
+              src={`${INFURA_GATEWAY_INTERNAL}QmY72fgrYJvDrc8iDSYRiyTpdsxbPMbPk7hxT2jrH9jrXJ`}
               width={15}
               height={15}
               className="relative w-7 h-7 flex justify-end"

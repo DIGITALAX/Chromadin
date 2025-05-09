@@ -3,7 +3,7 @@ import { FunctionComponent, JSX, useContext } from "react";
 import { ModalContext } from "@/app/providers";
 import { AiOutlineLoading } from "react-icons/ai";
 import moment from "moment";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import useSimpleCollect from "../hooks/useSimpleCollect";
 
 export const SimpleCollect: FunctionComponent<{ dict: any }> = ({
@@ -40,7 +40,7 @@ export const SimpleCollect: FunctionComponent<{ dict: any }> = ({
                 </div>
                 <div className="relative w-3/4 xl:w-1/2 items-center justify-center rounded-md border border-white h-60 flex">
                   <Image
-                    src={`${INFURA_GATEWAY}/ipfs/QmQf3pEG3AXMn5xqRN8Kd8eAC7pEvFoCKvXoycZDpB44Km`}
+                    src={`${INFURA_GATEWAY_INTERNAL}QmQf3pEG3AXMn5xqRN8Kd8eAC7pEvFoCKvXoycZDpB44Km`}
                     objectFit="cover"
                     layout="fill"
                     className="rounded-md"

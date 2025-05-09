@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { ModalContext } from "@/app/providers";
 import Image from "next/image";
 import { FunctionComponent, JSX, useContext } from "react";
@@ -23,7 +23,7 @@ const Options: FunctionComponent = (): JSX.Element => {
               onClick={() => context?.setOptions(value[1] as OptionsType)}
             >
               <Image
-                src={`${INFURA_GATEWAY}/ipfs/QmPoXfm1VgBsE4eE3UZw6uGoFAVwShnz6zaEuXkHdryoc9`}
+                src={`${INFURA_GATEWAY_INTERNAL}QmPoXfm1VgBsE4eE3UZw6uGoFAVwShnz6zaEuXkHdryoc9`}
                 alt="border"
                 fill
                 draggable={false}
@@ -31,7 +31,7 @@ const Options: FunctionComponent = (): JSX.Element => {
               <div className="relative place-self-center col-start-1 w-fit h-fit flex">
                 <Image
                   alt="border"
-                  src={`${INFURA_GATEWAY}/ipfs/${value[0]}`}
+                  src={`${INFURA_GATEWAY_INTERNAL}${value[0]}`}
                   height={23}
                   width={20}
                   draggable={false}

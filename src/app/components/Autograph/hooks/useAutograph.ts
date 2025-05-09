@@ -4,7 +4,7 @@ import { fetchAccount, fetchPost } from "@lens-protocol/client/actions";
 import { Account } from "@lens-protocol/client";
 import { ModalContext } from "@/app/providers";
 import { getCollectionsProfile } from "../../../../../graph/queries/getAllCollections";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 
 const useAutograph = (name: string) => {
   const context = useContext(ModalContext);
@@ -62,7 +62,7 @@ const useAutograph = (name: string) => {
 
             if (!item?.metadata) {
               const res = await fetch(
-                `${INFURA_GATEWAY}/ipfs/${item?.uri?.split("ipfs://")?.[1]}`
+                `${INFURA_GATEWAY_INTERNAL}${item?.uri?.split("ipfs://")?.[1]}`
               );
               const data = await res.json();
               item = {
@@ -76,7 +76,7 @@ const useAutograph = (name: string) => {
 
             if (!item?.drop?.metadata) {
               const res = await fetch(
-                `${INFURA_GATEWAY}/ipfs/${
+                `${INFURA_GATEWAY_INTERNAL}${
                   item?.drop?.uri?.split("ipfs://")?.[1]
                 }`
               );

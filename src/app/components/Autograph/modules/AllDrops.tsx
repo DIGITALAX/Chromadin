@@ -3,7 +3,7 @@ import Image from "next/legacy/image";
 import Link from "next/link";
 import handleImageError from "@/app/lib/helpers/handleImageError";
 import { Collection } from "../../Common/types/common.types";
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { handleProfilePicture } from "@/app/lib/helpers/handleProfilePicture";
 import { useRouter } from "next/navigation";
 import { AllDropsProps } from "../types/autograph.types";
@@ -72,7 +72,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
                     className="relative w-full h-full object-cover rounded-md"
                   >
                     <source
-                      src={`${INFURA_GATEWAY}/ipfs/${
+                      src={`${INFURA_GATEWAY_INTERNAL}${
                         collection?.metadata?.video?.split(
                           "ipfs://"
                         )[1]
@@ -82,7 +82,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
                   </video>
                 ) : (
                   <Image
-                    src={`${INFURA_GATEWAY}/ipfs/${
+                    src={`${INFURA_GATEWAY_INTERNAL}${
                       collection?.metadata?.images?.[0]?.split(
                         "ipfs://"
                       )[1]

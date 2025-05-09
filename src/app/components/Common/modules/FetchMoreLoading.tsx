@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import Image from "next/legacy/image";
 import { FunctionComponent, JSX } from "react";
 
@@ -12,7 +12,7 @@ const FetchMoreLoading: FunctionComponent<{ size: string }> = ({
       >
         <Image
           layout="fill"
-          src={`${INFURA_GATEWAY}/ipfs/QmQZ8UwjeizDQkbCiZED8Ya4LxpFD5JbVbNeAdowurHkiY`}
+          src={`${INFURA_GATEWAY_INTERNAL}QmQZ8UwjeizDQkbCiZED8Ya4LxpFD5JbVbNeAdowurHkiY`}
           draggable={false}
         />
       </div>

@@ -1,4 +1,4 @@
-import { INFURA_GATEWAY } from "@/app/lib/constants";
+import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import {
   ImageMetadata,
   MediaImage,
@@ -49,7 +49,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
           <div className="relative w-full h-fit flex flex-row items-center justify-start gap-2">
             <div className="relative w-fit h-1/2 flex justify-start">
               <Image
-                src={`${INFURA_GATEWAY}/ipfs/QmfXzGt2RHdEfwgiLiYqEmdsDdSHm1SBdq1Cpys1gHTe5s`}
+                src={`${INFURA_GATEWAY_INTERNAL}QmfXzGt2RHdEfwgiLiYqEmdsDdSHm1SBdq1Cpys1gHTe5s`}
                 height={5}
                 width={10}
                 alt="stripes"
@@ -145,7 +145,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                               alt="pfp"
                               layout="fill"
                               className="relative w-full h-full flex"
-                              src={`${INFURA_GATEWAY}/ipfs/${
+                              src={`${INFURA_GATEWAY_INTERNAL}${
                                 comment?.author?.metadata?.picture?.split(
                                   "ipfs://"
                                 )?.[1]
@@ -357,7 +357,7 @@ const Comments: FunctionComponent<CommentsProps> = ({
                                   />
                                 ) : (
                                   <Image
-                                    src={`${INFURA_GATEWAY}/ipfs/${
+                                    src={`${INFURA_GATEWAY_INTERNAL}${
                                       item?.responded
                                         ? item?.imageResponded
                                         : item?.image
