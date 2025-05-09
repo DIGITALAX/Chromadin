@@ -7,6 +7,7 @@ import useChannels from "../../Player/hooks/useChannels";
 import Interactions from "../../SideBar/modules/Interactions";
 import SideBar from "../../SideBar/modules/Sidebar";
 import SwitchView from "./SwitchView";
+import RouterChange from "../../Autograph/modules/RouterChange";
 
 export default function Entry({ dict }: { dict: any }) {
   const context = useContext(ModalContext);
@@ -17,6 +18,14 @@ export default function Entry({ dict }: { dict: any }) {
     commentLoading,
     setCommentsLoading,
   } = useChannels();
+
+  if (
+    Number(context?.videoInfo?.channels?.length || 0) < 1 ||
+    Number(context?.designerProfiles?.length || 0) < 1 ||
+    Number(context?.collectionInfo?.collections?.length || 0) < 1
+  ) {
+    return <RouterChange />;
+  }
   return (
     <div className="relative w-full h-full flex flex-col overflow-x-hidden selection:bg-ama selection:text-moda">
       <div className="relative w-full flex flex-row xl:flex-nowrap flex-wrap h-fit xl:h-[55rem] overflow-y-hidden">
