@@ -158,7 +158,7 @@ const useSearch = () => {
           .toLowerCase()}`
       );
     } else if ((chosen as Account)?.username) {
-      router.push(`/autograph/${(chosen as Account)?.username?.localName[1]}`);
+      router.push(`/autograph/${(chosen as Account)?.username?.localName}`);
     } else {
       router.push(
         `/autograph/${

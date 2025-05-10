@@ -336,10 +336,9 @@ const Vending: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                             />
                           </div>
                           <div className="relative w-fit h-fit cursor-pointer text-ama font-arcade text-sm">
-                            {
-                              collection?.publication?.author?.username
-                                ?.localName
-                            }
+                            {collection?.publication?.author?.username
+                              ?.localName ??
+                              collection?.publication?.author?.username?.value}
                           </div>
                         </Link>
                       </div>

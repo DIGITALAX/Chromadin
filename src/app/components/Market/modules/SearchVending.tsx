@@ -31,7 +31,7 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
       />
       {searchOpen && (
         <div className="absolute w-full justify-start top-9 right-0 h-40 rounded-br-lg rounded-tl-lg flex flex-col gap-4 bg-black border border-white z-1 overflow-y-scroll py-2 px-1">
-          {searchResults?.map(
+          {searchResults?.filter(Boolean)?.map(
             (result: Collection | Account | Drop, index: number) => {
               const name =
                 !(result as Account)?.username?.localName &&
@@ -118,9 +118,7 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
                               8
                             )}` + "..."
                           : `${
-                              (result as Account)?.username?.localName?.split(
-                                "@"
-                              )?.[1]
+                              (result as Account)?.username?.localName
                             }`}
                       </div>
                     </div>

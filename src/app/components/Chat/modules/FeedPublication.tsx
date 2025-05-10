@@ -236,59 +236,22 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
             : publication?.repostOf.id) && (
             <div
               className={`relative w-fit h-full col-start-1 row-start-1 sm:col-start-2 sm:pt-0 pt-3  grid grid-flow-col auto-cols-auto font-digi gap-1 cursor-pointer justify-self-end self-end hover:opacity-70 active:scale-95 text-white`}
-              onClick={() =>
-                !path?.includes("/autograph/")
-                  ? router.push(
-                      path?.includes("&post=")
-                        ? path?.includes("?option=")
-                          ? path?.split("&post=")[0] +
-                            `&post=${
-                              publication?.__typename !== "Repost"
-                                ? publication?.id
-                                : publication?.repostOf?.id
-                            }`
-                          : path?.split("&post=")[0] +
-                            `?option=history&post=${
-                              publication?.__typename !== "Repost"
-                                ? publication?.id
-                                : publication?.repostOf?.id
-                            }`
-                        : path?.includes("&profile=")
-                        ? path?.includes("?option=")
-                          ? path?.split("&profile=")[0] +
-                            `&post=${
-                              publication?.__typename !== "Repost"
-                                ? publication?.id
-                                : publication?.repostOf?.id
-                            }`
-                          : path?.split("&profile=")[0] +
-                            `?option=history&post=${
-                              publication?.__typename !== "Repost"
-                                ? publication?.id
-                                : publication?.repostOf?.id
-                            }`
-                        : path?.includes("?option=")
-                        ? path +
-                          `&post=${
-                            publication?.__typename !== "Repost"
-                              ? publication?.id
-                              : publication?.repostOf?.id
-                          }`
-                        : path +
-                          `?option=history&post=${
-                            publication?.__typename !== "Repost"
-                              ? publication?.id
-                              : publication?.repostOf?.id
-                          }`
-                    )
-                  : router.replace(
-                      `/#chat?option=history&post=${
-                        publication?.__typename !== "Repost"
-                          ? publication?.id
-                          : publication?.repostOf?.id
-                      }`
-                    )
-              }
+              onClick={() => {
+                const params = new URLSearchParams(search?.toString());
+
+                params.set(
+                  "post",
+                  publication?.__typename !== "Repost"
+                    ? publication?.id
+                    : publication?.repostOf?.id
+                );
+
+                if (!params?.get("options")) {
+                  params.set("options", "history");
+                }
+
+                router.replace(`${path}?${params?.toString()}`);
+              }}
             >
               <div className="relative w-fit h-fit flex  self-center  text-sm">
                 {!(publication as Post)?.commentOn
