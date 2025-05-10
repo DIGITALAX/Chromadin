@@ -43,11 +43,11 @@ export async function GET() {
         ${locales
           .map(
             (altLocale) => `
-          <xhtml:link rel="alternate" hreflang="${altLocale}" href="${baseUrl}/${altLocale}/autograph/collection/${safeSlug}/" />
+          <link rel="alternate" hreflang="${altLocale}" href="${baseUrl}/${altLocale}/autograph/collection/${safeSlug}/" ></link>
           `
           )
           .join("")}
-        <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/autograph/collection/${safeSlug}/" />
+        <link rel="alternate" hreflang="x-default" href="${baseUrl}/autograph/collection/${safeSlug}/" ></link>
         <image:image>
           <image:loc>${INFURA_GATEWAY_INTERNAL}${image}/</image:loc>
           <image:title><![CDATA[${title} | Chromadin | DIGITALAX]]></image:title>
@@ -69,11 +69,11 @@ export async function GET() {
         ${locales
           .map(
             (locale) => `
-          <xhtml:link rel="alternate" hreflang="${locale}" href="${baseUrl}/${locale}/" />
+          <link rel="alternate" hreflang="${locale}" href="${baseUrl}/${locale}/" ></link>
           `
           )
           .join("")}
-        <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/" />
+        <link rel="alternate" hreflang="x-default" href="${baseUrl}/" ></link>
       </url>
 
       ${collectionsXml}
