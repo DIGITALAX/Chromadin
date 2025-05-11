@@ -64,18 +64,6 @@ export async function GET() {
       xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
       xmlns:xhtml="http://www.w3.org/1999/xhtml"
     >
-      <url>
-        <loc>${baseUrl}/</loc>
-        ${locales
-          .map(
-            (locale) => `
-          <xhtml:link rel="alternate" hreflang="${locale}" href="${baseUrl}/${locale}/" />
-          `
-          )
-          .join("")}
-        <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/" />
-      </url>
-
       ${collectionsXml}
     </urlset>`;
 
