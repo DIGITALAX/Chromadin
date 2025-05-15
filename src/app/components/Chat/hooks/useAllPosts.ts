@@ -180,7 +180,8 @@ const useAllPosts = (accountAddress?: string) => {
   };
 
   const getMoreTimeline = async () => {
-    if (!info?.hasMore || !profile) return;
+
+    if (!info?.hasMore) return;
     try {
       setMainPost(undefined);
 
