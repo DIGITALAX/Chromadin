@@ -23,17 +23,30 @@ const useFrequency = () => {
     );
   };
 
+  const handleVideoEnd = () => {
+    setCurrentVideoIndex((prev) => (prev + 1) % MOSH_VIDEOS.length);
+  };
+
   useEffect(() => {
-    if (moshVideoRef.current) {
-      const handleVideoEnd = () => {
-        setCurrentVideoIndex((prev) => (prev + 1) % MOSH_VIDEOS.length);
-      };
-      moshVideoRef.current.addEventListener("ended", handleVideoEnd);
-      return () => {
-        moshVideoRef.current?.removeEventListener("ended", handleVideoEnd);
-      };
+    moshVideoRef.current?.addEventListener("ended", handleVideoEnd);
+    return () => {
+      moshVideoRef.current?.removeEventListener("ended", handleVideoEnd);
+    };
+  }, []);
+
+  useEffect(() => {
+    const videoEl = moshVideoRef.current;
+    if (!videoEl) return;
+
+    videoEl.load();
+    const playPromise = videoEl.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.error("Autoplay failed:", err);
+        handleVideoEnd();
+      });
     }
-  }, [MOSH_VIDEOS.length]);
+  }, [currentVideoIndex]);
 
   return {
     moveBackward,

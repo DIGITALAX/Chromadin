@@ -22,7 +22,8 @@ const useCollects = () => {
         context?.lensConectado?.sessionClient || context?.clienteLens!,
         {
           pageSize: PageSize.Ten,
-          post: context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.id,
+          post: context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]
+            ?.id,
         }
       );
 
@@ -48,7 +49,8 @@ const useCollects = () => {
         context?.lensConectado?.sessionClient || context?.clienteLens!,
         {
           pageSize: PageSize.Ten,
-          post: context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.id,
+          post: context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]
+            ?.id,
           cursor: collectInfo?.paginated,
         }
       );
@@ -69,10 +71,17 @@ const useCollects = () => {
   };
 
   useEffect(() => {
-    if (context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.id && context?.clienteLens)  {
+    if (
+      context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.id &&
+      context?.clienteLens
+    ) {
       getPostCollects();
     }
-  }, [context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.id, context?.lensConectado?.profile, context?.clienteLens]);
+  }, [
+    context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.id,
+    context?.lensConectado?.profile,
+    context?.clienteLens,
+  ]);
 
   return {
     collectors,

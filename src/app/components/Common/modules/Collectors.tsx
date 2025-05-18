@@ -21,7 +21,7 @@ const Collectors: FunctionComponent<{ dict: any }> = ({
           </div>
         ) : collectors?.length < 1 ? (
           <div className="relative text-white font-arcade w-full h-60 justify-center items-start p-3 flex text-center">
-            {`Be the first to collect this stream :)`}
+            {dict?.Common?.firstCollect}
           </div>
         ) : (
           <InfiniteScroll
@@ -43,9 +43,7 @@ const Collectors: FunctionComponent<{ dict: any }> = ({
                     onClick={() =>
                       collector?.username?.localName &&
                       window.open(
-                        `https://www.chromadin.xyz/?option=history&profile=${
-                          collector?.username?.localName
-                        }`
+                        `https://www.chromadin.xyz/?option=history&profile=${collector?.username?.localName}`
                       )
                     }
                   >

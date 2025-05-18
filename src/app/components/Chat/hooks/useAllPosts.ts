@@ -180,7 +180,6 @@ const useAllPosts = (accountAddress?: string) => {
   };
 
   const getMoreTimeline = async () => {
-
     if (!info?.hasMore) return;
     try {
       setMainPost(undefined);
@@ -318,7 +317,7 @@ const useAllPosts = (accountAddress?: string) => {
     search.get("profile"),
     search?.get("post"),
     path,
-    context?.lensConectado,
+    context?.lensConectado?.profile,
     context?.clienteLens,
   ]);
 

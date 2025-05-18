@@ -61,26 +61,41 @@ const Comments: FunctionComponent<CommentsProps> = ({
               id={`record1`}
             >
               {(
-                context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.metadata as VideoMetadata
+                context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]
+                  ?.metadata as VideoMetadata
               )?.title?.includes("Post by @chromadin.lens")
                 ? (
-                    context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.metadata as VideoMetadata
+                    context?.videoInfo?.channels?.[
+                      context?.videoInfo?.currentIndex
+                    ]?.metadata as VideoMetadata
                   )?.content.split("\n\n")[0]
-                : (context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.metadata as VideoMetadata)?.title}
+                : (
+                    context?.videoInfo?.channels?.[
+                      context?.videoInfo?.currentIndex
+                    ]?.metadata as VideoMetadata
+                  )?.title}
             </div>
           </div>
           <div
             className="relative w-full h-full flex font-arcade text-sm text-white whitespace-preline"
             dangerouslySetInnerHTML={{
               __html: (
-                context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.metadata as VideoMetadata
+                context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]
+                  ?.metadata as VideoMetadata
               )?.content?.includes("\n\n")
-                ? (context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.metadata as VideoMetadata)?.content
+                ? (
+                    context?.videoInfo?.channels?.[
+                      context?.videoInfo?.currentIndex
+                    ]?.metadata as VideoMetadata
+                  )?.content
                     ?.split("\n\n")
                     ?.slice(1)
                     ?.join("<br><br>")
-                : (context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.metadata as VideoMetadata)
-                    ?.content,
+                : (
+                    context?.videoInfo?.channels?.[
+                      context?.videoInfo?.currentIndex
+                    ]?.metadata as VideoMetadata
+                  )?.content,
             }}
           />
         </div>
@@ -104,8 +119,8 @@ const Comments: FunctionComponent<CommentsProps> = ({
           <div className="relative text-white font-arcade w-full h-full justify-center items-center py-3 flex text-center">
             <div className="relative w-3/4 h-full items-start justify-center flex">
               {secondaryComment !== ""
-                ? "Reply to this comment in the message box"
-                : "Be the first to comment on this stream :)"}
+                ? dict?.Common?.reply
+                : dict?.Common?.firstComment}
             </div>
           </div>
         ) : (

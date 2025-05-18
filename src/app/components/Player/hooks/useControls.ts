@@ -174,40 +174,43 @@ const useControls = (
             context?.setIndexar(Indexar.Inactivo);
           }, 3000);
         }
-      }
 
-      context?.setVideoInfo((prev) => {
-        let arr = [...prev.channels];
-        const index = arr?.findIndex(
-          (com) => com?.id == prev?.channels?.[prev?.currentIndex]?.id
-        )!;
+        context?.setVideoInfo((prev) => {
+          let arr = [...prev.channels];
+          const index = arr?.findIndex(
+            (com) => com?.id == prev?.channels?.[prev?.currentIndex]?.id
+          )!;
 
-        const updated = {
-          stats: {
-            ...prev?.channels?.[prev?.currentIndex]?.stats!,
-            reposts:
-              Number(prev?.channels?.[prev?.currentIndex]?.stats.reposts) + 1,
-          },
-          operations: {
-            ...prev?.channels?.[prev?.currentIndex]?.operations!,
-            hasReposted: {
-              ...prev?.channels?.[prev?.currentIndex]?.operations!?.hasReposted,
-              optimistic: true,
+          const updated = {
+            stats: {
+              ...prev?.channels?.[prev?.currentIndex]?.stats!,
+              reposts:
+                Number(prev?.channels?.[prev?.currentIndex]?.stats.reposts) + 1,
             },
-          },
-        };
+            operations: {
+              ...prev?.channels?.[prev?.currentIndex]?.operations!,
+              hasReposted: {
+                ...prev?.channels?.[prev?.currentIndex]?.operations!
+                  ?.hasReposted,
+                optimistic: true,
+              },
+            },
+          };
 
-        let main = {
-          ...prev?.channels?.[prev?.currentIndex]!,
-          ...updated,
-        } as Post;
-        arr[index] = main as Post;
-        return {
-          ...prev,
-          channels: arr,
-          main,
-        };
-      });
+          let main = {
+            ...prev?.channels?.[prev?.currentIndex]!,
+            ...updated,
+          } as Post;
+          arr[index] = main as Post;
+          return {
+            ...prev,
+            channels: arr,
+            main,
+          };
+        });
+      } else {
+        context?.setModalOpen?.(dict.Common.wrong);
+      }
     } catch (err: any) {
       console.error(err.message);
     }
@@ -260,37 +263,40 @@ const useControls = (
             context?.setIndexar(Indexar.Inactivo);
           }, 3000);
         }
+
+        context?.setVideoInfo((prev) => {
+          let arr = [...prev.channels];
+          const index = arr?.findIndex(
+            (com) => com?.id == prev?.channels?.[prev?.currentIndex]?.id
+          )!;
+
+          const updated = {
+            operations: {
+              ...prev?.channels?.[prev?.currentIndex]?.operations!,
+              hasSimpleCollected: true,
+            },
+            stats: {
+              ...prev?.channels?.[prev?.currentIndex]?.stats,
+              collects:
+                Number(prev?.channels?.[prev?.currentIndex]?.stats?.collects) +
+                1,
+            },
+          };
+
+          let main = {
+            ...prev?.channels?.[prev?.currentIndex]!,
+            ...updated,
+          } as Post;
+          arr[index] = main as Post;
+          return {
+            ...prev,
+            channels: arr,
+            main,
+          };
+        });
+      } else {
+        context?.setModalOpen?.(dict.Common.wrong);
       }
-
-      context?.setVideoInfo((prev) => {
-        let arr = [...prev.channels];
-        const index = arr?.findIndex(
-          (com) => com?.id == prev?.channels?.[prev?.currentIndex]?.id
-        )!;
-
-        const updated = {
-          operations: {
-            ...prev?.channels?.[prev?.currentIndex]?.operations!,
-            hasSimpleCollected: true,
-          },
-          stats: {
-            ...prev?.channels?.[prev?.currentIndex]?.stats,
-            collects:
-              Number(prev?.channels?.[prev?.currentIndex]?.stats?.collects) + 1,
-          },
-        };
-
-        let main = {
-          ...prev?.channels?.[prev?.currentIndex]!,
-          ...updated,
-        } as Post;
-        arr[index] = main as Post;
-        return {
-          ...prev,
-          channels: arr,
-          main,
-        };
-      });
     } catch (err: any) {
       context?.setModalOpen(dict?.Common?.wrong);
     }

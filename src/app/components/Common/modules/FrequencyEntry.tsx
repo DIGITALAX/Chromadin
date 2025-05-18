@@ -17,6 +17,7 @@ export default function FrequencyEntry({ dict }: { dict: any }) {
     moshVideoRef,
     currentVideoIndex,
   } = useFrequency();
+
   const { handleGetMoreCollections } = useDrop();
   return (
     <div className="relative w-full h-fit preG:h-60 flex flex-row items-center md:pt-0 pt-6">

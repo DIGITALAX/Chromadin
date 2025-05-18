@@ -22,7 +22,7 @@ const Bar: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
         <div className="relative flex flex-row w-fit h-fit justify-center items-end gap-3">
           <div
             className="relative w-fit h-fit font-arcade word-break uppercase text-sm lg:text-xl flex justify-center grid grid-flow-row auto-rows-auto cursor-pointer"
-            onClick={() => router.push("#stream?option=history")}
+            onClick={() => router.push("/")}
           >
             <span className="rainbow">CHR</span>
             <span className="rainbow">OMA</span>
