@@ -16,14 +16,12 @@ import {
   repost,
 } from "@lens-protocol/client/actions";
 import { Post } from "@lens-protocol/client";
-import { useSearchParams } from "next/navigation";
 
 const useControls = (
   dict: any,
   wrapperRef: RefObject<HTMLVideoElement | null>
 ) => {
   const context = useContext(ModalContext);
-  const search = useSearchParams();
   const progressRef = useRef<HTMLDivElement>(null);
   const [volume, setVolume] = useState<number>(1);
   const [volumeOpen, setVolumeOpen] = useState<boolean>(false);
