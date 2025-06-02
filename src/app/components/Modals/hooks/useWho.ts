@@ -24,13 +24,6 @@ const useWho = () => {
   const [pageInfo, setPageInfo] = useState<string>();
   const [pageInfoQuote, setPageInfoQuote] = useState<string>();
   const [mirrorQuote, setMirrorQuote] = useState<boolean>(false);
-  const [interactionsLoading, setInteractionsLoading] = useState<
-    {
-      mirror: boolean;
-      like: boolean;
-      collect: boolean;
-    }[]
-  >([]);
 
   const showLikes = async () => {
     if (!context?.who?.id) return;
@@ -157,7 +150,6 @@ const useWho = () => {
           },
         }
       );
-
 
       if (!data?.isOk()) {
         setDataLoading(false);
@@ -384,7 +376,6 @@ const useWho = () => {
     showMore,
     mirrorQuote,
     setMirrorQuote,
-    interactionsLoading,
   };
 };
 
