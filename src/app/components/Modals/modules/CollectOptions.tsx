@@ -120,9 +120,9 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                             : {};
 
                           let followerOnGraph =
-                          contexto?.postInfo?.collectTypes?.[
-                            contexto?.collectOptions?.id!
-                          ]?.followerOnGraph === dict.Common.seguidor
+                            contexto?.postInfo?.collectTypes?.[
+                              contexto?.collectOptions?.id!
+                            ]?.followerOnGraph === dict.Common.seguidor
                               ? {
                                   followerOnGraph: {
                                     globalGraph: true as true,
@@ -217,7 +217,7 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                           } as SimpleCollect;
 
                           colls[contexto?.collectOptions?.id!] = col;
-                       
+
                           return {
                             ...prev,
                             collectTypes: colls,
@@ -232,7 +232,7 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                       chosenValue:
                         ACCEPTED_TOKENS?.find((item) => {
                           if (
-                            item[0]?.toLowerCase() ==
+                            item[1]?.toLowerCase() ==
                             contexto?.postInfo?.collectTypes?.[
                               contexto?.collectOptions?.id!
                             ]?.payToCollect?.amount?.currency?.toLowerCase()
@@ -278,7 +278,7 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                                 currency: evmAddress(
                                   ACCEPTED_TOKENS?.find(
                                     (val) => item == val?.[0]
-                                  )?.[0]!
+                                  )?.[1]!
                                 ),
                               },
                             },

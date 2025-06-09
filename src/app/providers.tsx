@@ -181,15 +181,15 @@ export const ModalContext = createContext<
 >(undefined);
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [gif, setGif] = useState<{
-    open: boolean;
-    id?: string;
-  }>({
-    open: false,
-  });
   const [makePost, setMakePost] = useState<{
     open: boolean;
     quote?: Post;
+  }>({
+    open: false,
+  });
+  const [gif, setGif] = useState<{
+    open: boolean;
+    id?: string;
   }>({
     open: false,
   });

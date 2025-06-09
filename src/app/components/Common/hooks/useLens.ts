@@ -48,14 +48,6 @@ const useLens = (
   };
 
   useEffect(() => {
-    if (isConnected && address) {
-      contexto?.setLensConectado({
-        ...contexto?.lensConectado,
-      });
-    }
-  }, [isConnected, address]);
-
-  useEffect(() => {
     if (contexto?.clienteLens && address && !contexto?.lensConectado?.profile) {
       resumeLensSession();
     }
@@ -137,7 +129,7 @@ const useLens = (
     setLensCargando(true);
     try {
       const auth =
-        await contexto?.lensConectado?.sessionClient?.getAuthenticatedUser();
+        contexto?.lensConectado?.sessionClient?.getAuthenticatedUser();
 
       if (auth?.isOk()) {
         await revokeAuthentication(contexto?.lensConectado?.sessionClient!, {
@@ -179,11 +171,9 @@ const useLens = (
   }, []);
 
   useEffect(() => {
- 
     if (path?.includes("/autograph/")) {
       contexto?.setViewer(Viewer.Autograph);
     } else {
- 
       if (contexto?.viewer == Viewer.Autograph) {
         contexto?.setViewer(Viewer.Stream);
       }
