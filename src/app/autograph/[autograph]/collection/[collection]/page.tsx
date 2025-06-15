@@ -4,6 +4,7 @@ import { getDictionary } from "@/app/[lang]/dictionaries";
 import Wrapper from "@/app/components/Common/modules/Wrapper";
 import RouterChange from "@/app/components/Autograph/modules/RouterChange";
 import CollectEntry from "@/app/components/Autograph/modules/CollectEntry";
+import { LOCALES } from "@/app/lib/constants";
 
 export const generateMetadata = async ({
   params,
@@ -17,6 +18,15 @@ export const generateMetadata = async ({
 
   return {
     title: `Collection | ${collection} | ${autograph}`,
+    alternates: {
+      canonical: `https://chromadin.xyz/autograph/${autograph}/collection/${collection}/`,
+      languages: LOCALES.reduce((acc, item) => {
+        acc[
+          item
+        ] = `https://chromadin.xyz/${item}/autograph/${autograph}/collection/${collection}/`;
+        return acc;
+      }, {} as { [key: string]: string }),
+    },
   };
 };
 

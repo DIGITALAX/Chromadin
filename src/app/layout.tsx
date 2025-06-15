@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
+import { LOCALES } from "./lib/constants";
 
 export const metadata: Metadata = {
   title: "Chromadin",
   metadataBase: new URL("https://www.chromadin.xyz"),
+  alternates: {
+    canonical: `https://chromadin.xyz/`,
+    languages: LOCALES.reduce((acc, item) => {
+      acc[item] = `https://chromadin.xyz/${item}/`;
+      return acc;
+    }, {} as { [key: string]: string }),
+  },
   description:
     "There are whispers of new apps that can't be taken away from you. Stirrings of resistance decentralized in code. Where users own the network, direct messages are reliably private, and the channels we see the world through can be counted on to stay fully independent. Engagement and influence flow back to you. Like it was always meant to be.",
   twitter: {
