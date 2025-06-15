@@ -36,7 +36,8 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/favicon.ico") ||
     pathname.startsWith("/api") ||
     pathname.startsWith("/opengraph_image.png") ||
-    pathname.startsWith("/sitemap.xml") ||     pathname.startsWith("/image-sitemap.xml")
+    pathname.startsWith("/sitemap.xml") ||
+    pathname.startsWith("/image-sitemap.xml")
   ) {
     return NextResponse.next();
   }

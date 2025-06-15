@@ -2,3 +2,4 @@ User-Agent: *
 Allow: /
 
 Sitemap: https://chromadin.xyz/sitemap.xml
+Sitemap: https://chromadin.xyz/image-sitemap.xml
