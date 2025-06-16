@@ -49,7 +49,7 @@ export async function GET() {
           .join("")}
         <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/autograph/collection/${safeSlug}/" />
         <image:image>
-          <image:loc>${INFURA_GATEWAY_INTERNAL}${image}/</image:loc>
+          <image:loc>${INFURA_GATEWAY_INTERNAL}${image}</image:loc>
           <image:title><![CDATA[${title} | Chromadin | DIGITALAX]]></image:title>
           <image:caption><![CDATA[${title} | Chromadin | DIGITALAX]]></image:caption>
         </image:image>
