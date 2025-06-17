@@ -37,8 +37,8 @@ export const config = createConfig(
     appName: "Chromadin",
     walletConnectProjectId: process.env
       .NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string,
-    appUrl: "https://www.chromadin.xyz",
-    appIcon: "https://www.chromadin.xyz/favicon.ico",
+    appUrl: "https://chromadin.xyz/",
+    appIcon: "https://chromadin.xyz/favicon.ico",
     chains: [chains.mainnet],
     transports: {
       [chains.mainnet.id]: http("https://rpc.lens.xyz"),

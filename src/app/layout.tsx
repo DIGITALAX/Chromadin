@@ -5,7 +5,7 @@ import { LOCALES } from "./lib/constants";
 
 export const metadata: Metadata = {
   title: "Chromadin",
-  metadataBase: new URL("https://www.chromadin.xyz"),
+  metadataBase: new URL("https://chromadin.xyz/"),
   alternates: {
     canonical: `https://chromadin.xyz/`,
     languages: LOCALES.reduce((acc, item) => {
@@ -38,8 +38,8 @@ export const metadata: Metadata = {
     "Open Source LLMs",
     "DIGITALAX",
     "F3Manifesto",
-    "www.digitalax.xyz",
-    "www.f3manifesto.xyz",
+    "digitalax.xyz",
+    "f3manifesto.xyz",
     "Women",
     "Life",
     "Freedom",
@@ -55,6 +55,39 @@ export default function RootLayout({
 }>) {
   return (
     <html>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Chromadin",
+              url: "https://chromadin.xyz/",
+              founder: {
+                "@type": "Person",
+                name: "Emma-Jane MacKinnon-Lee",
+                url: "https://emmajanemackinnonlee.com/",
+                sameAs: [
+                  "https://emmajanemackinnonlee.com/",
+                  "https://syntheticfutures.xyz/",
+                  "https://web3fashion.xyz/",
+                  "https://emancipa.xyz/",
+                  "https://highlangu.com/",
+                  "https://digitalax.xyz/",
+                  "https://cc0web3fashion.com/",
+                  "https://cc0web3.com/",
+                  "https://cuntism.net/",
+                  "https://dhawu.com/",
+                  "https://twitter.com/emmajane1313",
+                  "https://medium.com/@casadeespejos",
+                  "https://www.flickr.com/photos/emmajanemackinnonlee/",
+                ],
+              },
+            }),
+          }}
+        />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>
