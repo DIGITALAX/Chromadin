@@ -15,7 +15,7 @@ const useCollectConfig = (dict: any) => {
   }>({
     award: contexto?.postInfo?.collectTypes?.[contexto?.collectOptions?.id!]
       ?.payToCollect?.amount
-      ? dict.Common.yes
+      ? dict?.yes
       : "No",
     whoCollectsOpen: false,
     creatorAwardOpen: false,
@@ -23,12 +23,12 @@ const useCollectConfig = (dict: any) => {
     editionOpen: false,
     edition: contexto?.postInfo?.collectTypes?.[contexto?.collectOptions?.id!]
       ?.collectLimit
-      ? dict.Common.yes
+      ? dict?.yes
       : "No",
     timeOpen: false,
     time: contexto?.postInfo?.collectTypes?.[contexto?.collectOptions?.id!]
       ?.endsAt
-      ? dict.Common.yes
+      ? dict?.yes
       : "No",
   });
 
@@ -37,7 +37,7 @@ const useCollectConfig = (dict: any) => {
       setDrops({
         award: contexto?.postInfo?.collectTypes?.[contexto?.collectOptions?.id!]
           ?.payToCollect?.amount
-          ? dict.Common.yes
+          ? dict?.yes
           : "No",
         whoCollectsOpen: false,
         creatorAwardOpen: false,
@@ -46,12 +46,12 @@ const useCollectConfig = (dict: any) => {
         edition: contexto?.postInfo?.collectTypes?.[
           contexto?.collectOptions?.id!
         ]?.collectLimit
-          ? dict.Common.yes
+          ? dict?.yes
           : "No",
         timeOpen: false,
         time: contexto?.postInfo?.collectTypes?.[contexto?.collectOptions?.id!]
           ?.endsAt
-          ? dict.Common.yes
+          ? dict?.yes
           : "No",
       });
     }

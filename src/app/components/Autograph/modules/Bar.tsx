@@ -56,7 +56,7 @@ const Bar: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
           </div>
           <div className="relative w-full h-fit font-geom flex text-white flex flex-col">
             <div className="relative w-full h-fit flex justify-end text-xxs text-right">
-              {dict?.Common?.trans}
+              {dict?.trans}
             </div>
             <div className="relative w-full h-fit flex justify-end text-xxs ">
               24 - 7 - 365

@@ -125,7 +125,7 @@ const CollectionCaseLarge: FunctionComponent<CollectionCaseProps> = ({
               className={`relative flex w-full h-fit text-ama font-mana justify-start whitespace-nowrap pb-2 text-sm`}
             >
               {Number(collection?.tokenIdsMinted?.length || 0) === Number(collection?.amount)
-                ? dict?.Common?.sold
+                ? dict?.sold
                 : `${Number(collection?.tokenIdsMinted?.length|| 0)} /
                   ${Number(collection?.amount)}`}
             </div>

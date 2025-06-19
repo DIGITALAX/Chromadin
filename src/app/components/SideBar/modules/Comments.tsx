@@ -119,8 +119,8 @@ const Comments: FunctionComponent<CommentsProps> = ({
           <div className="relative text-white font-arcade w-full h-full justify-center items-center py-3 flex text-center">
             <div className="relative w-3/4 h-full items-start justify-center flex">
               {secondaryComment !== ""
-                ? dict?.Common?.reply
-                : dict?.Common?.firstComment}
+                ? dict?.reply
+                : dict?.firstComment}
             </div>
           </div>
         ) : (

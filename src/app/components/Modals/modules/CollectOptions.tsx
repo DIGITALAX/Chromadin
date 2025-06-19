@@ -39,14 +39,14 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                   {[
                     {
                       type: "drop",
-                      title: dict.Common.who,
-                      dropValues: [dict.Common.todos, dict.Common.seguidor],
+                      title: dict?.who,
+                      dropValues: [dict?.todos, dict?.seguidor],
                       dropOpen: drops.whoCollectsOpen,
                       chosenValue: contexto?.postInfo?.collectTypes?.[
                         contexto?.collectOptions?.id!
                       ]?.followerOnGraph
-                        ? dict.Common.seguidor
-                        : dict.Common.todos,
+                        ? dict?.seguidor
+                        : dict?.todos,
                       showObject: true,
                       openDropdown: () =>
                         setDrops((prev) => ({
@@ -61,7 +61,7 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                             : {};
 
                           let followerOnGraph =
-                            item === dict.Common.seguidor
+                            item === dict?.seguidor
                               ? {
                                   followerOnGraph: {
                                     globalGraph: true as true,
@@ -102,8 +102,8 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                     },
                     {
                       type: "drop",
-                      title: dict.Common.award,
-                      dropValues: [dict.Common.yes, "No"],
+                      title: dict?.award,
+                      dropValues: [dict?.yes, "No"],
                       dropOpen: drops.creatorAwardOpen,
                       chosenValue: drops.award,
                       showObject: true,
@@ -122,7 +122,7 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                           let followerOnGraph =
                             contexto?.postInfo?.collectTypes?.[
                               contexto?.collectOptions?.id!
-                            ]?.followerOnGraph === dict.Common.seguidor
+                            ]?.followerOnGraph === dict?.seguidor
                               ? {
                                   followerOnGraph: {
                                     globalGraph: true as true,
@@ -173,13 +173,13 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                     },
                     {
                       type: "input",
-                      title: dict.Common.awardAmount,
+                      title: dict?.awardAmount,
                       chosenValue:
                         contexto?.postInfo?.collectTypes?.[
                           contexto?.collectOptions?.id!
                         ]?.payToCollect?.amount?.value.toString() || "10",
                       showObject:
-                        drops.award === dict.Common.yes ? true : false,
+                        drops.award === dict?.yes ? true : false,
                       setValue: (item: string) => {
                         if (isNaN(Number(item))) return;
                         contexto?.setPostInfo((prev) => {
@@ -227,7 +227,7 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                     },
                     {
                       type: "drop",
-                      title: dict.Common.moneda,
+                      title: dict?.moneda,
                       dropValues: ACCEPTED_TOKENS?.map((item) => item[0]),
                       chosenValue:
                         ACCEPTED_TOKENS?.find((item) => {
@@ -242,7 +242,7 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                         })?.[0] ?? ACCEPTED_TOKENS?.[0]?.[0],
                       dropOpen: drops.currencyOpen,
                       showObject:
-                        drops.award === dict.Common.yes ? true : false,
+                        drops.award === dict?.yes ? true : false,
                       openDropdown: () =>
                         setDrops((prev) => ({
                           ...prev,
@@ -295,14 +295,14 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                     },
                     {
                       type: "input",
-                      title: dict.Common.ref,
+                      title: dict?.ref,
                       chosenValue: String(
                         contexto?.postInfo?.collectTypes?.[
                           contexto?.collectOptions?.id!
                         ]?.payToCollect?.referralShare || 0
                       ),
                       showObject:
-                        drops.award === dict.Common.yes ? true : false,
+                        drops.award === dict?.yes ? true : false,
                       setValue: (item: string) => {
                         if (isNaN(Number(item))) return;
                         contexto?.setPostInfo((prev) => {
@@ -339,8 +339,8 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                     },
                     {
                       type: "drop",
-                      title: dict.Common.limit,
-                      dropValues: [dict.Common.yes, "No"],
+                      title: dict?.limit,
+                      dropValues: [dict?.yes, "No"],
                       dropOpen: drops.editionOpen,
                       chosenValue: drops.edition,
                       showObject: true,
@@ -387,14 +387,14 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                     },
                     {
                       type: "input",
-                      title: dict.Common.edition,
+                      title: dict?.edition,
                       chosenValue: String(
                         contexto?.postInfo?.collectTypes?.[
                           contexto?.collectOptions?.id!
                         ]?.collectLimit || "1"
                       ),
                       showObject:
-                        drops?.edition === dict.Common.yes ? true : false,
+                        drops?.edition === dict?.yes ? true : false,
                       setValue: (item: string) => {
                         if (isNaN(Number(item))) return;
                         contexto?.setPostInfo((prev) => {
@@ -425,8 +425,8 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                     },
                     {
                       type: "drop",
-                      title: dict.Common.time,
-                      dropValues: [dict.Common.yes, "No"],
+                      title: dict?.time,
+                      dropValues: [dict?.yes, "No"],
                       dropOpen: drops.timeOpen,
                       chosenValue: drops.time,
                       showObject: true,
@@ -447,7 +447,7 @@ export const CollectOptions: FunctionComponent<{ dict: any }> = ({
                             ? colls?.[contexto?.collectOptions?.id!]
                             : {};
 
-                          if (item === dict.Common.yes) {
+                          if (item === dict?.yes) {
                             col = {
                               ...col,
 

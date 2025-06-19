@@ -10,6 +10,7 @@ import { ModalContext } from "@/app/providers";
 import { getOracleData } from "../../../../../graph/queries/getOracleData";
 import { Viewer } from "../types/common.types";
 import { usePathname } from "next/navigation";
+import { getApolloLens } from "@/app/lib/lens/client";
 
 const useLens = (
   isConnected: boolean,
@@ -35,10 +36,9 @@ const useLens = (
         }
 
         contexto?.setLensConectado?.({
-          ...contexto?.lensConectado,
-
           profile: accounts.value.items?.[0]?.account,
           sessionClient: resumed?.value,
+          apollo: getApolloLens(resumed.value?.getCredentials()),
         });
       }
     } catch (err) {
@@ -82,7 +82,7 @@ const useLens = (
 
         if (authenticated.isErr()) {
           console.error(authenticated.error);
-          contexto?.setModalOpen?.(dict.Common.auth);
+          contexto?.setModalOpen?.(dict?.auth);
           setLensCargando(false);
           return;
         }
@@ -92,6 +92,7 @@ const useLens = (
         contexto?.setLensConectado?.({
           sessionClient,
           profile: accounts.value.items?.[0]?.account,
+          apollo: getApolloLens(sessionClient?.getCredentials()),
         });
       } else {
         const authenticatedOnboarding = await contexto?.clienteLens.login({
@@ -103,7 +104,7 @@ const useLens = (
 
         if (authenticatedOnboarding.isErr()) {
           console.error(authenticatedOnboarding.error);
-          contexto?.setModalOpen?.(dict.Common.onboard);
+          contexto?.setModalOpen?.(dict?.onboard);
 
           setLensCargando(false);
           return;
@@ -113,6 +114,7 @@ const useLens = (
 
         contexto?.setLensConectado?.({
           sessionClient,
+          apollo: getApolloLens(sessionClient?.getCredentials()),
         });
 
         contexto?.setCrearCuenta?.(true);

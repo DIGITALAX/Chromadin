@@ -95,7 +95,7 @@ const useReactions = (publication: Post, dict: any) => {
           ) {
             context?.setIndexar(Indexar.Exito);
           } else {
-            context?.setModalOpen(dict?.Common?.wrong);
+            context?.setModalOpen(dict?.wrong);
           }
 
           setTimeout(() => {
@@ -153,7 +153,7 @@ const useReactions = (publication: Post, dict: any) => {
           ) {
             context?.setIndexar(Indexar.Exito);
           } else {
-            context?.setModalOpen(dict?.Common?.wrong);
+            context?.setModalOpen(dict?.wrong);
           }
 
           setTimeout(() => {
@@ -168,7 +168,7 @@ const useReactions = (publication: Post, dict: any) => {
         collects: prev.collects + 1,
       }));
     } catch (err: any) {
-      context?.setModalOpen(dict?.Common?.wrong);
+      context?.setModalOpen(dict?.wrong);
     }
 
     setInteractionsLoading((prev) => ({
@@ -196,9 +196,9 @@ const useReactions = (publication: Post, dict: any) => {
           ) {
             context?.setIndexar(Indexar.Exito);
 
-            context?.setModalOpen(dict?.Common?.hideT);
+            context?.setModalOpen(dict?.hideT);
           } else {
-            context?.setModalOpen(dict?.Common?.wrong);
+            context?.setModalOpen(dict?.wrong);
           }
 
           setTimeout(() => {
@@ -207,7 +207,7 @@ const useReactions = (publication: Post, dict: any) => {
         }
       }
     } catch (err: any) {
-      context?.setModalOpen(dict?.Common?.hide);
+      context?.setModalOpen(dict?.hide);
       console.error(err.message);
     }
   };

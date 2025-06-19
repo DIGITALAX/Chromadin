@@ -25,7 +25,7 @@ const Search: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
       <div className="relative w-full sm:w-44 h-full grid grid-flow-cols ml-auto order-1 sm:order-2 lg:order-1 stuck2:order-2">
         <input
           className={`relative row-start-1 col-start-1 h-10 bg-black border border-white font-dosis text-white p-2 rounded-md w-full text-sm`}
-          placeholder={dict?.Common?.explore}
+          placeholder={dict?.explore}
           onChange={(e) => searchProfiles(e)}
         />
         {profilesOpen && profilesFound.length > 0 && (

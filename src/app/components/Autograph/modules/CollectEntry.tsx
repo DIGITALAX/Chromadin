@@ -167,7 +167,7 @@ const CollectEntry: FunctionComponent<{
                 <div className="relative w-fit h-fit text-white font-earl text-2xl">
                   {Number(collection?.tokenIdsMinted?.length || 0) ===
                   Number(collection?.amount)
-                    ? dict?.Common?.sold
+                    ? dict?.sold
                     : `${Number(collection?.tokenIdsMinted?.length || 0)} /
                   ${Number(collection?.amount)}`}
                 </div>

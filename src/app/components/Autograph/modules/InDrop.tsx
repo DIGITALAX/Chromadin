@@ -15,7 +15,7 @@ const InDrop: FunctionComponent<InDropProps> = ({
   }
   return (
     <div className="relative w-full h-40 flex flex-col justify-center items-end text-right">
-      <div className="relative w-fit h-fit text-white font-arcade text-base">{`${dict?.Common?.more} ${collection?.drop?.metadata?.title}`}</div>
+      <div className="relative w-fit h-fit text-white font-arcade text-base">{`${dict?.more} ${collection?.drop?.metadata?.title}`}</div>
       <div className="relative w-full sm:w-128 h-fit flex overflow-x-scroll justify-end">
         <div className="relative grid grid-flow-col auto-cols-auto gap-2 overflow-x-scroll overflow-y-hidden">
           {dropCollections?.map((coll, index: number) => {

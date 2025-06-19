@@ -2,7 +2,13 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { createContext, SetStateAction, useEffect, useState } from "react";
+import {
+  createContext,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   Account,
   BigDecimal,
@@ -17,6 +23,7 @@ import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { StorageClient } from "@lens-chain/storage-client";
 import { chains } from "@lens-chain/sdk/viem";
 import {
+  Collection,
   CollectionInfo,
   Indexar,
   LensConnected,
@@ -31,6 +38,13 @@ import {
 } from "@lens-protocol/metadata";
 import { OracleData } from "./components/Market/types/market.types";
 import { SimpleCollect } from "./components/Modals/types/modals.types";
+import {
+  createReactClient,
+  studioProvider,
+  LivepeerConfig,
+} from "@livepeer/react";
+import { KinoraProvider } from "kinora-sdk";
+import { getApolloLens } from "./lib/lens/client";
 
 export const config = createConfig(
   getDefaultConfig({
@@ -47,10 +61,18 @@ export const config = createConfig(
   })
 );
 
+const livepeerClient = createReactClient({
+  provider: studioProvider({
+    apiKey: process.env.NEXT_PUBLIC_LIVEPEER_STUDIO_KEY!,
+  }),
+});
+
 const queryClient = new QueryClient();
 
 export const ModalContext = createContext<
   | {
+      questSuccess: string | undefined;
+      setQuestSuccess: (e: SetStateAction<string | undefined>) => void;
       who: { type: string; id: string } | undefined;
       setWho: (
         e: SetStateAction<{ type: string; id: string } | undefined>
@@ -87,8 +109,8 @@ export const ModalContext = createContext<
           id?: string;
         }>
       ) => void;
-      quest: boolean;
-      setQuest: (e: SetStateAction<boolean>) => void;
+      quest: Post | undefined;
+      setQuest: (e: SetStateAction<Post | undefined>) => void;
       metrics: boolean;
       setMetrics: (e: SetStateAction<boolean>) => void;
       videoControlsInfo: VideoControls;
@@ -97,6 +119,29 @@ export const ModalContext = createContext<
       setIsCreator: (e: SetStateAction<boolean>) => void;
       follow: Account | undefined;
       setFollow: (e: SetStateAction<Account | undefined>) => void;
+      gates:
+        | {
+            erc20?: {
+              address: string;
+              amount: string;
+            }[];
+            erc721?: Collection[];
+            oneOf?: boolean;
+          }
+        | undefined;
+      setGates: (
+        e: SetStateAction<
+          | {
+              erc20?: {
+                address: string;
+                amount: string;
+              }[];
+              erc721?: Collection[];
+              oneOf?: boolean;
+            }
+          | undefined
+        >
+      ) => void;
       modalOpen: string | undefined;
       setModalOpen: (e: SetStateAction<string | undefined>) => void;
       collect:
@@ -187,6 +232,18 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }>({
     open: false,
   });
+  const [gates, setGates] = useState<
+    | {
+        erc20?: {
+          address: string;
+          amount: string;
+        }[];
+        erc721?: Collection[];
+        oneOf?: boolean;
+      }
+    | undefined
+  >();
+  const [questSuccess, setQuestSuccess] = useState<string | undefined>();
   const [gif, setGif] = useState<{
     open: boolean;
     id?: string;
@@ -218,7 +275,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     media?: string | undefined;
   }>({ open: false });
   const [isCreator, setIsCreator] = useState<boolean>(false);
-  const [quest, setQuest] = useState<boolean>(false);
+  const [quest, setQuest] = useState<Post | undefined>();
   const [metrics, setMetrics] = useState<boolean>(false);
   const [collect, setCollect] = useState<
     { id: string; stats: number; action: SimpleCollectAction } | undefined
@@ -263,6 +320,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     videosLoading: false,
   });
 
+  const apolloClient = useMemo(() => {
+    return getApolloLens(
+      lensConectado?.sessionClient?.getCredentials()!
+    ) as any;
+  }, [lensConectado?.sessionClient]);
+
   useEffect(() => {
     if (!clienteLens) {
       setClienteLens(
@@ -282,64 +345,73 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             "--ck-font-family": '"Manaspace", cursive',
           }}
         >
-          <ModalContext.Provider
-            value={{
-              who,
-              setWho,
-              makePost,
-              setMakePost,
-              success,
-              setSuccess,
-              oracleData,
-              setOracleData,
-              gif,
-              setGif,
-              collectOptions,
-              setCollectOptions,
-              postInfo,
-              setPostInfo,
-              quest,
-              setQuest,
-              metrics,
-              setMetrics,
-              modalOpen,
-              setModalOpen,
-              viewer,
-              setViewer,
-              designerProfiles,
-              setDesignerProfiles,
-              crearCuenta,
-              setCrearCuenta,
-              isCreator,
-              setIsCreator,
-              connect,
-              setConnect,
-              clienteLens,
-              clienteAlmacenamiento,
-              lensConectado,
-              setLensConectado,
-              verImagen,
-              setVerImagen,
-              collectionInfo,
-              setCollectionInfo,
-              options,
-              setOptions,
-              videoInfo,
-              setVideoInfo,
-              collect,
-              setCollect,
-              follow,
-              setFollow,
-              indexar,
-              setIndexar,
-              signless,
-              setSignless,
-              videoControlsInfo,
-              setVideoControlsInfo,
-            }}
-          >
-            {children}
-          </ModalContext.Provider>
+          {" "}
+          <LivepeerConfig client={livepeerClient}>
+            <KinoraProvider playerAuthedApolloClient={apolloClient}>
+              <ModalContext.Provider
+                value={{
+                  gates,
+                  setGates,
+                  questSuccess,
+                  setQuestSuccess,
+                  who,
+                  setWho,
+                  makePost,
+                  setMakePost,
+                  success,
+                  setSuccess,
+                  oracleData,
+                  setOracleData,
+                  gif,
+                  setGif,
+                  collectOptions,
+                  setCollectOptions,
+                  postInfo,
+                  setPostInfo,
+                  quest,
+                  setQuest,
+                  metrics,
+                  setMetrics,
+                  modalOpen,
+                  setModalOpen,
+                  viewer,
+                  setViewer,
+                  designerProfiles,
+                  setDesignerProfiles,
+                  crearCuenta,
+                  setCrearCuenta,
+                  isCreator,
+                  setIsCreator,
+                  connect,
+                  setConnect,
+                  clienteLens,
+                  clienteAlmacenamiento,
+                  lensConectado,
+                  setLensConectado,
+                  verImagen,
+                  setVerImagen,
+                  collectionInfo,
+                  setCollectionInfo,
+                  options,
+                  setOptions,
+                  videoInfo,
+                  setVideoInfo,
+                  collect,
+                  setCollect,
+                  follow,
+                  setFollow,
+                  indexar,
+                  setIndexar,
+                  signless,
+                  setSignless,
+                  videoControlsInfo,
+                  setVideoControlsInfo,
+                }}
+              >
+                {children}
+              </ModalContext.Provider>
+            </KinoraProvider>
+          </LivepeerConfig>
         </ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

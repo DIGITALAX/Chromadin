@@ -7,31 +7,27 @@ import { Viewer } from "../../Common/types/common.types";
 import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import formatTime from "@/app/lib/helpers/formatTime";
-import useControls from "../hooks/useControls";
 import { ControlsProps } from "../types/player.types";
 
 const Controls: FunctionComponent<ControlsProps> = ({
-  dict,
+  volume,
+  setVolumeOpen,
+  volumeOpen,
   fetchMoreVideos,
-  wrapperRef,
+  handleSeek,
+  progressRef,
+  mirror,
+  like,
+  simpleCollect,
+  interactionsLoading,
+  handleHeart,
+  handleVolumeChange,
 }): JSX.Element => {
   const context = useContext(ModalContext);
   const router = useRouter();
   const path = usePathname();
   const search = useSearchParams();
-  const {
-    progressRef,
-    handleSeek,
-    handleHeart,
-    handleVolumeChange,
-    volume,
-    setVolumeOpen,
-    volumeOpen,
-    interactionsLoading,
-    like,
-    simpleCollect,
-    mirror,
-  } = useControls(dict, wrapperRef);
+
   return (
     <div
       className={`relative h-fit flex w-full gap-3 items-center galaxy:px-2 justify-center ${
@@ -104,7 +100,11 @@ const Controls: FunctionComponent<ControlsProps> = ({
         <div
           className={`cursor-pointer relative w-fit items-center justify-center h-fit flex`}
           title="Quests"
-          onClick={() => context?.setQuest(true)}
+          onClick={() =>
+            context?.setQuest(
+              context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]
+            )
+          }
         >
           <div className="relative w-5 h-5 flex items-center justify-center">
             <Image

@@ -194,7 +194,7 @@ const useFulfillment = (dict: any, collection?: Collection) => {
         });
       } catch (err: any) {
         if (err.message.includes("Insufficient Approval Allowance")) {
-          context?.setModalOpen(dict?.Common?.pocket);
+          context?.setModalOpen(dict?.pocket);
         }
         console.error(err.message);
         setPurchaseLoading(false);
@@ -244,7 +244,7 @@ const useFulfillment = (dict: any, collection?: Collection) => {
             )?.rate
           )
       ) {
-        context?.setModalOpen(dict?.Common?.wrong);
+        context?.setModalOpen(dict?.wrong);
         setPurchaseLoading(false);
         return;
       }
@@ -288,7 +288,7 @@ const useFulfillment = (dict: any, collection?: Collection) => {
       );
 
       if (res.isErr()) {
-        context?.setModalOpen?.(dict.Common.wrong);
+        context?.setModalOpen?.(dict?.wrong);
         setPurchaseLoading(false);
         return;
       }
@@ -296,7 +296,7 @@ const useFulfillment = (dict: any, collection?: Collection) => {
       if ((res.value as any)?.reason?.includes("Signless")) {
         context?.setSignless?.(true);
       } else if ((res.value as any)?.raw) {
-        context?.setIndexar(dict?.collect?.indexCol);
+        context?.setIndexar(dict?.indexCol);
         const provider = new ethers.BrowserProvider(window.ethereum);
 
         const signer = await provider.getSigner();
@@ -340,10 +340,10 @@ const useFulfillment = (dict: any, collection?: Collection) => {
             )?.metadata?.images?.[0],
           });
         } else {
-          context?.setModalOpen?.(dict.Common.wrong);
+          context?.setModalOpen?.(dict?.wrong);
         }
       } else {
-        context?.setModalOpen?.(dict.Common.wrong);
+        context?.setModalOpen?.(dict?.wrong);
       }
     } catch (err: any) {
       console.error(err.message);

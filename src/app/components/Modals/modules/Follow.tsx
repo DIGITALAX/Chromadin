@@ -28,7 +28,7 @@ const Follow: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
             className={`relative rounded-md flex flex-col gap-5 w-5/6 p-2 items-center justify-center w-full h-fit font-dosis text-white text-sm`}
           >
             <div className="relative w-fit h-fit flex items-center justify-center">
-              {dict?.Common?.foll2} {context?.follow?.username?.localName}{" "}
+              {dict?.foll2} {context?.follow?.username?.localName}{" "}
             </div>
             <div className="relative items-center justify-center rounded-full h-12 w-12 border border-white flex">
               <Image
@@ -65,9 +65,9 @@ const Follow: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
               {seguirCargando ? (
                 <AiOutlineLoading size={15} color={"white"} />
               ) : context?.follow?.operations?.isFollowedByMe ? (
-                dict?.Common?.unfo
+                dict?.unfo
               ) : (
-                dict?.Common?.foll
+                dict?.foll
               )}
             </div>
           </div>

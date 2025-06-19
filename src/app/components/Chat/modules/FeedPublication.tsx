@@ -73,14 +73,14 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
               className={`relative w-fit h-fit col-start-1 place-self-center text-xs font-dosis text-offWhite`}
             >
               {publication?.__typename === "Repost"
-                ? `${dict?.Common?.mirrored} ${publication?.author?.username?.localName}`
+                ? `${dict?.mirrored} ${publication?.author?.username?.localName}`
                 : (publication as Post)?.quoteOf
-                ? `${dict?.Common?.quoted} ${
+                ? `${dict?.quoted} ${
                     (
                       (publication as Post)?.quoteOf?.metadata as any
                     )?.content?.slice(0, 10) + "..."
                   }`
-                : `${dict?.Common?.commented} ${
+                : `${dict?.commented} ${
                     (
                       (publication as Post)?.commentOn?.metadata as any
                     )?.content?.slice(0, 10) + "..."
@@ -255,8 +255,8 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
             >
               <div className="relative w-fit h-fit flex  self-center  text-sm">
                 {!(publication as Post)?.commentOn
-                  ? dict?.Common?.pos
-                  : dict?.Common?.com}
+                  ? dict?.pos
+                  : dict?.com}
               </div>
               <div className={`relative w-fit h-fit self-center flex`}>
                 <AiFillEye color={"white"} size={20} />
@@ -294,7 +294,7 @@ const FeedPublication: FunctionComponent<FeedPublicationProps> = ({
                   <div
                     className={`relative w-fit h-fit col-start-1 place-self-center text-xs font-dosis text-offWhite`}
                   >
-                    {dict?.Common?.quoted}{" "}
+                    {dict?.quoted}{" "}
                     {(
                       (publication as Post)?.quoteOf?.metadata as any
                     )?.content?.slice(0, 10) + "..."}

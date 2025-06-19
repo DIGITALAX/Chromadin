@@ -41,11 +41,6 @@ const useControls = (
     const progressRect = e.currentTarget.getBoundingClientRect();
     const seekPosition = (e.clientX - progressRect.left) / progressRect.width;
 
-    if (wrapperRef.current) {
-      wrapperRef.current.currentTime =
-        seekPosition * Number(context?.videoControlsInfo?.duration);
-    }
-
     context?.setVideoControlsInfo((prev) => ({
       ...prev,
       currentTime: seekPosition * prev.duration,
@@ -68,12 +63,6 @@ const useControls = (
 
   const handleVolumeChange = (e: FormEvent) => {
     setVolume(parseFloat((e.target as HTMLFormElement).value));
-
-    if (wrapperRef.current) {
-      wrapperRef.current.volume = parseFloat(
-        (e.target as HTMLFormElement).value
-      );
-    }
   };
 
   const like = async (): Promise<void> => {
@@ -165,7 +154,7 @@ const useControls = (
           ) {
             context?.setIndexar(Indexar.Exito);
           } else {
-            context?.setModalOpen(dict?.Common?.wrong);
+            context?.setModalOpen(dict?.wrong);
           }
 
           setTimeout(() => {
@@ -207,7 +196,7 @@ const useControls = (
           };
         });
       } else {
-        context?.setModalOpen?.(dict.Common.wrong);
+        context?.setModalOpen?.(dict?.wrong);
       }
     } catch (err: any) {
       console.error(err.message);
@@ -254,7 +243,7 @@ const useControls = (
           ) {
             context?.setIndexar(Indexar.Exito);
           } else {
-            context?.setModalOpen(dict?.Common?.wrong);
+            context?.setModalOpen(dict?.wrong);
           }
 
           setTimeout(() => {
@@ -293,10 +282,10 @@ const useControls = (
           };
         });
       } else {
-        context?.setModalOpen?.(dict.Common.wrong);
+        context?.setModalOpen?.(dict?.wrong);
       }
     } catch (err: any) {
-      context?.setModalOpen(dict?.Common?.wrong);
+      context?.setModalOpen(dict?.wrong);
     }
 
     setInteractionsLoading((prev) => ({
@@ -304,18 +293,6 @@ const useControls = (
       collect: false,
     }));
   };
-
-  useEffect(() => {
-    if (!wrapperRef.current) return;
-
-    if (context?.videoControlsInfo?.isPlaying) {
-      wrapperRef.current.play().catch((err) => {
-        console.warn("Autoplay failed:", err);
-      });
-    } else {
-      wrapperRef.current.pause();
-    }
-  }, [context?.videoControlsInfo?.isPlaying, wrapperRef.current]);
 
   return {
     handleSeek,

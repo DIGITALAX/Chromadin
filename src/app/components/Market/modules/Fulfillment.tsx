@@ -25,7 +25,7 @@ const Fulfillment: FunctionComponent<{ dict: any }> = ({
               className="relative w-fit h-fit cursor-pointer flex justify-center items-start"
               onClick={() => window.open("https://coinop.themanufactory.xyz/")}
             >
-              {dict?.Common?.mint}
+              {dict?.mint}
             </div>
           </div>
           <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-xl flex text-center px-3 break-all">
@@ -36,7 +36,7 @@ const Fulfillment: FunctionComponent<{ dict: any }> = ({
           </div>
           <div className="relative w-full h-fit items-center justify-center text-ama font-earl text-base flex">
             {Number(context?.collectionInfo?.main?.tokenIdsMinted?.length) === Number(context?.collectionInfo?.main?.amount)
-              ? dict?.Common?.sold
+              ? dict?.sold
               : `${Number(context?.collectionInfo?.main?.tokenIdsMinted?.length || 0)} /
                   ${Number(context?.collectionInfo?.main?.amount)}`}
           </div>

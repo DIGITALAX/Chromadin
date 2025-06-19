@@ -93,8 +93,8 @@ const WhoSwitch: FunctionComponent<WhoSwitchProps> = ({
     ) : (
       <div className="relative w-fit h-fit text-white font-conso flex items-center justify-center text-xs py-3 px-1">
         {mirrorQuote && quoters?.length < 1
-          ? dict?.collect?.quotes
-          : dict?.collect?.mirrors}
+          ? dict?.quotes
+          : dict?.mirrors}
       </div>
     );
   }

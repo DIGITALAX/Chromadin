@@ -22,8 +22,8 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
         <div className="relative w-full h-fit flex flex-row py-2 bg-black rounded-tl-xl border-b border-white">
           <div className="relative w-full h-fit font-arcade text-white flex justify-center text-sm uppercase">
             {context?.viewer !== Viewer.Collect
-              ? dict?.Common?.str
-              : dict?.Common?.din}
+              ? dict?.str
+              : dict?.din}
           </div>
           <div className="relative w-fit h-full align-center flex pl-2 rotate-180">
             <Image

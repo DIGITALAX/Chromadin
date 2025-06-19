@@ -38,7 +38,7 @@ export const Gifs: FunctionComponent<{ dict: any }> = ({
               <div className="relative w-full h-fit flex flex-col sm:flex-row items-center sm:items-start text-white justify-center sm:justify-between text-xs rounded-md gap-2">
                 <input
                   className="relative w-full h-10 py-px px-1 border border-white rounded-md bg-black"
-                  placeholder={dict?.Common?.buscarGif}
+                  placeholder={dict?.buscarGif}
                   onChange={(e) =>
                     setBuscarGifs((prev) => ({
                       ...prev,
@@ -69,7 +69,7 @@ export const Gifs: FunctionComponent<{ dict: any }> = ({
                     {gifCargando ? (
                       <AiOutlineLoading size={10} color="white" />
                     ) : (
-                      dict?.Common?.buscar
+                      dict?.buscar
                     )}
                   </div>
                 </div>

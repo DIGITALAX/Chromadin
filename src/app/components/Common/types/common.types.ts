@@ -1,8 +1,10 @@
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { Account, Post, SessionClient } from "@lens-protocol/client";
 import { SetStateAction } from "react";
 
 export interface LensConnected {
   profile?: Account;
+  apollo?: ApolloClient<NormalizedCacheObject>;
   sessionClient?: SessionClient;
 }
 
@@ -36,7 +38,7 @@ export interface Collection {
       cover: string;
     };
     uri: string;
-    collections: Collection[]
+    collections: Collection[];
   };
   metadata: {
     access: string[];

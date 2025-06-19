@@ -24,7 +24,7 @@ export default function FrequencyEntry({ dict }: { dict: any }) {
       <div className="relative w-[80%] h-full flex flex-col">
         <div className="relative w-full h-fit flex flex-col preG:flex-row preG:items-center gap-2 preG:gap-4 pb-2 pt-2">
           <div className="relative w-fit h-fit text-white font-geom uppercase whitespace-nowrap justify-start preG:justify-center text-xl px-3">
-            {dict?.Common?.freq}
+            {dict?.freq}
           </div>
           <div className="relative w-full h-fit flex flex-row gap-2 items-center preG:px-0 px-3 preG:pb-0 pb-2">
             <Image

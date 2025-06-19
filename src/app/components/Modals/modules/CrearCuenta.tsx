@@ -26,7 +26,7 @@ const CrearCuenta: FunctionComponent<{ dict: any }> = ({
       >
         <div className="relative w-full h-fit flex flex-col gap-3 items-center justify-center p-3">
           <div className="relative w-fit pb-3 h-fit flex items-center justify-center">
-            {dict?.Common?.createLens}
+            {dict?.createLens}
           </div>
           <div className="relative w-full h-fit flex flex-col gap-3 items-center justify-center">
             <div className="relative items-center justify-center flex w-fit h-fit">
@@ -69,7 +69,7 @@ const CrearCuenta: FunctionComponent<{ dict: any }> = ({
             <div className="relative w-full h-fit flex items-start justify-between flex-row gap-3">
               <div className="relative w-full h-fit flex flex-col gap-1.5 items-start justify-start">
                 <div className="relative w-fit h-fit flex">
-                  {dict?.Common?.username}
+                  {dict?.username}
                 </div>
                 <input
                   disabled={accountLoading}
@@ -85,7 +85,7 @@ const CrearCuenta: FunctionComponent<{ dict: any }> = ({
               </div>
               <div className="relative w-full h-fit flex flex-col gap-1.5 items-start justify-start">
                 <div className="relative w-fit h-fit flex">
-                  {dict?.Common?.localname}
+                  {dict?.localname}
                 </div>
                 <input
                   disabled={accountLoading}
@@ -133,7 +133,7 @@ const CrearCuenta: FunctionComponent<{ dict: any }> = ({
                   size={15}
                 />
               ) : (
-                dict?.Common?.create
+                dict?.create
               )}
             </div>
           </div>

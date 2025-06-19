@@ -17,7 +17,7 @@ const useFollow = (dict: any) => {
       });
 
       if (res?.isErr()) {
-        contexto?.setModalOpen(dict.Common.wrong);
+        contexto?.setModalOpen(dict?.wrong);
         setSeguirCargando(false);
         contexto?.setIndexar(Indexar.Inactivo);
         return;
@@ -55,7 +55,7 @@ const useFollow = (dict: any) => {
       });
 
       if (res?.isErr()) {
-        contexto?.setModalOpen(dict.Common.wrong);
+        contexto?.setModalOpen(dict?.wrong);
         setSeguirCargando(false);
         contexto?.setIndexar(Indexar.Inactivo);
         return;

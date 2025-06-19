@@ -4,6 +4,7 @@ import { Viewer } from "../../Common/types/common.types";
 import Controls from "./Controls";
 import Player from "./Player";
 import { VideoProps } from "../types/player.types";
+import useControls from "../hooks/useControls";
 
 const Video: FunctionComponent<VideoProps> = ({
   dict,
@@ -11,6 +12,19 @@ const Video: FunctionComponent<VideoProps> = ({
 }): JSX.Element => {
   const context = useContext(ModalContext);
   const wrapperRef = useRef<HTMLVideoElement | null>(null);
+  const {
+    progressRef,
+    handleSeek,
+    handleHeart,
+    handleVolumeChange,
+    volume,
+    setVolumeOpen,
+    volumeOpen,
+    interactionsLoading,
+    like,
+    simpleCollect,
+    mirror,
+  } = useControls(dict, wrapperRef);
 
   return (
     <div
@@ -35,11 +49,24 @@ const Video: FunctionComponent<VideoProps> = ({
             : "flex-col pb-1"
         }`}
       >
-        <Player fetchMoreVideos={fetchMoreVideos} wrapperRef={wrapperRef} />
-        <Controls
-          wrapperRef={wrapperRef}
-          dict={dict}
+        <Player
+          volume={volume}
           fetchMoreVideos={fetchMoreVideos}
+          wrapperRef={wrapperRef}
+        />
+        <Controls
+          fetchMoreVideos={fetchMoreVideos}
+          progressRef={progressRef}
+          handleSeek={handleSeek}
+          handleHeart={handleHeart}
+          handleVolumeChange={handleVolumeChange}
+          volume={volume}
+          setVolumeOpen={setVolumeOpen}
+          volumeOpen={volumeOpen}
+          interactionsLoading={interactionsLoading}
+          like={like}
+          simpleCollect={simpleCollect}
+          mirror={mirror}
         />
       </div>
     </div>

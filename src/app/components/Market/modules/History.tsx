@@ -29,13 +29,13 @@ const History: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
           className="relative w-full h-full flex items-center justify-center border-r border-white cursor-pointer hover:opacity-70"
           onClick={() => setHistorySwitch(false)}
         >
-          {dict?.Common?.his}
+          {dict?.his}
         </div>
         <div
           className="relative w-full h-full flex items-center justify-center cursor-pointer hover:opacity-70"
           onClick={() => setHistorySwitch(true)}
         >
-          {dict?.Common?.min}
+          {dict?.min}
         </div>
       </div>
       {historyLoading ? (
@@ -80,13 +80,13 @@ const History: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
             : history?.allHistory?.length === 0
         ) ? (
         <div className="relative w-full h-full flex flex-col items-center justify-center font-earl text-moda text-center p-3">
-          {dict?.Common?.nothing}
+          {dict?.nothing}
           <br />
           <br />
-          {dict?.Common?.history}
+          {dict?.history}
           <br />
           <br />
-          {dict?.Common?.change}
+          {dict?.change}
         </div>
       ) : (
         <InfiniteScroll

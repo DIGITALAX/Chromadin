@@ -21,7 +21,7 @@ const Success: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">
                 <div className="relative w-3/4 h-fit justify-center items-center text-white font-earl text-sm text-center">
-                  {dict?.Common?.yours} <br /> <br /> {dict?.Common?.return}
+                  {dict?.yours} <br /> <br /> {dict?.return}
                 </div>
 
                 <div

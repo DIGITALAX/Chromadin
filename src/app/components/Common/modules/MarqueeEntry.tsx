@@ -15,7 +15,7 @@ const MarqueeEntry: FunctionComponent<{ dict: any }> = ({
               className="relative font-arcade text-sm text-white px-5"
               key={index}
             >
-              {dict?.Common?.colls}
+              {dict?.colls}
             </span>
           );
         })}

@@ -21,7 +21,7 @@ const Collectors: FunctionComponent<{ dict: any }> = ({
           </div>
         ) : collectors?.length < 1 ? (
           <div className="relative text-white font-arcade w-full h-60 justify-center items-start p-3 flex text-center">
-            {dict?.Common?.firstCollect}
+            {dict?.firstCollect}
           </div>
         ) : (
           <InfiniteScroll
@@ -74,7 +74,7 @@ const Collectors: FunctionComponent<{ dict: any }> = ({
         )}
       </div>
       <div className="relative w-full h-full py-2 border-t border-white text-white font-arcade uppercase items-end justify-center flex">
-        {dict?.Common?.collected}
+        {dict?.collected}
       </div>
     </div>
   );

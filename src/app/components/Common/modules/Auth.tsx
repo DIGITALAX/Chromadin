@@ -79,7 +79,7 @@ const Auth: FunctionComponent<{ mainPage?: boolean; dict: any }> = ({
               mainPage && "text-xs"
             }`}
           >
-            {isConnected ? dict?.Common?.soc : dict?.Common?.con}
+            {isConnected ? dict?.soc : dict?.con}
           </div>
           <div
             className={`relative justify-end flex ${

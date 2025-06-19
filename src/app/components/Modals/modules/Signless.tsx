@@ -22,7 +22,7 @@ const Signless: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
       >
         <div className="relative w-full h-fit flex items-center justify-center p-3 gap-3 flex-col cursor-default">
           <div className="relative w-fit h-fit text-center break-words text-base">
-            {dict?.Common?.signless}
+            {dict?.signless}
           </div>
           <div className="relative w-fit h-fit flex">
             <div
@@ -38,7 +38,7 @@ const Signless: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                   className="animate-spin"
                 />
               ) : (
-                dict?.Common?.enable
+                dict?.enable
               )}
             </div>
           </div>

@@ -60,7 +60,7 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
           <Video fetchMoreVideos={fetchMoreVideos} dict={dict} />
           <div className="relative w-full h-full items-center justify-center flex">
             <div className="relative w-fit h-fit flex text-white font-earl">
-              {dict?.Common?.soon}...
+              {dict?.soon}...
             </div>
           </div>
           <NFT

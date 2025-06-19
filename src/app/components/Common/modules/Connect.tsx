@@ -40,7 +40,7 @@ const Connect: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
         <div className="relative w-fit h-fit flex items-center justify-center flex flex-row gap-3">
           <div className="relative w-fit h-fit flex items-center justify-center text-white flex-col text-center font-earl uppercase">
             <div className="text-base flex items-center justify-center">
-              {dict?.Common?.select}
+              {dict?.select}
             </div>
             <div className="relative w-fit h-fit flex items-center justify-center flex-row gap-2">
               <div

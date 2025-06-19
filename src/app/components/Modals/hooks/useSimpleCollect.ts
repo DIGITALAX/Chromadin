@@ -26,7 +26,7 @@ const useSimpleCollect = (dict: any) => {
       );
 
       if (res.isErr()) {
-        contexto?.setModalOpen?.(dict.Common.wrong);
+        contexto?.setModalOpen?.(dict?.wrong);
         setSimpleCollectCargando(false);
         return;
       }
@@ -44,10 +44,10 @@ const useSimpleCollect = (dict: any) => {
           contexto?.setCollect(undefined);
           contexto?.setIndexar(Indexar.Exito);
         } else {
-          contexto?.setModalOpen?.(dict.Common.wrong);
+          contexto?.setModalOpen?.(dict?.wrong);
         }
       } else {
-        contexto?.setModalOpen?.(dict.Common.wrong);
+        contexto?.setModalOpen?.(dict?.wrong);
       }
     } catch (err: any) {
       console.error(err.message);

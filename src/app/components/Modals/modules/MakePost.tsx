@@ -99,7 +99,7 @@ const MakePost: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                           id="highlighted-content3"
                           className={`w-full h-full place-self-center text-left whitespace-pre-wrap break-words overflow-y-auto z-0`}
                         >
-                          {dict?.Common?.say}
+                          {dict?.say}
                         </code>
                       </pre>
                       {mentionProfiles?.length > 0 && profilesOpen && (
@@ -182,13 +182,13 @@ const MakePost: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
                           }`}
                         >
                           {!address && !context?.lensConectado?.profile ? (
-                            dict?.Common?.con
+                            dict?.con
                           ) : address && !context?.lensConectado?.profile ? (
-                            dict?.Common?.sig
+                            dict?.sig
                           ) : postLoading ? (
                             <AiOutlineLoading size={10} color="white" />
                           ) : (
-                            dict?.Common?.send
+                            dict?.send
                           )}
                         </div>
                       </div>

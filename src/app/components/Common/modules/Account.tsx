@@ -78,7 +78,7 @@ const Account: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
             context?.isCreator ? "h-fit p-5" : "h-full p-3"
           } flex flex-col items-center justify-center font-arcade text-moda text-sm`}
         >
-          {dict?.Common?.view}
+          {dict?.view}
         </div>
       )}
       {context?.isCreator && context?.lensConectado?.profile && (
@@ -89,7 +89,7 @@ const Account: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
             rel="noreferrer"
             href={`https://cypher.digitalax.xyz/autograph/${context?.lensConectado?.profile?.username?.localName}`}
           >
-            {dict?.Common?.creator}
+            {dict?.creator}
           </Link>
         </div>
       )}

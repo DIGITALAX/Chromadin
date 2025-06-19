@@ -25,7 +25,7 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
         className={`relative w-full p-1 bg-black  rounded-tr-lg rounded-bl-lg ${
           mainPage ? "h-full" : "h-8 preG:h-full"
         }`}
-        placeholder={dict?.Common?.search}
+        placeholder={dict?.search}
         onChange={(e) => handleSearch(e)}
         type="text"
       />

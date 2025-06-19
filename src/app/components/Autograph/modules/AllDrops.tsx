@@ -100,7 +100,7 @@ const AllDrops: FunctionComponent<AllDropsProps> = ({
                   >
                     {Number(collection?.tokenIdsMinted?.length || 0) ===
                     Number(collection?.amount)
-                      ? dict?.Common?.sold
+                      ? dict?.sold
                       : `${Number(collection?.tokenIdsMinted?.length || 0)} /
                   ${Number(collection?.amount)}`}
                   </div>

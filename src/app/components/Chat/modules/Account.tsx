@@ -40,12 +40,12 @@ const Account: FunctionComponent<AccountProps> = ({
             onClick={() => context?.setFollow(profile)}
           >
             {profile?.operations?.isFollowedByMe
-              ? dict?.Common?.unfo
-              : dict?.Common?.foll}
+              ? dict?.unfo
+              : dict?.foll}
           </div>
           {profile?.operations?.isFollowingMe && (
             <div className="relative w-fit h-fit flex bg-gray-400/30 p-1 rounded-md">
-              {dict?.Common?.you}
+              {dict?.you}
             </div>
           )}
         </div>
@@ -78,7 +78,7 @@ const Account: FunctionComponent<AccountProps> = ({
                 className="relative w-full h-fit items-center justify-end"
                 id="username1"
               >
-                {dict?.Common?.followers}
+                {dict?.followers}
               </div>
               <div className="relative w-full h-fit items-center justify-end">
                 {profile?.stats?.graphFollowStats?.followers}
@@ -89,7 +89,7 @@ const Account: FunctionComponent<AccountProps> = ({
                 className="relative w-full h-fit items-center justify-end"
                 id="username1"
               >
-                {dict?.Common?.following}
+                {dict?.following}
               </div>
               <div className="relative w-full h-fit items-center justify-end">
                 {profile?.stats?.graphFollowStats?.following}
@@ -158,7 +158,7 @@ const Account: FunctionComponent<AccountProps> = ({
           <div className="relative w-full h-fit flex flex-row gap-2 items-start justify-start sm:justify-end text-gray-400 flex-wrap">
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
-                {dict?.Common?.collects}
+                {dict?.collects}
               </div>
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 {profile?.stats?.feedStats?.collects}
@@ -166,7 +166,7 @@ const Account: FunctionComponent<AccountProps> = ({
             </div>
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
-                {dict?.Common?.comments}
+                {dict?.comments}
               </div>
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 {profile?.stats?.feedStats?.comments}
@@ -174,7 +174,7 @@ const Account: FunctionComponent<AccountProps> = ({
             </div>
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
-                {dict?.Common?.posts}
+                {dict?.posts}
               </div>
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 {profile?.stats?.feedStats?.posts}
@@ -182,7 +182,7 @@ const Account: FunctionComponent<AccountProps> = ({
             </div>
             <div className="relative w-fit h-fit flex items-center justify-start sm:justify-end flex flex-col">
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
-                {dict?.Common?.mirrors}
+                {dict?.mirrors}
               </div>
               <div className="relative w-full h-fit items-center justify-start sm:justify-end">
                 {profile?.stats?.feedStats?.reposts}

@@ -15,7 +15,7 @@ const Drops: FunctionComponent<DropsProps> = ({
   return (
     <div className="relative w-full h-fit flex flex-col items-start justify-start gap-2">
       <div className="relative w-fit h-fit items-start justify-start font-earl text-white break-words text-2xl">
-        {`${dict?.Common?.more} ${profile?.username?.localName?.toLowerCase()}`}
+        {`${dict?.more} ${profile?.username?.localName?.toLowerCase()}`}
       </div>
       <div className="relative w-full md:w-2/3 h-fit overflow-x-scroll flex items-start justify-start">
         <div className="flex flex-row gap-2 w-fit h-fit">

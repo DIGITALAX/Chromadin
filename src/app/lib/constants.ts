@@ -49,7 +49,19 @@ export const LENS_CREATORS: `0x${string}`[] = [
   "0xf996A00ffd09eE8f03236d588C9B569B3DA28153",
   "0xaA2915d96455484EFca08F7295324170f0ce6974",
 ];
+export const numberToItemTypeMap: { [key: number]: string } = {
+  1: "coinop",
+  0: "chromadin",
+  4: "coinop",
+  3: "f3m",
+};
+
+export const KINORA_METRICS: `0x${string}` =
+  "0xd49463886026e11efca8710bbd75d38f698182c2";
+export const KINORA_QUEST_DATA: `0x${string}` =
+  "0x73a8d6c331033c3fb30db0583525e8f604472e55";
 export const LOCALES: string[] = ["en", "es"];
+export const BASE_URL: string = "https://api.lens.xyz/graphql";
 export const ACCEPTED_TOKENS: string[][] = [
   [
     "WGHO",

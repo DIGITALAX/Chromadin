@@ -80,7 +80,7 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
               >
                 {secondaryComment !== ""
                   ? "Reply with a Comment?"
-                  : dict?.Common?.say}
+                  : dict?.say}
               </code>
             </pre>
             {mentionProfiles?.length > 0 && profilesOpen && (
@@ -166,13 +166,13 @@ const UserComment: FunctionComponent<UserCommentProps> = ({
                 }`}
               >
                 {!isConnected && !context?.lensConectado?.profile ? (
-                  dict?.Common?.con
+                  dict?.con
                 ) : isConnected && !context?.lensConectado?.profile ? (
-                  dict?.Common?.sig
+                  dict?.sig
                 ) : commentLoading ? (
                   <AiOutlineLoading size={10} color="white" />
                 ) : (
-                  dict?.Common?.send
+                  dict?.send
                 )}
               </div>
             </div>

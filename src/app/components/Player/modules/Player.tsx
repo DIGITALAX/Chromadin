@@ -1,5 +1,5 @@
 import Image from "next/legacy/image";
-import { FunctionComponent, JSX, useContext } from "react";
+import { FunctionComponent, JSX, Ref, useContext } from "react";
 import { Viewer } from "../../Common/types/common.types";
 import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import FetchMoreLoading from "../../Common/modules/FetchMoreLoading";
@@ -7,15 +7,20 @@ import { PlayerProps } from "../types/player.types";
 import { ModalContext } from "@/app/providers";
 import { VideoMetadata } from "@lens-protocol/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { KinoraPlayerWrapper } from "kinora-sdk";
+import { Player as LivePeerPlayer } from "@livepeer/react";
 
 const Player: FunctionComponent<PlayerProps> = ({
   wrapperRef,
   fetchMoreVideos,
+  volume,
 }): JSX.Element => {
   const context = useContext(ModalContext);
   const router = useRouter();
   const path = usePathname();
   const search = useSearchParams();
+
+
   return (
     <div
       className={`relative overflow-hidden justify-start items-start flex ${
@@ -26,6 +31,7 @@ const Player: FunctionComponent<PlayerProps> = ({
           ? "w-24 h-1/2"
           : "w-full h-full"
       }`}
+      ref={wrapperRef as Ref<HTMLDivElement>}
     >
       {context?.videoControlsInfo?.heart && (
         <Image
@@ -46,26 +52,47 @@ const Player: FunctionComponent<PlayerProps> = ({
         </div>
       ) : (
         <div
-          className="relative z-0 w-full flex h-full"
+          className="relative z-0"
           id={
             context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.id
           }
         >
-          <video
+          <KinoraPlayerWrapper
+            parentId={
+              context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]
+                ?.id!
+            }
+            postId={
+              context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]
+                ?.id!
+            }
+            fillWidthHeight
             key={
-              (
-                context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]
-                  ?.metadata as VideoMetadata
-              )?.video?.item ||
               (
                 context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]
                   ?.metadata as VideoMetadata
               )?.video?.item
             }
-            className="relative flex h-full object-cover overflow-hidden w-full"
-            // volume={context?.videoControlsInfo?.volume}
-            // seekTo={context?.videoControlsInfo?.currentTime}
-            // play={context?.videoControlsInfo?.isPlaying}
+            styles={{
+              objectFit: "cover",
+              width: "100%",
+              height: "100%",
+              position: "relative",
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
+              zIndex: "0",
+            }}
+            volume={{
+              id: Math.random() * 0.5,
+              level: volume,
+            }}
+            seekTo={{
+              id: Math.random() * 0.5,
+              time: context?.videoControlsInfo?.currentTime!,
+            }}
+            play={context?.videoControlsInfo?.isPlaying}
+            customControls={true}
             onEnded={
               context?.videoInfo?.hasMore &&
               (Number(context?.videoInfo?.currentIndex) + 1) %
@@ -143,7 +170,6 @@ const Player: FunctionComponent<PlayerProps> = ({
                     }
                   }
             }
-            ref={wrapperRef}
             onCanPlay={(e) =>
               context?.setVideoControlsInfo((prev) => ({
                 ...prev,
@@ -157,21 +183,26 @@ const Player: FunctionComponent<PlayerProps> = ({
               }))
             }
           >
-            <source
-              src={
-                (
-                  context?.videoInfo?.channels?.[
-                    context?.videoInfo?.currentIndex
-                  ]?.metadata as VideoMetadata
-                )?.video?.item ||
-                (
-                  context?.videoInfo?.channels?.[
-                    context?.videoInfo?.currentIndex
-                  ]?.metadata as VideoMetadata
-                )?.video?.item
-              }
-            />
-          </video>
+            {(setMediaElement: (node: HTMLVideoElement) => void) => (
+              <LivePeerPlayer
+                mediaElementRef={setMediaElement}
+                src={
+                  (
+                    context?.videoInfo?.channels?.[
+                      context?.videoInfo?.currentIndex
+                    ]?.metadata as VideoMetadata
+                  )?.video?.item ||
+                  (
+                    context?.videoInfo?.channels?.[
+                      context?.videoInfo?.currentIndex
+                    ]?.metadata as VideoMetadata
+                  )?.video?.item
+                }
+                showLoadingSpinner={false}
+                objectFit="cover"
+              />
+            )}
+          </KinoraPlayerWrapper>
         </div>
       )}
     </div>

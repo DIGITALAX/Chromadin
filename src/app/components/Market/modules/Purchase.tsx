@@ -228,11 +228,11 @@ const Purchase: FunctionComponent<{ dict: any; collection?: Collection }> = ({
                   : context?.collectionInfo?.main
                 )?.amount
               ) ? (
-              dict?.Common?.sold
+              dict?.sold
             ) : !approved ? (
-              dict?.Common?.app
+              dict?.app
             ) : (
-              dict?.Common?.col
+              dict?.col
             )}
           </div>
         </div>

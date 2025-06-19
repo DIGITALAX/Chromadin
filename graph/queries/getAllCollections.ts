@@ -262,17 +262,6 @@ query($dropId: String) {
   }
 }`;
 
-const COLLECTION_URI = `query($uri: String) {
-  collectionCreateds(first: 1, where: { uri: $uri}, orderDirection: desc, orderBy: blockTimestamp) {
-    metadata {
-      title
-      mediaCover
-      images
-    }
-    uri
-    origin
-  }
-}`;
 
 const COLLECTION_ID = `query($collectionId: String) {
   collectionCreateds(where: {collectionId: $collectionId}, orderDirection: desc, orderBy: blockTimestamp, first: 1) {
@@ -522,9 +511,20 @@ export const getOneCollection = async (title: string): Promise<any> => {
   }
 };
 
+
 export const getCollectionByUri = async (uri: string): Promise<any> => {
   const queryPromise = graphClient.query({
-    query: gql(COLLECTION_URI),
+    query: gql(`query($uri: String) {
+      collectionCreateds(first: 1, where: { uri: $uri}, orderDirection: desc, orderBy: blockTimestamp) {
+        metadata {
+          title
+          mediaCover
+          images
+        }
+        uri
+        origin
+      }
+    }`),
     variables: {
       uri,
     },
@@ -545,6 +545,7 @@ export const getCollectionByUri = async (uri: string): Promise<any> => {
     return result;
   }
 };
+
 
 export const getOneCollectionById = async (
   collectionId: string
@@ -571,3 +572,4 @@ export const getOneCollectionById = async (
     return result;
   }
 };
+

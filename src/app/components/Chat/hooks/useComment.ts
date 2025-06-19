@@ -298,9 +298,9 @@ const useComment = (
           ) {
             context?.setIndexar(Indexar.Exito);
 
-            context?.setModalOpen(dict?.Common?.commentMade);
+            context?.setModalOpen(dict?.commentMade);
           } else {
-            context?.setModalOpen(dict?.Common?.wrong);
+            context?.setModalOpen(dict?.wrong);
           }
 
           setTimeout(() => {
@@ -350,7 +350,7 @@ const useComment = (
     if (document.querySelector("#highlighted-content2")) {
       document.querySelector("#highlighted-content2")!.innerHTML =
         commentDetails?.html?.length === 0
-          ? dict?.Common?.say
+          ? dict?.say
           : commentDetails?.html;
     }
   }, [commentDetails?.html]);

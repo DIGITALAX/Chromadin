@@ -11,6 +11,7 @@ import { immutable } from "@lens-chain/storage-client";
 import { ModalContext } from "@/app/providers";
 import { account as accountMeta } from "@lens-protocol/metadata";
 import { useAccount } from "wagmi";
+import { getApolloLens } from "@/app/lib/lens/client";
 
 const useCrearCuenta = (dict: any) => {
   const { address } = useAccount();
@@ -69,7 +70,7 @@ const useCrearCuenta = (dict: any) => {
 
       if (!authenticatedOnboarding?.isOk()) {
         console.error((authenticatedOnboarding as any)?.wrong);
-        contexto?.setModalOpen?.(dict?.Common?.wrong);
+        contexto?.setModalOpen?.(dict?.wrong);
 
         setAccountLoading(false);
         return;
@@ -87,7 +88,7 @@ const useCrearCuenta = (dict: any) => {
       );
       if (accountResponse.isErr()) {
         setAccountLoading(false);
-        contexto?.setModalOpen(dict?.Common?.wrong);
+        contexto?.setModalOpen(dict?.wrong);
         return;
       }
 
@@ -96,7 +97,7 @@ const useCrearCuenta = (dict: any) => {
           "Username already taken"
         )
       ) {
-        contexto?.setModalOpen(dict?.Common?.taken);
+        contexto?.setModalOpen(dict?.taken);
         setAccountLoading(false);
         return;
       }
@@ -126,9 +127,9 @@ const useCrearCuenta = (dict: any) => {
               });
             if (ownerSigner?.isOk()) {
               contexto?.setLensConectado?.({
-                ...contexto?.lensConectado,
                 profile: newAcc.value,
                 sessionClient: ownerSigner?.value,
+                apollo: getApolloLens(ownerSigner?.value?.getCredentials()),
               });
               contexto?.setCrearCuenta(false);
               setAccount({
@@ -139,19 +140,19 @@ const useCrearCuenta = (dict: any) => {
             }
           } else {
             console.error(accountResponse);
-            contexto?.setModalOpen?.(dict?.Common?.fetch);
+            contexto?.setModalOpen?.(dict?.fetch);
             setAccountLoading(false);
             return;
           }
         } else {
           console.error(accountResponse);
-          contexto?.setModalOpen?.(dict?.Common?.createAccount);
+          contexto?.setModalOpen?.(dict?.createAccount);
           setAccountLoading(false);
           return;
         }
       } else {
         console.error(accountResponse);
-        contexto?.setModalOpen?.(dict?.Common?.createAccount);
+        contexto?.setModalOpen?.(dict?.createAccount);
         setAccountLoading(false);
         return;
       }

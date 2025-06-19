@@ -35,7 +35,7 @@ const Switcher: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
             </div>
             <div className="relative w-full h-fit font-geom flex text-white flex flex-col">
               <div className="relative w-full h-fit flex justify-end text-xxs lg:text-sm text-right">
-                {dict?.Common?.trans}
+                {dict?.trans}
               </div>
               <div className="relative w-full h-fit flex justify-end text-xxs lg:text-sm">
                 24 - 7 - 365
@@ -126,7 +126,7 @@ const Switcher: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
           className="z-0"
         >
           <div className="relative w-full h-fit text-white font-arcade font-digiB uppercase text-xxs lg:text-base py-px lg:py-2">
-            {dict?.Common?.whis}{" "}
+            {dict?.whis}{" "}
           </div>
         </MarqueeText>
       </div>

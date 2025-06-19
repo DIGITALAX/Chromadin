@@ -116,7 +116,7 @@ const useInteractions = (dict: any, secondaryComment: string) => {
 
            
           } else {
-            context?.setModalOpen(dict?.Common?.wrong);
+            context?.setModalOpen(dict?.wrong);
           }
 
           setTimeout(() => {
@@ -203,7 +203,7 @@ const useInteractions = (dict: any, secondaryComment: string) => {
 
        
           } else {
-            context?.setModalOpen(dict?.Common?.wrong);
+            context?.setModalOpen(dict?.wrong);
           }
 
           setTimeout(() => {
@@ -232,7 +232,7 @@ const useInteractions = (dict: any, secondaryComment: string) => {
         return arr;
       });
     } catch (err: any) {
-      context?.setModalOpen(dict?.Common?.wrong);
+      context?.setModalOpen(dict?.wrong);
     }
 
     setInteractionsLoading((prev) => {
@@ -331,7 +331,7 @@ const useInteractions = (dict: any, secondaryComment: string) => {
     if (
       (context?.videoInfo?.channels?.[context?.videoInfo?.currentIndex]?.id ||
         secondaryComment !== "" ||
-        dict?.Common?.commentMade == context?.modalOpen) &&
+        dict?.commentMade == context?.modalOpen) &&
       context?.clienteLens
     ) {
       getComments();

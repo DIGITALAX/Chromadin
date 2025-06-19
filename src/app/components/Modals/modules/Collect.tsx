@@ -36,7 +36,7 @@ export const SimpleCollect: FunctionComponent<{ dict: any }> = ({
                 className={`relative rounded-md flex flex-col gap-5 w-5/6 p-2 items-center justify-center w-full h-fit text-white text-sm`}
               >
                 <div className="relative w-fit h-fit flex items-center justify-center">
-                  {dict.Common.red}
+                  {dict?.red}
                 </div>
                 <div className="relative w-3/4 xl:w-1/2 items-center justify-center rounded-md border border-white h-60 flex">
                   <Image
@@ -51,8 +51,8 @@ export const SimpleCollect: FunctionComponent<{ dict: any }> = ({
                   <div className="relative w-fit h-fit flex items-center justify-center break-words px-2 text-center">
                     {new Date(context?.collect?.action?.endsAt).getTime() <
                     Date.now()
-                      ? dict.Common.over
-                      : `${dict.Common.fin} ${
+                      ? dict?.over
+                      : `${dict?.fin} ${
                           moment
                             .duration(
                               moment(context?.collect?.action?.endsAt).diff(
@@ -73,7 +73,7 @@ export const SimpleCollect: FunctionComponent<{ dict: any }> = ({
                                   )
                                 )
                                 .format("m [min]")}`
-                            : dict.Common.hr
+                            : dict?.hr
                         }`}
                   </div>
                 )}
@@ -116,9 +116,9 @@ export const SimpleCollect: FunctionComponent<{ dict: any }> = ({
                   ) : Number(context?.collect?.stats) ==
                       Number(context?.collect?.action?.collectLimit) &&
                     Number(context?.collect?.action?.collectLimit) > 0 ? (
-                    dict.Common.sol
+                    dict?.sol
                   ) : (
-                    dict.Common.col2
+                    dict?.col2
                   )}
                 </div>
               </div>

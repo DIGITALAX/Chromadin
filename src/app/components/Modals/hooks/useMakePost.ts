@@ -295,7 +295,7 @@ const useMakePost = (dict: any) => {
           ) {
             context?.setIndexar(Indexar.Exito);
 
-            context?.setModalOpen(dict?.Common?.postMade);
+            context?.setModalOpen(dict?.postMade);
 
             context?.setMakePost({
               open: false,
@@ -313,7 +313,7 @@ const useMakePost = (dict: any) => {
               media: newMedia,
             });
           } else {
-            context?.setModalOpen(dict?.Common?.wrong);
+            context?.setModalOpen(dict?.wrong);
           }
 
           setTimeout(() => {
@@ -343,7 +343,7 @@ const useMakePost = (dict: any) => {
   useEffect(() => {
     if (document.querySelector("#highlighted-content3")) {
       document.querySelector("#highlighted-content3")!.innerHTML =
-        postHTML.length === 0 ? dict?.Common?.say : postHTML;
+        postHTML.length === 0 ? dict?.say : postHTML;
     }
   }, [postHTML]);
 
