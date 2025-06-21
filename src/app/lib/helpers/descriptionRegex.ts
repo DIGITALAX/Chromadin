@@ -14,7 +14,7 @@ const descriptionRegex = (description: string, messages?: boolean) => {
         if (messages) {
           return `
             <a href="${`https://www.chromadin.xyz/?option=history&profile=${word?.replace(
-              "@",
+              "@lens/",
               ""
             )}`}" rel="noreferrer" target="_blank" style="margin-right: 4px;">
               <span style="color: #ff494a;">${word}</span>
@@ -23,7 +23,7 @@ const descriptionRegex = (description: string, messages?: boolean) => {
         } else {
           return `
             <a href="${`https://www.chromadin.xyz/?option=history&profile=${word?.replace(
-              "@",
+              "@lens/",
               ""
             )}`}" target="_blank" rel="noreferrer" style="margin-right: 4px;">
               <span style="color: #81A8F8;">${word}</span>
