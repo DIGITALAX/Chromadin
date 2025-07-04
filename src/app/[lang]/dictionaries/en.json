@@ -109,6 +109,8 @@
   "select": "select language",
   "toc": "to collect",
   "foll2": "Follow",
+  "createAccount": "Error with Account Creation",
+  "fetch": "Error with Fetching New Account",
   "signless": "Enable Signless Transactions",
   "enable": "Enable",
   "username": "Username",

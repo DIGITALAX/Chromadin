@@ -18,7 +18,6 @@ export default function Entry({ dict }: { dict: any }) {
     commentLoading,
     setCommentsLoading,
   } = useChannels();
-
   if (
     context &&
     Number(context?.videoInfo?.channels?.length || 0) > 0 &&

@@ -17,6 +17,8 @@ const Account: FunctionComponent<AccountProps> = ({
 }): JSX.Element => {
   const router = useRouter();
   const context = useContext(ModalContext);
+
+
   return (
     <div className="relative w-full h-fit flex flex-col gap-2 items-start justify-center break-words">
       <div

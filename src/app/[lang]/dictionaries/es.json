@@ -110,6 +110,8 @@
   "select": "eligir idioma",
   "toc": "para coleccionar",
   "foll2": "Seguir a",
+  "createAccount": "Error Al Crear Nueva Cuenta.",
+  "fetch": "Error Al Encontrar Nueva Cuenta.",
   "signless": "Activar Transacciones Sin Firmar",
   "enable": "Activar",
   "createLens": "Crear Cuenta de Lens",
