@@ -13,19 +13,23 @@ const descriptionRegex = (description: string, messages?: boolean) => {
       } else if (word[0] === "@") {
         if (messages) {
           return `
-            <a href="${`https://www.chromadin.xyz/?option=history&profile=${word?.replace(
-              "@lens/",
-              ""
-            )}`}" rel="noreferrer" target="_blank" style="margin-right: 4px;">
+            <a href="${`https://www.chromadin.xyz/?option=history&profile=${word
+              ?.replace("@lens/", "")
+              ?.replace(
+                "@",
+                ""
+              )}`}" rel="noreferrer" target="_blank" style="margin-right: 4px;">
               <span style="color: #ff494a;">${word}</span>
             </a>
           `;
         } else {
           return `
-            <a href="${`https://www.chromadin.xyz/?option=history&profile=${word?.replace(
-              "@lens/",
-              ""
-            )}`}" target="_blank" rel="noreferrer" style="margin-right: 4px;">
+            <a href="${`https://www.chromadin.xyz/?option=history&profile=${word
+              ?.replace("@lens/", "")
+              ?.replace(
+                "@",
+                ""
+              )}`}" target="_blank" rel="noreferrer" style="margin-right: 4px;">
               <span style="color: #81A8F8;">${word}</span>
             </a>
           `;
