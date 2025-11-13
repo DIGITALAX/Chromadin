@@ -1,12 +1,17 @@
 import { KINORA_QUEST_DATA } from "@/app/lib/constants";
-import { graphKinoraClient } from "@/app/lib/subgraph/client";
+import {
+  graphKinoraClient,
+  graphKinoraServer,
+} from "@/app/lib/subgraph/client";
 import { FetchResult, gql } from "@apollo/client";
 
 export const getQuestVideos = async (
   postId: string
 ): Promise<FetchResult | void> => {
   let timeoutId: NodeJS.Timeout | undefined;
-  const queryPromise = graphKinoraClient.query({
+  const queryPromise = (
+    typeof window === "undefined" ? graphKinoraServer : graphKinoraClient
+  ).query({
     query: gql(`
       query($postId: String, $contractAddress: String) {
         videos(first: $first, skip: $skip, where: {postId: $postId, contractAddress: $contractAddress}) {
@@ -43,7 +48,9 @@ export const getQuestById = async (
   questId: string
 ): Promise<FetchResult | void> => {
   let timeoutId: NodeJS.Timeout | undefined;
-  const queryPromise = graphKinoraClient.query({
+  const queryPromise = (
+    typeof window === "undefined" ? graphKinoraServer : graphKinoraClient
+  ).query({
     query: gql(`
     query($questId: String, $contractAddress: String) {
       questInstantiateds(where: {questId: $questId, contractAddress: $contractAddress}, first: 1, orderDirection: desc, orderBy: blockTimestamp) {
@@ -206,7 +213,9 @@ export const getVideoActivity = async (
   postId: string
 ): Promise<FetchResult | void> => {
   let timeoutId: NodeJS.Timeout | undefined;
-  const queryPromise = graphKinoraClient.query({
+  const queryPromise = (
+    typeof window === "undefined" ? graphKinoraServer : graphKinoraClient
+  ).query({
     query: gql(`
     query($playerProfile: String, $postId: String, $contractAddress: String) {
         videoActivities(where: { postId: $postId, playerProfile: $playerProfile, contractAddress: $contractAddress}, first: 1) {
@@ -264,7 +273,9 @@ export const getPlayerData = async (
   playerProfile: string
 ): Promise<FetchResult | void> => {
   let timeoutId: NodeJS.Timeout | undefined;
-  const queryPromise = graphKinoraClient.query({
+  const queryPromise = (
+    typeof window === "undefined" ? graphKinoraServer : graphKinoraClient
+  ).query({
     query: gql(`
     query($playerProfile: Int, $contractAddress: String) {
         players(where: {playerProfile: $playerProfile, contractAddress: $contractAddress}, first: 1) {

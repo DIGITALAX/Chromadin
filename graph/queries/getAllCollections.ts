@@ -1,4 +1,4 @@
-import { graphClient } from "@/app/lib/subgraph/client";
+import { graphClient, graphPrintServer } from "@/app/lib/subgraph/client";
 import { gql } from "@apollo/client";
 
 const COLLECTIONS = `
@@ -367,7 +367,7 @@ const COLLECTION_ONE = `query($title: String) {
 }`;
 
 export const getAllCollections = async (): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(COLLECTIONS),
     fetchPolicy: "no-cache",
     errorPolicy: "all",
@@ -391,7 +391,7 @@ export const getAllCollectionsPaginated = async (
   first: number,
   skip: number
 ): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(COLLECTIONS_PAGINATION),
     variables: {
       first,
@@ -416,7 +416,7 @@ export const getAllCollectionsPaginated = async (
 };
 
 export const getCollectionsProfile = async (designer: string): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(COLLECTIONS_OWNER),
     variables: {
       designer,
@@ -440,7 +440,7 @@ export const getCollectionsProfile = async (designer: string): Promise<any> => {
 };
 
 export const getCollectionsSearch = async (title: string): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(COLLECTIONS_SEARCH),
     variables: {
       title,
@@ -464,7 +464,7 @@ export const getCollectionsSearch = async (title: string): Promise<any> => {
 };
 
 export const getCollectionsDrop = async (dropId: string): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(COLLECTIONS_DROP),
     variables: {
       dropId,
@@ -488,7 +488,7 @@ export const getCollectionsDrop = async (dropId: string): Promise<any> => {
 };
 
 export const getOneCollection = async (title: string): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(COLLECTION_ONE),
     variables: {
       title,
@@ -513,7 +513,7 @@ export const getOneCollection = async (title: string): Promise<any> => {
 
 
 export const getCollectionByUri = async (uri: string): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(`query($uri: String) {
       collectionCreateds(first: 1, where: { uri: $uri}, orderDirection: desc, orderBy: blockTimestamp) {
         metadata {
@@ -550,7 +550,7 @@ export const getCollectionByUri = async (uri: string): Promise<any> => {
 export const getOneCollectionById = async (
   collectionId: string
 ): Promise<any> => {
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(COLLECTION_ID),
     variables: {
       collectionId,

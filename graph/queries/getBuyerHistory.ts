@@ -1,4 +1,4 @@
-import { graphClient } from "@/app/lib/subgraph/client";
+import { graphClient,graphPrintServer } from "@/app/lib/subgraph/client";
 import { FetchResult, gql } from "@apollo/client";
 
 const HISTORY = `
@@ -50,7 +50,7 @@ const getBuyerHistory = async (
   first: number,
   skip: number
 ): Promise<FetchResult<any>> => {
-  return graphClient.query({
+  return (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(HISTORY),
     variables: {
       first,
@@ -67,7 +67,7 @@ export const getBuyerHistorySpecific = async (
   first: number,
   skip: number
 ): Promise<FetchResult<any>> => {
-  return graphClient.query({
+  return (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(HISTORY_SPECIFIC),
     variables: {
       buyer,
@@ -92,7 +92,7 @@ export const getOrders = async (
   buyer: `0x${string}`
 ): Promise<FetchResult | void> => {
   let timeoutId: NodeJS.Timeout | undefined;
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(ORDERS),
     variables: {
       buyer,
@@ -133,7 +133,7 @@ export const getOrdersQuick = async (
   buyer: `0x${string}`
 ): Promise<FetchResult | void> => {
   let timeoutId: NodeJS.Timeout | undefined;
-  const queryPromise = graphClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(ORDERS_QUICK),
     variables: {
       buyer,

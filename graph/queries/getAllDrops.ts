@@ -1,4 +1,4 @@
-import { graphClient } from "@/app/lib/subgraph/client";
+import { graphClient, graphPrintServer } from "@/app/lib/subgraph/client";
 import { FetchResult, gql } from "@apollo/client";
 
 const DROPS = `
@@ -53,7 +53,7 @@ const DROPS_CREATOR = `
 `;
 
 export const getAllDrops = async (): Promise<FetchResult<any>> => {
-  return graphClient.query({
+  return (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(DROPS),
     fetchPolicy: "no-cache",
   });
@@ -63,7 +63,7 @@ export const getDropByName = async (
   title: string,
   designer: string
 ): Promise<FetchResult<any>> => {
-  return graphClient.query({
+  return (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(DROPS_NAME),
     variables: {
       title,
@@ -77,7 +77,7 @@ export const getDropCreator = async (
   dropId: string,
   designer: string
 ): Promise<FetchResult<any>> => {
-  return graphClient.query({
+  return (typeof window === "undefined" ? graphPrintServer : graphClient).query({
     query: gql(DROPS_CREATOR),
     variables: {
       dropId,
