@@ -18,19 +18,19 @@ const useSearch = () => {
   >([]);
 
   const handleSearch = async (e: FormEvent) => {
-    if (
-      (e.target as HTMLFormElement).value.trim() === "" ||
-      !(e.target as HTMLFormElement).value
-    ) {
+    const searchValue = (e.target as HTMLFormElement).value;
+
+    if (!searchValue || searchValue.trim() === "") {
       setSearchOpen(false);
+      setSearchResults([]);
       return;
     }
     setSearchOpen(true);
 
+    const trimmedSearch = searchValue.trim();
+
     try {
-      const data = await getCollectionsSearch(
-        (e.target as HTMLFormElement).value
-      );
+      const data = await getCollectionsSearch(trimmedSearch);
 
       const profilesMatch = context?.collectionInfo?.collections
         ?.map((col) => col?.publication?.author)
@@ -38,7 +38,7 @@ const useSearch = () => {
           if (
             profile?.username?.localName
               ?.toLowerCase()
-              .includes((e.target as HTMLFormElement).value.toLowerCase())
+              .includes(trimmedSearch.toLowerCase())
           ) {
             return profile;
           }
@@ -74,29 +74,29 @@ const useSearch = () => {
                   collection?.uri?.split("ipfs://")?.[1]
                 }`
               );
-              const data = await json.json();
+              const metadataData = await json.json();
 
               collection = {
                 ...collection,
                 metadata: {
-                  ...data,
-                  mediaTypes: data?.mediaTypes?.[0],
+                  ...metadataData,
+                  mediaTypes: metadataData?.mediaTypes?.[0],
                 },
               };
             }
 
-            if (!collection?.metadata) {
+            if (!collection?.drop?.metadata) {
               const json = await fetch(
                 `${INFURA_GATEWAY}/ipfs/${
                   collection?.drop?.uri?.split("ipfs://")?.[1]
                 }`
               );
-              const data = await json.json();
+              const dropData = await json.json();
               collection = {
                 ...collection,
                 drop: {
                   ...collection?.drop,
-                  metadata: data,
+                  metadata: dropData,
                 },
               };
             }
@@ -109,39 +109,42 @@ const useSearch = () => {
         )
       );
 
-      setSearchResults(
-        [
-          ...(collections || []),
-          ...collections?.reduce(
-            (
-              accumulator: {
-                seenDropIds: Set<string>;
-                uniqueMetadata: {
-                  metadata: { title: string; cover: string };
-                  profile: Account;
-                }[];
-              },
-              item: Collection
-            ) => {
-              if (
-                item?.drop?.dropId &&
-                !accumulator.seenDropIds.has(item?.drop?.dropId)
-              ) {
-                accumulator.seenDropIds.add(item?.drop?.dropId);
-                accumulator.uniqueMetadata.push({
-                  metadata: item.drop?.metadata,
-                  profile: item.publication?.author,
-                });
-              }
-              return accumulator;
-            },
-            { seenDropIds: new Set(), uniqueMetadata: [] }
-          ).uniqueMetadata,
-          ...((profilesMatch || []) as Account[]),
-        ]?.sort(() => Math.random() - 0.5)
-      );
+      const uniqueDrops = collections?.reduce(
+        (
+          accumulator: {
+            seenDropIds: Set<string>;
+            uniqueMetadata: {
+              metadata: { title: string; cover: string };
+              profile: Account;
+            }[];
+          },
+          item: Collection
+        ) => {
+          if (
+            item?.drop?.dropId &&
+            !accumulator.seenDropIds.has(item?.drop?.dropId)
+          ) {
+            accumulator.seenDropIds.add(item?.drop?.dropId);
+            accumulator.uniqueMetadata.push({
+              metadata: item.drop?.metadata,
+              profile: item.publication?.author,
+            });
+          }
+          return accumulator;
+        },
+        { seenDropIds: new Set(), uniqueMetadata: [] }
+      ).uniqueMetadata;
+
+      const finalResults = [
+        ...(collections || []),
+        ...uniqueDrops,
+        ...((profilesMatch || []) as Account[]),
+      ]?.sort(() => Math.random() - 0.5);
+
+      setSearchResults(finalResults);
     } catch (err: any) {
       console.error(err.message);
+      setSearchOpen(false);
     }
   };
 
@@ -149,24 +152,25 @@ const useSearch = () => {
     chosen: Account | Drop | Collection
   ): Promise<void> => {
     setSearchOpen(false);
+
     if ((chosen as Collection)?.acceptedTokens?.length > 0) {
-      router.push(
-        `/autograph/${
-          (chosen as Collection)?.publication?.author?.username?.localName
-        }/collection/${(chosen as Collection)?.metadata?.title
-          ?.replace(/\s/g, "_")
-          .toLowerCase()}`
-      );
+      const collectionUrl = `/autograph/${
+        (chosen as Collection)?.publication?.author?.username?.localName
+      }/collection/${(chosen as Collection)?.metadata?.title
+        ?.replace(/\s/g, "_")
+        .toLowerCase()}`;
+      router.push(collectionUrl);
     } else if ((chosen as Account)?.username) {
-      router.push(`/autograph/${(chosen as Account)?.username?.localName}`);
+      const profileUrl = `/autograph/${(chosen as Account)?.username?.localName}`;
+      router.push(profileUrl);
     } else {
-      router.push(
-        `/autograph/${
-          (chosen as Collection)?.publication?.author?.username?.localName
-        }/drop/${(chosen as Drop)?.metadata?.title
-          ?.replace(/\s/g, "_")
-          .toLowerCase()}`
-      );
+      const authorUsername = (chosen as any)?.profile?.username?.localName ||
+                            (chosen as Collection)?.publication?.author?.username?.localName;
+
+      const dropUrl = `/autograph/${authorUsername}/drop/${(chosen as Drop)?.metadata?.title
+        ?.replace(/\s/g, "_")
+        .toLowerCase()}`;
+      router.push(dropUrl);
     }
   };
 

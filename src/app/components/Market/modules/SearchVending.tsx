@@ -30,7 +30,7 @@ const SearchVending: FunctionComponent<SearchVendingProps> = ({
         type="text"
       />
       {searchOpen && (
-        <div className="absolute w-full justify-start top-9 right-0 h-40 rounded-br-lg rounded-tl-lg flex flex-col gap-4 bg-black border border-white z-1 overflow-y-scroll py-2 px-1">
+        <div className="absolute w-full justify-start top-9 right-0 h-40 rounded-br-lg rounded-tl-lg flex flex-col gap-4 bg-black border border-white z-50 overflow-y-scroll py-2 px-1">
           {searchResults?.filter(Boolean)?.map(
             (result: Collection | Account | Drop, index: number) => {
               const name =

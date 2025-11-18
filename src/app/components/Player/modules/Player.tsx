@@ -26,9 +26,10 @@ const Player: FunctionComponent<PlayerProps> = ({
       className={`relative overflow-hidden justify-start items-start flex ${
         context?.viewer === Viewer.Collect ||
         context?.viewer === Viewer.Chat ||
-        context?.viewer === Viewer.Autograph ||
         context?.viewer === Viewer.Sampler
-          ? "w-24 h-1/2"
+          ? "w-24 h-12"
+          : context?.viewer === Viewer.Autograph
+          ? "w-24 h-16"
           : "w-full h-full"
       }`}
       ref={wrapperRef as Ref<HTMLDivElement>}

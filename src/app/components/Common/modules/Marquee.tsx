@@ -4,6 +4,6 @@ import MarqueeEntry from "./MarqueeEntry";
 
 export default async function Marquee({ params }: { params: tParams }) {
   const { lang } = await params;
-  const dict = await (getDictionary as (locale: any) => Promise<any>)(lang);
+  const dict = await (getDictionary as (locale: any) => Promise<any>)(lang ?? "en");
   return <MarqueeEntry dict={dict} />;
 }

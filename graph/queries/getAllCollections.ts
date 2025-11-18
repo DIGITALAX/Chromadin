@@ -440,11 +440,67 @@ export const getCollectionsProfile = async (designer: string): Promise<any> => {
 };
 
 export const getCollectionsSearch = async (title: string): Promise<any> => {
+  const words = title.trim().split(/\s+/).filter(word => word.length > 0);
+
+
+  let titleConditions = words.map(word => `{metadata_: {title_contains_nocase: "${word}"}}`).join(', ');
+  let descriptionConditions = words.map(word => `{metadata_: {description_contains_nocase: "${word}"}}`).join(', ');
+
+  const DYNAMIC_SEARCH = `
+    query {
+      collectionCreateds(where: {and: [{or: [${titleConditions}, ${descriptionConditions}]}, {origin: 0}]}, first: 20) {
+        amount
+        drop {
+          uri
+          dropId
+          collections {
+            collectionId
+          }
+          metadata {
+            cover
+            title
+          }
+        }
+        metadata {
+          access
+          visibility
+          video
+          title
+          onChromadin
+          sex
+          style
+          tags
+          prompt
+          sizes
+          microbrand
+          mediaTypes
+          mediaCover
+          id
+          description
+          audio
+          colors
+          images
+          microbrandCover
+        }
+        postId
+        dropId
+        acceptedTokens
+        uri
+        printType
+        price
+        designer
+        tokenIdsMinted
+        collectionId
+        unlimited
+        origin
+        blockTimestamp
+      }
+    }
+  `;
+
+
   const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphClient).query({
-    query: gql(COLLECTIONS_SEARCH),
-    variables: {
-      title,
-    },
+    query: gql(DYNAMIC_SEARCH),
     fetchPolicy: "no-cache",
     errorPolicy: "all",
   });
@@ -452,7 +508,7 @@ export const getCollectionsSearch = async (title: string): Promise<any> => {
   const timeoutPromise = new Promise((resolve) => {
     setTimeout(() => {
       resolve({ timedOut: true });
-    }, 60000); // 1 minute timeout
+    }, 60000);
   });
 
   const result: any = await Promise.race([queryPromise, timeoutPromise]);

@@ -33,6 +33,6 @@ export default async function Autograph({
   }>;
 }) {
   const { autograph, lang } = await params;
-  const dict = await (getDictionary as (locale: any) => Promise<any>)(lang);
+  const dict = await (getDictionary as (locale: any) => Promise<any>)(lang ?? "en");
   return <AutographEntry name={autograph} dict={dict} />;
 }
