@@ -10,7 +10,7 @@ import {
   getVideoActivity,
 } from "../../../../../graph/queries/getQuests";
 import { Post } from "@lens-protocol/client";
-import { KINORA_METRICS, KINORA_QUEST_DATA } from "@/app/lib/constants";
+import { INFURA_GATEWAY, KINORA_METRICS, KINORA_QUEST_DATA } from "@/app/lib/constants";
 import { useAccount } from "wagmi";
 
 const useMetrics = (dict: any) => {
@@ -23,9 +23,12 @@ const useMetrics = (dict: any) => {
   const [onChainMetrics, setOnChainMetrics] = useState<
     VideoActivity | undefined
   >();
-  const kinora = Kinora.getInstance(context?.lensConectado?.apollo as any);
+  const kinora = Kinora.getInstance(context?.lensConectado?.apollo as any, {
+    uploadEndpoint: `${process.env.NEXT_PUBLIC_BASE_URL}/api/ipfs`,
+    gateway: INFURA_GATEWAY,
+    headers: {},
+  });
 
-  
   const handleMetricsAdd = async () => {
     if (
       !context?.lensConectado?.profile ||
