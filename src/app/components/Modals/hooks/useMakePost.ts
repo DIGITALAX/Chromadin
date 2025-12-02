@@ -201,13 +201,12 @@ const useMakePost = (dict: any) => {
           const attachments = [...newVideos.slice(1), ...newImages]?.filter(
             Boolean
           );
-          schema = video({
-            content: postDescription,
-            video: newVideos[0],
-            attachments: attachments?.length > 0 ? attachments : undefined,
-
-            tags: ["chromadin"],
-          });
+      schema = video({
+        content: postDescription,
+        video: newVideos[0],
+        attachments: attachments?.length > 0 ? attachments : undefined,
+      
+      });
         } else {
           const attachments = [...newImages?.slice(1)]?.filter(Boolean);
           schema = image({
@@ -280,7 +279,6 @@ const useMakePost = (dict: any) => {
         actions,
         quoteOf,
       });
-   
 
       if (data?.isOk()) {
         if ((data.value as any)?.reason?.includes("Signless")) {

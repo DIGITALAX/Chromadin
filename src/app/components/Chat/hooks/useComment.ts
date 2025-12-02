@@ -349,9 +349,7 @@ const useComment = (
   useEffect(() => {
     if (document.querySelector("#highlighted-content2")) {
       document.querySelector("#highlighted-content2")!.innerHTML =
-        commentDetails?.html?.length === 0
-          ? dict?.say
-          : commentDetails?.html;
+        commentDetails?.html?.length === 0 ? dict?.say : commentDetails?.html;
     }
   }, [commentDetails?.html]);
 

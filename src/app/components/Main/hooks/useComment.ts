@@ -280,7 +280,6 @@ const useComment = (
         ];
       }
 
-    
       const data = await post(context?.lensConectado?.sessionClient, {
         contentUri: uri,
         actions,
@@ -354,9 +353,7 @@ const useComment = (
   useEffect(() => {
     if (document.querySelector("#highlighted-content")) {
       document.querySelector("#highlighted-content")!.innerHTML =
-        commentDetails?.html?.length === 0
-          ? dict?.say
-          : commentDetails?.html;
+        commentDetails?.html?.length === 0 ? dict?.say : commentDetails?.html;
     }
   }, [commentDetails?.html]);
 

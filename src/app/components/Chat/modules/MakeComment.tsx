@@ -138,7 +138,8 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                     ? openSwitchNetworks?.()
                     : openOnboarding?.()
                   : context?.lensConectado?.profile
-                  ? comment()
+                  ? 
+                  comment()
                   : !lensCargando && handleConectarse()
               }
             >

@@ -157,6 +157,7 @@ const useChannels = () => {
         }
       );
 
+
       if (data.isOk()) {
         const sortedArr: Post[] = (data?.value?.items || [])?.map((item) =>
           VIDEO_COVERS?.some((cov) => cov.id == (item as Post)?.id)
@@ -183,7 +184,6 @@ const useChannels = () => {
           channels: [...prev?.channels, ...sortedArr],
           videosLoading: false,
         }));
-
         return [...context?.videoInfo?.channels, ...sortedArr];
       }
     } catch (err: any) {
