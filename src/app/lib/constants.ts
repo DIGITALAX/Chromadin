@@ -56,6 +56,15 @@ export const numberToItemTypeMap: { [key: number]: string } = {
   3: "f3m",
 };
 
+export const dataSwitch: { [key: string]: string } = {
+  print: "orderCreateds",
+  web3: "orderCreateds",
+  triplea: "collectionPurchaseds",
+  fgo: "orders",
+  catalog: "orderCreateds",
+  gdn: "purchases"
+};
+
 export const KINORA_METRICS: `0x${string}` =
   "0xd49463886026e11efca8710bbd75d38f698182c2";
 export const KINORA_QUEST_DATA: `0x${string}` =

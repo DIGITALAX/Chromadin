@@ -56,7 +56,7 @@ const QuestGates: FunctionComponent<{ dict: any }> = ({
                               className="relative w-5 h-6 flex items-center justify-center cursor-pointer"
                               onClick={() =>
                                 window.open(
-                                  `https://polygonscan.com/address/${erc20.address}`
+                                  `https://explorer.lens.xyz/address/${erc20.address}`
                                 )
                               }
                             >

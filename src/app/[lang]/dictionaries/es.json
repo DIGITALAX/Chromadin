@@ -40,6 +40,12 @@
   "search": "buscar",
   "collect": "acumular",
   "sampler": "sampler",
+  "samplerData": {
+    "type": "TIPO",
+    "block": "BLOQUE",
+    "time": "TIEMPO",
+    "hash": "TX HASH"
+  },
   "autograph": "autógrafo",
   "chat": "chat",
   "stream": "flujo",

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ApolloClient, InMemoryCache, HttpLink, gql } from "@apollo/client";
 
-const serverPrintClient = new ApolloClient({
+const serverTripleAClient = new ApolloClient({
   link: new HttpLink({
-    uri: process.env.GRAPH_NODE_URL_PRINT,
+    uri: process.env.GRAPH_NODE_URL_TRIPLEA,
   }),
   cache: new InMemoryCache(),
 });
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await serverPrintClient.query({
+    const result = await serverTripleAClient.query({
       query: gql(query),
       variables: variables || {},
       fetchPolicy: "no-cache",

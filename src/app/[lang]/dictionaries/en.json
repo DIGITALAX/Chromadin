@@ -37,6 +37,12 @@
   "search": "search",
   "collect": "collect",
   "sampler": "sampler",
+  "samplerData": {
+    "type": "TYPE",
+    "block": "BLOCK",
+    "time": "TIME",
+    "hash": "TX HASH"
+  },
   "autograph": "autograph",
   "chat": "chat",
   "cump": "Fulfill",

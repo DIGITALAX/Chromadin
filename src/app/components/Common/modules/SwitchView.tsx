@@ -7,6 +7,7 @@ import useComment from "../../Main/hooks/useComment";
 import Vending from "../../Market/modules/Vending";
 import MakePost from "../../Chat/modules/MakePost";
 import AllPosts from "../../Chat/modules/AllPosts";
+import Sampler from "../../Sampler/modules/Sampler";
 
 const SwitchView: FunctionComponent<SwitchViewProps> = ({
   dict,
@@ -58,11 +59,7 @@ const SwitchView: FunctionComponent<SwitchViewProps> = ({
       return (
         <div className="relative w-full h-full flex items-start justify-start flex-col">
           <Video fetchMoreVideos={fetchMoreVideos} dict={dict} />
-          <div className="relative w-full h-full items-center justify-center flex">
-            <div className="relative w-fit h-fit flex text-white font-earl">
-              {dict?.soon}...
-            </div>
-          </div>
+          <Sampler dict={dict} />
           <NFT
             mentionProfiles={mentionProfiles}
             handleCommentDescription={handleCommentDescription}

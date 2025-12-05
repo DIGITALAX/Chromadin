@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ApolloClient, InMemoryCache, HttpLink, gql } from "@apollo/client";
 
-const serverPrintClient = new ApolloClient({
+const serverGDNClient = new ApolloClient({
   link: new HttpLink({
-    uri: process.env.GRAPH_NODE_URL_PRINT,
+    uri: process.env.GRAPH_NODE_URL_GDN,
   }),
   cache: new InMemoryCache(),
 });
@@ -13,13 +13,10 @@ export async function POST(request: NextRequest) {
     const { query, variables } = await request.json();
 
     if (!query) {
-      return NextResponse.json(
-        { error: "Query is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Query is required" }, { status: 400 });
     }
 
-    const result = await serverPrintClient.query({
+    const result = await serverGDNClient.query({
       query: gql(query),
       variables: variables || {},
       fetchPolicy: "no-cache",
