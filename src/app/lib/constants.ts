@@ -62,7 +62,7 @@ export const dataSwitch: { [key: string]: string } = {
   triplea: "collectionPurchaseds",
   fgo: "orders",
   catalog: "orderCreateds",
-  gdn: "purchases"
+  gdn: "purchases",
 };
 
 export const KINORA_METRICS: `0x${string}` =
@@ -93,6 +93,10 @@ export const VIDEO_COVERS: {
   poster: string;
   id: string;
 }[] = [
+  {
+    poster: "QmdMspwrCz9KqLdARgo2Fx3uRxBbK2FoFMXB1zQA175LuB",
+    id: "35212026963930830260756826595057601190096548155308246592785609183266045435531",
+  },
   {
     poster: "QmTTwgogpshsFn3sCh2V9UwX26eXqaUHD7pjHGfi2ZVv5T",
     id: "112654010961028466871007800590790577446329760074362970649160145091806477597679",

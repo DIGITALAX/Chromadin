@@ -52,7 +52,6 @@ const useSampler = () => {
           const type = entry[0] as TransactionType;
           if (entry[1]) {
             const datos = await getMoreSampler(type, cursor[type]);
-                  console.log(type, cursor[type],{datos})
             if (datos?.data) {
               const items = datos?.data?.[dataSwitch[type]] || [];
               if (items.length < 20) {

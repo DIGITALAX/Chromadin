@@ -210,12 +210,10 @@ const useControls = (
 
   const simpleCollect = async () => {
     if (!context?.lensConectado?.profile) return;
-
     setInteractionsLoading((prev) => ({
       ...prev,
       collect: true,
     }));
-
     try {
       const data = await executePostAction(
         context?.lensConectado?.sessionClient!,
@@ -229,6 +227,7 @@ const useControls = (
           },
         }
       );
+
 
       if (data.isOk()) {
         if ((data.value as any)?.reason?.includes("Signless")) {

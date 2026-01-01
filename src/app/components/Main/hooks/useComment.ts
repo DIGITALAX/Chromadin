@@ -191,45 +191,44 @@ const useComment = (
           );
         }
 
-        let images =
-          context?.postInfo?.media?.[id]?.filter(
-            (item) => item.type !== "video/mp4"
-          ) || [];
-        if (images?.length > 0) {
-          await Promise.all(
-            images?.map(async (img) => {
-              if (img.type !== MediaImageMimeType.GIF) {
-                const response = await fetch("/api/ipfs", {
-                  method: "POST",
-                  body: convertToFile(img.item, img.type),
-                });
-                const responseJSON = await response.json();
+      let images =
+        context?.postInfo?.media?.[id]?.filter(
+          (item) => item.type !== "video/mp4"
+        ) || [];
+      if (images?.length > 0) {
+        await Promise.all(
+          images?.map(async (img) => {
+            if (img.type !== MediaImageMimeType.GIF) {
+              const response = await fetch("/api/ipfs", {
+                method: "POST",
+                body: convertToFile(img.item, img.type),
+              });
+              const responseJSON = await response.json();
 
-                newImages.push({
-                  item: "ipfs://" + responseJSON?.cid,
-                  type: img.type as MediaImageMimeType,
-                });
-              } else {
-                newImages.push({
-                  item: img.item,
-                  type: img.type as MediaImageMimeType,
-                });
-              }
-            })
-          );
-        }
+              newImages.push({
+                item: "ipfs://" + responseJSON?.cid,
+                type: img.type as MediaImageMimeType,
+              });
+            } else {
+              newImages.push({
+                item: img.item,
+                type: img.type as MediaImageMimeType,
+              });
+            }
+          })
+        );
+      }
 
-        if (newVideos?.length > 0) {
-          const attachments = [...newVideos.slice(1), ...newImages]?.filter(
-            Boolean
-          );
-          schema = video({
-            content: commentDetails?.description,
-            video: newVideos[0],
-            attachments: attachments?.length > 0 ? attachments : undefined,
-
-            tags: ["chromadin"],
-          });
+      if (newVideos?.length > 0) {
+        const attachments = [...newVideos.slice(1), ...newImages]?.filter(
+          Boolean
+        );
+      schema = video({
+        content: commentDetails?.description,
+        video: newVideos[0],
+        attachments: attachments?.length > 0 ? attachments : undefined,
+        tags: ["chromadin"],
+      });
         } else {
           const attachments = [...newImages?.slice(1)]?.filter(Boolean);
           schema = image({
@@ -257,27 +256,27 @@ const useComment = (
       let actions = null;
 
       if (context?.postInfo?.collectTypes?.[id]) {
-        let payToCollect = context?.postInfo?.collectTypes?.[id]?.payToCollect;
+      let payToCollect = context?.postInfo?.collectTypes?.[id]?.payToCollect;
 
-        if (payToCollect) {
-          payToCollect = {
-            ...payToCollect,
-            recipients: [
-              {
-                percent: 100,
-                address: evmAddress(address as string),
-              },
-            ],
-          };
-        }
-        actions = [
-          {
-            simpleCollect: {
-              ...context?.postInfo?.collectTypes?.[id]!,
-              payToCollect,
+      if (payToCollect) {
+        payToCollect = {
+          ...payToCollect,
+          recipients: [
+            {
+              percent: 100,
+              address: evmAddress(address as string),
             },
+          ],
+        };
+      }
+      actions = [
+        {
+          simpleCollect: {
+            ...context?.postInfo?.collectTypes?.[id]!,
+            payToCollect,
           },
-        ];
+        },
+      ];
       }
 
       const data = await post(context?.lensConectado?.sessionClient, {

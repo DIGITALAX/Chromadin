@@ -121,7 +121,6 @@ const useReactions = (publication: Post, dict: any) => {
 
   const simpleCollect = async () => {
     if (!context?.lensConectado?.profile) return;
-
     setInteractionsLoading((prev) => ({
       ...prev,
       collect: true,
