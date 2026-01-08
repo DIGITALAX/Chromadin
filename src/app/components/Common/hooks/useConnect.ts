@@ -1,17 +1,26 @@
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const useConnect = () => {
   const router = useRouter();
   const path = usePathname();
+  const searchParams = useSearchParams();
 
   const changeLanguage = () => {
-    const segments = path.split("/");
-    segments[1] = path.includes("/en/") ? "es" : "en";
-    const newPath = segments.join("/");
+    let newPath: string;
+    const newLocale = path.includes("/en/") ? "es" : "en";
 
-    document.cookie = `NEXT_LOCALE=${path.includes("/en/") ? "es" : "en"}; path=/; SameSite=Lax`;
+    if (path.includes("/en/") || path.includes("/es/")) {
+      const segments = path.split("/");
+      segments[1] = newLocale;
+      newPath = segments.join("/");
+    } else {
+      newPath = `/${newLocale}${path}`;
+    }
 
-    router.push(newPath);
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; SameSite=Lax`;
+
+    const params = searchParams.toString();
+    router.push(params ? `${newPath}?${params}` : newPath);
   };
 
   return {
