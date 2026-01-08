@@ -60,8 +60,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  const url = new URL(request.url);
+  const searchParams = url.search;
+
   const response = NextResponse.redirect(
-    new URL(`/${locale}${pathname}`, request.url)
+    new URL(`/${locale}${pathname}${searchParams}`, request.url)
   );
 
   response.cookies.set("NEXT_LOCALE", locale, { path: "/", sameSite: "lax" });
