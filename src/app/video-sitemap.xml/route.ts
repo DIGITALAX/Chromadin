@@ -24,6 +24,17 @@ function escapeXml(unsafe: string) {
   });
 }
 
+function getSafeSlug(raw: string) {
+  if (!raw) return "";
+  return encodeURIComponent(raw.replace(/\s+/g, "-"));
+}
+
+function getAutographSlug(coll: any) {
+  const rawAutograph =
+    coll?.designer?.toString()?.trim() || coll?.metadata?.microbrand?.toString()?.trim();
+  return getSafeSlug(rawAutograph);
+}
+
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://chromadin.xyz";
   const gallery = await getAllCollections();
@@ -41,7 +52,8 @@ export async function GET() {
     })
     .map((coll: any) => {
       const rawTitle = coll?.metadata?.title ?? "";
-      const safeSlug = encodeURIComponent(rawTitle.replace(/\s+/g, "-"));
+      const safeSlug = getSafeSlug(rawTitle);
+      const autographSlug = getAutographSlug(coll);
       const title = escapeXml(rawTitle.replace(/-/g, " "));
       const collId = coll?.collectionId?.toString();
       const posterHash = videoCoverMap.get(collId);
@@ -51,23 +63,27 @@ export async function GET() {
 
       const videoUrl = coll?.metadata?.video?.split("ipfs://")?.[1];
 
+      if (!safeSlug || !autographSlug || !posterHash) {
+        return "";
+      }
+
       return `
       <url>
-        <loc>${baseUrl}/autograph/collection/${safeSlug}/</loc>
+        <loc>${baseUrl}/autograph/${autographSlug}/collection/${safeSlug}/</loc>
         ${locales
           .map(
             (altLocale) => `
-          <xhtml:link rel="alternate" hreflang="${altLocale}" href="${baseUrl}/${altLocale}/autograph/collection/${safeSlug}/" />
+          <xhtml:link rel="alternate" hreflang="${altLocale}" href="${baseUrl}/${altLocale}/autograph/${autographSlug}/collection/${safeSlug}/" />
           `
           )
           .join("")}
-        <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/autograph/collection/${safeSlug}/" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/autograph/${autographSlug}/collection/${safeSlug}/" />
         <video:video>
           <video:thumbnail_loc>${INFURA_GATEWAY_INTERNAL}${posterHash}</video:thumbnail_loc>
           <video:title><![CDATA[${title} | Web3 Fashion | DIGITALAX | Chromadin]]></video:title>
           <video:description><![CDATA[${description}]]></video:description>
           ${videoUrl ? `<video:content_loc>${INFURA_GATEWAY_INTERNAL}${videoUrl}</video:content_loc>` : ""}
-          <video:player_loc>${baseUrl}/autograph/collection/${safeSlug}/</video:player_loc>
+          <video:player_loc>${baseUrl}/autograph/${autographSlug}/collection/${safeSlug}/</video:player_loc>
           <video:family_friendly>yes</video:family_friendly>
           <video:requires_subscription>no</video:requires_subscription>
           <video:uploader info="${baseUrl}/">Chromadin</video:uploader>

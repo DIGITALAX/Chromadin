@@ -24,6 +24,17 @@ function escapeXml(unsafe: string) {
   });
 }
 
+function getSafeSlug(raw: string) {
+  if (!raw) return "";
+  return encodeURIComponent(raw.replace(/\s+/g, "-"));
+}
+
+function getAutographSlug(coll: any) {
+  const rawAutograph =
+    coll?.designer?.toString()?.trim() || coll?.metadata?.microbrand?.toString()?.trim();
+  return getSafeSlug(rawAutograph);
+}
+
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://chromadin.xyz";
   const gallery = await getAllCollections();
@@ -33,21 +44,26 @@ export async function GET() {
   const collectionsXml = collections
     .map((coll: any) => {
       const rawTitle = coll?.metadata?.title ?? "";
-      const safeSlug = encodeURIComponent(rawTitle.replace(/\s+/g, "-"));
+      const safeSlug = getSafeSlug(rawTitle);
+      const autographSlug = getAutographSlug(coll);
       const title = escapeXml(rawTitle.replace(/-/g, " "));
       const image = coll?.metadata?.images?.[0]?.split("ipfs://")?.[1];
 
+      if (!safeSlug || !autographSlug || !image) {
+        return "";
+      }
+
       return `
       <url>
-        <loc>${baseUrl}/autograph/collection/${safeSlug}/</loc>
+        <loc>${baseUrl}/autograph/${autographSlug}/collection/${safeSlug}/</loc>
         ${locales
           .map(
             (altLocale) => `
-          <xhtml:link rel="alternate" hreflang="${altLocale}" href="${baseUrl}/${altLocale}/autograph/collection/${safeSlug}/" />
+          <xhtml:link rel="alternate" hreflang="${altLocale}" href="${baseUrl}/${altLocale}/autograph/${autographSlug}/collection/${safeSlug}/" />
           `
           )
           .join("")}
-        <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/autograph/collection/${safeSlug}/" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/autograph/${autographSlug}/collection/${safeSlug}/" />
         <image:image>
           <image:loc>${INFURA_GATEWAY_INTERNAL}${image}</image:loc>
           <image:title><![CDATA[${title} | Chromadin | DIGITALAX]]></image:title>
