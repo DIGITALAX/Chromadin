@@ -3,3 +3,4 @@ Allow: /
 
 Sitemap: https://chromadin.xyz/sitemap.xml
 Sitemap: https://chromadin.xyz/image-sitemap.xml
+Sitemap: https://chromadin.xyz/video-sitemap.xml

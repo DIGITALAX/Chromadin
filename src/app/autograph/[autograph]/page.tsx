@@ -14,9 +14,10 @@ export const generateMetadata = async ({
   }>;
 }): Promise<Metadata> => {
   const { autograph } = await params;
+  const autographName = decodeURIComponent(autograph);
 
   return {
-    title: `Autograph | ${autograph}`,
+    title: `${autographName} | Autograph | Chromadin`,
     alternates: {
       canonical: `https://chromadin.xyz/autograph/${autograph}/`,
       languages: LOCALES.reduce((acc, item) => {
