@@ -59,6 +59,7 @@ export const config = createConfig(
       [chains.mainnet.id]: http("https://rpc.lens.xyz"),
     },
     ssr: true,
+    enableFamily: false,
   })
 );
 
@@ -68,7 +69,14 @@ const livepeerClient = createReactClient({
   }),
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
 export const ModalContext = createContext<
   | {
