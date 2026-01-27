@@ -16,6 +16,7 @@ const Bar: FunctionComponent<{ dict: any }> = ({ dict }): JSX.Element => {
     useSearch();
   const { isLargeScreen } = useBar();
 
+
   return (
     <div className="relative w-full h-fit lg:h-24 flex flex-col justify-start items-center bg-offBlack p-3 gap-3">
       <div className="relative w-full h-full flex flex-row justify-start items-center gap-6">

@@ -21,7 +21,7 @@ import { useAccount } from "wagmi";
 const useComment = (
   dict: any,
   setSecondaryComment: (e: string) => void,
-  setCommentsLoading: (e: boolean) => void
+  setCommentsLoading: (e: boolean) => void,
 ) => {
   const context = useContext(ModalContext);
   const { address } = useAccount();
@@ -72,7 +72,7 @@ const useComment = (
         const selectedHtml = highlightedContent.innerHTML.substring(start, end);
         const strippedHtml = selectedHtml?.replace(
           /( style="[^"]*")|( style='[^']*')/g,
-          ""
+          "",
         );
         const strippedText = selectedText?.replace(/<[^>]*>/g, "");
 
@@ -171,7 +171,7 @@ const useComment = (
 
         let videos =
           context?.postInfo?.media?.[id]?.filter(
-            (item) => item.type == "video/mp4"
+            (item) => item.type == "video/mp4",
           ) || [];
 
         if (videos?.length > 0) {
@@ -187,48 +187,51 @@ const useComment = (
                 item: "ipfs://" + responseJSON?.cid,
                 type: vid.type as MediaVideoMimeType,
               });
-            })
+            }),
           );
         }
 
-      let images =
-        context?.postInfo?.media?.[id]?.filter(
-          (item) => item.type !== "video/mp4"
-        ) || [];
-      if (images?.length > 0) {
-        await Promise.all(
-          images?.map(async (img) => {
-            if (img.type !== MediaImageMimeType.GIF) {
-              const response = await fetch("/api/ipfs", {
-                method: "POST",
-                body: convertToFile(img.item, img.type),
-              });
-              const responseJSON = await response.json();
+        let images =
+          context?.postInfo?.media?.[id]?.filter(
+            (item) => item.type !== "video/mp4",
+          ) || [];
+        if (images?.length > 0) {
+          await Promise.all(
+            images?.map(async (img) => {
+              if (img.type !== MediaImageMimeType.GIF) {
+                const response = await fetch("/api/ipfs", {
+                  method: "POST",
+                  body: convertToFile(img.item, img.type),
+                });
+                const responseJSON = await response.json();
 
-              newImages.push({
-                item: "ipfs://" + responseJSON?.cid,
-                type: img.type as MediaImageMimeType,
-              });
-            } else {
-              newImages.push({
-                item: img.item,
-                type: img.type as MediaImageMimeType,
-              });
-            }
-          })
-        );
-      }
+                newImages.push({
+                  item: "ipfs://" + responseJSON?.cid,
+                  type: img.type as MediaImageMimeType,
+                });
+              } else {
+                newImages.push({
+                  item: img.item,
+                  type: img.type as MediaImageMimeType,
+                });
+              }
+            }),
+          );
+        }
 
-      if (newVideos?.length > 0) {
-        const attachments = [...newVideos.slice(1), ...newImages]?.filter(
-          Boolean
-        );
-      schema = video({
-        content: commentDetails?.description,
-        video: newVideos[0],
-        attachments: attachments?.length > 0 ? attachments : undefined,
-        tags: ["chromadin"],
-      });
+        if (newVideos?.length > 0) {
+          const attachments = [...newVideos.slice(1), ...newImages]?.filter(
+            Boolean,
+          );
+          schema = video({
+            content: commentDetails?.description,
+
+            video: newVideos[0],
+
+            attachments: attachments?.length > 0 ? attachments : undefined,
+
+            tags: ["chromadin"],
+          });
         } else {
           const attachments = [...newImages?.slice(1)]?.filter(Boolean);
           schema = image({
@@ -250,33 +253,33 @@ const useComment = (
         schema,
         {
           acl,
-        }
+        },
       )!;
 
       let actions = null;
 
       if (context?.postInfo?.collectTypes?.[id]) {
-      let payToCollect = context?.postInfo?.collectTypes?.[id]?.payToCollect;
+        let payToCollect = context?.postInfo?.collectTypes?.[id]?.payToCollect;
 
-      if (payToCollect) {
-        payToCollect = {
-          ...payToCollect,
-          recipients: [
-            {
-              percent: 100,
-              address: evmAddress(address as string),
+        if (payToCollect) {
+          payToCollect = {
+            ...payToCollect,
+            recipients: [
+              {
+                percent: 100,
+                address: evmAddress(address as string),
+              },
+            ],
+          };
+        }
+        actions = [
+          {
+            simpleCollect: {
+              ...context?.postInfo?.collectTypes?.[id]!,
+              payToCollect,
             },
-          ],
-        };
-      }
-      actions = [
-        {
-          simpleCollect: {
-            ...context?.postInfo?.collectTypes?.[id]!,
-            payToCollect,
           },
-        },
-      ];
+        ];
       }
 
       const data = await post(context?.lensConectado?.sessionClient, {
@@ -295,7 +298,7 @@ const useComment = (
           if (
             await pollResult(
               (data.value as any)?.hash,
-              context?.lensConectado?.sessionClient!
+              context?.lensConectado?.sessionClient!,
             )
           ) {
             context?.setIndexar(Indexar.Exito);
@@ -336,12 +339,12 @@ const useComment = (
     const newHTMLPost =
       commentDetails?.html?.substring(
         0,
-        commentDetails?.html.lastIndexOf("@")
+        commentDetails?.html.lastIndexOf("@"),
       ) + `@${user?.username?.localName}</span>`;
     const newElementPost =
       commentDetails?.description?.substring(
         0,
-        commentDetails?.description.lastIndexOf("@")
+        commentDetails?.description.lastIndexOf("@"),
       ) + `@${user?.username?.localName}`;
     setCommentDetails({
       description: newElementPost,

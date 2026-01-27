@@ -40,6 +40,7 @@ const useChannels = () => {
         }
       );
 
+
       if (firstData?.isOk()) {
         next = firstData?.value?.pageInfo?.next!;
         sortedArr = (firstData?.value?.items || [])?.map((item) =>
