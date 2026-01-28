@@ -30,7 +30,7 @@ const useCollects = () => {
       if (!data?.isOk()) {
         return;
       }
-      setCollectors(data?.value?.items as any[]);
+      setCollectors(data?.value?.items?.map((item) => item?.account));
 
       setCollectInfo({
         hasMore: data?.value?.items?.length < 10 ? false : true,
@@ -59,7 +59,7 @@ const useCollects = () => {
         return;
       }
 
-      setCollectors((prev) => [...prev, ...(data?.value?.items as any[])]);
+      setCollectors((prev) => [...prev, ...(data?.value?.items?.map((item) => item?.account))]);
 
       setCollectInfo({
         hasMore: data?.value?.items?.length < 10 ? false : true,

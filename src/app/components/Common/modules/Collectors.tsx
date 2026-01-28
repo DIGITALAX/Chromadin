@@ -43,7 +43,7 @@ const Collectors: FunctionComponent<{ dict: any }> = ({
                     onClick={() =>
                       collector?.username?.localName &&
                       window.open(
-                        `https://www.chromadin.xyz/?option=history&profile=${collector?.username?.localName}`
+                        `https://www.chromadin.xyz/?option=history&profile=${collector?.username?.localName}`,
                       )
                     }
                   >
@@ -52,9 +52,15 @@ const Collectors: FunctionComponent<{ dict: any }> = ({
                       id="crt"
                     >
                       <Image
-                        src={`${INFURA_GATEWAY_INTERNAL}${
-                          collector?.metadata?.picture?.split("ipfs://")?.[1]
-                        }`}
+                        src={
+                          collector?.metadata?.picture?.includes("https://")
+                            ? collector?.metadata?.picture
+                            : `${INFURA_GATEWAY_INTERNAL}${
+                                collector?.metadata?.picture?.split(
+                                  "ipfs://",
+                                )?.[1]
+                              }`
+                        }
                         layout="fill"
                         objectFit="cover"
                         draggable={false}
