@@ -173,14 +173,13 @@ const useComment = (
         if (videos?.length > 0) {
           await Promise.all(
             videos?.map(async (vid) => {
-              const response = await fetch("/api/ipfs", {
-                method: "POST",
-                body: convertToFile(vid.item, vid.type),
-              });
-              const responseJSON = await response.json();
+              const { uri } = await context?.clienteAlmacenamiento?.uploadFile(
+                convertToFile(vid.item, vid.type),
+                { acl: immutable(chains.mainnet.id) }
+              )!;
 
               newVideos.push({
-                item: "ipfs://" + responseJSON?.cid,
+                item: uri,
                 type: vid.type as MediaVideoMimeType,
               });
             })
@@ -195,14 +194,14 @@ const useComment = (
           await Promise.all(
             images?.map(async (img) => {
               if (img.type !== MediaImageMimeType.GIF) {
-                const response = await fetch("/api/ipfs", {
-                  method: "POST",
-                  body: convertToFile(img.item, img.type),
-                });
-                const responseJSON = await response.json();
+                const { uri } =
+                  await context?.clienteAlmacenamiento?.uploadFile(
+                    convertToFile(img.item, img.type),
+                    { acl: immutable(chains.mainnet.id) }
+                  )!;
 
                 newImages.push({
-                  item: "ipfs://" + responseJSON?.cid,
+                  item: uri,
                   type: img.type as MediaImageMimeType,
                 });
               } else {

@@ -113,7 +113,7 @@
   --width-132: 40rem;
   --width-200: 54rem;
 
-  --bg-chroma: url("https://chromadin.infura-ipfs.io/ipfs/QmbfVYvza1xVqGRWiremt4LVKkTPDA8bnURdu39cgP71gd");
+  --bg-chroma: url("https://cdn.digitalax.xyz/ipfs/QmbfVYvza1xVqGRWiremt4LVKkTPDA8bnURdu39cgP71gd");
 }
 
 /* === CUSTOM UTILITIES === */
@@ -217,7 +217,7 @@ html {
 
 .static {
   background-size: 100px 100px;
-  background-image: url(https://chromadin.infura-ipfs.io/ipfs/QmQ6BdizFgMCVM6kESs6ocSQvnNaYjngHyGw6rtQNZiTma);
+  background-image: url(https://cdn.digitalax.xyz/ipfs/QmQ6BdizFgMCVM6kESs6ocSQvnNaYjngHyGw6rtQNZiTma);
 
   -webkit-background-clip: text;
 
@@ -648,7 +648,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 #videoplayer {
-  background-image: url("https://chromadin.infura-ipfs.io/ipfs/QmekpQQEtQBP1M71SohCHiDRQbV1Sc2bKveVvwEfzAJCPx");
+  background-image: url("https://cdn.digitalax.xyz/ipfs/QmekpQQEtQBP1M71SohCHiDRQbV1Sc2bKveVvwEfzAJCPx");
   background-color: black;
   background-position: center;
   background-size: cover;
