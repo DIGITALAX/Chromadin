@@ -7,6 +7,7 @@ import { handleProfilePicture } from "@/app/lib/helpers/handleProfilePicture";
 import { INFURA_GATEWAY_INTERNAL } from "@/app/lib/constants";
 import { AccountProps } from "../types/chat.types";
 import descriptionRegex from "@/app/lib/helpers/descriptionRegex";
+import safeExternalUrl from "@/app/lib/helpers/safeExternalUrl";
 import { Collection } from "../../Common/types/common.types";
 import { useRouter } from "next/navigation";
 import { ModalContext } from "@/app/providers";
@@ -132,21 +133,18 @@ const Account: FunctionComponent<AccountProps> = ({
                 </div>
                 <div
                   className="relative flex w-fit h-fit justify-center items-center cursor-pointer text-bird break-all"
-                  onClick={() =>
-                    window.open(
-                      profile?.metadata?.attributes
-                        ?.find((attribute) => attribute.key === "website")
-                        ?.value?.includes("https://")
-                        ? profile?.metadata?.attributes?.find(
-                            (attribute) => attribute.key === "website"
-                          )?.value
-                        : `https://${
-                            profile?.metadata?.attributes?.find(
-                              (attribute) => attribute.key === "website"
-                            )?.value
-                          }`
-                    )
-                  }
+                  onClick={() => {
+                    const website = safeExternalUrl(
+                      profile?.metadata?.attributes?.find(
+                        (attribute) => attribute.key === "website"
+                      )?.value
+                    );
+                    if (!website) {
+                      console.error("Invalid website url");
+                      return;
+                    }
+                    window.open(website, "_blank", "noopener,noreferrer");
+                  }}
                 >
                   {
                     profile?.metadata?.attributes?.find(

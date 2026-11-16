@@ -1,23 +1,80 @@
 import { NextResponse } from "next/server";
-// import FormData from 'form-data';
+import guardRequest from "@/app/lib/helpers/guardRequest";
+import { MAX_UPLOAD_BYTES, RATE_LIMIT_IPFS } from "@/app/lib/constants";
 
 const auth = "Bearer " + process.env.IPFS_ADD_KEY;
 
+const readBody = async (req: Request): Promise<Uint8Array | undefined> => {
+  const reader = req.body?.getReader();
+  if (!reader) return new Uint8Array(0);
+
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (value) {
+      total += value.byteLength;
+      if (total > MAX_UPLOAD_BYTES) {
+        await reader.cancel();
+        return undefined;
+      }
+      chunks.push(value);
+    }
+  }
+
+  const merged = new Uint8Array(total);
+  let offset = 0;
+  chunks.forEach((chunk) => {
+    merged.set(chunk, offset);
+    offset += chunk.byteLength;
+  });
+
+  return merged;
+};
+
 export async function POST(req: Request) {
   try {
+    const blocked = guardRequest(req, "ipfs", RATE_LIMIT_IPFS);
+    if (blocked) return blocked;
+
+    const lengthHeader = req.headers.get("content-length");
+    const declaredLength = Number(lengthHeader);
+    if (
+      !lengthHeader ||
+      !/^\d+$/.test(lengthHeader.trim()) ||
+      !Number.isFinite(declaredLength) ||
+      declaredLength > MAX_UPLOAD_BYTES
+    ) {
+      return NextResponse.json({ error: "Payload too large" }, { status: 413 });
+    }
+
+    const bytes = await readBody(req);
+    if (!bytes) {
+      return NextResponse.json({ error: "Payload too large" }, { status: 413 });
+    }
+
     const contentType = req.headers.get("content-type") || "";
     let body;
 
     if (contentType.includes("application/json")) {
-      const blob = new Blob([JSON.stringify(await req.json())], {
-        type: "application/json",
-      });
+      const blob = new Blob(
+        [JSON.stringify(JSON.parse(new TextDecoder().decode(bytes)))],
+        {
+          type: "application/json",
+        }
+      );
 
       body = new FormData();
       body.append("file", blob, "file.json");
     } else {
       body = new FormData();
-      body.append("file", await req.blob(), "file.png");
+      body.append(
+        "file",
+        new Blob([bytes as BlobPart], { type: contentType }),
+        "file.png"
+      );
     }
     const response = await fetch("https://cdn.digitalax.xyz/api/v0/add", {
       method: "POST",

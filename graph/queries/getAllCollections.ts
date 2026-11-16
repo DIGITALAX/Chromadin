@@ -440,7 +440,11 @@ export const getCollectionsProfile = async (designer: string): Promise<any> => {
 };
 
 export const getCollectionsSearch = async (title: string): Promise<any> => {
-  const words = title.trim().split(/\s+/).filter(word => word.length > 0);
+  const words = title
+    .trim()
+    .split(/\s+/)
+    .map(word => word.replace(/["\\\r\n]/g, ""))
+    .filter(word => word.length > 0);
 
 
   let titleConditions = words.map(word => `{metadata_: {title_contains_nocase: "${word}"}}`).join(', ');

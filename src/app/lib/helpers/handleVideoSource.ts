@@ -1,5 +1,17 @@
 import { INFURA_GATEWAY_INTERNAL, GROVE_GATEWAY } from "../constants";
 
+const mapScheme = (
+  cleaned: string,
+  scheme: string,
+  gateway: string
+): string | undefined => {
+  const remainder = cleaned.slice(scheme.length);
+  if (!remainder || remainder.includes("..")) {
+    return undefined;
+  }
+  return `${gateway}${remainder}`;
+};
+
 export const handleVideoSource = (
   uri: string | undefined
 ): string | undefined => {
@@ -7,15 +19,21 @@ export const handleVideoSource = (
 
   if (!cleaned) {
     return undefined;
-  } else if (cleaned.includes("https://")) {
-    return cleaned;
-  } else if (cleaned.includes("ipfs://")) {
-    return `${INFURA_GATEWAY_INTERNAL}${cleaned.split("ipfs://")?.[1]}`;
-  } else if (cleaned.includes("lens://")) {
-    return `${GROVE_GATEWAY}${cleaned.split("lens://")?.[1]}`;
-  } else if (cleaned.includes("ar://")) {
-    return `https://arweave.net/${cleaned.split("ar://")?.[1]}`;
+  } else if (cleaned.startsWith("ipfs://")) {
+    return mapScheme(cleaned, "ipfs://", INFURA_GATEWAY_INTERNAL);
+  } else if (cleaned.startsWith("lens://")) {
+    return mapScheme(cleaned, "lens://", GROVE_GATEWAY);
+  } else if (cleaned.startsWith("ar://")) {
+    return mapScheme(cleaned, "ar://", "https://arweave.net/");
+  } else if (
+    /^(Qm[1-9A-HJ-NP-Za-km-z]{44}|b[a-z2-7]{58,})(\/[^\s]*)?$/.test(cleaned)
+  ) {
+    return cleaned.includes("..") ? undefined : cleaned;
   }
 
-  return cleaned;
+  try {
+    return new URL(cleaned).protocol === "https:" ? cleaned : undefined;
+  } catch (err: any) {
+    return undefined;
+  }
 };

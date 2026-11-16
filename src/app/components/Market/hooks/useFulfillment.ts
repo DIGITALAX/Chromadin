@@ -296,6 +296,16 @@ const useFulfillment = (dict: any, collection?: Collection) => {
       if ((res.value as any)?.reason?.includes("Signless")) {
         context?.setSignless?.(true);
       } else if ((res.value as any)?.raw) {
+        if (
+          Number((res.value as any)?.raw?.chainId) !== chains.mainnet.id ||
+          !ethers.isAddress((res.value as any)?.raw?.to)
+        ) {
+          console.error("Invalid transaction request");
+          context?.setModalOpen?.(dict?.wrong);
+          setPurchaseLoading(false);
+          return;
+        }
+
         context?.setIndexar(dict?.indexCol);
         const provider = new ethers.BrowserProvider(window.ethereum);
 

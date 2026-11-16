@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ApolloClient, InMemoryCache, HttpLink, gql } from "@apollo/client";
+import guardRequest from "@/app/lib/helpers/guardRequest";
+import validateGraphQuery from "@/app/lib/helpers/validateGraphQuery";
+import { RATE_LIMIT_GRAPHQL } from "@/app/lib/constants";
 
 const serverGDNClient = new ApolloClient({
   link: new HttpLink({
@@ -10,10 +13,18 @@ const serverGDNClient = new ApolloClient({
 
 export async function POST(request: NextRequest) {
   try {
+    const blocked = guardRequest(request, "graphql-gdn", RATE_LIMIT_GRAPHQL);
+    if (blocked) return blocked;
+
     const { query, variables } = await request.json();
 
     if (!query) {
       return NextResponse.json({ error: "Query is required" }, { status: 400 });
+    }
+
+    const invalid = validateGraphQuery(query);
+    if (invalid) {
+      return NextResponse.json({ error: invalid }, { status: 400 });
     }
 
     const result = await serverGDNClient.query({

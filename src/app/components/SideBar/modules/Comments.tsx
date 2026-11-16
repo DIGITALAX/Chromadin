@@ -14,6 +14,7 @@ import { FunctionComponent, JSX, useContext } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { AiFillFastBackward, AiOutlineLoading } from "react-icons/ai";
 import descriptionRegex from "@/app/lib/helpers/descriptionRegex";
+import escapeHtml from "@/app/lib/helpers/escapeHtml";
 import { ModalContext } from "@/app/providers";
 import moment from "moment";
 import handleImageError from "@/app/lib/helpers/handleImageError";
@@ -90,12 +91,15 @@ const Comments: FunctionComponent<CommentsProps> = ({
                   )?.content
                     ?.split("\n\n")
                     ?.slice(1)
+                    ?.map((part: string) => escapeHtml(part))
                     ?.join("<br><br>")
-                : (
-                    context?.videoInfo?.channels?.[
-                      context?.videoInfo?.currentIndex
-                    ]?.metadata as VideoMetadata
-                  )?.content,
+                : escapeHtml(
+                    (
+                      context?.videoInfo?.channels?.[
+                        context?.videoInfo?.currentIndex
+                      ]?.metadata as VideoMetadata
+                    )?.content
+                  ),
             }}
           />
         </div>

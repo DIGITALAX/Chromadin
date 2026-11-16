@@ -70,6 +70,13 @@ export const KINORA_METRICS: `0x${string}` =
 export const KINORA_QUEST_DATA: `0x${string}` =
   "0x73a8d6c331033c3fb30db0583525e8f604472e55";
 export const LOCALES: string[] = ["en", "es"];
+export const MAX_UPLOAD_BYTES: number = 100 * 1024 * 1024;
+export const RATE_LIMIT_WINDOW_MS: number = 60 * 1000;
+export const RATE_LIMIT_IPFS: number = 30;
+export const RATE_LIMIT_GIPHY: number = 60;
+export const RATE_LIMIT_GRAPHQL: number = 1200;
+export const MAX_GRAPH_QUERY_LENGTH: number = 10000;
+export const MAX_GIF_QUERY_LENGTH: number = 200;
 export const BASE_URL: string = "https://api.lens.xyz/graphql";
 export const ACCEPTED_TOKENS: string[][] = [
   [

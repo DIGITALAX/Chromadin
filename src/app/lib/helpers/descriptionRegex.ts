@@ -1,39 +1,27 @@
+import escapeHtml from "./escapeHtml";
+import safeExternalUrl from "./safeExternalUrl";
+
 const descriptionRegex = (description: string, messages?: boolean) => {
-  const replacedDescription = description?.replace(/\n\n/g, "\n \n"); // Replace all occurrences of "\n \n" with "\n\n"
+  const replacedDescription = description?.replace(/\n\n/g, "\n \n");
   const lines = replacedDescription?.split(/[\r\n]+/);
+  const color = messages ? "#ff494a" : "#81A8F8";
   const styledLines = lines?.map((line: string) => {
     const words = line.split(" ");
     const styledWords = words.map((word: string) => {
+      const safeWord = escapeHtml(word);
       if (word[0] === "#") {
-        if (messages) {
-          return `<em id="hashtags" style="color: #ff494a; cursor: pointer; font-style: normal;">${word}</em>`;
-        } else {
-          return `<em id="hashtags" style="color: #81A8F8; cursor: pointer; font-style: normal;">${word}</em>`;
-        }
+        return `<em id="hashtags" style="color: ${color}; cursor: pointer; font-style: normal;">${safeWord}</em>`;
       } else if (word[0] === "@") {
-        if (messages) {
-          return `
-            <a href="${`https://www.chromadin.xyz/?option=history&profile=${word
-              ?.replace("@lens/", "")
-              ?.replace(
-                "@",
-                ""
-              )}`}" rel="noreferrer" target="_blank" style="margin-right: 4px;">
-              <span style="color: #ff494a;">${word}</span>
+        const href = escapeHtml(
+          `https://www.chromadin.xyz/?option=history&profile=${encodeURIComponent(
+            word?.replace("@lens/", "")?.replace("@", "")
+          )}`
+        );
+        return `
+            <a href="${href}" rel="noreferrer" target="_blank" style="margin-right: 4px;">
+              <span style="color: ${color};">${safeWord}</span>
             </a>
           `;
-        } else {
-          return `
-            <a href="${`https://www.chromadin.xyz/?option=history&profile=${word
-              ?.replace("@lens/", "")
-              ?.replace(
-                "@",
-                ""
-              )}`}" target="_blank" rel="noreferrer" style="margin-right: 4px;">
-              <span style="color: #81A8F8;">${word}</span>
-            </a>
-          `;
-        }
       } else if (
         (word[0] === "h" &&
           word[1] === "t" &&
@@ -42,35 +30,19 @@ const descriptionRegex = (description: string, messages?: boolean) => {
         (word[0] === "w" &&
           word[1] === "w" &&
           word[2] === "w" &&
-          word[3] === ".") ||
-        (word[word.length] === "z" &&
-          word[word.length - 1] === "y" &&
-          word[word.length - 2] === "x" &&
-          word[word.length - 3] === ".") ||
-        (word[word.length] === "m" &&
-          word[word.length - 1] === "o" &&
-          word[word.length - 2] === "c" &&
-          word[word.length - 3] === ".")
+          word[3] === ".")
       ) {
-        if (messages) {
-          return `
-            <a href=${
-              word?.includes("//") ? word : `//${word}`
-            } target="_blank" rel="noreferrer">
-              <span style="color: #ff494a;">${word}</span>
-            </a>
-          `;
-        } else {
-          return `
-            <a href=${
-              word?.includes("//") ? word : `//${word}`
-            } target="_blank" rel="noreferrer">
-              <span style="color: #81A8F8;">${word}</span>
-            </a>
-          `;
+        const url = safeExternalUrl(word);
+        if (!url) {
+          return safeWord;
         }
+        return `
+            <a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">
+              <span style="color: ${color};">${safeWord}</span>
+            </a>
+          `;
       } else {
-        return word;
+        return safeWord;
       }
     });
     const styledLine = `<span>${styledWords?.join(" ")}</span>`;

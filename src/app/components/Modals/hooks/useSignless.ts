@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { enableSignless } from "@lens-protocol/client/actions";
 import { ethers } from "ethers";
+import { chains } from "@lens-chain/sdk/viem";
 import { ModalContext } from "@/app/providers";
 
 const useSignless = () => {
@@ -15,6 +16,11 @@ const useSignless = () => {
 
       if (res.isErr()) {
         console.error(res.error);
+      } else if (
+        Number((res.value as any)?.raw?.chainId) !== chains.mainnet.id ||
+        !ethers.isAddress((res.value as any)?.raw?.to)
+      ) {
+        console.error("Invalid transaction request");
       } else {
         const provider = new ethers.BrowserProvider(window.ethereum);
 

@@ -6,6 +6,7 @@ import RouterChange from "@/app/components/Autograph/modules/RouterChange";
 import CollectEntry from "@/app/components/Autograph/modules/CollectEntry";
 import { LOCALES, INFURA_GATEWAY_INTERNAL, VIDEO_COVERS } from "@/app/lib/constants";
 import { getOneCollection } from "@/../../graph/queries/getAllCollections";
+import serializeJsonLd from "@/app/lib/helpers/serializeJsonLd";
 
 export const generateMetadata = async ({
   params,
@@ -148,13 +149,13 @@ export default async function Autograph({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbStructuredData),
+          __html: serializeJsonLd(breadcrumbStructuredData),
         }}
       />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(productStructuredData),
+          __html: serializeJsonLd(productStructuredData),
         }}
       />
       <Wrapper
