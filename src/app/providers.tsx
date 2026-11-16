@@ -6,7 +6,6 @@ import {
   createContext,
   SetStateAction,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import {
@@ -38,11 +37,6 @@ import {
 } from "@lens-protocol/metadata";
 import { OracleData } from "./components/Market/types/market.types";
 import { SimpleCollect } from "./components/Modals/types/modals.types";
-import {
-  createReactClient,
-  studioProvider,
-  LivepeerConfig,
-} from "@livepeer/react";
 import { KinoraProvider } from "kinora-sdk";
 import { getApolloLens } from "./lib/lens/client";
 import { INFURA_GATEWAY } from "./lib/constants";
@@ -59,15 +53,9 @@ export const config = createConfig(
       [chains.mainnet.id]: http("https://rpc.lens.xyz"),
     },
     ssr: true,
-    enableFamily: false,
+    enableAaveAccount: false,
   })
 );
-
-const livepeerClient = createReactClient({
-  provider: studioProvider({
-    apiKey: process.env.NEXT_PUBLIC_LIVEPEER_STUDIO_KEY!,
-  }),
-});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -329,10 +317,22 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     videosLoading: false,
   });
 
-  const apolloClient = useMemo(() => {
-    return getApolloLens(
-      lensConectado?.sessionClient?.getCredentials()!
-    ) as any;
+  const [apolloClient, setApolloClient] = useState<any>(() =>
+    getApolloLens(undefined)
+  );
+
+  useEffect(() => {
+    let activo = true;
+    const cargarApollo = async () => {
+      const creds = await lensConectado?.sessionClient?.getCredentials();
+      if (activo) {
+        setApolloClient(getApolloLens(creds));
+      }
+    };
+    cargarApollo();
+    return () => {
+      activo = false;
+    };
   }, [lensConectado?.sessionClient]);
 
   useEffect(() => {
@@ -355,8 +355,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           }}
         >
           {" "}
-          <LivepeerConfig client={livepeerClient}>
-            <KinoraProvider
+          <KinoraProvider
               playerAuthedApolloClient={apolloClient}
               ipfsConfig={{
                 uploadEndpoint: `${process.env.NEXT_PUBLIC_BASE_URL}/api/ipfs`,
@@ -426,8 +425,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
               >
                 {children}
               </ModalContext.Provider>
-            </KinoraProvider>
-          </LivepeerConfig>
+          </KinoraProvider>
         </ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

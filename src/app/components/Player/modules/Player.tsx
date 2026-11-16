@@ -8,7 +8,7 @@ import { ModalContext } from "@/app/providers";
 import { VideoMetadata } from "@lens-protocol/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { KinoraPlayerWrapper } from "kinora-sdk";
-import { Player as LivePeerPlayer } from "@livepeer/react";
+import { handleVideoSource } from "@/app/lib/helpers/handleVideoSource";
 
 const Player: FunctionComponent<PlayerProps> = ({
   wrapperRef,
@@ -185,23 +185,26 @@ const Player: FunctionComponent<PlayerProps> = ({
             }
           >
             {(setMediaElement: (node: HTMLVideoElement) => void) => (
-              <LivePeerPlayer
-                mediaElementRef={setMediaElement}
-                src={
-                  (
-                    context?.videoInfo?.channels?.[
-                      context?.videoInfo?.currentIndex
-                    ]?.metadata as VideoMetadata
-                  )?.video?.item ||
-                  (
-                    context?.videoInfo?.channels?.[
-                      context?.videoInfo?.currentIndex
-                    ]?.metadata as VideoMetadata
-                  )?.video?.item
-                }
-                showLoadingSpinner={false}
-                objectFit="cover"
-              />
+              <div className="relative w-full h-full flex flex-row items-center justify-center z-0">
+                <div className="relative w-full h-full flex flex-row items-center justify-center aspect-video z-0">
+                  <video
+                    ref={
+                      setMediaElement as (node: HTMLVideoElement | null) => void
+                    }
+                    src={handleVideoSource(
+                      (
+                        context?.videoInfo?.channels?.[
+                          context?.videoInfo?.currentIndex
+                        ]?.metadata as VideoMetadata
+                      )?.video?.item
+                    )}
+                    className="relative w-full h-full flex object-cover z-0"
+                    playsInline
+                    preload="auto"
+                    draggable={false}
+                  />
+                </div>
+              </div>
             )}
           </KinoraPlayerWrapper>
         </div>

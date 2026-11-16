@@ -64,10 +64,10 @@ const Reactions: FunctionComponent<ReactionProps> = ({
                   : publication?.actions?.[0]?.__typename ==
                     "SimpleCollectAction"
                   ? (Number(
-                      publication.actions[0]?.payToCollect?.amount?.value
+                      publication.actions[0]?.amount?.value
                     ) == 0 ||
                       !Number(
-                        publication.actions[0]?.payToCollect?.amount?.value
+                        publication.actions[0]?.amount?.value
                       )) &&
                     (!publication.actions[0]?.followerOnGraph?.globalGraph ||
                       (publication.actions[0]?.followerOnGraph?.globalGraph &&

@@ -258,24 +258,25 @@ const useComment = (
       let actions = null;
 
       if (context?.postInfo?.collectTypes?.[id]) {
-        let payToCollect = context?.postInfo?.collectTypes?.[id]?.payToCollect;
+        const { payToCollect, ...collectType } =
+          context?.postInfo?.collectTypes?.[id]!;
 
-        if (payToCollect) {
-          payToCollect = {
-            ...payToCollect,
-            recipients: [
-              {
-                percent: 100,
-                address: evmAddress(address as string),
-              },
-            ],
-          };
-        }
         actions = [
           {
             simpleCollect: {
-              ...context?.postInfo?.collectTypes?.[id]!,
-              payToCollect,
+              ...collectType,
+              ...(payToCollect
+                ? {
+                    amount: payToCollect.amount,
+                    referralShare: payToCollect.referralShare,
+                    recipients: [
+                      {
+                        percent: 100,
+                        address: evmAddress(address as string),
+                      },
+                    ],
+                  }
+                : {}),
             },
           },
         ];

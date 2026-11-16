@@ -245,29 +245,27 @@ const useMakePost = (dict: any) => {
           context?.makePost?.quote?.id ?? "post"
         ]
       ) {
-        let payToCollect =
+        const { payToCollect, ...collectType } =
           context?.postInfo?.collectTypes?.[
             context?.makePost?.quote?.id ?? "post"
-          ]?.payToCollect;
+          ]!;
 
-        if (payToCollect) {
-          payToCollect = {
-            ...payToCollect,
-            recipients: [
-              {
-                percent: 100,
-                address: evmAddress(address as string),
-              },
-            ],
-          };
-        }
         actions = [
           {
             simpleCollect: {
-              ...context?.postInfo?.collectTypes?.[
-                context?.makePost?.quote?.id ?? "post"
-              ]!,
-              payToCollect,
+              ...collectType,
+              ...(payToCollect
+                ? {
+                    amount: payToCollect.amount,
+                    referralShare: payToCollect.referralShare,
+                    recipients: [
+                      {
+                        percent: 100,
+                        address: evmAddress(address as string),
+                      },
+                    ],
+                  }
+                : {}),
             },
           },
         ];
