@@ -261,14 +261,15 @@ const useComment = (
               ...collectType,
               ...(payToCollect
                 ? {
-                    amount: payToCollect.amount,
-                    referralShare: payToCollect.referralShare,
-                    recipients: [
-                      {
-                        percent: 100,
-                        address: evmAddress(address as string),
-                      },
-                    ],
+                    payToCollect: {
+                      ...payToCollect,
+                      recipients: [
+                        {
+                          percent: 100,
+                          address: evmAddress(address as string),
+                        },
+                      ],
+                    },
                   }
                 : {}),
             },

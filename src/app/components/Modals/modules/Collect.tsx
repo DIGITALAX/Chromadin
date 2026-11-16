@@ -83,17 +83,17 @@ export const SimpleCollect: FunctionComponent<{ dict: any }> = ({
                     {context?.collect?.action?.collectLimit}
                   </div>
                 )}
-                {context?.collect?.action?.amount &&
+                {context?.collect?.action?.payToCollect?.amount &&
                   Number(
-                    context?.collect?.action?.amount?.value
+                    context?.collect?.action?.payToCollect?.amount?.value
                   ) > 0 && (
                     <div className="relative w-fit h-fit flex items-center justify-center flex-row gap-2 text-base text-sol">
                       <div className="relative w-fit h-fit flex items-center justify-center">
-                        {context?.collect?.action?.amount?.value}
+                        {context?.collect?.action?.payToCollect?.amount?.value}
                       </div>
                       <div className="relative w-fit h-fit flex items-center justify-center">
                         {
-                          context?.collect?.action?.amount?.asset
+                          context?.collect?.action?.payToCollect?.amount?.asset
                             ?.symbol
                         }
                       </div>

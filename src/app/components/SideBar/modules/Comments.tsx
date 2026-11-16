@@ -298,11 +298,11 @@ const Comments: FunctionComponent<CommentsProps> = ({
                                 : comment?.actions?.[0]?.__typename ==
                                   "SimpleCollectAction"
                                 ? (Number(
-                                    comment.actions[0]?.amount
+                                    comment.actions[0]?.payToCollect?.amount
                                       ?.value
                                   ) == 0 ||
                                     !Number(
-                                      comment.actions[0]?.amount
+                                      comment.actions[0]?.payToCollect?.amount
                                         ?.value
                                     )) &&
                                   (!comment.actions[0]?.followerOnGraph
